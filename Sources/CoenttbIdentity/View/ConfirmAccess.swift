@@ -6,8 +6,8 @@
 //
 
 import Foundation
+import Languages
 import CoenttbWebHTML
-
 
 public struct ConfirmAccess<CodingKey: RawRepresentable>: HTML where CodingKey.RawValue == String {
     let codingKey: CodingKey

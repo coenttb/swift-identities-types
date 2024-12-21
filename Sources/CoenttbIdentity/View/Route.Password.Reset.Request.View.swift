@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Languages
 import CoenttbWebHTML
 
 extension Route.Password.Reset.Request {

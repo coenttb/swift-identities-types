@@ -5,11 +5,7 @@
 //  Created by Coen ten Thije Boonkkamp on 16/08/2024.
 //
 
-import CoenttbWebHTML
-import Dependencies
-import Favicon
-import Foundation
-import Languages
+import CoenttbWeb
 
 public struct CoenttbIdentityHTMLDocument<
     Body: HTML

@@ -5,11 +5,10 @@
 //  Created by Coen ten Thije Boonkkamp on 07/10/2024.
 //
 
-import Foundation
-import CasePaths
-import URLRouting
+import CoenttbWeb
 import MemberwiseInit
 import MacroCodableKit
+import CasePaths
 
 @CasePathable
 public enum Route: Codable, Hashable, Sendable {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Languages
 import CoenttbWebHTML
 
 extension Route.EmailChange.Confirm {
