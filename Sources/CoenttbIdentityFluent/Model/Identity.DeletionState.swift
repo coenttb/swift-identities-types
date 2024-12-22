@@ -49,7 +49,7 @@ package final class DeletionState: Model, @unchecked Sendable {
 
     package struct Migration: AsyncMigration {
         
-        package let name: String = "CoenttbIdentityFluent.DeletionState"
+        package var name: String = "CoenttbIdentityFluent.DeletionState"
         
         package func prepare(on database: Database) async throws {
             try await database.schema(CoenttbIdentityFluent.DeletionState.schema)

@@ -41,6 +41,8 @@ public final class PasswordChangeRequest: Model, @unchecked Sendable {
     }
 
     public struct Migration: AsyncMigration {
+        
+        public var name: String = "CoenttbIdentity.PasswordChangeRequest.Migration.Create"
                 
         public init(){}
         public func prepare(on database: Database) async throws {

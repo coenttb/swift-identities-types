@@ -80,6 +80,8 @@ extension Identity {
     public enum Migration {
         public struct Create: AsyncMigration {
             
+            public var name:String = "CoenttbIdentity.Identity.Migration.Create"
+            
             public init() {}
 
             public func prepare(on database: Database) async throws {
