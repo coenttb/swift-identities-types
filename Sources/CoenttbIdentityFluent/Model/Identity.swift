@@ -80,7 +80,7 @@ extension Identity {
     public enum Migration {
         public struct Create: AsyncMigration {
             
-            public let name: String = "CoenttbIdentity.Identity.Migration"
+            public var name: String = "CoenttbIdentity.Identity.Migration"
             
             public init() {}
 

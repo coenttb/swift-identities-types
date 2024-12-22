@@ -88,7 +88,7 @@ extension CoenttbIdentity.API {
     @MemberwiseInit(.public)
     @Codable
     public struct Update: Hashable, Sendable {
-       @CodingKey("name")
+        @CodingKey("name")
         @Init(default: "")
         public let name: String?
     }

@@ -42,7 +42,7 @@ public final class EmailChangeRequest: Model, @unchecked Sendable {
 
     public struct Migration: AsyncMigration {
         
-        public let name: String = "CoenttbIdentity.EmailChangeRequest.Migration"
+        public var name: String = "CoenttbIdentity.EmailChangeRequest.Migration"
         public init(){}
         public func prepare(on database: Database) async throws {
             try await database.schema(EmailChangeRequest.schema)
