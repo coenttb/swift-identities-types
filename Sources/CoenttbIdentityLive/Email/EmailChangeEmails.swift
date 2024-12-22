@@ -162,14 +162,13 @@ extension Email {
         )
         
         self = .init(
-            from: .init(business.fromEmail),
+            from: business.fromEmail,
             to: [
                 emailChangeRequestNotification.userName.map { name in "\(name) <\(emailChangeRequestNotification.currentEmail.rawValue)>" } ?? "\(emailChangeRequestNotification.currentEmail.rawValue)"
             ],
             subject: "\(business.name) | \(subjectAdd)",
-            text: nil,
             html: string,
-            domain: ""
+            text: nil
         )
     }
 }
@@ -253,14 +252,13 @@ extension Email {
         )
         
         self = .init(
-            from: .init(business.fromEmail),
+            from: business.fromEmail,
             to: [
                 emailChangeConfirmationRequest.userName.map { name in "\(name) <\(emailChangeConfirmationRequest.newEmail.rawValue)>" } ?? "\(emailChangeConfirmationRequest.newEmail.rawValue)"
             ],
             subject: "\(business.name) | \(subjectAdd)",
-            text: nil,
             html: string,
-            domain: ""
+            text: nil
         )
     }
 }
@@ -331,14 +329,13 @@ extension Email {
             )
             
             self = .init(
-                from: .init(business.fromEmail),
+                from: business.fromEmail,
                 to: [
                     notification.userName.map { name in "\(name) <\(notification.currentEmail.rawValue)>" } ?? "\(notification.currentEmail.rawValue)"
                 ],
                 subject: "\(business.name) | \(subjectAdd)",
-                text: nil,
                 html: string,
-                domain: ""
+                text: nil
             )
             
         case .newEmail(let notification):
@@ -400,14 +397,13 @@ extension Email {
             )
             
             self = .init(
-                from: .init(business.fromEmail),
+                from: business.fromEmail,
                 to: [
                     notification.userName.map { name in "\(name) <\(notification.newEmail.rawValue)>" } ?? "\(notification.newEmail.rawValue)"
                 ],
                 subject: "\(business.name) | \(subjectAdd)",
-                text: nil,
                 html: string,
-                domain: ""
+                text: nil
             )
         }
     }

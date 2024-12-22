@@ -101,14 +101,13 @@ extension Email {
         )
         
         return .init(
-            from: .init(rawValue: from),
+            from: from,
             to: [
                 user.name.map { name in "\(name) <\(user.email.rawValue)>" } ?? "\(user.email.rawValue)"
             ],
             subject: "\(businessName) | \(subjectAdd)",
-            text: nil,
             html: string,
-            domain: ""
+            text: nil
         )
     }
 }
