@@ -21,7 +21,7 @@ public final class Identity: Model, Content, @unchecked Sendable {
     @Field(key: FieldKeys.isAdmin)
     public var isAdmin: Bool
     
-    @Field(key: FieldKeys.emailVerificationStatus)
+    @Enum(key: FieldKeys.emailVerificationStatus)
     public var emailVerificationStatus: EmailVerificationStatus
     
     @Field(key: FieldKeys.sessionVersion)
@@ -79,8 +79,6 @@ public final class Identity: Model, Content, @unchecked Sendable {
 extension Identity {
     public enum Migration {
         public struct Create: AsyncMigration {
-            
-            public var name: String = "CoenttbIdentity.Identity.Migration"
             
             public init() {}
 

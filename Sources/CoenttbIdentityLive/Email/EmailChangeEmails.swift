@@ -164,7 +164,8 @@ extension Email {
         self = .init(
             from: business.fromEmail,
             to: [
-                emailChangeRequestNotification.userName.map { name in "\(name) <\(emailChangeRequestNotification.currentEmail.rawValue)>" } ?? "\(emailChangeRequestNotification.currentEmail.rawValue)"
+//                emailChangeRequestNotification.userName.map { name in "\(name) <\(emailChangeRequestNotification.currentEmail.rawValue)>" } ?? "\(emailChangeRequestNotification.currentEmail.rawValue)"
+                emailChangeRequestNotification.currentEmail
             ],
             subject: "\(business.name) | \(subjectAdd)",
             html: string,
@@ -254,7 +255,8 @@ extension Email {
         self = .init(
             from: business.fromEmail,
             to: [
-                emailChangeConfirmationRequest.userName.map { name in "\(name) <\(emailChangeConfirmationRequest.newEmail.rawValue)>" } ?? "\(emailChangeConfirmationRequest.newEmail.rawValue)"
+//                emailChangeConfirmationRequest.userName.map { name in "\(name) <\(emailChangeConfirmationRequest.newEmail.rawValue)>" } ?? "\(emailChangeConfirmationRequest.newEmail.rawValue)"
+                emailChangeConfirmationRequest.newEmail
             ],
             subject: "\(business.name) | \(subjectAdd)",
             html: string,
@@ -331,7 +333,8 @@ extension Email {
             self = .init(
                 from: business.fromEmail,
                 to: [
-                    notification.userName.map { name in "\(name) <\(notification.currentEmail.rawValue)>" } ?? "\(notification.currentEmail.rawValue)"
+//                    notification.userName.map { name in "\(name) <\(notification.currentEmail.rawValue)>" } ?? "\(notification.currentEmail.rawValue)"
+                    notification.currentEmail
                 ],
                 subject: "\(business.name) | \(subjectAdd)",
                 html: string,
@@ -399,7 +402,8 @@ extension Email {
             self = .init(
                 from: business.fromEmail,
                 to: [
-                    notification.userName.map { name in "\(name) <\(notification.newEmail.rawValue)>" } ?? "\(notification.newEmail.rawValue)"
+//                    notification.userName.map { name in "\(name) <\(notification.newEmail.rawValue)>" } ?? "\(notification.newEmail.rawValue)"
+                    notification.newEmail
                 ],
                 subject: "\(business.name) | \(subjectAdd)",
                 html: string,

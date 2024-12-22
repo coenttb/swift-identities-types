@@ -31,7 +31,17 @@ extension CoenttbIdentity.API.Password.Reset {
         @Init(default: "")
         public let email: String
     }
-    
+}
+ 
+extension CoenttbIdentity.API.Password.Reset.Request {
+    public init(
+        email: EmailAddress
+    ){
+        self.email = email.rawValue
+    }
+}
+
+extension CoenttbIdentity.API.Password.Reset {
     @MemberwiseInit(.public)
     @Codable
     public struct Confirm: Hashable, Sendable {
@@ -59,7 +69,6 @@ extension CoenttbIdentity.API.Password.Change {
         @CodingKey(.currentPassword)
         @Init(default: "")
         public let password: String
-        
     }
     
     @MemberwiseInit(.public)
@@ -72,7 +81,6 @@ extension CoenttbIdentity.API.Password.Change {
         @CodingKey(.newPassword)
         @Init(default: "")
         public let newPassword: String
-        
     }
 }
 

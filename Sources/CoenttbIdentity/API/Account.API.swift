@@ -94,8 +94,6 @@ extension CoenttbIdentity.API {
     }
 }
 
-
-
 extension CoenttbIdentity.API {
     @MemberwiseInit(.public)
     @Codable
@@ -110,6 +108,16 @@ extension CoenttbIdentity.API {
     }
 }
 
+extension CoenttbIdentity.API.Login {
+    public init(
+        email: EmailAddress,
+        password: String
+    ){
+        self.email = email.rawValue
+        self.password = password
+    }
+}
+
 extension CoenttbIdentity.API {
     @MemberwiseInit(.public)
     @Codable
@@ -121,6 +129,16 @@ extension CoenttbIdentity.API {
         @CodingKey(.email)
         @Init(default: "")
         public let email: String
+    }
+}
+
+extension CoenttbIdentity.API.Verify {
+    public init(
+        email: EmailAddress,
+        token: String
+    ){
+        self.email = email.rawValue
+        self.token = token
     }
 }
 

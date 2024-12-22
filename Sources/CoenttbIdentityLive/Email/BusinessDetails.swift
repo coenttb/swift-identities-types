@@ -16,7 +16,7 @@ import MemberwiseInit
 @MemberwiseInit(.public)
 public struct BusinessDetails: Sendable {
     public let name: String
-    public let supportEmail: String
-    public let fromEmail: String
+    public let supportEmail: EmailAddress
+    public let fromEmail: EmailAddress
     public let primaryColor: HTMLColor
 }

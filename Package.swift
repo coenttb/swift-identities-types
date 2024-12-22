@@ -22,6 +22,7 @@ extension Target.Dependency {
     static var dependenciesTestSupport: Self { .product(name: "DependenciesTestSupport", package: "swift-dependencies") }
     static var memberwiseInit: Self { .product(name: "MemberwiseInit", package: "swift-memberwise-init-macro") }
     static var mailgun: Self { .product(name: "Mailgun", package: "coenttb-mailgun") }
+    static var fluentSqlLite: Self { .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver") }
 }
 
 let package = Package(
@@ -41,6 +42,7 @@ let package = Package(
         .package(url: "https://github.com/coenttb/macro-codable-kit.git", branch: "main"),
         .package(url: "https://github.com/gohanlon/swift-memberwise-init-macro", from: "0.3.0"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.0"),
+        .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
     ],
     targets: [
         .target(
@@ -74,7 +76,24 @@ let package = Package(
                 .coenttbIdentity,
                 .dependenciesTestSupport
             ]
-        )
+        ),
+        .testTarget(
+            name: .coenttbIdentityLive + " Tests",
+            dependencies: [
+                .coenttbIdentityLive,
+                .dependenciesTestSupport,
+                .fluentSqlLite,
+                .mailgun
+            ]
+        ),
+        .testTarget(
+            name: .coenttbIdentityFluent + " Tests",
+            dependencies: [
+                .coenttbIdentityFluent,
+                .dependenciesTestSupport,
+                .fluentSqlLite
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

@@ -6,21 +6,22 @@
 //
 
 import Foundation
+import EmailAddress
 import Dependencies
 import DependenciesMacros
 
 @DependencyClient
 public struct Client<User>: @unchecked Sendable {
     @DependencyEndpoint
-    public var create: (_ email: String, _ password: String) async throws -> Void
+    public var create: (_ email: EmailAddress, _ password: String) async throws -> Void
     
     public var delete: Client.Delete
     
     @DependencyEndpoint
-    public var verify: (_ token: String, _ email: String) async throws -> Void
+    public var verify: (_ token: String, _ email: EmailAddress) async throws -> Void
     
     @DependencyEndpoint
-    public var login: (_ email: String, _ password: String) async throws -> Void
+    public var login: (_ email: EmailAddress, _ password: String) async throws -> Void
     
     @DependencyEndpoint
     public var currentUser: () async throws -> User?
@@ -52,7 +53,7 @@ extension Client {
 extension Client.Password {
     @DependencyClient
     public struct Reset: @unchecked Sendable {
-        public var request: (_ email: String) async throws -> Void
+        public var request: (_ email: EmailAddress) async throws -> Void
         public var confirm: (_ token: String, _ newPassword: String) async throws -> Void
     }
 }
@@ -74,52 +75,8 @@ extension Client {
 extension Client {
     @DependencyClient
     public struct EmailChange: @unchecked Sendable {
-        public var request: (_ newEmail: String?) async throws -> Void
+        public var request: (_ newEmail: EmailAddress?) async throws -> Void
         public var confirm: (_ token: String) async throws -> Void
-    }
-}
-
-extension Client: TestDependencyKey {
-    public static var testValue: Client {
-        .init(
-            delete: .testValue,
-            password: .init(
-                reset: .init(
-                    request: { _ in fatalError("Unimplemented") },
-                    confirm: { _, _ in fatalError("Unimplemented") }
-                ),
-                change: .init(
-                    request: { _, _ in fatalError("Unimplemented") }
-                )
-            ),
-            emailChange: .init(
-                request: { _ in fatalError("Unimplemented") },
-                confirm: { _ in fatalError("Unimplemented") }
-            )
-        )
-    }
-}
-
-extension Client.Password: TestDependencyKey {
-    public static var testValue: Self {
-        .init(
-            reset: .init(
-                request: { _ in fatalError("Unimplemented") },
-                confirm: { _, _ in fatalError("Unimplemented") }
-            ),
-            change: .init(
-                request: { _, _ in fatalError("Unimplemented") }
-            )
-        )
-    }
-}
-
-extension Client.EmailChange: TestDependencyKey {
-    public static var testValue: Self {
-        .init(
-            request: { _ in fatalError("Unimplemented") },
-            confirm: { _ in fatalError("Unimplemented") }
-        )
     }
 }
 
@@ -139,7 +96,34 @@ extension Client {
     }
 }
 
+extension Client: TestDependencyKey {
+    public static var testValue: Client {
+        .init(
+            delete: .testValue,
+            password: .testValue,
+            emailChange: .testValue
+        )
+    }
+}
+
+extension Client.Password: TestDependencyKey {
+    public static var testValue: Self {
+        .init(
+            reset: .init(),
+            change: .init()
+        )
+    }
+}
+
+extension Client.EmailChange: TestDependencyKey {
+    public static var testValue: Self {
+        .init()
+    }
+}
+
 extension CoenttbIdentity.Client.Delete: TestDependencyKey {
     public static var testValue: Self { .init() }
 }
+
+
 

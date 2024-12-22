@@ -28,7 +28,19 @@ extension CoenttbIdentity.API.Create {
         @Init(default: "")
         public let password: String
     }
+}
 
+extension CoenttbIdentity.API.Create.Request {
+    public init(
+        email: EmailAddress,
+        password: String
+    ){
+        self.email = email.rawValue
+        self.password = password
+    }
+}
+
+extension CoenttbIdentity.API.Create {
     @MemberwiseInit(.public)
     @Codable
     public struct Verify: Hashable, Sendable {
@@ -39,6 +51,16 @@ extension CoenttbIdentity.API.Create {
         @CodingKey(.email)
         @Init(default: "")
         public let email: String
+    }
+}
+
+extension CoenttbIdentity.API.Create.Verify {
+    public init(
+        email: EmailAddress,
+        token: String
+    ){
+        self.email = email.rawValue
+        self.token = token
     }
 }
 

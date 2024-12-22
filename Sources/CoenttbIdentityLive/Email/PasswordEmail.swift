@@ -165,7 +165,7 @@ extension Email {
         self.init(
             from: business.fromEmail,
             to: [
-                passwordResetRequest.userName.map { name in "\(name) <\(passwordResetRequest.userEmail.rawValue)>" } ?? "\(passwordResetRequest.userEmail.rawValue)"
+                passwordResetRequest.userEmail
             ],
             subject: "\(business.name) | \(subjectAdd)",
             html: string,
@@ -237,7 +237,7 @@ extension Email {
         self.init(
             from: business.fromEmail,
             to: [
-                passwordResetConfirmation.userName.map { name in "\(name) <\(passwordResetConfirmation.userEmail.rawValue)>" } ?? "\(passwordResetConfirmation.userEmail.rawValue)"
+                passwordResetConfirmation.userEmail
             ],
             subject: "\(business.name) | \(subjectAdd)",
             html: string,
@@ -309,7 +309,8 @@ extension Email {
         self.init(
             from: business.fromEmail,
             to: [
-                passwordChangeNotification.userName.map { name in "\(name) <\(passwordChangeNotification.userEmail.rawValue)>" } ?? "\(passwordChangeNotification.userEmail.rawValue)"
+//                passwordChangeNotification.userName.map { name in "\(name) <\(passwordChangeNotification.userEmail.rawValue)>" } ?? "\(passwordChangeNotification.userEmail.rawValue)"
+                passwordChangeNotification.userEmail
             ],
             subject: "\(business.name) | \(subjectAdd)",
             html: string,

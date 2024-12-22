@@ -5,20 +5,16 @@
 //  Created by Coen ten Thije Boonkkamp on 04/10/2024.
 //
 
+import CoenttbWeb
 import CoenttbIdentity
-import EmailAddress
-import Foundation
-import CoenttbHTML
 import Mailgun
-import CoenttbEmail
-import CoenttbWebTranslations
 
 extension Email {
     public static func requestEmailVerification(
         verificationUrl: URL,
         businessName: String,
-        supportEmail: String,
-        from: String,
+        supportEmail: EmailAddress,
+        from: EmailAddress,
         to user: (name: String?, email: EmailAddress),
         primaryColor: HTMLColor
     ) -> Self {
@@ -102,9 +98,7 @@ extension Email {
         
         return .init(
             from: from,
-            to: [
-                user.name.map { name in "\(name) <\(user.email.rawValue)>" } ?? "\(user.email.rawValue)"
-            ],
+            to: [ user.email ],
             subject: "\(businessName) | \(subjectAdd)",
             html: string,
             text: nil

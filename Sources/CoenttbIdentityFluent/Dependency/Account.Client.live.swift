@@ -38,19 +38,19 @@ extension CoenttbIdentity.Client {
         userUpdate: @escaping (_ newUser: User, _ identity: Identity, _ databaseUser: DatabaseUser) async throws -> Void,
         createDatabaseUser: @escaping (_ identityId: UUID) async throws -> DatabaseUser,
         currentUserId: @escaping () -> UUID?,
-        currentUserEmail: @escaping () -> String?,
+        currentUserEmail: @escaping () -> EmailAddress?,
         request: @escaping () -> Vapor.Request?,
-        sendVerificationEmail: @escaping @Sendable (_ email: String, _ token: String) async throws -> Void,
+        sendVerificationEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
         authenticate: @escaping (any SessionAuthenticatable) throws -> Void,
         isAuthenticated: @escaping () throws -> Bool,
         logout: @escaping () throws -> Void,
-        isValidEmail: @escaping (_ email: String) throws -> Bool,
+        isValidEmail: @escaping (_ email: EmailAddress) throws -> Bool,
         isValidPassword: @escaping (_ password: String) throws -> Bool,
-        sendPasswordResetEmail: @escaping @Sendable (_ email: String, _ token: String) async throws -> Void,
-        sendPasswordChangeNotification: @escaping @Sendable (_ email: String) async throws -> Void,
-        sendEmailChangeConfirmation: @escaping @Sendable (_ currentEmail: String, _ newEmail: String, _ token: String) async throws -> Void,
-        sendEmailChangeRequestNotification: @escaping @Sendable (_ currentEmail: String, _ newEmail: String) async throws -> Void,
-        onEmailChangeSuccess: @escaping @Sendable (_ currentEmail: String, _ newEmail: String) async throws -> Void
+        sendPasswordResetEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
+        sendPasswordChangeNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
+        sendEmailChangeConfirmation: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress, _ token: String) async throws -> Void,
+        sendEmailChangeRequestNotification: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress) async throws -> Void,
+        onEmailChangeSuccess: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress) async throws -> Void
     ) -> CoenttbIdentity.Client<User> {
         
         return CoenttbIdentity.Client<User>(
@@ -69,10 +69,10 @@ extension CoenttbIdentity.Client {
                     try await database.transaction { database in
                         guard try await Identity
                             .query(on: database)
-                            .filter(\.$email == email)
+                            .filter(\.$email == email.rawValue)
                             .first() == nil
                         else { throw ValidationError.invalidInput("Email already in use") }
-                        let identity = try Identity(email: email, password: password)
+                        let identity = try Identity(email: email.rawValue, password: password)
                         try await identity.save(on: database)
                         
                         guard try await identity.canGenerateToken(on: database)
@@ -168,7 +168,7 @@ extension CoenttbIdentity.Client {
                         throw Abort(.gone, reason: "Token has expired")
                     }
                     
-                    guard identityToken.identity.email == email else {
+                    guard identityToken.identity.email == email.rawValue else {
                         throw Abort(.badRequest, reason: "Email mismatch")
                     }
                     
@@ -193,7 +193,7 @@ extension CoenttbIdentity.Client {
                 do {
                     logger.log(.info, "Login attempt for email: \(email)")
                     guard let identity = try await Identity.query(on: database)
-                        .filter(\.$email == email)
+                        .filter(\.$email == email.rawValue)
                         .first()
                     else {
                         logger.log(.warning, "Identity not found for email: \(email)")
@@ -264,7 +264,7 @@ extension CoenttbIdentity.Client {
                             }
                             
                             guard let identity = try await Identity.query(on: database)
-                                .filter(\.$email == email)
+                                .filter(\.$email == email.rawValue)
                                 .first() else {
                                 logger.log(.warning, "Password reset requested for non-existent email: \(email)")
                                 return
@@ -332,7 +332,7 @@ extension CoenttbIdentity.Client {
                             }
                             
                             guard let identity = try await Identity.query(on: database)
-                                .filter(\.$email == currentUserEmail)
+                                .filter(\.$email == currentUserEmail.rawValue)
                                 .first()
                             else {
                                 throw Abort(.notFound, reason: "User not found")
@@ -351,7 +351,7 @@ extension CoenttbIdentity.Client {
                                 identity.sessionVersion += 1
                                 try await identity.save(on: database)
                                 
-                                try await sendPasswordChangeNotification(identity.email)
+                                try await sendPasswordChangeNotification(.init(identity.email))
                             }
                             
                             logger.notice("Password changed successfully for user: \(identity.email)")
@@ -364,7 +364,7 @@ extension CoenttbIdentity.Client {
             ),
             emailChange: .init(
                 request: { newEmail in
-                    logger.log(.info, "newEmail: \(newEmail ?? "nil")")
+//                    logger.log(.info, "newEmail: \(newEmail ?? "nil")")
                     
                     do {
                         guard
@@ -387,7 +387,7 @@ extension CoenttbIdentity.Client {
                         else { throw ValidationError.invalidInput("Invalid new email format") }
                         
                         guard try await Identity.query(on: database)
-                            .filter(\.$email == newEmail)
+                            .filter(\.$email == newEmail.rawValue)
                             .first() == nil
                         else {
                             logger.log(.info, "new email: \(newEmail)")
@@ -395,7 +395,7 @@ extension CoenttbIdentity.Client {
                         }
                         
                         guard let identity = try await Identity.query(on: database)
-                            .filter(\.$email == currentEmail)
+                            .filter(\.$email == currentEmail.rawValue)
                             .first()
                         else { throw Abort(.notFound, reason: "Current user identity not found") }
                         
@@ -406,7 +406,7 @@ extension CoenttbIdentity.Client {
                             try await token.save(on: database)
                             let emailChangeRequest = try EmailChangeRequest(
                                 identity: identity,
-                                newEmail: newEmail,
+                                newEmail: newEmail.rawValue,
                                 token: token
                             )
                             
@@ -466,7 +466,10 @@ extension CoenttbIdentity.Client {
                             try await emailChangeRequest.identity.save(on: database)
                             try await token.delete(on: database)
                             try await emailChangeRequest.delete(on: database)
-                            try await onEmailChangeSuccess(currentEmail, newEmail)
+                            try await onEmailChangeSuccess(
+                                currentEmail,
+                                .init(newEmail)
+                            )
                         }
                         
                         logger.log(.notice, "Email change completed successfully from \(oldEmail) to \(newEmail)")

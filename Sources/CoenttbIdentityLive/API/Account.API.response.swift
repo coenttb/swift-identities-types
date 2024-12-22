@@ -27,7 +27,7 @@ extension CoenttbIdentity.API {
             switch create {
             case .request(let request):
                 do {
-                    try await client.create(email: request.email, password: request.password)
+                    try await client.create(email: .init(request.email), password: request.password)
                     return Response.success(true)
                 } catch {
                     @Dependencies.Dependency(\.logger) var logger
@@ -37,7 +37,7 @@ extension CoenttbIdentity.API {
                 }
             case .verify(let verify):
                 do {
-                    try await client.verify(token: verify.token, email: verify.email)
+                    try await client.verify(token: verify.token, email: .init(verify.email))
                     return Response.success(true)
                 } catch {
                     print(error)
@@ -78,7 +78,7 @@ extension CoenttbIdentity.API {
 
         case .login(let login):
             do {
-                try await client.login(email: login.email, password: login.password)
+                try await client.login(email: .init(login.email), password: login.password)
                 return Response.success(true)
             } catch {
                 throw Abort(.internalServerError, reason: "Failed to login")
@@ -95,7 +95,7 @@ extension CoenttbIdentity.API {
                 switch reset {
                 case let .request(request):
                     do {
-                        try await client.password.reset.request(email: request.email)
+                        try await client.password.reset.request(email: .init(request.email))
                         return Response.success(true)
                     } catch {
                         @Dependencies.Dependency(\.logger) var logger
@@ -154,7 +154,7 @@ extension CoenttbIdentity.API {
             case .request(let request):
                 do {
                     let _ = try await client.emailChange.request(
-                        newEmail: request.newEmail
+                        newEmail: .init(request.newEmail)
                     )
                     
                     return Response.success(true)

@@ -25,7 +25,9 @@ extension CoenttbIdentity.API.EmailChange {
         @Init(default: "")
         public let password: String
     }
-    
+}
+ 
+extension CoenttbIdentity.API.EmailChange {
     @MemberwiseInit(.public)
     @Codable
     public struct Request: Hashable, Sendable {
@@ -33,7 +35,17 @@ extension CoenttbIdentity.API.EmailChange {
         @Init(default: "")
         public let newEmail: String
     }
-    
+}
+
+extension CoenttbIdentity.API.EmailChange.Request {
+    public init(
+        newEmail: EmailAddress
+    ){
+        self.newEmail = newEmail.rawValue
+    }
+}
+ 
+extension CoenttbIdentity.API.EmailChange {
     @MemberwiseInit(.public)
     @Codable
     public struct Confirm: Hashable, Sendable {
@@ -44,6 +56,16 @@ extension CoenttbIdentity.API.EmailChange {
         @CodingKey(.newEmail)
         @Init(default: "")
         public let newEmail: String
+    }
+}
+
+extension CoenttbIdentity.API.EmailChange.Confirm {
+    public init(
+        token: String,
+        newEmail: EmailAddress
+    ){
+        self.token = token
+        self.newEmail = newEmail.rawValue
     }
 }
 

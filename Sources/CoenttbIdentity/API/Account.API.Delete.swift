@@ -13,26 +13,30 @@ extension CoenttbIdentity.API {
     public enum Delete: Codable, Hashable, Sendable {
         case request(Delete.Request)
         case cancel(Delete.Cancel)
+    }
+}
+
+extension CoenttbIdentity.API.Delete {
+    @MemberwiseInit(.public)
+    @Codable
+    public struct Request: Hashable, Sendable {
+        @CodingKey(.userId)
+        @Init(default: "")
+        public let userId: String
         
-        @MemberwiseInit(.public)
-        @Codable
-        public struct Request: Hashable, Sendable {
-            @CodingKey(.userId)
-            @Init(default: "")
-            public let userId: String
-            
-            @CodingKey(.reauthToken)
-            @Init(default: "")
-            public let reauthToken: String
-        }
-        
-        @MemberwiseInit(.public)
-        @Codable
-        public struct Cancel: Hashable, Sendable {
-            @CodingKey(.userId)
-            @Init(default: "")
-            public let userId: String
-        }
+        @CodingKey(.reauthToken)
+        @Init(default: "")
+        public let reauthToken: String
+    }
+}
+
+extension CoenttbIdentity.API.Delete {
+    @MemberwiseInit(.public)
+    @Codable
+    public struct Cancel: Hashable, Sendable {
+        @CodingKey(.userId)
+        @Init(default: "")
+        public let userId: String
     }
 }
 
