@@ -15,7 +15,6 @@ public struct CoenttbIdentityHTMLDocument<
     let description: (Route) -> String
     let primaryColor: HTMLColor
     let accentColor: HTMLColor
-    let languages: [Languages.Language]
     let favicons: Favicons
     let canonicalHref: URL?
     let hreflang: (Route, Languages.Language) -> URL
@@ -29,7 +28,6 @@ public struct CoenttbIdentityHTMLDocument<
         description: @escaping (Route) -> String,
         primaryColor: HTMLColor,
         accentColor: HTMLColor,
-        languages: [Languages.Language],
         @HTMLBuilder favicons: () -> Favicons,
         canonicalHref: URL?,
         hreflang: @escaping (Route, Languages.Language) -> URL,
@@ -42,7 +40,6 @@ public struct CoenttbIdentityHTMLDocument<
         self.description = description
         self.primaryColor = primaryColor
         self.accentColor = accentColor
-        self.languages = languages
         self.favicons = favicons()
         self.canonicalHref = canonicalHref
         self.hreflang = hreflang
@@ -50,6 +47,8 @@ public struct CoenttbIdentityHTMLDocument<
         self.privacyStatement = privacyStatement
         self._body = body()
     }
+    
+    @Dependency(\.languages) var languages
     
     public var head: some HTML {
         CoenttbWebHTMLDocumentHeader(
@@ -59,7 +58,6 @@ public struct CoenttbIdentityHTMLDocument<
             rssXml: nil,
             themeColor: accentColor,
             language: language,
-            languages: languages,
             hreflang: { language in hreflang(route, language) },
             styles: { HTMLEmpty() },
             scripts: { fontAwesomeScript },

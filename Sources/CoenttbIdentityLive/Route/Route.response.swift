@@ -56,7 +56,6 @@ extension CoenttbIdentity.Route {
                 description: { _ in "" },
                 primaryColor: primaryColor,
                 accentColor: accentColor,
-                languages: [.english, .dutch],
                 favicons: { favicons },
                 canonicalHref: canonicalHref,
                 hreflang: hreflang,

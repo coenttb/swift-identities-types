@@ -43,7 +43,7 @@
       "location" : "https://github.com/coenttb/coenttb-mailgun",
       "state" : {
         "branch" : "main",
-        "revision" : "8ddb202daf8eb9451039d390d738f80b9b6d99e4"
+        "revision" : "649e7eb9b59868c6a24a0239364f85f584da4a98"
       }
     },
     {
@@ -61,7 +61,7 @@
       "location" : "https://github.com/coenttb/coenttb-web",
       "state" : {
         "branch" : "main",
-        "revision" : "234098f26c8986c17857e3968fa71435896043c8"
+        "revision" : "f236cda8d160c1d446585217c18e66e918cc0d64"
       }
     },
     {
@@ -373,10 +373,10 @@
     {
       "identity" : "swift-html",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/coenttb/swift-html.git",
+      "location" : "https://github.com/coenttb/swift-html",
       "state" : {
         "branch" : "main",
-        "revision" : "fa85b77ab6eea64d2dac76bf5f3eb5aceae053ca"
+        "revision" : "bfbea2b2edf6b9c8106263784181c29734c3750c"
       }
     },
     {
