@@ -26,6 +26,11 @@ extension Coenttb_Identity.API.Delete {
             self.userId = userId
             self.reauthToken = reauthToken
         }
+        
+        public enum CodingKeys: String, CodingKey {
+            case userId
+            case reauthToken
+        }
     }
 }
 

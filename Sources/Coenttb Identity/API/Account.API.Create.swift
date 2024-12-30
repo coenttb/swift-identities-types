@@ -56,6 +56,11 @@ extension Coenttb_Identity.API.Create {
             self.token = token
             self.email = email
         }
+        
+        public enum CodingKeys: String, CodingKey {
+            case token
+            case email
+        }
     }
 }
 

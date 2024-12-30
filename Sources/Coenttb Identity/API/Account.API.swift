@@ -75,6 +75,10 @@ extension Coenttb_Identity.API {
         ) {
             self.value = value
         }
+        
+        public enum CodingKeys: String, CodingKey {
+            case value
+        }
     }
 }
 
@@ -86,6 +90,10 @@ extension Coenttb_Identity.API {
             name: String? = nil
         ) {
             self.name = name
+        }
+        
+        public enum CodingKeys: String, CodingKey {
+            case name
         }
     }
 }
