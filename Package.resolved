@@ -1,5 +1,5 @@
 {
-  "originHash" : "62dc87534456e2be1862961dde55835e12b8ed1f8c3d0e6a8f882f57b97b5e38",
+  "originHash" : "e0bb92b972c9222ad0c9232d10550b47bd057f9a7b3848830358029c07060499",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -43,7 +43,16 @@
       "location" : "https://github.com/coenttb/coenttb-mailgun",
       "state" : {
         "branch" : "main",
-        "revision" : "0433376beec50c6e2d8c8fae9ffa0ffbe0e762f8"
+        "revision" : "8ab5d111e43bdef40b12354df68d51cb6fbdc0a5"
+      }
+    },
+    {
+      "identity" : "coenttb-server",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/coenttb/coenttb-server",
+      "state" : {
+        "branch" : "main",
+        "revision" : "ea442e4070680b5f0064c01accf168cf5a482ee8"
       }
     },
     {
@@ -61,7 +70,7 @@
       "location" : "https://github.com/coenttb/coenttb-web",
       "state" : {
         "branch" : "main",
-        "revision" : "a4184cc35c1e4576ae011150bbc5144cac077aed"
+        "revision" : "4118318ead4ebe6b629e3d1f8550f93df43147e3"
       }
     },
     {
@@ -119,15 +128,6 @@
       }
     },
     {
-      "identity" : "macro-codable-kit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/coenttb/macro-codable-kit.git",
-      "state" : {
-        "branch" : "main",
-        "revision" : "fe50f6cf17ad8bee13fd34daa1b8d81718fec4d9"
-      }
-    },
-    {
       "identity" : "multipart-kit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/multipart-kit.git",
@@ -142,7 +142,7 @@
       "location" : "https://github.com/coenttb/pointfree-html.git",
       "state" : {
         "branch" : "main",
-        "revision" : "3d56e6c42029c62d6913f6b623ab3036d9f30092"
+        "revision" : "517a823ffb482d588fbd46c2606a87dc8f35f3ec"
       }
     },
     {
@@ -215,15 +215,6 @@
       "state" : {
         "revision" : "f6919dfc309e7f1b56224378b11e28bab5bccc42",
         "version" : "1.2.0"
-      }
-    },
-    {
-      "identity" : "swift-argument-parser",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-argument-parser.git",
-      "state" : {
-        "revision" : "41982a3656a71c768319979febd796c6fd111d5c",
-        "version" : "1.5.0"
       }
     },
     {
@@ -362,21 +353,12 @@
       }
     },
     {
-      "identity" : "swift-format",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftlang/swift-format.git",
-      "state" : {
-        "revision" : "65f9da9aad84adb7e2028eb32ca95164aa590e3b",
-        "version" : "600.0.0"
-      }
-    },
-    {
       "identity" : "swift-html",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/coenttb/swift-html",
+      "location" : "https://github.com/coenttb/swift-html.git",
       "state" : {
         "branch" : "main",
-        "revision" : "bfbea2b2edf6b9c8106263784181c29734c3750c"
+        "revision" : "cb8d1b8fe55fd827df971a2982f09aa096394796"
       }
     },
     {
@@ -403,7 +385,7 @@
       "location" : "https://github.com/coenttb/swift-language.git",
       "state" : {
         "branch" : "main",
-        "revision" : "d01ca3bafea825c8562fee17363d69642213bcf2"
+        "revision" : "63b455da4844a701663dd91bb681bf05a536c92f"
       }
     },
     {
@@ -416,30 +398,12 @@
       }
     },
     {
-      "identity" : "swift-macro-toolkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stackotter/swift-macro-toolkit",
-      "state" : {
-        "branch" : "main",
-        "revision" : "569627091e1fbb8745d691aeeb008e7247dedb7c"
-      }
-    },
-    {
       "identity" : "swift-markdown",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-markdown.git",
+      "location" : "https://github.com/swiftlang/swift-markdown.git",
       "state" : {
         "revision" : "8f79cb175981458a0a27e76cb42fee8e17b1a993",
         "version" : "0.5.0"
-      }
-    },
-    {
-      "identity" : "swift-memberwise-init-macro",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/gohanlon/swift-memberwise-init-macro",
-      "state" : {
-        "revision" : "21ca6d8c8f9e4ce27e92f82da294e0d91953b8b6",
-        "version" : "0.5.1"
       }
     },
     {
@@ -591,8 +555,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/vapor.git",
       "state" : {
-        "revision" : "73dfe634f04945285054b261369cd93f5100b44c",
-        "version" : "4.110.2"
+        "revision" : "4d7456c0d4b33ef82783a90ecfeae33a52a3972a",
+        "version" : "4.111.0"
       }
     },
     {

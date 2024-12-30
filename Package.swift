@@ -4,9 +4,9 @@ import Foundation
 import PackageDescription
 
 extension String {
-    static let coenttbIdentity: Self = "CoenttbIdentity"
-    static let coenttbIdentityLive: Self = "CoenttbIdentityLive"
-    static let coenttbIdentityFluent: Self = "CoenttbIdentityFluent"
+    static let coenttbIdentity: Self = "Coenttb Identity"
+    static let coenttbIdentityLive: Self = "Coenttb Identity Live"
+    static let coenttbIdentityFluent: Self = "Coenttb Identity Fluent"
 }
 
 extension Target.Dependency {
@@ -16,11 +16,10 @@ extension Target.Dependency {
 }
 
 extension Target.Dependency {
-    static var coenttbWeb: Self { .product(name: "CoenttbWeb", package: "coenttb-web") }
-    static var codable: Self { .product(name: "MacroCodableKit", package: "macro-codable-kit") }
+    static var coenttbWeb: Self { .product(name: "Coenttb Web", package: "coenttb-web") }
+    static var coenttbServer: Self { .product(name: "Coenttb Server", package: "coenttb-server") }
     static var dependenciesMacros: Self { .product(name: "DependenciesMacros", package: "swift-dependencies") }
     static var dependenciesTestSupport: Self { .product(name: "DependenciesTestSupport", package: "swift-dependencies") }
-    static var memberwiseInit: Self { .product(name: "MemberwiseInit", package: "swift-memberwise-init-macro") }
     static var mailgun: Self { .product(name: "Mailgun", package: "coenttb-mailgun") }
     static var fluentSqlLite: Self { .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver") }
 }
@@ -38,10 +37,9 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/coenttb/coenttb-web", branch: "main"),
+        .package(url: "https://github.com/coenttb/coenttb-server", branch: "main"),
         .package(url: "https://github.com/coenttb/coenttb-mailgun", branch: "main"),
-        .package(url: "https://github.com/coenttb/macro-codable-kit.git", branch: "main"),
-        .package(url: "https://github.com/gohanlon/swift-memberwise-init-macro", from: "0.3.0"),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.0"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3"),
         .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
     ],
     targets: [
@@ -49,15 +47,14 @@ let package = Package(
             name: .coenttbIdentity,
             dependencies: [
                 .coenttbWeb,
-                .codable,
                 .dependenciesMacros,
-                .memberwiseInit,
             ]
         ),
         .target(
             name: .coenttbIdentityLive,
             dependencies: [
                 .coenttbWeb,
+                .coenttbServer,
                 .coenttbIdentity,
                 .mailgun
             ]
@@ -66,6 +63,7 @@ let package = Package(
             name: .coenttbIdentityFluent,
             dependencies: [
                 .coenttbWeb,
+                .coenttbServer,
                 .coenttbIdentity,
                 .coenttbIdentityLive,
             ]
