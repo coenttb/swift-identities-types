@@ -6,6 +6,7 @@
 //
 
 import Coenttb_Web
+import Favicon
 
 public struct Coenttb_IdentityHTMLDocument<
     Body: HTML

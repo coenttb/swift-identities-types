@@ -18,6 +18,8 @@ extension Target.Dependency {
 extension Target.Dependency {
     static var coenttbWeb: Self { .product(name: "Coenttb Web", package: "coenttb-web") }
     static var coenttbServer: Self { .product(name: "Coenttb Server", package: "coenttb-server") }
+    static var coenttbServerVapor: Self { .product(name: "Coenttb Vapor", package: "coenttb-server-vapor") }
+    static var coenttbServerFluent: Self { .product(name: "Coenttb Fluent", package: "coenttb-server-vapor") }
     static var dependenciesMacros: Self { .product(name: "DependenciesMacros", package: "swift-dependencies") }
     static var dependenciesTestSupport: Self { .product(name: "DependenciesTestSupport", package: "swift-dependencies") }
     static var mailgun: Self { .product(name: "Mailgun", package: "coenttb-mailgun") }
@@ -38,6 +40,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/coenttb/coenttb-web", branch: "main"),
         .package(url: "https://github.com/coenttb/coenttb-server", branch: "main"),
+        .package(url: "https://github.com/coenttb/coenttb-server-vapor", branch: "main"),
         .package(url: "https://github.com/coenttb/coenttb-mailgun", branch: "main"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3"),
         .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
@@ -66,6 +69,8 @@ let package = Package(
                 .coenttbServer,
                 .coenttbIdentity,
                 .coenttbIdentityLive,
+                .coenttbServerVapor,
+                .coenttbServerFluent,
             ]
         ),
         .testTarget(
