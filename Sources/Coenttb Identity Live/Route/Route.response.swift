@@ -8,6 +8,7 @@
 import Coenttb_Identity
 import Coenttb_Web
 import Coenttb_Vapor
+import Favicon
 
 extension Coenttb_Identity.Route {
     public static func response<User>(

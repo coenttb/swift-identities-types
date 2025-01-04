@@ -2,6 +2,7 @@ import Coenttb_Vapor
 import Coenttb_Database
 import Coenttb_Identity
 import Coenttb_Identity_Live
+import Fluent
 
 package final class DeletionState: Model, @unchecked Sendable {
     package static let schema = "email_change_requests"

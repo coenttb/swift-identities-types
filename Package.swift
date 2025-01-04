@@ -59,7 +59,8 @@ let package = Package(
                 .coenttbWeb,
                 .coenttbServer,
                 .coenttbIdentity,
-                .mailgun
+                .mailgun,
+                .coenttbServerVapor,
             ]
         ),
         .target(
