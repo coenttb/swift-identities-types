@@ -69,9 +69,21 @@ public final class ApiKey: Model, Content, @unchecked Sendable {
     }
     
     private static func generateKey() -> String {
+        @Dependency(\.envVars.appEnv) var appEnv
+        @Dependency(\.uuid) var uuid
+        
         let prefix = "pk_"
-        let randomBytes = SymmetricKey(size: .bits256)
-        return prefix + Data(randomBytes.withUnsafeBytes { Data($0) }).base64EncodedString()
+        
+        if appEnv == .development || appEnv == .testing {
+            return withDependencies {
+                $0.uuid = .incrementing
+            } operation: {
+                "\(prefix)test_\(UUID(0).uuidString)"
+            }
+        } else {
+            let randomBytes = SymmetricKey(size: .bits256)
+            return prefix + Data(randomBytes.withUnsafeBytes { Data($0) }).base64EncodedString()
+        }
     }
 }
 
