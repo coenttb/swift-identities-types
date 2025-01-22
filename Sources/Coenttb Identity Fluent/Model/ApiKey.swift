@@ -96,5 +96,7 @@ extension ApiKey {
         public func revert(on database: Database) async throws {
             try await database.schema(ApiKey.schema).delete()
         }
+        
+        public init(){}
     }
 }
