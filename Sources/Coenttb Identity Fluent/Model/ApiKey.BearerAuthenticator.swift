@@ -9,45 +9,85 @@ import Dependencies
 @preconcurrency import Fluent
 import Foundation
 @preconcurrency import Vapor
+import RateLimiter
 
-
-extension Identity {
+extension ApiKey {
     public struct BearerAuthenticator: AsyncBearerAuthenticator {
         public typealias User = Identity
         
-        public init() {}
-
-        public func authenticate(bearer: Vapor.BearerAuthorization, for request: Vapor.Request) async throws {
-            guard let token = try await Identity.Token.query(on: request.db)
-                .filter(\.$value == bearer.token)
-                .filter(\.$type == .apiAccess)
+        private let rateLimiter: RateLimiter<UUID>
+        
+        public init() {
+            self.rateLimiter = RateLimiter(
+                windows: [
+                    .minutes(1, maxAttempts: 100),
+                    .hours(1, maxAttempts: 1000)
+                ],
+                backoffMultiplier: 2.0,
+                metricsCallback: { keyId, result in
+                    if !result.isAllowed {
+                        print("Rate limit exceeded for key \(keyId). Next attempt allowed at: \(String(describing: result.nextAllowedAttempt))")
+                    }
+                }
+            )
+        }
+        
+        public func authenticate(bearer: BearerAuthorization, for request: Request) async throws {
+            guard let apiKey = try await ApiKey.query(on: request.db)
+                .filter(\.$key == bearer.token)
+                .filter(\.$isActive == true)
                 .with(\.$identity)
                 .first()
             else { return }
             
-            // Verify token is still valid
-            guard token.isValid else {
-                try await token.delete(on: request.db)
+            // Check expiration
+            guard Date() < apiKey.validUntil else {
+                apiKey.isActive = false
+                try await apiKey.save(on: request.db)
                 return
             }
             
-            // Update usage timestamp
-            token.lastUsedAt = Date()
-            try await token.save(on: request.db)
+            // Check rate limits
+            guard let keyId = apiKey.id else { return }
+            let rateLimit = await rateLimiter.checkLimit(keyId)
             
-            // Handle token rotation if needed
-            
-            do {
-                let rotatedToken: Identity.Token = try await token.rotateIfNecessary(on: request.db)
-                guard
-                 rotatedToken.id != token.id
-                else {
-                    fatalError()
+            guard rateLimit.isAllowed else {
+                if let nextAllowed = rateLimit.nextAllowedAttempt {
+                    request.headers.replaceOrAdd(
+                        name: "X-RateLimit-Reset",
+                        value: "\(Int(nextAllowed.timeIntervalSince1970))"
+                    )
                 }
-                request.headers.bearerAuthorization = .init(token: rotatedToken.value)
-                
-                request.auth.login(token.identity)
+                request.headers.replaceOrAdd(
+                    name: "X-RateLimit-Remaining",
+                    value: "\(rateLimit.remainingAttempts)"
+                )
+                request.headers.replaceOrAdd(
+                    name: "Retry-After",
+                    value: "\(Int((rateLimit.nextAllowedAttempt?.timeIntervalSince(Date()) ?? 60)))"
+                )
+                throw Abort(.tooManyRequests)
             }
+            
+            // Update last used timestamp
+            apiKey.lastUsedAt = Date()
+            try await apiKey.save(on: request.db)
+            
+            // Set rate limit headers
+            request.headers.replaceOrAdd(
+                name: "X-RateLimit-Limit",
+                value: "\(apiKey.rateLimit)"
+            )
+            request.headers.replaceOrAdd(
+                name: "X-RateLimit-Remaining",
+                value: "\(rateLimit.remainingAttempts)"
+            )
+            
+            // Authenticate the user
+            request.auth.login(apiKey.identity)
+            
+            // Record successful request
+            await rateLimiter.recordSuccess(keyId)
         }
     }
 }

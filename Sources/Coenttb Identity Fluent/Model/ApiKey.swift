@@ -98,35 +98,3 @@ extension ApiKey {
         }
     }
 }
-
-extension ApiKey {
-    public struct BearerAuthenticator: AsyncBearerAuthenticator {
-        public typealias User = Identity
-        
-        public init() {}
-        
-        public func authenticate(bearer: BearerAuthorization, for request: Request) async throws {
-            guard let apiKey = try await ApiKey.query(on: request.db)
-                .filter(\.$key == bearer.token)
-                .filter(\.$isActive == true)
-                .with(\.$identity)
-                .first()
-            else { return }
-            
-            guard Date() < apiKey.validUntil else {
-                apiKey.isActive = false
-                try await apiKey.save(on: request.db)
-                return
-            }
-            
-            // Rate limiting could be added here
-            
-            apiKey.lastUsedAt = Date()
-            try await apiKey.save(on: request.db)
-            
-            request.auth.login(apiKey.identity)
-        }
-    }
-
-}
-
