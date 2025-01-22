@@ -74,7 +74,7 @@ public final class ApiKey: Model, Content, @unchecked Sendable {
         
         let prefix = "pk_"
         
-        if appEnv == .development || appEnv == .testing {
+        if appEnv == .development {
             return withDependencies {
                 $0.uuid = .incrementing
             } operation: {
