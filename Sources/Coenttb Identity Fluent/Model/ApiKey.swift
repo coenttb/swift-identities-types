@@ -76,27 +76,29 @@ public final class ApiKey: Model, Content, @unchecked Sendable {
 }
 
 extension ApiKey {
-    public struct Migration: AsyncMigration {
-        public func prepare(on database: Database) async throws {
-            try await database.schema(ApiKey.schema)
-                .id()
-                .field(FieldKeys.name, .string, .required)
-                .field(FieldKeys.key, .string, .required)
-                .field(FieldKeys.scopes, .array(of: .string), .required)
-                .field(FieldKeys.identityId, .uuid, .required, .references(Identity.schema, "id", onDelete: .cascade))
-                .field(FieldKeys.isActive, .bool, .required)
-                .field(FieldKeys.rateLimit, .int, .required)
-                .field(FieldKeys.validUntil, .datetime, .required)
-                .field(FieldKeys.createdAt, .datetime)
-                .field(FieldKeys.lastUsedAt, .datetime)
-                .unique(on: FieldKeys.key)
-                .create()
-        }
+    public enum Migration {
+        public struct Create: AsyncMigration {
+            public func prepare(on database: Database) async throws {
+                try await database.schema(ApiKey.schema)
+                    .id()
+                    .field(FieldKeys.name, .string, .required)
+                    .field(FieldKeys.key, .string, .required)
+                    .field(FieldKeys.scopes, .array(of: .string), .required)
+                    .field(FieldKeys.identityId, .uuid, .required, .references(Identity.schema, "id", onDelete: .cascade))
+                    .field(FieldKeys.isActive, .bool, .required)
+                    .field(FieldKeys.rateLimit, .int, .required)
+                    .field(FieldKeys.validUntil, .datetime, .required)
+                    .field(FieldKeys.createdAt, .datetime)
+                    .field(FieldKeys.lastUsedAt, .datetime)
+                    .unique(on: FieldKeys.key)
+                    .create()
+            }
 
-        public func revert(on database: Database) async throws {
-            try await database.schema(ApiKey.schema).delete()
+            public func revert(on database: Database) async throws {
+                try await database.schema(ApiKey.schema).delete()
+            }
+            
+            public init(){}
         }
-        
-        public init(){}
     }
 }
