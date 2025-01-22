@@ -78,6 +78,9 @@ public final class ApiKey: Model, Content, @unchecked Sendable {
 extension ApiKey {
     public enum Migration {
         public struct Create: AsyncMigration {
+            
+            public var name: String = "Coenttb_Identity.ApiKey.Migration.Create"
+            
             public func prepare(on database: Database) async throws {
                 try await database.schema(ApiKey.schema)
                     .id()
