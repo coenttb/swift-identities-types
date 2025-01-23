@@ -78,7 +78,7 @@ public final class ApiKey: Model, Content, @unchecked Sendable {
             return withDependencies {
                 $0.uuid = .incrementing
             } operation: {
-                "\(prefix)test_\(UUID(0).uuidString)"
+                "\(prefix)test_\(uuid().uuidString)"
             }
         } else {
             let randomBytes = SymmetricKey(size: .bits256)
