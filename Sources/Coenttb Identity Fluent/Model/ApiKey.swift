@@ -79,7 +79,9 @@ public final class ApiKey: Model, Content, @unchecked Sendable {
                 $0.uuid = .incrementing
             } operation: {
                 @Dependency(\.uuid) var uuid
-                return "\(prefix)test_\(uuid().uuidString)"
+                let generatedUuid = uuid()
+                print("Generated UUID: \(generatedUuid)")  // Debug log
+                return "\(prefix)test_\(generatedUuid.uuidString)"
             }
         } else {
             let randomBytes = SymmetricKey(size: .bits256)
