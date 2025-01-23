@@ -70,7 +70,7 @@ public final class ApiKey: Model, Content, @unchecked Sendable {
     
     private static func generateKey() -> String {
         @Dependency(\.envVars.appEnv) var appEnv
-        @Dependency(\.uuid) var uuid
+        
         
         let prefix = "pk_"
         
@@ -78,7 +78,8 @@ public final class ApiKey: Model, Content, @unchecked Sendable {
             return withDependencies {
                 $0.uuid = .incrementing
             } operation: {
-                "\(prefix)test_\(uuid().uuidString)"
+                @Dependency(\.uuid) var uuid
+                return "\(prefix)test_\(uuid().uuidString)"
             }
         } else {
             let randomBytes = SymmetricKey(size: .bits256)
