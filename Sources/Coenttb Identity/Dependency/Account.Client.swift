@@ -12,13 +12,9 @@ import DependenciesMacros
 
 @DependencyClient
 public struct Client<User>: @unchecked Sendable {
-    @DependencyEndpoint
-    public var create: (_ email: EmailAddress, _ password: String) async throws -> Void
+    public var create: Client.Create
     
     public var delete: Client.Delete
-    
-    @DependencyEndpoint
-    public var verify: (_ token: String, _ email: EmailAddress) async throws -> Void
     
     @DependencyEndpoint
     public var login: (_ email: EmailAddress, _ password: String) async throws -> Void
@@ -35,6 +31,17 @@ public struct Client<User>: @unchecked Sendable {
     public var password: Client.Password
     
     public var emailChange: Client.EmailChange
+}
+
+extension Client {
+    @DependencyClient
+    public struct Create: @unchecked Sendable {
+        @DependencyEndpoint
+        public var request: (_ email: EmailAddress, _ password: String) async throws -> Void
+        
+        @DependencyEndpoint
+        public var verify: (_ token: String, _ email: EmailAddress) async throws -> Void
+    }
 }
 
 extension Client {
@@ -99,9 +106,19 @@ extension Client {
 extension Client: TestDependencyKey {
     public static var testValue: Client {
         .init(
+            create: .testValue,
             delete: .testValue,
             password: .testValue,
             emailChange: .testValue
+        )
+    }
+}
+
+extension Client.Create: TestDependencyKey {
+    public static var testValue: Self {
+        .init(
+            request: { _, _ in },
+            verify: { _, _ in }
         )
     }
 }

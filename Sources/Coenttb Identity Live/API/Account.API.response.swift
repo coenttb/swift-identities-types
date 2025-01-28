@@ -25,7 +25,7 @@ extension Coenttb_Identity.API {
             switch create {
             case .request(let request):
                 do {
-                    try await client.create(email: .init(request.email), password: request.password)
+                    try await client.create.request(email: .init(request.email), password: request.password)
                     return Response.success(true)
                 } catch {
                     @Dependencies.Dependency(\.logger) var logger
@@ -35,7 +35,7 @@ extension Coenttb_Identity.API {
                 }
             case .verify(let verify):
                 do {
-                    try await client.verify(token: verify.token, email: .init(verify.email))
+                    try await client.create.verify(token: verify.token, email: .init(verify.email))
                     return Response.success(true)
                 } catch {
                     print(error)

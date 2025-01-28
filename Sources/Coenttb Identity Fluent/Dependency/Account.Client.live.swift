@@ -46,42 +46,80 @@ extension Coenttb_Identity.Client {
     ) -> Coenttb_Identity.Client<User> {
         
         return Coenttb_Identity.Client<User>(
-            create: {
-                email,
-                password in
-                do {
-                    
-                    guard try isValidEmail(email) else {
-                        throw ValidationError.invalidInput("Invalid email format")
-                    }
-                    guard try isValidPassword(password) else {
-                        throw ValidationError.invalidInput("Password does not meet requirements")
-                    }
-                    
-                    try await database.transaction { database in
-                        guard try await Identity
-                            .query(on: database)
-                            .filter(\.$email == email.rawValue)
-                            .first() == nil
-                        else { throw ValidationError.invalidInput("Email already in use") }
-                        let identity = try Identity(email: email.rawValue, password: password)
-                        try await identity.save(on: database)
+            create: .init(
+                request: {
+                    email,
+                    password in
+                    do {
                         
-                        guard try await identity.canGenerateToken(on: database)
-                        else { throw Abort(.tooManyRequests, reason: "Token generation limit exceeded") }
+                        guard try isValidEmail(email) else {
+                            throw ValidationError.invalidInput("Invalid email format")
+                        }
+                        guard try isValidPassword(password) else {
+                            throw ValidationError.invalidInput("Password does not meet requirements")
+                        }
                         
-                        let verificationToken = try identity.generateToken(type: .emailVerification)
+                        try await database.transaction { database in
+                            guard try await Identity
+                                .query(on: database)
+                                .filter(\.$email == email.rawValue)
+                                .first() == nil
+                            else { throw ValidationError.invalidInput("Email already in use") }
+                            let identity = try Identity(email: email.rawValue, password: password)
+                            try await identity.save(on: database)
+                            
+                            guard try await identity.canGenerateToken(on: database)
+                            else { throw Abort(.tooManyRequests, reason: "Token generation limit exceeded") }
+                            
+                            let verificationToken = try identity.generateToken(type: .emailVerification)
+                            
+                            try await verificationToken.save(on: database)
+                            try await sendVerificationEmail(email, verificationToken.value)
+                        }
                         
-                        try await verificationToken.save(on: database)
-                        try await sendVerificationEmail(email, verificationToken.value)
+                        logger.log(.notice, "User created successfully and verification email sent")
+                    } catch {
+                        logger.log(.error, "Error in create: \(String(describing: error))")
+                        throw error
                     }
-                    
-                    logger.log(.notice, "User created successfully and verification email sent")
-                } catch {
-                    logger.log(.error, "Error in create: \(String(describing: error))")
-                    throw error
+                },
+                verify: { token, email in
+                    do {
+                        
+                        guard let identityToken = try await Identity.Token.query(on: database)
+                            .filter(\.$value == token)
+                            .with(\.$identity)
+                            .first() else {
+                            throw Abort(.notFound, reason: "Invalid or expired token")
+                        }
+                        
+                        guard identityToken.validUntil > Date.now else {
+                            try await identityToken.delete(on: database)
+                            throw Abort(.gone, reason: "Token has expired")
+                        }
+                        
+                        guard identityToken.identity.email == email.rawValue else {
+                            throw Abort(.badRequest, reason: "Email mismatch")
+                        }
+                        
+                        identityToken.identity.emailVerificationStatus = .verified
+                        
+                        guard let identityId = identityToken.identity.id else {
+                            throw Abort(.internalServerError, reason: "identity has no id")
+                        }
+                        
+                        try await identityToken.identity.save(on: database)
+                        
+                        try await createDatabaseUser(identityId)
+                            .save(on: database)
+                        
+                        try await identityToken.delete(on: database)
+                        
+                    } catch {
+                        throw Abort(.internalServerError, reason: "Verification failed: \(error.localizedDescription)")
+                    }
                 }
-            },
+            ),
             delete: .init(
                 request: { userId, deletionRequestedAt in
                     guard let user = try await getDatabaseUser.byUserId(userId)
@@ -145,42 +183,6 @@ extension Coenttb_Identity.Client {
                     fatalError()
                 }
             ),
-            verify: { token, email in
-                do {
-                    
-                    guard let identityToken = try await Identity.Token.query(on: database)
-                        .filter(\.$value == token)
-                        .with(\.$identity)
-                        .first() else {
-                        throw Abort(.notFound, reason: "Invalid or expired token")
-                    }
-                    
-                    guard identityToken.validUntil > Date.now else {
-                        try await identityToken.delete(on: database)
-                        throw Abort(.gone, reason: "Token has expired")
-                    }
-                    
-                    guard identityToken.identity.email == email.rawValue else {
-                        throw Abort(.badRequest, reason: "Email mismatch")
-                    }
-                    
-                    identityToken.identity.emailVerificationStatus = .verified
-                    
-                    guard let identityId = identityToken.identity.id else {
-                        throw Abort(.internalServerError, reason: "identity has no id")
-                    }
-                    
-                    try await identityToken.identity.save(on: database)
-                    
-                    try await createDatabaseUser(identityId)
-                        .save(on: database)
-                    
-                    try await identityToken.delete(on: database)
-                    
-                } catch {
-                    throw Abort(.internalServerError, reason: "Verification failed: \(error.localizedDescription)")
-                }
-            },
             login: { email, password in
                 do {
                     logger.log(.info, "Login attempt for email: \(email)")
