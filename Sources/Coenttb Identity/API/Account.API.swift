@@ -10,6 +10,7 @@ import Coenttb_Web
 public enum API: Equatable, Sendable {
     case create(Coenttb_Identity.API.Create)
     case login(Coenttb_Identity.API.Login)
+    case currentUser
     case logout
     case update(Coenttb_Identity.API.Update)
     case delete(Coenttb_Identity.API.Delete)
@@ -45,6 +46,11 @@ extension Coenttb_Identity.API {
                     Method.post
                     Path { "login" }
                     Body(.form(Coenttb_Identity.API.Login.self, decoder: .default))
+                }
+                
+                URLRouting.Route(.case(Coenttb_Identity.API.currentUser)) {
+                    Method.get
+                    Path { "current" }
                 }
                 
                 URLRouting.Route(.case(Coenttb_Identity.API.logout)) {

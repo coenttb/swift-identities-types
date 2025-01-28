@@ -121,18 +121,18 @@ extension Coenttb_Identity.Client {
                 }
             ),
             delete: .init(
-                request: { userId, deletionRequestedAt in
-                    guard let user = try await getDatabaseUser.byUserId(userId)
-                    else { throw Abort(.notFound, reason: "User not found") }
+                request: { userId, reauthToken in
+//                    guard let user = try await getDatabaseUser.byUserId(userId)
+//                    else { throw Abort(.notFound, reason: "User not found") }
                     
-                    //                    guard user.deletionState == nil else {
-                    //                        throw Abort(.badRequest, reason: "User is already pending deletion")
-                    //                    }
-                    //
-                    //                    user.deletionState = .pending
-                    //                    user.deletionRequestedAt = deletionRequestedAt
-                    
-                    try await user.save(on: database)
+//                    guard user.deletionState == nil else {
+//                        throw Abort(.badRequest, reason: "User is already pending deletion")
+//                    }
+//                    
+//                    user.deletionState = .pending
+//                    user.deletionRequestedAt = Date()
+//                    
+//                    try await user.save(on: database)
                 },
                 cancel: { userId in
                     fatalError()

@@ -81,6 +81,13 @@ extension Coenttb_Identity.API {
             } catch {
                 throw Abort(.internalServerError, reason: "Failed to login")
             }
+            
+        case .currentUser:
+            do {
+                return try await Response.json(success: true, data: client.currentUser())
+            } catch {
+                throw Abort(.internalServerError, reason: "No current user")
+            }
 
         case .logout:
             try await client.logout()
