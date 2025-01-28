@@ -18,7 +18,7 @@ extension Coenttb_Identity.API {
         userInit: (Coenttb_Identity.API.Update) -> User?,
         reauthenticateForEmailChange: (_ password: String) async throws -> Void,
         reauthenticateForPasswordChange: (_ password: String) async throws -> Void,
-        logoutRedirectURL: () async throws -> any AsyncResponseEncodable
+        logoutRedirectURL: () -> URL
     ) async throws -> any AsyncResponseEncodable {
         switch api {
         case .create(let create):
@@ -84,8 +84,8 @@ extension Coenttb_Identity.API {
 
         case .logout:
             try await client.logout()
-            return try await logoutRedirectURL()
-            
+            @Dependency(\.request) var request
+            return request?.redirect(to: logoutRedirectURL().absoluteString) ?? Response.internalServerError
         
         case let .password(password):
             switch password {
