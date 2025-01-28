@@ -85,7 +85,9 @@ extension Coenttb_Identity.API {
         case .logout:
             try await client.logout()
             @Dependency(\.request) var request
-            return request?.redirect(to: logoutRedirectURL().absoluteString) ?? Response.internalServerError
+            
+            guard let request else { throw Abort(.internalServerError) }
+            return request.redirect(to: logoutRedirectURL().absoluteString)
         
         case let .password(password):
             switch password {
