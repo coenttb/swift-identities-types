@@ -11,7 +11,7 @@ import Dependencies
 import DependenciesMacros
 
 @DependencyClient
-public struct Client<User>: @unchecked Sendable {
+public struct Client<User:Codable>: @unchecked Sendable {
     public var create: Client.Create
     
     public var delete: Client.Delete
