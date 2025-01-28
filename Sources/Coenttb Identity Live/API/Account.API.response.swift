@@ -56,11 +56,11 @@ extension Coenttb_Identity.API {
             case .request(let request):
                 
                 if request.reauthToken.isEmpty {
-                    throw Abort(.unauthorized, reason: "Please re-authorize")
+                    throw Abort(.unauthorized, reason: "Invalid token")
                 }
                 
                 do {
-                    try await client.delete.request(userId: UUID(uuidString: request.userId)!, deletionRequestedAt: Date.now)
+                    try await client.delete.request(userId: UUID(uuidString: request.userId)!, reauthToken: request.reauthToken)
                     return Response.success(true)
                 } catch {
                     throw Abort(.internalServerError, reason: "Failed to delete")

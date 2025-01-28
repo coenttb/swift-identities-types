@@ -92,7 +92,7 @@ extension Client {
     public struct Delete: @unchecked Sendable {
         public var request: (
             _ userId: UUID,
-            _ deletionRequestedAt: Date
+            _ reauthToken: String
         ) async throws -> Void
         
         public var cancel: (_ userId: UUID) async throws -> Void
