@@ -4,15 +4,15 @@ import Foundation
 import PackageDescription
 
 extension String {
-    static let coenttbIdentity: Self = "Coenttb Identity"
-    static let coenttbIdentityLive: Self = "Coenttb Identity Live"
-    static let coenttbIdentityFluent: Self = "Coenttb Identity Fluent"
+    static let coenttbIdentityProvider: Self = "Coenttb Identity Provider"
+    static let coenttbIdentityConsumer: Self = "Coenttb Identity Consumer"
+    static let coenttbIdentityShared: Self = "Coenttb Identity Shared"
 }
 
 extension Target.Dependency {
-    static var coenttbIdentity: Self { .target(name: .coenttbIdentity) }
-    static var coenttbIdentityLive: Self { .target(name: .coenttbIdentityLive) }
-    static var coenttbIdentityFluent: Self { .target(name: .coenttbIdentityFluent) }
+    static var coenttbIdentityProvider: Self { .target(name: .coenttbIdentityProvider) }
+    static var coenttbIdentityConsumer: Self { .target(name: .coenttbIdentityConsumer) }
+    static var coenttbIdentityShared: Self { .target(name: .coenttbIdentityShared) }
 }
 
 extension Target.Dependency {
@@ -20,6 +20,8 @@ extension Target.Dependency {
     static var coenttbServer: Self { .product(name: "Coenttb Server", package: "coenttb-server") }
     static var coenttbServerVapor: Self { .product(name: "Coenttb Vapor", package: "coenttb-server-vapor") }
     static var coenttbServerFluent: Self { .product(name: "Coenttb Fluent", package: "coenttb-server-vapor") }
+    static var identityConsumer: Self { .product(name: "Identity Consumer", package: "swift-identity") }
+    static var identityProvider: Self { .product(name: "Identity Provider", package: "swift-identity") }
     static var dependenciesMacros: Self { .product(name: "DependenciesMacros", package: "swift-dependencies") }
     static var dependenciesTestSupport: Self { .product(name: "DependenciesTestSupport", package: "swift-dependencies") }
     static var mailgun: Self { .product(name: "Mailgun", package: "coenttb-mailgun") }
@@ -33,67 +35,52 @@ let package = Package(
         .iOS(.v17)
     ],
     products: [
-        .library(name: .coenttbIdentity, targets: [.coenttbIdentity]),
-        .library(name: .coenttbIdentityLive, targets: [.coenttbIdentityLive]),
-        .library(name: .coenttbIdentityFluent, targets: [.coenttbIdentityFluent]),
+        .library(name: .coenttbIdentityProvider, targets: [.coenttbIdentityProvider]),
+        .library(name: .coenttbIdentityConsumer, targets: [.coenttbIdentityConsumer]),
+        .library(name: .coenttbIdentityShared, targets: [.coenttbIdentityShared]),
     ],
     dependencies: [
         .package(url: "https://github.com/coenttb/coenttb-web", branch: "main"),
         .package(url: "https://github.com/coenttb/coenttb-server", branch: "main"),
         .package(url: "https://github.com/coenttb/coenttb-server-vapor", branch: "main"),
         .package(url: "https://github.com/coenttb/coenttb-mailgun", branch: "main"),
+        .package(url: "https://github.com/coenttb/swift-identity", branch: "main"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3"),
         .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
     ],
     targets: [
         .target(
-            name: .coenttbIdentity,
+            name: .coenttbIdentityShared,
             dependencies: [
                 .coenttbWeb,
                 .dependenciesMacros,
             ]
         ),
         .target(
-            name: .coenttbIdentityLive,
+            name: .coenttbIdentityConsumer,
             dependencies: [
+                .identityConsumer,
                 .coenttbWeb,
-                .coenttbServer,
-                .coenttbIdentity,
-                .mailgun,
-                .coenttbServerVapor,
+                .dependenciesMacros,
+                .coenttbIdentityShared,
+                .coenttbServerVapor
             ]
         ),
         .target(
-            name: .coenttbIdentityFluent,
+            name: .coenttbIdentityProvider,
             dependencies: [
+                .identityProvider,
                 .coenttbWeb,
                 .coenttbServer,
-                .coenttbIdentity,
-                .coenttbIdentityLive,
                 .coenttbServerVapor,
                 .coenttbServerFluent,
+                .mailgun,
             ]
         ),
         .testTarget(
-            name: .coenttbIdentity + " Tests",
+            name: .coenttbIdentityProvider.tests,
             dependencies: [
-                .coenttbIdentity,
-                .dependenciesTestSupport
-            ]
-        ),
-        .testTarget(
-            name: .coenttbIdentityLive + " Tests",
-            dependencies: [
-                .coenttbIdentityLive,
-                .dependenciesTestSupport,
-                .fluentSqlLite,
-                .mailgun
-            ]
-        ),
-        .testTarget(
-            name: .coenttbIdentityFluent + " Tests",
-            dependencies: [
-                .coenttbIdentityFluent,
+                .coenttbIdentityProvider,
                 .dependenciesTestSupport,
                 .fluentSqlLite
             ]
@@ -101,3 +88,7 @@ let package = Package(
     ],
     swiftLanguageModes: [.v6]
 )
+
+extension String {
+    var tests: Self { "\(self) Tests" }
+}

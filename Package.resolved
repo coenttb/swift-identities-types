@@ -1,13 +1,13 @@
 {
-  "originHash" : "bc0eb9e095f5cc05dec63b595f0b4e6c47a1dba9661482753909662ca8366007",
+  "originHash" : "5b151046e99c7e4893198227dd266341e2ab21b71cf27255bd014438c5ef308a",
   "pins" : [
     {
       "identity" : "async-http-client",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/async-http-client",
       "state" : {
-        "revision" : "2119f0d9cc1b334e25447fe43d3693c0e60e6234",
-        "version" : "1.24.0"
+        "revision" : "60fa3dcfc52d09ed0411e9c4bc99928bf63656bd",
+        "version" : "1.24.2"
       }
     },
     {
@@ -61,7 +61,7 @@
       "location" : "https://github.com/coenttb/coenttb-server-vapor",
       "state" : {
         "branch" : "main",
-        "revision" : "56c0b8ae7fb736dfa762331574c496d7100447ef"
+        "revision" : "0afc0b22bd1e3117dfe59dcb60ed69bcd8997cbb"
       }
     },
     {
@@ -79,7 +79,7 @@
       "location" : "https://github.com/coenttb/coenttb-web",
       "state" : {
         "branch" : "main",
-        "revision" : "9479e0ee692c22310b0d65c9483b8ebed08de1ce"
+        "revision" : "0051de3b10dc7638643f3448c03c62b20474be06"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/fluent-kit.git",
       "state" : {
-        "revision" : "260eff94b64bed4920fa0a1a61ad42c1003fde6a",
-        "version" : "1.50.0"
+        "revision" : "153c495198ad29508e9c89baf87cbfda798c5338",
+        "version" : "1.50.1"
       }
     },
     {
@@ -276,8 +276,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-case-paths",
       "state" : {
-        "revision" : "e7039aaa4d9cf386fa8324a89f258c3f2c54d751",
-        "version" : "1.6.0"
+        "revision" : "19b7263bacb9751f151ec0c93ec816fe1ef67c7b",
+        "version" : "1.6.1"
       }
     },
     {
@@ -348,8 +348,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-dependencies",
       "state" : {
-        "revision" : "565a7be4c1c9a5e0bf77e5dc21f30f054ced9d06",
-        "version" : "1.6.4"
+        "revision" : "52b5e1a09dc016e64ce253e19ab3124b7fae9ac9",
+        "version" : "1.7.0"
       }
     },
     {
@@ -398,6 +398,15 @@
       }
     },
     {
+      "identity" : "swift-identity",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/coenttb/swift-identity",
+      "state" : {
+        "branch" : "main",
+        "revision" : "aa7bc2d5c8d93996eb476340e374c0370d216f33"
+      }
+    },
+    {
       "identity" : "swift-language",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/coenttb/swift-language.git",
@@ -438,8 +447,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio",
       "state" : {
-        "revision" : "ba72f31e11275fc5bf060c966cf6c1f36842a291",
-        "version" : "2.79.0"
+        "revision" : "dff45738d84a53dbc8ee899c306b3a7227f54f89",
+        "version" : "2.80.0"
       }
     },
     {
@@ -474,8 +483,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-transport-services.git",
       "state" : {
-        "revision" : "bbd5e63cf949b7db0c9edaf7a21e141c52afe214",
-        "version" : "1.23.0"
+        "revision" : "3c394067c08d1225ba8442e9cffb520ded417b64",
+        "version" : "1.23.1"
       }
     },
     {
@@ -600,8 +609,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
       "state" : {
-        "revision" : "a3f634d1a409c7979cabc0a71b3f26ffa9fc8af1",
-        "version" : "1.4.3"
+        "revision" : "b444594f79844b0d6d76d70fbfb3f7f71728f938",
+        "version" : "1.5.1"
       }
     }
   ],
