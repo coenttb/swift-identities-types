@@ -11,7 +11,7 @@ public final class Identity: Model, Content, @unchecked Sendable {
     public var id: UUID?
     
     @Field(key: FieldKeys.email)
-    package var email: String
+    public internal(set) var email: String
     
     @Field(key: FieldKeys.passwordHash)
     public var passwordHash: String
