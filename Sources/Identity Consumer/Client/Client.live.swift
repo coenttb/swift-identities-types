@@ -29,14 +29,14 @@ extension Identity.Consumer.Client {
                 }
             ),
             delete: .init(
-                request: { userId, reauthToken in
+                request: { /*userId, */reauthToken in
                     try await handleRequest(
-                        for: makeRequest(.delete(.request(.init(userId: String(userId), reauthToken: reauthToken))))
+                        for: makeRequest(.delete(.request(.init(/*userId: String(userId),*/ reauthToken: reauthToken))))
                     )
                 },
-                cancel: { userId in
+                cancel: { /*userId in*/
                     try await handleRequest(
-                        for: makeRequest(.delete(.cancel(.init(userId: String(userId)))))
+                        for: makeRequest(.delete(.cancel(.init(/*userId: String(userId)*/))))
                     )
                 }
             ),

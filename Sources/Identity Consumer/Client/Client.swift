@@ -34,7 +34,7 @@ extension Identity.Consumer {
         
         public var emailChange: Client.EmailChange
         
-        public var multifactorAuthentication: Client.MultifactorAuthentication?
+//        public var multifactorAuthentication: Client.MultifactorAuthentication?
         
         public init(
             create: Client.Create,
@@ -44,8 +44,8 @@ extension Identity.Consumer {
             update: @escaping (User?) -> User?,
             logout: @escaping () -> Void,
             password: Client.Password,
-            emailChange: Client.EmailChange,
-            multifactorAuthentication: Client.MultifactorAuthentication? = nil
+            emailChange: Client.EmailChange
+//            multifactorAuthentication: Client.MultifactorAuthentication? = nil
         ) {
             self.create = create
             self.delete = delete
@@ -55,7 +55,7 @@ extension Identity.Consumer {
             self.logout = logout
             self.password = password
             self.emailChange = emailChange
-            self.multifactorAuthentication = multifactorAuthentication
+//            self.multifactorAuthentication = multifactorAuthentication
         }
     }
 }
@@ -112,11 +112,11 @@ extension Identity.Consumer.Client {
     @DependencyClient
     public struct Delete: @unchecked Sendable {
         public var request: (
-            _ userId: User.ID,
+//            _ userId: User.ID,
             _ reauthToken: String
         ) async throws -> Void
         
-        public var cancel: (_ userId: User.ID) async throws -> Void
+        public var cancel: (/*_ userId: User.ID*/) async throws -> Void
         
     }
 }

@@ -144,25 +144,25 @@ extension Identity.Provider.Client.EmailChange: TestDependencyKey {
 extension Identity.Provider.Client.Delete: TestDependencyKey {
     public static var testValue: Self {
         .init(
-            request: { userId, reauthToken in
+            request: { /*userId,*/ reauthToken in
                 guard !reauthToken.isEmpty else {
                     throw ValidationError.missingToken
                 }
             },
-            cancel: { userId in
-                guard !String(userId).isEmpty else {
-                    throw ValidationError.invalidUserId
-                }
+            cancel: { /*userId in*/
+//                guard !String(userId).isEmpty else {
+//                    throw ValidationError.invalidUserId
+//                }
             },
-            confirm: { userId in
-                guard !String(userId).isEmpty else {
-                    throw ValidationError.invalidUserId
-                }
+            confirm: { /*userId in*/
+//                guard !String(userId).isEmpty else {
+//                    throw ValidationError.invalidUserId
+//                }
             },
-            anonymize: { userId in
-                guard !String(userId).isEmpty else {
-                    throw ValidationError.invalidUserId
-                }
+            anonymize: { /*userId in*/
+//                guard !String(userId).isEmpty else {
+//                    throw ValidationError.invalidUserId
+//                }
             }
         )
     }

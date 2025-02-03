@@ -17,7 +17,7 @@ extension Identity {
         case delete(Identity.API.Delete)
         case password(Identity.API.Password)
         case emailChange(Identity.API.EmailChange)
-        case multifactorAuthentication(Identity.API.MultifactorAuthentication)
+//        case multifactorAuthentication(Identity.API.MultifactorAuthentication)
     }
 }
 

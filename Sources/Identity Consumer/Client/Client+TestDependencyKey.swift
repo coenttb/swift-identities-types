@@ -163,17 +163,17 @@ extension Identity.Consumer.Client.EmailChange: TestDependencyKey {
 extension Identity.Consumer.Client.Delete: TestDependencyKey {
     public static var testValue: Self {
         .init(
-            request: { userId, reauthToken in
+            request: { /*userId,*/ reauthToken in
                 // Validate reauth token
-                guard !reauthToken.isEmpty else {
-                    throw ValidationError.missingToken
-                }
+//                guard !reauthToken.isEmpty else {
+//                    throw ValidationError.missingToken
+//                }
             },
-            cancel: { userId in
+            cancel: { /*userId in*/
                 // Provide cancellation implementation
-                guard !String(userId).isEmpty else {
-                    throw ValidationError.invalidUserId
-                }
+//                guard !String(userId).isEmpty else {
+//                    throw ValidationError.invalidUserId
+//                }
             }
         )
     }
