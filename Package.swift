@@ -74,6 +74,7 @@ let package = Package(
                 .coenttbServer,
                 .coenttbServerVapor,
                 .coenttbServerFluent,
+                .coenttbIdentityShared,
                 .mailgun,
             ]
         ),

@@ -23,11 +23,8 @@ extension Identity_Provider.Identity.Provider.Client.Create {
         sendVerificationEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void
     ) -> Self where User.ID == UUID {
         .init(
-            request: {
-                email,
-                password in
+            request: { email, password in
                 do {
-                    
                     try validatePassword(password)
                     
                     try await database.transaction { database in
@@ -99,7 +96,6 @@ extension Identity_Provider.Identity.Provider.Client.Create {
                         
                         try await identityToken.delete(on: database)
                     }
-                    
                 } catch {
                     throw Abort(.internalServerError, reason: "Verification failed: \(error.localizedDescription)")
                 }

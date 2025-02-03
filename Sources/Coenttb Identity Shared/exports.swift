@@ -6,3 +6,4 @@
 //
 
 import Foundation
+@_exported import Identity_Shared
