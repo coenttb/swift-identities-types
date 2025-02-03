@@ -22,6 +22,7 @@ extension Target.Dependency {
     static var coenttbServerFluent: Self { .product(name: "Coenttb Fluent", package: "coenttb-server-vapor") }
     static var identityConsumer: Self { .product(name: "Identity Consumer", package: "swift-identity") }
     static var identityProvider: Self { .product(name: "Identity Provider", package: "swift-identity") }
+    static var identityShared: Self { .product(name: "Identity Shared", package: "swift-identity") }
     static var dependenciesMacros: Self { .product(name: "DependenciesMacros", package: "swift-dependencies") }
     static var dependenciesTestSupport: Self { .product(name: "DependenciesTestSupport", package: "swift-dependencies") }
     static var mailgun: Self { .product(name: "Mailgun", package: "coenttb-mailgun") }
@@ -52,6 +53,7 @@ let package = Package(
         .target(
             name: .coenttbIdentityShared,
             dependencies: [
+                .identityShared,
                 .coenttbWeb,
                 .dependenciesMacros,
             ]
