@@ -2,7 +2,7 @@ import Foundation
 import Testing
 import Dependencies
 import EmailAddress
-@testable import Identity.Provider
+@testable import Identity_Provider
 
 @Suite("Identity Provider Client Tests")
 struct IdentityProviderClientTests {
@@ -161,13 +161,6 @@ struct IdentityProviderClientTests {
             try await client.delete.confirm("")
         }
         
-        // Valid anonymization should succeed
-        try await client.delete.anonymize(testUser.id)
-        
-        // Invalid user ID should fail in anonymization
-        await #expect(throws: Client.Delete.ValidationError.invalidUserId) {
-            try await client.delete.anonymize("")
-        }
     }
     
     // MARK: - Authentication Flow Tests

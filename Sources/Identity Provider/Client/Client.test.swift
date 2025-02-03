@@ -158,11 +158,6 @@ extension Identity.Provider.Client.Delete: TestDependencyKey {
 //                guard !String(userId).isEmpty else {
 //                    throw ValidationError.invalidUserId
 //                }
-            },
-            anonymize: { /*userId in*/
-//                guard !String(userId).isEmpty else {
-//                    throw ValidationError.invalidUserId
-//                }
             }
         )
     }

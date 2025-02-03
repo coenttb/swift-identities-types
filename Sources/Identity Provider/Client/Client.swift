@@ -119,8 +119,6 @@ extension Identity.Provider.Client {
         public var cancel: (/*_ userId: User.ID*/) async throws -> Void
         
         public var confirm: (/*_ userId: User.ID*/) async throws -> Void
-        
-        public var anonymize: (/*_ userId: User.ID*/) async throws -> Void
     }
 }
 
