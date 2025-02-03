@@ -25,10 +25,7 @@ extension Identity_Provider.Identity.Provider.Client {
         database: Fluent.Database,
         logger: Logger,
         createDatabaseUser: @escaping @Sendable (_ identityId: UUID) async throws -> DatabaseUser,
-        getDatabaseUser: (
-            byUserId: @Sendable (UUID) async throws -> DatabaseUser?,
-            byIdentityId: @Sendable  (UUID) async throws -> DatabaseUser?
-        ),
+        getDatabaseUserbyIdentityId: @escaping @Sendable (UUID) async throws -> DatabaseUser?,
         userInit: @escaping @Sendable (Identity, DatabaseUser) -> User,
         userUpdate: @escaping @Sendable (_ newUser: User, _ identity: Identity, _ databaseUser: DatabaseUser) async throws -> Void,
         sendVerificationEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
@@ -40,13 +37,13 @@ extension Identity_Provider.Identity.Provider.Client {
         sendDeletionConfirmationNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
         onEmailChangeSuccess: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress) async throws -> Void,
         userDeletionState: ReferenceWritableKeyPath<DatabaseUser, DeletionState.DeletionState?>,
-        userDeletionRequestedAt: ReferenceWritableKeyPath<DatabaseUser, Date?>,
-        multifactorAuthentication: (
-            sendSMSCode: @Sendable (String, String) async throws -> Void,
-            sendEmailCode: @Sendable (EmailAddress, String) async throws -> Void,
-            generateTOTPSecret: @Sendable () -> String
-        )?
-    ) -> Self where User.ID == UUID {
+        userDeletionRequestedAt: ReferenceWritableKeyPath<DatabaseUser, Date?>
+//        multifactorAuthentication: (
+//            sendSMSCode: @Sendable (String, String) async throws -> Void,
+//            sendEmailCode: @Sendable (EmailAddress, String) async throws -> Void,
+//            generateTOTPSecret: @Sendable () -> String
+//        )?
+    ) -> Self {
         return Identity_Provider.Identity.Provider.Client(
             create: .live(
                 database: database,
@@ -57,7 +54,7 @@ extension Identity_Provider.Identity.Provider.Client {
             delete: .live(
                 database: database,
                 logger: logger,
-                getDatabaseUser: getDatabaseUser,
+                getDatabaseUserbyIdentityId: getDatabaseUserbyIdentityId,
                 sendDeletionRequestNotification: sendDeletionRequestNotification,
                 sendDeletionConfirmationNotification: sendDeletionConfirmationNotification,
                 userDeletionState: userDeletionState,
@@ -104,7 +101,7 @@ extension Identity_Provider.Identity.Provider.Client {
                     
                     guard
                         let id = identity.id,
-                        let user = try await getDatabaseUser.byIdentityId(id) else {
+                        let user = try await getDatabaseUserbyIdentityId(id) else {
                         throw Abort(.notFound, reason: "User not found")
                     }
                     
@@ -126,7 +123,7 @@ extension Identity_Provider.Identity.Provider.Client {
                     }
                     
                     let freshIdentity = try await Identity.get(by: .id(identityId), on: db)
-                    guard let user = try await getDatabaseUser.byIdentityId(identityId) else {
+                    guard let user = try await getDatabaseUserbyIdentityId(identityId) else {
                         throw Abort(.notFound, reason: "User not found")
                     }
                     
@@ -154,16 +151,16 @@ extension Identity_Provider.Identity.Provider.Client {
                 sendEmailChangeConfirmation: sendEmailChangeConfirmation,
                 sendEmailChangeRequestNotification: sendEmailChangeRequestNotification,
                 onEmailChangeSuccess: onEmailChangeSuccess
-            ),
-            multifactorAuthentication: multifactorAuthentication.map { mfa in
-                    .live(
-                        database: database,
-                        logger: logger,
-                        sendSMSCode: mfa.sendSMSCode,
-                        sendEmailCode: mfa.sendEmailCode,
-                        generateTOTPSecret: mfa.generateTOTPSecret
-                    )
-            }
+            )
+//            multifactorAuthentication: multifactorAuthentication.map { mfa in
+//                    .live(
+//                        database: database,
+//                        logger: logger,
+//                        sendSMSCode: mfa.sendSMSCode,
+//                        sendEmailCode: mfa.sendEmailCode,
+//                        generateTOTPSecret: mfa.generateTOTPSecret
+//                    )
+//            }
         )
     }
 }

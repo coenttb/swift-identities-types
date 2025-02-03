@@ -21,7 +21,7 @@ extension Identity_Provider.Identity.Provider.Client.Create {
         logger: Logger,
         createDatabaseUser: @escaping @Sendable (_ identityId: UUID) async throws -> DatabaseUser,
         sendVerificationEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void
-    ) -> Self where User.ID == UUID {
+    ) -> Self  {
         .init(
             request: { email, password in
                 do {

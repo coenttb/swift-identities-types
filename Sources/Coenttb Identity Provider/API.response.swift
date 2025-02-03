@@ -12,8 +12,8 @@ import Identity_Provider
 
 extension Identity_Shared.Identity.API {
     public static func response(
-        api: Identity_Shared.Identity<User, UserIDParser>.API,
-        client: Identity_Shared.Identity<User, UserIDParser>.Provider.Client,
+        api: Identity_Shared.Identity<User>.API,
+        client: Identity_Shared.Identity<User>.Provider.Client,
         userInit: () -> User?,
         reauthenticateForEmailChange: (_ password: String) async throws -> Void,
         reauthenticateForPasswordChange: (_ password: String) async throws -> Void,
@@ -59,21 +59,21 @@ extension Identity_Shared.Identity.API {
                 }
                 
                 do {
-                    try await client.delete.request(userId: UUID(uuidString: request.userId)!, reauthToken: request.reauthToken)
+                    try await client.delete.request(reauthToken: request.reauthToken)
                     return Response.success(true)
                 } catch {
                     throw Abort(.internalServerError, reason: "Failed to delete")
                 }
             case .cancel(let cancel):
                 do {
-                    try await client.delete.cancel(userId: .init(cancel.userId)!)
+                    try await client.delete.cancel()
                     return Response.success(true)
                 } catch {
                     throw Abort(.internalServerError, reason: "Failed to delete")
                 }
             case .confirm(let confirm):
                 do {
-                    try await client.delete.confirm(userId: .init(confirm.userId)!)
+                    try await client.delete.confirm()
                     return Response.success(true)
                 } catch {
                     throw Abort(.internalServerError, reason: "Failed to confirm deletion")
@@ -192,88 +192,88 @@ extension Identity_Shared.Identity.API {
                     throw Abort(.internalServerError, reason: "Failed to confirm email change")
                 }
             }
-        case .multifactorAuthentication(let multifactorAuthentication):
-            guard let mfa = client.multifactorAuthentication else {
-                throw Abort(.notImplemented, reason: "Multi-factor authentication is not supported")
-            }
-            
-            switch multifactorAuthentication {
-            case .setup(let userId, let setup):
-                switch setup {
-                case .initialize(let request):
-                    do {
-                        let response = try await mfa.setup.initialize(userId, request.method, request.identifier)
-                        return Response.success(true, data: response)
-                    } catch {
-                        throw Abort(.internalServerError, reason: "Failed to initialize MFA setup")
-                    }
-                    
-                case .confirm(let confirm):
-                    do {
-                        try await mfa.setup.confirm(userId, confirm.code)
-                        return Response.success(true)
-                    } catch {
-                        throw Abort(.internalServerError, reason: "Failed to confirm MFA setup")
-                    }
-                }
-                
-            case .challenge(let userId, let challenge):
-                switch challenge {
-                case .create(let request):
-                    do {
-                        let challenge = try await mfa.verification.createChallenge(userId, request.method)
-                        return Response.success(true, data: challenge)
-                    } catch {
-                        throw Abort(.internalServerError, reason: "Failed to create MFA challenge")
-                    }
-                }
-                
-            case .verify(let userId, let verify):
-                switch verify {
-                case .verify(let verification):
-                    do {
-                        try await mfa.verification.verify(userId, verification.challengeId, verification.code)
-                        return Response.success(true)
-                    } catch {
-                        throw Abort(.internalServerError, reason: "Failed to verify MFA code")
-                    }
-                }
-                
-            case .recovery(let userId, let recovery):
-                switch recovery {
-                case .generate:
-                    do {
-                        let codes = try await mfa.recovery.generateNewCodes(userId: userId)
-                        return Response.success(true, data: codes)
-                    } catch {
-                        throw Abort(.internalServerError, reason: "Failed to generate recovery codes")
-                    }
-                    
-                case .count:
-                    do {
-                        let count = try await mfa.recovery.getRemainingCodeCount(userId: userId)
-                        return Response.success(true, data: count)
-                    } catch {
-                        throw Abort(.internalServerError, reason: "Failed to get remaining recovery code count")
-                    }
-                }
-                
-            case .configuration(let userId):
-                do {
-                    let config = try await mfa.configuration(userId: userId)
-                    return Response.success(true, data: config)
-                } catch {
-                    throw Abort(.internalServerError, reason: "Failed to get MFA configuration")
-                }
-                
-            case .disable(let userId):
-                do {
-                    try await mfa.disable(userId: userId)
-                    return Response.success(true)
-                } catch {
-                    throw Abort(.internalServerError, reason: "Failed to disable MFA")
-                }
-            }
+//        case .multifactorAuthentication(let multifactorAuthentication):
+//            guard let mfa = client.multifactorAuthentication else {
+//                throw Abort(.notImplemented, reason: "Multi-factor authentication is not supported")
+//            }
+//            
+//            switch multifactorAuthentication {
+//            case .setup(let userId, let setup):
+//                switch setup {
+//                case .initialize(let request):
+//                    do {
+//                        let response = try await mfa.setup.initialize(userId, request.method, request.identifier)
+//                        return Response.success(true, data: response)
+//                    } catch {
+//                        throw Abort(.internalServerError, reason: "Failed to initialize MFA setup")
+//                    }
+//                    
+//                case .confirm(let confirm):
+//                    do {
+//                        try await mfa.setup.confirm(userId, confirm.code)
+//                        return Response.success(true)
+//                    } catch {
+//                        throw Abort(.internalServerError, reason: "Failed to confirm MFA setup")
+//                    }
+//                }
+//                
+//            case .challenge(let userId, let challenge):
+//                switch challenge {
+//                case .create(let request):
+//                    do {
+//                        let challenge = try await mfa.verification.createChallenge(userId, request.method)
+//                        return Response.success(true, data: challenge)
+//                    } catch {
+//                        throw Abort(.internalServerError, reason: "Failed to create MFA challenge")
+//                    }
+//                }
+//                
+//            case .verify(let userId, let verify):
+//                switch verify {
+//                case .verify(let verification):
+//                    do {
+//                        try await mfa.verification.verify(userId, verification.challengeId, verification.code)
+//                        return Response.success(true)
+//                    } catch {
+//                        throw Abort(.internalServerError, reason: "Failed to verify MFA code")
+//                    }
+//                }
+//                
+//            case .recovery(let userId, let recovery):
+//                switch recovery {
+//                case .generate:
+//                    do {
+//                        let codes = try await mfa.recovery.generateNewCodes(userId: userId)
+//                        return Response.success(true, data: codes)
+//                    } catch {
+//                        throw Abort(.internalServerError, reason: "Failed to generate recovery codes")
+//                    }
+//                    
+//                case .count:
+//                    do {
+//                        let count = try await mfa.recovery.getRemainingCodeCount(userId: userId)
+//                        return Response.success(true, data: count)
+//                    } catch {
+//                        throw Abort(.internalServerError, reason: "Failed to get remaining recovery code count")
+//                    }
+//                }
+//                
+//            case .configuration(let userId):
+//                do {
+//                    let config = try await mfa.configuration(userId: userId)
+//                    return Response.success(true, data: config)
+//                } catch {
+//                    throw Abort(.internalServerError, reason: "Failed to get MFA configuration")
+//                }
+//                
+//            case .disable(let userId):
+//                do {
+//                    try await mfa.disable(userId: userId)
+//                    return Response.success(true)
+//                } catch {
+//                    throw Abort(.internalServerError, reason: "Failed to disable MFA")
+//                }
+//            }
         }
     }
 }

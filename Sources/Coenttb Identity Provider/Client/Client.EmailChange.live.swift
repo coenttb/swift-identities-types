@@ -27,7 +27,7 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
         sendEmailChangeConfirmation: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress, _ token: String) async throws -> Void,
         sendEmailChangeRequestNotification: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress) async throws -> Void,
         onEmailChangeSuccess: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress) async throws -> Void
-    ) -> Self where User.ID == UUID {
+    ) -> Self  {
         .init(
             request: { newEmail in
                 do {

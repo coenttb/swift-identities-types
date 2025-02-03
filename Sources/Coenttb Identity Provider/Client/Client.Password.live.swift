@@ -26,7 +26,7 @@ extension Identity_Provider.Identity.Provider.Client.Password {
         logger: Logger,
         sendPasswordResetEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
         sendPasswordChangeNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void
-    ) -> Self where User.ID == UUID {
+    ) -> Self  {
         .init(
             reset: .init(
                 request: { email in

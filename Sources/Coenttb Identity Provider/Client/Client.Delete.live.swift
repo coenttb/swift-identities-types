@@ -6,7 +6,6 @@
 //
 
 import Foundation
-
 import Coenttb_Web
 import Coenttb_Server
 import Fluent
@@ -19,30 +18,30 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
     public static func live<DatabaseUser: Fluent.Model & Sendable>(
         database: Fluent.Database,
         logger: Logger,
-        getDatabaseUser: (
-            byUserId: @Sendable (UUID) async throws -> DatabaseUser?,
-            byIdentityId: @Sendable  (UUID) async throws -> DatabaseUser?
-        ),
+        getDatabaseUserbyIdentityId: @escaping @Sendable (UUID) async throws -> DatabaseUser?,
         sendDeletionRequestNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
         sendDeletionConfirmationNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
         userDeletionState: ReferenceWritableKeyPath<DatabaseUser, DeletionState.DeletionState?>,
         userDeletionRequestedAt: ReferenceWritableKeyPath<DatabaseUser, Date?>
-    ) -> Self where User.ID == UUID {
+    ) -> Self {
         .init(
             request: {
-                userId,
                 reauthToken in
                 try await database.transaction { db in
                     
-                    guard let _ = try await Identity.Token.query(on: db)
-                        .filter(\.$identity.$id == userId)
+                    let identity = try await Identity.get(by: .auth, on: db)
+                    
+                    guard
+                        let id = identity.id,
+                        let _ = try await Identity.Token.query(on: db)
+                        .filter(\.$identity.$id == id)
                         .filter(\.$type == .reauthenticationToken)
                         .filter(\.$value == reauthToken)
                         .filter(\.$validUntil > Date())
                         .first()
                     else { throw Abort(.unauthorized, reason: "Invalid reauthorization token") }
                     
-                    guard let user = try await getDatabaseUser.byUserId(userId) else {
+                    guard let user = try await getDatabaseUserbyIdentityId(id) else {
                         throw Abort(.notFound, reason: "User not found")
                     }
                     
@@ -54,21 +53,21 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                     user[keyPath: userDeletionRequestedAt] = Date()
                     
                     try await user.save(on: db)
-                    logger.notice("Deletion requested for user \(userId)")
+                    logger.notice("Deletion requested for user \(String(describing: user.id))")
                     
-                    guard let identity = try await Identity.query(on: db)
-                        .filter(\.$id == userId)
-                        .first(),
-                          let email = try? EmailAddress(identity.email)
-                    else { throw Abort(.badRequest, reason: "Identity not found or invalid email") }
                     
-                    try await sendDeletionRequestNotification(email)
+                    try await sendDeletionRequestNotification(identity.emailAddress)
                     
                 }
             },
-            cancel: { userId in
+            cancel: {
                 try await database.transaction { db in
-                    guard let user = try await getDatabaseUser.byUserId(userId) else {
+                    
+                    let identity = try await Identity.get(by: .auth, on: db)
+                    
+                    guard
+                        let id = identity.id,
+                        let user = try await getDatabaseUserbyIdentityId(id) else {
                         throw Abort(.notFound, reason: "User not found")
                     }
                     
@@ -80,13 +79,18 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                     user[keyPath: userDeletionRequestedAt] = nil
                     
                     try await user.save(on: db)
-                    logger.notice("Deletion cancelled for user \(userId)")
+                    logger.notice("Deletion cancelled for user \(String(describing: user.id))")
                 }
             },
-            confirm: { userId in
+            confirm: {
                 try await database.transaction { db in
+                    
+                    let identity = try await Identity.get(by: .auth, on: db)
+                    
                     // Get user and validate deletion state
-                    guard let user = try await getDatabaseUser.byUserId(userId) else {
+                    guard
+                        let id = identity.id,
+                        let user = try await getDatabaseUserbyIdentityId(id) else {
                         throw Abort(.notFound, reason: "User not found")
                     }
                     
@@ -103,26 +107,15 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                         throw Abort(.badRequest, reason: "Grace period has not yet expired")
                     }
                     
-                    // Get identity for email notification
-                    guard let identity = try await Identity.query(on: db)
-                        .filter(\.$id == userId)
-                        .first(),
-                          let email = try? EmailAddress(identity.email)
-                    else {
-                        throw Abort(.badRequest, reason: "Identity not found or invalid email")
-                    }
-                    
+                                       
                     // Update user state
                     user[keyPath: userDeletionState] = .deleted
                     try await user.save(on: db)
                     
                     // Send confirmation and log
-                    try await sendDeletionConfirmationNotification(email)
-                    logger.notice("User \(userId) marked as deleted")
+                    try await sendDeletionConfirmationNotification(identity.emailAddress)
+                    logger.notice("User \(String(describing: user.id)) marked as deleted")
                 }
-            },
-            anonymize: { userId in
-                
             }
         )
     }
