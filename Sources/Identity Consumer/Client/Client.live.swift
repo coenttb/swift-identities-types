@@ -36,7 +36,7 @@ extension Identity.Consumer.Client {
                 },
                 cancel: { /*userId in*/
                     try await handleRequest(
-                        for: makeRequest(.delete(.cancel(.init(/*userId: String(userId)*/))))
+                        for: makeRequest(.delete(.cancel/*(.init(/*userId: String(userId)*/))*/))
                     )
                 }
             ),

@@ -10,8 +10,8 @@ import Coenttb_Web
 extension Identity.API {
     public enum Delete: Codable, Hashable, Sendable {
         case request(Identity_Shared.Delete.Request)
-        case cancel(Identity_Shared.Delete.Cancel)
-        case confirm(Identity_Shared.Delete.Confirm)
+        case cancel
+        case confirm
     }
 }
 
@@ -29,12 +29,12 @@ extension Identity.API.Delete {
                 
                 URLRouting.Route(.case(Identity.API.Delete.cancel)) {
                     Path.cancel
-                    Identity_Shared.Delete.Cancel.Router()
+//                    Identity_Shared.Delete.Cancel.Router()
                 }
                 
                 URLRouting.Route(.case(Identity.API.Delete.confirm)) {
                     Path.confirm
-                    Identity_Shared.Delete.Confirm.Router()
+//                    Identity_Shared.Delete.Confirm.Router()
                 }
             }
         }
