@@ -204,8 +204,8 @@ extension Identity.Consumer {
                     )
                 }
             }
-        case .multifactorAuthentication(_):
-            fatalError()
+//        case .multifactorAuthentication(_):
+//            fatalError()
         }
     }
 }
