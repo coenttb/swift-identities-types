@@ -171,8 +171,8 @@ extension Identity.Provider.Client.Delete: TestDependencyKey {
 extension Identity.Provider.Client.Authenticate: TestDependencyKey {
     public static var testValue: Self {
         .init(
-            credentials: { email, password in
-                guard password.count >= 8 else {
+            credentials: { credentials in
+                guard credentials.password.count >= 8 else {
                     fatalError()
                 }
             },

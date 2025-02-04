@@ -191,7 +191,7 @@ extension Identity.Consumer.Client.Delete: TestDependencyKey {
 extension Identity.Consumer.Client.Authenticate: TestDependencyKey {
     public static var testValue: Self {
         .init(
-            credentials: { email, password in
+            credentials: { credentials in
                 
             },
             bearer: { token in
