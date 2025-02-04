@@ -94,7 +94,7 @@ extension Identity.Consumer {
             
         case .login:
             return accountDefaultContainer {
-                Identity_Shared.Login.View(
+                Identity_Shared.Authenticate.Credentials.View(
                     primaryColor: primaryColor,
                     passwordResetHref: passwordResetHref,
                     accountCreateHref: accountCreateHref,

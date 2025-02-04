@@ -14,12 +14,28 @@ extension Identity_Shared.Identity.API {
     public static func response(
         api: Identity_Shared.Identity.API,
         client: Identity_Shared.Identity.Provider.Client,
-//        userInit: () -> User?,
         reauthenticateForEmailChange: (_ password: String) async throws -> Void,
         reauthenticateForPasswordChange: (_ password: String) async throws -> Void,
         logoutRedirectURL: () -> URL
     ) async throws -> any AsyncResponseEncodable {
         switch api {
+        case .authenticate(let authenticate):
+            do {
+                switch authenticate {
+                case .credentials(let credentials):
+                    try await client.authenticate.credentials(credentials)
+                case .bearer(let bearerAuth):
+                    try await client.authenticate.bearer(token: bearerAuth.token)
+                }
+                
+                return Response.success(true)
+            } catch {
+                @Dependencies.Dependency(\.logger) var logger
+                logger.log(.critical, "Failed to authenticate account. Error: \(String(describing: error))")
+                
+                throw Abort(.internalServerError, reason: "Failed to authenticate account")
+            }
+            
         case .create(let create):
             switch create {
             case .request(let request):
@@ -41,15 +57,7 @@ extension Identity_Shared.Identity.API {
                     return Response.success(false)
                 }
             }
-            
-//        case .update(let user):
-//            
-//            guard let user = try await client.update(user) else {
-//                throw Abort(.notFound, reason: "Account not found")
-//            }
-//            
-//            return Response.success(true, data: user)
-//            
+
         case .delete(let delete):
             switch delete {
             case .request(let request):
@@ -79,22 +87,7 @@ extension Identity_Shared.Identity.API {
                     throw Abort(.internalServerError, reason: "Failed to confirm deletion")
                 }
             }
-            
-        case .login(let login):
-            do {
-                try await client.login(email: .init(login.email), password: login.password)
-                return Response.success(true)
-            } catch {
-                throw Abort(.internalServerError, reason: "Failed to login")
-            }
-            
-//        case .currentUser:
-//            do {
-//                return try await Response.json(success: true, data: client.currentUser())
-//            } catch {
-//                throw Abort(.internalServerError, reason: "No current user")
-//            }
-            
+
         case .logout:
             try await client.logout()
             @Dependency(\.request) var request

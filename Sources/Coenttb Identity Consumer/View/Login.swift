@@ -9,7 +9,7 @@ import Foundation
 import Coenttb_Web
 import Identity_Consumer
 
-extension Identity_Shared.Login {
+extension Identity_Shared.Authenticate.Credentials {
     public struct View: HTML {
         let primaryColor: HTMLColor
         let passwordResetHref: URL
@@ -47,12 +47,12 @@ extension Identity_Shared.Login {
             PageModule(theme: .login) {
                 form {
                     VStack {
-                        Input.default(Identity_Shared.Login.CodingKeys.email)
+                        Input.default(Identity_Shared.Authenticate.Credentials.CodingKeys.email)
                             .type(.email)
                             .placeholder(String.email.capitalizingFirstLetter().description)
                             .focusOnPageLoad()
                         
-                        Input.default(Identity_Shared.Login.CodingKeys.password)
+                        Input.default(Identity_Shared.Authenticate.Credentials.CodingKeys.password)
                             .type(.password)
                             .placeholder(String.password.capitalizingFirstLetter().description)
                         
@@ -112,8 +112,8 @@ extension Identity_Shared.Login {
                     event.preventDefault();  
             
                     const formData = new FormData(form);
-                    const email = formData.get('\#(Identity_Shared.Login.CodingKeys.email.rawValue)');      
-                    const password = formData.get('\#(Identity_Shared.Login.CodingKeys.password.rawValue)'); 
+                    const email = formData.get('\#(Identity_Shared.Authenticate.Credentials.CodingKeys.email.rawValue)');      
+                    const password = formData.get('\#(Identity_Shared.Authenticate.Credentials.CodingKeys.password.rawValue)'); 
                 
                     try {
                         const response = await fetch(form.action, {
@@ -123,8 +123,8 @@ extension Identity_Shared.Login {
                                 'Accept': 'application/json'  
                             },
                             body: new URLSearchParams({
-                                 \#(Identity_Shared.Login.CodingKeys.email.rawValue): email,      
-                                 \#(Identity_Shared.Login.CodingKeys.password.rawValue): password
+                                 \#(Identity_Shared.Authenticate.Credentials.CodingKeys.email.rawValue): email,      
+                                 \#(Identity_Shared.Authenticate.Credentials.CodingKeys.password.rawValue): password
                             }).toString()  
                         });
                 

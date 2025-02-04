@@ -8,6 +8,7 @@
 import Foundation
 import Coenttb_Web
 import Identity_Consumer
+import Identity_Shared
 
 public struct ConfirmAccess<CodingKey: RawRepresentable>: HTML where CodingKey.RawValue == String {
     let codingKey: CodingKey
@@ -121,7 +122,7 @@ public struct ConfirmAccess<CodingKey: RawRepresentable>: HTML where CodingKey.R
                    form.addEventListener('submit', async function(event) {
                        event.preventDefault();  
                        const formData = new FormData(form);
-                       const password = formData.get('\(Identity_Shared.Login.CodingKeys.password.rawValue)'); 
+                       const password = formData.get('\(Identity_Shared.Authenticate.Credentials.CodingKeys.password.rawValue)'); 
             
                        try {
                            
@@ -132,7 +133,7 @@ public struct ConfirmAccess<CodingKey: RawRepresentable>: HTML where CodingKey.R
                                    'Accept': 'application/json'  
                                },
                                body: new URLSearchParams({
-                                    \(Identity_Shared.Login.CodingKeys.password.rawValue): password
+                                    \(Identity_Shared.Authenticate.Credentials.CodingKeys.password.rawValue): password
                                }).toString()  
                            });
             

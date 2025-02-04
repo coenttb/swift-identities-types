@@ -42,6 +42,15 @@ extension Identity_Provider.Identity.Provider.Client {
 //            generateTOTPSecret: @Sendable () -> String
 //        )?
     ) -> Self {
+        
+        let rateLimiter = RateLimiter<String>(
+            windows: [
+                .minutes(1, maxAttempts: 5),
+                .hours(1, maxAttempts: 20)
+            ],
+            backoffMultiplier: 2.0
+        )
+        
         return Identity_Provider.Identity.Provider.Client(
             create: .live(
                 database: database,
@@ -56,41 +65,102 @@ extension Identity_Provider.Identity.Provider.Client {
                 sendDeletionRequestNotification: sendDeletionRequestNotification,
                 sendDeletionConfirmationNotification: sendDeletionConfirmationNotification
             ),
-            login: { email, password in
-                try await database.transaction { db in
-                    logger.log(.info, "Login attempt for email: \(email)")
+            authenticate: .init(
+                credentials: { credentials in
                     
-                    guard let identity = try await Identity.query(on: db)
-                        .filter(\.$email == email.rawValue)
-                        .first()
-                    else {
-                        logger.log(.warning, "Identity not found for email: \(email)")
-                        throw Abort(.notFound, reason: "Invalid email or password")
+                    let email: EmailAddress = try .init(credentials.email)
+                    let password = credentials.password
+                    
+                    try await database.transaction { db in
+                        logger.log(.info, "Login attempt for email: \(email)")
+                        
+                        guard let identity = try await Identity.query(on: db)
+                            .filter(\.$email == email.rawValue)
+                            .first()
+                        else {
+                            logger.log(.warning, "Identity not found for email: \(email)")
+                            throw Abort(.notFound, reason: "Invalid email or password")
+                        }
+                        
+                        guard try identity.verifyPassword(password) else {
+                            throw AuthenticationError.invalidCredentials
+                        }
+                        
+                        guard identity.emailVerificationStatus == .verified else {
+                            logger.log(.warning, "Email not verified for: \(email)")
+                            throw AuthenticationError.emailNotVerified
+                        }
+                        
+                        @Dependency(\.request) var request
+                        guard let request else { throw Abort.requestUnavailable }
+                        
+                        request.auth.login(identity)
+                        request.session.authenticate(identity)
+                        request.session.identityVersion = identity.sessionVersion
+                        
+                        // Update last login timestamp
+                        identity.lastLoginAt = Date()
+                        try await identity.save(on: db)
+                        
+                        logger.notice("Login successful for email: \(email)")
+                    }
+                },
+                bearer: { token in
+                    @Dependencies.Dependency(\.request) var request
+                    
+                    let keyPrefix = String(token.prefix(8))
+                    let context: Logger.Metadata = [
+                        "key_prefix": .string(keyPrefix),
+                        "ip": .string(request?.remoteAddress?.ipAddress ?? "unknown"),
+                        "user_agent": .string(request?.headers.first(name: .userAgent) ?? "unknown")
+                    ]
+                    
+                    let rateLimit = await rateLimiter.checkLimit(token)
+                    guard rateLimit.isAllowed else {
+                        logger.warning("Rate limit exceeded", metadata: context)
+                        throw Abort(.tooManyRequests, reason: "Too many attempts")
                     }
                     
-                    guard try identity.verifyPassword(password) else {
-                        throw AuthenticationError.invalidCredentials
+                    do {
+                        try await database.transaction { db in
+                            guard let apiKey = try await Coenttb_Identity_Provider.ApiKey.query(on: db)
+                                .filter(\.$key == token)
+                                .filter(\.$isActive == true)
+                                .with(\.$identity)
+                                .first()
+                            else {
+                                await rateLimiter.recordFailure(token)
+                                logger.warning("Invalid key attempt", metadata: context)
+                                throw AuthError.invalidKey
+                            }
+                            
+                            if apiKey.validUntil <= Date() {
+                                apiKey.isActive = false
+                                try await apiKey.save(on: db)
+                                throw AuthError.expiredKey
+                            }
+                            
+                            apiKey.lastUsedAt = Date()
+                            try await apiKey.save(on: db)
+                            
+                            request?.auth.login(apiKey.identity)
+                            await rateLimiter.recordSuccess(token)
+                            logger.notice("Auth success", metadata: context)
+                        }
+                    } catch let error as AuthError {
+                        switch error {
+                        case .invalidKey:
+                            throw Abort(.unauthorized, reason: "Invalid API key")
+                        case .expiredKey:
+                            throw Abort(.unauthorized, reason: "API key expired")
+                        case .rateLimitExceeded:
+                            throw Abort(.tooManyRequests, reason: "Too many attempts")
+                        }
+                    } catch {
+                        throw Abort(.internalServerError)
                     }
-                    
-                    guard identity.emailVerificationStatus == .verified else {
-                        logger.log(.warning, "Email not verified for: \(email)")
-                        throw AuthenticationError.emailNotVerified
-                    }
-                    
-                    @Dependency(\.request) var request
-                    guard let request else { throw Abort.requestUnavailable }
-                    
-                    request.auth.login(identity)
-                    request.session.authenticate(identity)
-                    request.session.identityVersion = identity.sessionVersion
-                    
-                    // Update last login timestamp
-                    identity.lastLoginAt = Date()
-                    try await identity.save(on: db)
-                    
-                    logger.notice("Login successful for email: \(email)")
                 }
-            },
+            ),
 //            currentUser: {
 //                try await database.transaction { db in
 //                    let identity = try await Identity.get(by: .auth, on: db)
@@ -215,4 +285,10 @@ private struct PasswordValidation {
     if let error = PasswordValidation.validate(password) {
         throw Abort(.badRequest, reason: error.rawValue)
     }
+}
+
+enum AuthError: Error {
+    case invalidKey
+    case expiredKey
+    case rateLimitExceeded
 }
