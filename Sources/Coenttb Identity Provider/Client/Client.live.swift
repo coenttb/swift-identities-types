@@ -33,11 +33,11 @@ extension Identity_Provider.Identity.Provider.Client {
         sendPasswordChangeNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
         sendEmailChangeConfirmation: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress, _ token: String) async throws -> Void,
         sendEmailChangeRequestNotification: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress) async throws -> Void,
+        onEmailChangeSuccess: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress) async throws -> Void,
         sendDeletionRequestNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
         sendDeletionConfirmationNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
-        onEmailChangeSuccess: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress) async throws -> Void,
-        userDeletionState: ReferenceWritableKeyPath<DatabaseUser, DeletionState.DeletionState?>,
-        userDeletionRequestedAt: ReferenceWritableKeyPath<DatabaseUser, Date?>
+        userDeletionState: ReferenceWritableKeyPath<DatabaseUser, Optional<DeletionState.DeletionState>>,
+        userDeletionRequestedAt: ReferenceWritableKeyPath<DatabaseUser, Optional<Date>>
 //        multifactorAuthentication: (
 //            sendSMSCode: @Sendable (String, String) async throws -> Void,
 //            sendEmailCode: @Sendable (EmailAddress, String) async throws -> Void,
