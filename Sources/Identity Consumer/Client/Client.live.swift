@@ -43,7 +43,7 @@ extension Identity.Consumer.Client {
             authenticate: .init(
                 credentials: { email, password in
                     try await handleRequest(
-                        for: makeRequest(.authenticate(.credentials(.init(username: email.rawValue, password: password))))
+                        for: makeRequest(.authenticate(.credentials(.init(email: email, password: password))))
                     )
                 },
                 bearer: { token in
