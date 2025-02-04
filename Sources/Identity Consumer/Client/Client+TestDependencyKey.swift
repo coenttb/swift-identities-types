@@ -9,9 +9,7 @@ extension Identity.Consumer.Client: TestDependencyKey {
         .init(
             create: .testValue,
             delete: .testValue,
-            login: { email, password in
-                // Provide default test implementation
-            },
+            authenticate: .testValue,
 //            currentUser: {
 //                return nil
 //            },
@@ -174,6 +172,30 @@ extension Identity.Consumer.Client.Delete: TestDependencyKey {
 //                guard !String(userId).isEmpty else {
 //                    throw ValidationError.invalidUserId
 //                }
+            }
+        )
+    }
+    
+    public static var previewValue: Self {
+        return testValue
+    }
+    
+    enum ValidationError: Error {
+        case missingToken
+        case invalidUserId
+    }
+}
+
+
+// MARK: - Authenticate Client Test Implementation
+extension Identity.Consumer.Client.Authenticate: TestDependencyKey {
+    public static var testValue: Self {
+        .init(
+            credentials: { email, password in
+                
+            },
+            bearer: { token in
+                
             }
         )
     }

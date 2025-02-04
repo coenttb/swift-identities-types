@@ -18,8 +18,7 @@ extension Identity.Consumer {
         
         public var delete: Client.Delete
         
-        @DependencyEndpoint
-        public var login: (_ email: EmailAddress, _ password: String) async throws -> Void
+        public var authenticate: Client.Authenticate
         
 //        @DependencyEndpoint
 //        public var currentUser: () async throws -> User?
@@ -39,7 +38,7 @@ extension Identity.Consumer {
         public init(
             create: Client.Create,
             delete: Client.Delete,
-            login: @escaping (_: EmailAddress, _: String) -> Void,
+            authenticate: Client.Authenticate,
 //            currentUser: @escaping () -> User?,
 //            update: @escaping (User?) -> User?,
             logout: @escaping () -> Void,
@@ -49,7 +48,7 @@ extension Identity.Consumer {
         ) {
             self.create = create
             self.delete = delete
-            self.login = login
+            self.authenticate = authenticate
 //            self.currentUser = currentUser
 //            self.update = update
             self.logout = logout
@@ -118,6 +117,20 @@ extension Identity.Consumer.Client {
         
         public var cancel: (/*_ userId: User.ID*/) async throws -> Void
         
+    }
+}
+
+extension Identity.Consumer.Client {
+    @DependencyClient
+    public struct Authenticate: @unchecked Sendable {
+        public var credentials: (
+            _ email: EmailAddress,
+            _ password: String
+        ) async throws -> Void
+        
+        public var bearer: (
+            _ token: String
+        ) async throws -> Void
     }
 }
 

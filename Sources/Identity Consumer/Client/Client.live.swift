@@ -29,34 +29,29 @@ extension Identity.Consumer.Client {
                 }
             ),
             delete: .init(
-                request: { /*userId, */reauthToken in
+                request: { reauthToken in
                     try await handleRequest(
                         for: makeRequest(.delete(.request(.init(/*userId: String(userId),*/ reauthToken: reauthToken))))
                     )
                 },
-                cancel: { /*userId in*/
+                cancel: {
                     try await handleRequest(
                         for: makeRequest(.delete(.cancel/*(.init(/*userId: String(userId)*/))*/))
                     )
                 }
             ),
-            login: { email, password in
-                try await handleRequest(
-                    for: makeRequest(.login(.init(email: email, password: password)))
-                )
-            },
-//            currentUser: {
-//                try await handleRequest(
-//                    for: makeRequest(.currentUser),
-//                    decodingTo: User.self
-//                )
-//            },
-//            update: { user in
-//                try await handleRequest(
-//                    for: makeRequest(.update(user)),
-//                    decodingTo: User.self
-//                )
-//            },
+            authenticate: .init(
+                credentials: { email, password in
+                    try await handleRequest(
+                        for: makeRequest(.authenticate(.credentials(.init(username: email.rawValue, password: password))))
+                    )
+                },
+                bearer: { token in
+                    try await handleRequest(
+                        for: makeRequest(.authenticate(.bearer(.init(token: token))))
+                    )
+                }
+            ),
             logout: {
                 try await handleRequest(
                     for: makeRequest(.logout)

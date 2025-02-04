@@ -1,6 +1,15 @@
 {
-  "originHash" : "4b7ae8f1c913e1a8ae3f151d7c234e5a36fabfef9eba17b49a160e759bca7103",
+  "originHash" : "25190f5ab9f48cb5eacfec5324f9d7b5751e01c67f74a7695397c181437aec1f",
   "pins" : [
+    {
+      "identity" : "coenttb-authentication",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/coenttb/coenttb-authentication",
+      "state" : {
+        "branch" : "main",
+        "revision" : "32e326a9d2b2215a1091734d0ae1093a6f6567ac"
+      }
+    },
     {
       "identity" : "coenttb-html",
       "kind" : "remoteSourceControl",
@@ -16,7 +25,7 @@
       "location" : "https://github.com/coenttb/coenttb-web",
       "state" : {
         "branch" : "main",
-        "revision" : "9479e0ee692c22310b0d65c9483b8ebed08de1ce"
+        "revision" : "f4824fea0331144c4e3c2a87e3b4cf0578a79560"
       }
     },
     {
@@ -47,12 +56,21 @@
       }
     },
     {
+      "identity" : "swift-authentication",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/coenttb/swift-authentication",
+      "state" : {
+        "branch" : "main",
+        "revision" : "868552f07d847cdd3920314969ef09ce04f1403c"
+      }
+    },
+    {
       "identity" : "swift-case-paths",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-case-paths",
       "state" : {
-        "revision" : "e7039aaa4d9cf386fa8324a89f258c3f2c54d751",
-        "version" : "1.6.0"
+        "revision" : "19b7263bacb9751f151ec0c93ec816fe1ef67c7b",
+        "version" : "1.6.1"
       }
     },
     {
@@ -114,8 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-dependencies",
       "state" : {
-        "revision" : "565a7be4c1c9a5e0bf77e5dc21f30f054ced9d06",
-        "version" : "1.6.4"
+        "revision" : "52b5e1a09dc016e64ce253e19ab3124b7fae9ac9",
+        "version" : "1.7.0"
       }
     },
     {
@@ -193,7 +211,7 @@
     {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swiftlang/swift-syntax.git",
+      "location" : "https://github.com/swiftlang/swift-syntax",
       "state" : {
         "revision" : "0687f71944021d616d34d922343dcef086855920",
         "version" : "600.0.1"
@@ -223,7 +241,16 @@
       "location" : "https://github.com/coenttb/swift-web",
       "state" : {
         "branch" : "main",
-        "revision" : "7a4ae07c1d6c2bcb3fb8ceae27fd8b16aa4b98f0"
+        "revision" : "d1cef74828261e0848153580d57e1745f9c37ce6"
+      }
+    },
+    {
+      "identity" : "swift-web-standards",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/coenttb/swift-web-standards",
+      "state" : {
+        "branch" : "main",
+        "revision" : "06c08d7b6b6f86a8db2cf4ec8b02c42162f3045e"
       }
     },
     {
@@ -231,8 +258,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
       "state" : {
-        "revision" : "a3f634d1a409c7979cabc0a71b3f26ffa9fc8af1",
-        "version" : "1.4.3"
+        "revision" : "b444594f79844b0d6d76d70fbfb3f7f71728f938",
+        "version" : "1.5.1"
       }
     }
   ],

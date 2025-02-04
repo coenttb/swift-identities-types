@@ -7,7 +7,7 @@ extension Identity.Provider.Client: TestDependencyKey {
         .init(
             create: .testValue,
             delete: .testValue,
-            login: { email, password in
+            authenticate: { email, password in
                 guard password.count >= 8 else {
                     throw ValidationError.invalidCredentials
                 }

@@ -33,6 +33,10 @@ extension Path<PathBuilder.Component<String>> {
     nonisolated(unsafe) public static let create = Path {
         "create"
     }
+    
+    nonisolated(unsafe) public static let authenticate = Path {
+        "authenticate"
+    }
     nonisolated(unsafe) public static let update = Path {
         "update"
     }

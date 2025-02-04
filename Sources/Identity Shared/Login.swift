@@ -7,44 +7,77 @@
 
 import Coenttb_Web
 import EmailAddress
+import Coenttb_Authentication
+import BearerAuth
 
-public struct Login: Codable, Hashable, Sendable {
-    public let email: String
-    public let password: String
-    
-    public init(
-        email: String = "",
-        password: String = ""
-    ) {
-        self.email = email
-        self.password = password
-    }
-    
-    public enum CodingKeys: String, CodingKey {
-        case email
-        case password
-    }
+public enum Authenticate: Equatable, Sendable {
+    case credentials(BasicAuth)
+    case bearer(BearerAuth)
 }
+//
+//extension Authenticate {
+//    public init(
+//        email: EmailAddress,
+//        password: String
+//    ){
+//        self = .credentials(.init(email: email.rawValue, password: password))
+//    }
+//}
+//
+//extension Authenticate {
+//    public struct Credentials: Codable, Hashable, Sendable {
+//        public let email: String
+//        public let password: String
+//    
+//        public init(
+//            email: String = "",
+//            password: String = ""
+//        ) {
+//            self.email = email
+//            self.password = password
+//        }
+//        
+//        public init(
+//            email: EmailAddress,
+//            passsword: String
+//        ){
+//            self = .init(email: email.rawValue, password: password)
+//        }
+//    
+//        public enum CodingKeys: String, CodingKey {
+//            case email
+//            case password
+//        }
+//    }
+//}
 
-extension Login {
-    public init(
-        email: EmailAddress,
-        password: String
-    ){
-        self.email = email.rawValue
-        self.password = password
-    }
-}
+//extension Login {
+//    public init(
+//        email: EmailAddress,
+//        password: String
+//    ){
+//        self.email = email.rawValue
+//        self.password = password
+//    }
+//}
 
-extension Identity_Shared.Login {
+extension Identity_Shared.Authenticate {
     public struct Router: ParserPrinter, Sendable {
         
         public init() {}
 
-        public var body: some URLRouting.Router<Identity_Shared.Login> {
-            Method.post
-
-            Body(.form(Identity_Shared.Login.self, decoder: .default))
+        public var body: some URLRouting.Router<Identity_Shared.Authenticate> {
+            OneOf {
+                URLRouting.Route(.case(Identity_Shared.Authenticate.credentials)) {
+                    Method.post
+                    Body(.form(BasicAuth.self, decoder: .default))
+                }
+                
+                URLRouting.Route(.case(Identity_Shared.Authenticate.bearer)) {
+                    Method.post
+                    BearerAuth.Router()
+                }
+            }
         }
     }
 }
