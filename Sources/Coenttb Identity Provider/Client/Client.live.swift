@@ -25,7 +25,7 @@ extension Identity_Provider.Identity.Provider.Client {
         database: Fluent.Database,
         logger: Logger,
         createDatabaseUser: @escaping @Sendable (_ identityId: UUID) async throws -> DatabaseUser,
-        getDatabaseUserbyIdentityId: @escaping @Sendable (UUID) async throws -> DatabaseUser?,
+//        getDatabaseUserbyIdentityId: @escaping @Sendable (UUID) async throws -> DatabaseUser?,
 //        userInit: @escaping @Sendable (Identity, DatabaseUser) -> User,
 //        userUpdate: @escaping @Sendable (_ newUser: User, _ identity: Identity, _ databaseUser: DatabaseUser) async throws -> Void,
         sendVerificationEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
@@ -61,7 +61,7 @@ extension Identity_Provider.Identity.Provider.Client {
             delete: .live(
                 database: database,
                 logger: logger,
-                getDatabaseUserbyIdentityId: getDatabaseUserbyIdentityId,
+//                getDatabaseUserbyIdentityId: getDatabaseUserbyIdentityId,
                 sendDeletionRequestNotification: sendDeletionRequestNotification,
                 sendDeletionConfirmationNotification: sendDeletionConfirmationNotification
             ),
