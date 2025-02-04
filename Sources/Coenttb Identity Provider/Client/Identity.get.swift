@@ -14,14 +14,16 @@ import Identity_Provider
 import FluentKit
 
 extension Identity {
-    enum Identifier {
-        case id(UUID)
-        case email(String)
-        case auth
+    public enum Get {
+        public enum Identifier {
+            case id(UUID)
+            case email(String)
+            case auth
+        }
     }
     
-    static func get(
-        by identifier: Identity.Identifier,
+    public static func get(
+        by identifier: Identity.Get.Identifier,
         on database: Database
     ) async throws -> Identity {
         
