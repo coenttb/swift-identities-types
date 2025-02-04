@@ -17,7 +17,7 @@ public enum Route: Codable, Hashable, Sendable {
     case logout
     case password(Route.Password)
     case emailChange(Route.EmailChange)
-    case multifactorAuthentication(Route.MultifactorAuthentication)
+//    case multifactorAuthentication(Route.MultifactorAuthentication)
 }
 
 public struct Router: ParserPrinter {
@@ -103,22 +103,22 @@ public struct Router: ParserPrinter {
                 }
             }
             
-            URLRouting.Route(.case(Route.multifactorAuthentication)) {
-                Path.multifactorAuthentication
-                OneOf {
-                    URLRouting.Route(.case(Route.MultifactorAuthentication.setup)) {
-                        Path.setup
-                    }
-                    
-                    URLRouting.Route(.case(Route.MultifactorAuthentication.verify)) {
-                        Path.verify
-                    }
-                    
-                    URLRouting.Route(.case(Route.MultifactorAuthentication.manage)) {
-                        Path.manage
-                    }
-                }
-            }
+//            URLRouting.Route(.case(Route.multifactorAuthentication)) {
+//                Path.multifactorAuthentication
+//                OneOf {
+//                    URLRouting.Route(.case(Route.MultifactorAuthentication.setup)) {
+//                        Path.setup
+//                    }
+//                    
+//                    URLRouting.Route(.case(Route.MultifactorAuthentication.verify)) {
+//                        Path.verify
+//                    }
+//                    
+//                    URLRouting.Route(.case(Route.MultifactorAuthentication.manage)) {
+//                        Path.manage
+//                    }
+//                }
+//            }
         }
     }
 }
