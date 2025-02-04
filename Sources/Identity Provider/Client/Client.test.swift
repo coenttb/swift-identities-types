@@ -12,12 +12,12 @@ extension Identity.Provider.Client: TestDependencyKey {
                     throw ValidationError.invalidCredentials
                 }
             },
-            currentUser: {
-                return nil
-            },
-            update: { user in
-                return user
-            },
+//            currentUser: {
+//                return nil
+//            },
+//            update: { user in
+//                return user
+//            },
             logout: { },
             password: .testValue,
             emailChange: .testValue

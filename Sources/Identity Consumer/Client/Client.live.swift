@@ -45,18 +45,18 @@ extension Identity.Consumer.Client {
                     for: makeRequest(.login(.init(email: email, password: password)))
                 )
             },
-            currentUser: {
-                try await handleRequest(
-                    for: makeRequest(.currentUser),
-                    decodingTo: User.self
-                )
-            },
-            update: { user in
-                try await handleRequest(
-                    for: makeRequest(.update(user)),
-                    decodingTo: User.self
-                )
-            },
+//            currentUser: {
+//                try await handleRequest(
+//                    for: makeRequest(.currentUser),
+//                    decodingTo: User.self
+//                )
+//            },
+//            update: { user in
+//                try await handleRequest(
+//                    for: makeRequest(.update(user)),
+//                    decodingTo: User.self
+//                )
+//            },
             logout: {
                 try await handleRequest(
                     for: makeRequest(.logout)

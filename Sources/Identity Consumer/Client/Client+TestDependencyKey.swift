@@ -12,12 +12,12 @@ extension Identity.Consumer.Client: TestDependencyKey {
             login: { email, password in
                 // Provide default test implementation
             },
-            currentUser: {
-                return nil
-            },
-            update: { user in
-                return user
-            },
+//            currentUser: {
+//                return nil
+//            },
+//            update: { user in
+//                return user
+//            },
             logout: { },
             password: .testValue,
             emailChange: .testValue

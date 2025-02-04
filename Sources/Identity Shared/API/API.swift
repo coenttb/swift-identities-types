@@ -11,9 +11,9 @@ extension Identity {
     public enum API: Equatable, Sendable {
         case create(Identity.API.Create)
         case login(Identity_Shared.Login)
-        case currentUser
+//        case currentUser
         case logout
-        case update(User?)
+//        case update(User?)
         case delete(Identity.API.Delete)
         case password(Identity.API.Password)
         case emailChange(Identity.API.EmailChange)
@@ -34,11 +34,11 @@ extension Identity.API {
                     Identity.API.Create.Router()
                 }
                 
-                URLRouting.Route(.case(Identity.API.update)) {
-                    Path.update
-                    Method.post
-                    Body(.form(User?.self, decoder: .default))
-                }
+//                URLRouting.Route(.case(Identity.API.update)) {
+//                    Path.update
+//                    Method.post
+//                    Body(.form(User?.self, decoder: .default))
+//                }
                 
                 URLRouting.Route(.case(Identity.API.delete)) {
                     Path.delete
@@ -49,11 +49,11 @@ extension Identity.API {
                     Path.login
                     Identity_Shared.Login.Router()
                 }
-                
-                URLRouting.Route(.case(Identity.API.currentUser)) {
-                    Path.currentUser
-                    Method.get
-                }
+//                
+//                URLRouting.Route(.case(Identity.API.currentUser)) {
+//                    Path.currentUser
+//                    Method.get
+//                }
                 
                 URLRouting.Route(.case(Identity.API.logout)) {
                     Path.logout

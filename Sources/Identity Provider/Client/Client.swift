@@ -20,11 +20,11 @@ extension Identity.Provider {
         @DependencyEndpoint
         public var login: (_ email: EmailAddress, _ password: String) async throws -> Void
         
-        @DependencyEndpoint
-        public var currentUser: () async throws -> User?
-        
-        @DependencyEndpoint
-        public var update: (User?) async throws -> User?
+//        @DependencyEndpoint
+//        public var currentUser: () async throws -> User?
+//        
+//        @DependencyEndpoint
+//        public var update: (User?) async throws -> User?
         
         @DependencyEndpoint
         public var logout: () async throws -> Void
@@ -39,8 +39,8 @@ extension Identity.Provider {
             create: Client.Create,
             delete: Client.Delete,
             login: @escaping (_: EmailAddress, _: String) -> Void,
-            currentUser: @escaping () -> User?,
-            update: @escaping (User?) -> User?,
+//            currentUser: @escaping () -> User?,
+//            update: @escaping (User?) -> User?,
             logout: @escaping () -> Void,
             password: Client.Password,
             emailChange: Client.EmailChange
@@ -49,8 +49,8 @@ extension Identity.Provider {
             self.create = create
             self.delete = delete
             self.login = login
-            self.currentUser = currentUser
-            self.update = update
+//            self.currentUser = currentUser
+//            self.update = update
             self.logout = logout
             self.password = password
             self.emailChange = emailChange
