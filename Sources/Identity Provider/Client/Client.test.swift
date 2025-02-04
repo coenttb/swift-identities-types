@@ -7,11 +7,7 @@ extension Identity.Provider.Client: TestDependencyKey {
         .init(
             create: .testValue,
             delete: .testValue,
-            authenticate: { email, password in
-                guard password.count >= 8 else {
-                    throw ValidationError.invalidCredentials
-                }
-            },
+            authenticate: .testValue,
 //            currentUser: {
 //                return nil
 //            },
@@ -169,5 +165,19 @@ extension Identity.Provider.Client.Delete: TestDependencyKey {
     enum ValidationError: Error {
         case missingToken
         case invalidUserId
+    }
+}
+
+extension Identity.Provider.Client.Authenticate: TestDependencyKey {
+    public static var testValue: Self {
+        .init(
+            credentials: { email, password in
+                guard password.count >= 8 else {
+                    fatalError()
+                }
+            },
+            bearer: { token in
+            }
+        )
     }
 }

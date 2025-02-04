@@ -17,8 +17,7 @@ extension Identity.Provider {
         
         public var delete: Client.Delete
         
-        @DependencyEndpoint
-        public var authenticate: (_ email: EmailAddress, _ password: String) async throws -> Void
+        public var authenticate: Client.Authenticate
         
 //        @DependencyEndpoint
 //        public var currentUser: () async throws -> User?
@@ -38,7 +37,7 @@ extension Identity.Provider {
         public init(
             create: Client.Create,
             delete: Client.Delete,
-            authenticate: @escaping (_: EmailAddress, _: String) -> Void,
+            authenticate: Client.Authenticate,
 //            currentUser: @escaping () -> User?,
 //            update: @escaping (User?) -> User?,
             logout: @escaping () -> Void,
@@ -119,6 +118,20 @@ extension Identity.Provider.Client {
         public var cancel: (/*_ userId: User.ID*/) async throws -> Void
         
         public var confirm: (/*_ userId: User.ID*/) async throws -> Void
+    }
+}
+
+extension Identity.Provider.Client {
+    @DependencyClient
+    public struct Authenticate: @unchecked Sendable {
+        public var credentials: (
+            _ email: EmailAddress,
+            _ password: String
+        ) async throws -> Void
+        
+        public var bearer: (
+            _ token: String
+        ) async throws -> Void
     }
 }
 
