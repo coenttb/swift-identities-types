@@ -12,9 +12,9 @@ import Identity_Provider
 
 extension Identity_Shared.Identity.API {
     public static func response(
-        api: Identity_Shared.Identity<User>.API,
-        client: Identity_Shared.Identity<User>.Provider.Client,
-        userInit: () -> User?,
+        api: Identity_Shared.Identity.API,
+        client: Identity_Shared.Identity.Provider.Client,
+//        userInit: () -> User?,
         reauthenticateForEmailChange: (_ password: String) async throws -> Void,
         reauthenticateForPasswordChange: (_ password: String) async throws -> Void,
         logoutRedirectURL: () -> URL
@@ -42,14 +42,14 @@ extension Identity_Shared.Identity.API {
                 }
             }
             
-        case .update(let user):
-            
-            guard let user = try await client.update(user) else {
-                throw Abort(.notFound, reason: "Account not found")
-            }
-            
-            return Response.success(true, data: user)
-            
+//        case .update(let user):
+//            
+//            guard let user = try await client.update(user) else {
+//                throw Abort(.notFound, reason: "Account not found")
+//            }
+//            
+//            return Response.success(true, data: user)
+//            
         case .delete(let delete):
             switch delete {
             case .request(let request):
@@ -64,14 +64,14 @@ extension Identity_Shared.Identity.API {
                 } catch {
                     throw Abort(.internalServerError, reason: "Failed to delete")
                 }
-            case .cancel(let cancel):
+            case .cancel:
                 do {
                     try await client.delete.cancel()
                     return Response.success(true)
                 } catch {
                     throw Abort(.internalServerError, reason: "Failed to delete")
                 }
-            case .confirm(let confirm):
+            case .confirm:
                 do {
                     try await client.delete.confirm()
                     return Response.success(true)
@@ -88,12 +88,12 @@ extension Identity_Shared.Identity.API {
                 throw Abort(.internalServerError, reason: "Failed to login")
             }
             
-        case .currentUser:
-            do {
-                return try await Response.json(success: true, data: client.currentUser())
-            } catch {
-                throw Abort(.internalServerError, reason: "No current user")
-            }
+//        case .currentUser:
+//            do {
+//                return try await Response.json(success: true, data: client.currentUser())
+//            } catch {
+//                throw Abort(.internalServerError, reason: "No current user")
+//            }
             
         case .logout:
             try await client.logout()

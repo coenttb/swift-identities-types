@@ -45,6 +45,9 @@ public final class Identity: Model, Content, @unchecked Sendable {
             self.email = newValue.rawValue
         }
     }
+    
+    @OptionalChild(for: \.$identity)
+    public var deletion: Identity.Deletion?
 
     public enum FieldKeys {
         public static let email: FieldKey = "email"
