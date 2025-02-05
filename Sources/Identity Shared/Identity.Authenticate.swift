@@ -10,12 +10,14 @@ import EmailAddress
 import Coenttb_Authentication
 import BearerAuth
 
-public enum Authenticate: Equatable, Sendable {
-    case credentials(Credentials)
-    case bearer(BearerAuth)
+extension Identity {
+    public enum Authenticate: Equatable, Sendable {
+        case credentials(Credentials)
+        case bearer(BearerAuth)
+    }
 }
 
-extension Authenticate {
+extension Identity.Authenticate {
     public struct Credentials: Codable, Hashable, Sendable {
         public let email: String
         public let password: String
@@ -35,7 +37,7 @@ extension Authenticate {
     }
 }
 
-extension Authenticate.Credentials {
+extension Identity.Authenticate.Credentials {
     public init(
         email: EmailAddress,
         password: String
@@ -44,19 +46,19 @@ extension Authenticate.Credentials {
     }
 }
 
-extension Identity_Shared.Authenticate {
+extension Identity.Authenticate {
     public struct Router: ParserPrinter, Sendable {
         
         public init() {}
 
-        public var body: some URLRouting.Router<Identity_Shared.Authenticate> {
+        public var body: some URLRouting.Router<Identity.Authenticate> {
             OneOf {
-                URLRouting.Route(.case(Identity_Shared.Authenticate.credentials)) {
+                URLRouting.Route(.case(Identity.Authenticate.credentials)) {
                     Method.post
-                    Body(.form(Authenticate.Credentials.self, decoder: .default))
+                    Body(.form(Identity.Authenticate.Credentials.self, decoder: .default))
                 }
                 
-                URLRouting.Route(.case(Identity_Shared.Authenticate.bearer)) {
+                URLRouting.Route(.case(Identity.Authenticate.bearer)) {
                     Method.post
                     BearerAuth.Router()
                 }

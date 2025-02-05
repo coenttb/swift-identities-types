@@ -39,10 +39,10 @@ extension Identity.Consumer.View {
                         
                         URLRouting.Route(.case(Identity.Consumer.View.Create.verify)) {
                             Path.emailVerification
-                            Parse(.memberwise(Identity_Shared.Create.Verify.init)) {
+                            Parse(.memberwise(Identity.Create.Verify.init)) {
                                 Query {
-                                    Field(Identity_Shared.Create.Verify.CodingKeys.token.rawValue, .string)
-                                    Field(Identity_Shared.Create.Verify.CodingKeys.email.rawValue, .string)
+                                    Field(Identity.Create.Verify.CodingKeys.token.rawValue, .string)
+                                    Field(Identity.Create.Verify.CodingKeys.email.rawValue, .string)
                                 }
                             }
                         }

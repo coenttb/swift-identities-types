@@ -7,13 +7,15 @@
 
 import Coenttb_Web
 
-public enum EmailChange {}
+extension Identity {
+    public enum EmailChange {}
+}
 
-extension EmailChange {
-    public typealias Reauthorization = Identity_Shared.Reauthorization
+extension Identity.EmailChange {
+    public typealias Reauthorization = Identity.Reauthorization
 }
  
-extension EmailChange {
+extension Identity.EmailChange {
     public struct Request: Codable, Hashable, Sendable {
         public let newEmail: String
         
@@ -29,7 +31,7 @@ extension EmailChange {
     }
 }
 
-extension EmailChange.Request {
+extension Identity.EmailChange.Request {
     public init(
         newEmail: EmailAddress
     ){
@@ -37,20 +39,20 @@ extension EmailChange.Request {
     }
 }
  
-extension Identity_Shared.EmailChange.Request {
+extension Identity.EmailChange.Request {
     public struct Router: ParserPrinter, Sendable {
         
         public init() {}
 
-        public var body: some URLRouting.Router<Identity_Shared.EmailChange.Request> {
+        public var body: some URLRouting.Router<Identity.EmailChange.Request> {
             Method.post
             Path.request
-            Body(.form(Identity_Shared.EmailChange.Request.self, decoder: .default))
+            Body(.form(Identity.EmailChange.Request.self, decoder: .default))
         }
     }
 }
 
-extension EmailChange {
+extension Identity.EmailChange {
     public struct Confirm: Codable, Hashable, Sendable {
         public let token: String
         
@@ -66,15 +68,15 @@ extension EmailChange {
     }
 }
 
-extension Identity_Shared.EmailChange.Confirm {
+extension Identity.EmailChange.Confirm {
     public struct Router: ParserPrinter, Sendable {
         
         public init() {}
 
-        public var body: some URLRouting.Router<Identity_Shared.EmailChange.Confirm> {
+        public var body: some URLRouting.Router<Identity.EmailChange.Confirm> {
             Method.post
             Path.confirm
-            Body(.form(Identity_Shared.EmailChange.Confirm.self, decoder: .default))
+            Body(.form(Identity.EmailChange.Confirm.self, decoder: .default))
         }
     }
 }
@@ -87,7 +89,7 @@ extension UrlFormDecoder {
     }
 }
 
-extension EmailChange.Request {
+extension Identity.EmailChange.Request {
     public enum Error: Swift.Error, Sendable {
         case unauthorized
         case emailIsNil

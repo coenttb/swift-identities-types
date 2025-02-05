@@ -125,7 +125,7 @@ extension Identity.Provider.Client {
     @DependencyClient
     public struct Authenticate: @unchecked Sendable {
         public var credentials: (
-            _ credentials: Identity_Shared.Authenticate.Credentials
+            _ credentials: Identity.Authenticate.Credentials
         ) async throws -> Void
         
         public var bearer: (

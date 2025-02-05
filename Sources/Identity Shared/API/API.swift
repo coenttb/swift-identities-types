@@ -10,7 +10,7 @@ import Coenttb_Web
 extension Identity {
     public enum API: Equatable, Sendable {
         case create(Identity.API.Create)
-        case authenticate(Identity_Shared.Authenticate)
+        case authenticate(Identity.Authenticate)
 //        case currentUser
         case logout
 //        case update(User?)
@@ -47,7 +47,7 @@ extension Identity.API {
                 
                 URLRouting.Route(.case(Identity.API.authenticate)) {
                     Path.authenticate
-                    Identity_Shared.Authenticate.Router()
+                    Identity.Authenticate.Router()
                 }
 //                
 //                URLRouting.Route(.case(Identity.API.currentUser)) {

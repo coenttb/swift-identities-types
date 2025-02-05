@@ -9,9 +9,9 @@ import Coenttb_Web
 
 extension Identity.API {
     public enum EmailChange: Equatable, Sendable {
-        case reauthorization(Identity_Shared.EmailChange.Reauthorization)
-        case request(Identity_Shared.EmailChange.Request)
-        case confirm(Identity_Shared.EmailChange.Confirm)
+        case reauthorization(Identity.EmailChange.Reauthorization)
+        case request(Identity.EmailChange.Request)
+        case confirm(Identity.EmailChange.Confirm)
     }
 }
 
@@ -24,15 +24,15 @@ extension Identity.API.EmailChange {
         public var body: some URLRouting.Router<Identity.API.EmailChange> {
             OneOf {
                 URLRouting.Route(.case(Identity.API.EmailChange.reauthorization)) {
-                    Identity_Shared.EmailChange.Reauthorization.Router()
+                    Identity.EmailChange.Reauthorization.Router()
                 }
                 
                 URLRouting.Route(.case(Identity.API.EmailChange.request)) {
-                    Identity_Shared.EmailChange.Request.Router()
+                    Identity.EmailChange.Request.Router()
                 }
                 
                 URLRouting.Route(.case(Identity.API.EmailChange.confirm)) {
-                    Identity_Shared.EmailChange.Confirm.Router()
+                    Identity.EmailChange.Confirm.Router()
                 }
             }
         }

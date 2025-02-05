@@ -7,9 +7,13 @@
 
 import Coenttb_Web
 
-public enum Create {}
+extension Identity {
+    public enum Create {}
+}
 
-extension Create {
+
+
+extension Identity.Create {
     public struct Request: Codable, Hashable, Sendable {
         public let email: String
         public let password: String
@@ -29,7 +33,7 @@ extension Create {
     }
 }
 
-extension Create.Request {
+extension Identity.Create.Request {
     public init(
         email: EmailAddress,
         password: String
@@ -39,20 +43,20 @@ extension Create.Request {
     }
 }
 
-extension Identity_Shared.Create.Request {
+extension Identity.Create.Request {
     public struct Router: ParserPrinter, Sendable {
         
         public init() {}
 
-        public var body: some URLRouting.Router<Identity_Shared.Create.Request> {
+        public var body: some URLRouting.Router<Identity.Create.Request> {
             Method.post
             Path.request
-            Body(.form(Identity_Shared.Create.Request.self, decoder: .default))
+            Body(.form(Identity.Create.Request.self, decoder: .default))
         }
     }
 }
 
-extension Create {
+extension Identity.Create {
     public struct Verify: Codable, Hashable, Sendable {
         public let token: String
         public let email: String
@@ -72,7 +76,7 @@ extension Create {
     }
 }
 
-extension Create.Verify {
+extension Identity.Create.Verify {
     public init(
         email: EmailAddress,
         token: String
@@ -82,15 +86,15 @@ extension Create.Verify {
     }
 }
 
-extension Identity_Shared.Create.Verify {
+extension Identity.Create.Verify {
     public struct Router: ParserPrinter, Sendable {
         
         public init() {}
 
-        public var body: some URLRouting.Router<Identity_Shared.Create.Verify> {
+        public var body: some URLRouting.Router<Identity.Create.Verify> {
             Method.post
             Path.verify
-            Body(.form(Identity_Shared.Create.Verify.self, decoder: .default))
+            Body(.form(Identity.Create.Verify.self, decoder: .default))
         }
     }
 }

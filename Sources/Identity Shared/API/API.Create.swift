@@ -9,8 +9,8 @@ import Coenttb_Web
 
 extension Identity.API {
     public enum Create: Equatable, Sendable {
-        case request(Identity_Shared.Create.Request)
-        case verify(Identity_Shared.Create.Verify)
+        case request(Identity.Create.Request)
+        case verify(Identity.Create.Verify)
     }
 }
 
@@ -22,10 +22,10 @@ extension Identity.API.Create {
         public var body: some URLRouting.Router<Identity.API.Create> {
             OneOf {
                 URLRouting.Route(.case(Identity.API.Create.request)) {
-                    Identity_Shared.Create.Request.Router()
+                    Identity.Create.Request.Router()
                 }
                 URLRouting.Route(.case(Identity.API.Create.verify)) {
-                    Identity_Shared.Create.Verify.Router()
+                    Identity.Create.Verify.Router()
                 }
             }
         }

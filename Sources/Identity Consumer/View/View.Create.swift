@@ -12,7 +12,7 @@ import Identity_Shared
 extension Identity.Consumer.View {
     public enum Create: Codable, Hashable, Sendable {
         case request
-        case verify(Identity_Shared.Create.Verify)
+        case verify(Identity.Create.Verify)
     }
 }
 

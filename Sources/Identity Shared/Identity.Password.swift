@@ -85,7 +85,7 @@ extension Identity_Shared.Password.Reset.Confirm {
 }
 
 extension Identity_Shared.Password.Change {
-    public typealias Reauthorization = Identity_Shared.Reauthorization
+    public typealias Reauthorization = Identity.Reauthorization
 }
 
 

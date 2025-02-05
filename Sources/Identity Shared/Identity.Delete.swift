@@ -7,9 +7,12 @@
 
 import Coenttb_Web
 
-public enum Delete {}
+extension Identity {
+    public enum Delete {}
+}
 
-extension Delete {
+
+extension Identity.Delete {
     public struct Request: Codable, Hashable, Sendable {
 //        public let userId: String
         public let reauthToken: String
@@ -29,20 +32,20 @@ extension Delete {
     }
 }
 
-extension Identity_Shared.Delete.Request {
+extension Identity.Delete.Request {
     public struct Router: ParserPrinter, Sendable {
         
         public init() {}
 
-        public var body: some URLRouting.Router<Identity_Shared.Delete.Request> {
+        public var body: some URLRouting.Router<Identity.Delete.Request> {
             Method.post
-            Body(.form(Identity_Shared.Delete.Request.self, decoder: .default))
+            Body(.form(Identity.Delete.Request.self, decoder: .default))
         }
     }
 }
 
 //
-//extension Delete {
+//extension IdentityDelete {
 //    public struct Cancel: Codable, Hashable, Sendable {
 //        public let userId: String
 //        
@@ -54,19 +57,19 @@ extension Identity_Shared.Delete.Request {
 //    }
 //}
 
-//extension Identity_Shared.Delete.Cancel {
+//extension Identity.Delete.Cancel {
 //    public struct Router: ParserPrinter, Sendable {
 //        
 //        public init() {}
 //
-//        public var body: some URLRouting.Router<Identity_Shared.Delete.Cancel> {
+//        public var body: some URLRouting.Router<Identity.Delete.Cancel> {
 //            Method.post
-//            Body(.form(Identity_Shared.Delete.Cancel.self, decoder: .default))
+//            Body(.form(Identity.Delete.Cancel.self, decoder: .default))
 //        }
 //    }
 //}
 //
-//extension Delete {
+//extension IdentityDelete {
 //    public struct Confirm: Codable, Hashable, Sendable {
 //        public let userId: String
 //        
@@ -78,14 +81,14 @@ extension Identity_Shared.Delete.Request {
 //    }
 //}
 //
-//extension Identity_Shared.Delete.Confirm {
+//extension Identity.Delete.Confirm {
 //    public struct Router: ParserPrinter, Sendable {
 //        
 //        public init() {}
 //
-//        public var body: some URLRouting.Router<Identity_Shared.Delete.Confirm> {
+//        public var body: some URLRouting.Router<Identity.Delete.Confirm> {
 //            Method.post
-//            Body(.form(Identity_Shared.Delete.Confirm.self, decoder: .default))
+//            Body(.form(Identity.Delete.Confirm.self, decoder: .default))
 //        }
 //    }
 //}
