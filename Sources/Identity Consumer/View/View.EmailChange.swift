@@ -9,14 +9,14 @@ import Coenttb_Web
 import CasePaths
 import Identity_Shared
 
-extension Route {
+extension Identity.Consumer.View {
     public enum EmailChange: Codable, Hashable, Sendable {
         case request
         case confirm(EmailChange.Confirm)
     }
 }
 
-extension Route.EmailChange {
+extension Identity.Consumer.View.EmailChange {
     
     public enum Request {}
     public struct Confirm: Codable, Hashable, Sendable {

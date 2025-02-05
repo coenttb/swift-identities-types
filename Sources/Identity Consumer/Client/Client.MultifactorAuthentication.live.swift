@@ -12,9 +12,9 @@
 //extension Identity.Consumer.Client.MultifactorAuthentication {
 //    public static func live(
 //        provider: Identity.Consumer.Client.Live.Provider,
-//        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.API>) -> (_ api: Identity.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
+//        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ api: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
 //    ) -> Self {
-//        let apiRouter = Identity.API.Router().baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
+//        let apiRouter = Identity.Consumer.API.Router().baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
 //        let makeRequest = makeRequest(apiRouter)
 //        
 //        @Dependency(URLRequest.Handler.self) var handleRequest

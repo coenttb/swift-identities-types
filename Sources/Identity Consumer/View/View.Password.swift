@@ -9,17 +9,17 @@ import Coenttb_Web
 import CasePaths
 import Identity_Shared
 
-extension Route {
+extension Identity.Consumer.View {
     public enum Password: Codable, Hashable, Sendable {
-        case reset(Route.Password.Reset)
-        case change(Route.Password.Change)
+        case reset(Identity.Consumer.View.Password.Reset)
+        case change(Identity.Consumer.View.Password.Change)
     }
 }
 
-extension Route.Password {
+extension Identity.Consumer.View.Password {
     public enum Reset: Codable, Hashable, Sendable {
         case request
-        case confirm(Route.Password.Reset.Confirm)
+        case confirm(Identity.Consumer.View.Password.Reset.Confirm)
     }
     
     public enum Change: Codable, Hashable, Sendable {
@@ -27,15 +27,15 @@ extension Route.Password {
     }
 }
 
-extension Route.Password.Change {
+extension Identity.Consumer.View.Password.Change {
     public enum Request {}
 }
 
-extension Route.Password.Reset {
+extension Identity.Consumer.View.Password.Reset {
     public enum Request {}
 }
 
-extension Route.Password.Reset {
+extension Identity.Consumer.View.Password.Reset {
     public struct Confirm: Codable, Hashable, Sendable {
         public let token: String
         public let newPassword: String

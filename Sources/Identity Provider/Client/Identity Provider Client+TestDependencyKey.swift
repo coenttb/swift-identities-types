@@ -20,10 +20,6 @@ extension Identity.Provider.Client: TestDependencyKey {
         )
     }
     
-    public static var previewValue: Self {
-        return testValue
-    }
-    
     enum ValidationError: Error {
         case invalidCredentials
     }
@@ -49,10 +45,6 @@ extension Identity.Provider.Client.Create: TestDependencyKey {
                 }
             }
         )
-    }
-    
-    public static var previewValue: Self {
-        return testValue
     }
     
     enum ValidationError: Error {
@@ -93,10 +85,6 @@ extension Identity.Provider.Client.Password: TestDependencyKey {
         )
     }
     
-    public static var previewValue: Self {
-        return testValue
-    }
-    
     enum ValidationError: Error {
         case invalidEmail
         case weakPassword
@@ -126,10 +114,6 @@ extension Identity.Provider.Client.EmailChange: TestDependencyKey {
         )
     }
     
-    public static var previewValue: Self {
-        return testValue
-    }
-    
     enum ValidationError: Error {
         case emailRequired
         case invalidEmail
@@ -156,10 +140,6 @@ extension Identity.Provider.Client.Delete: TestDependencyKey {
 //                }
             }
         )
-    }
-    
-    public static var previewValue: Self {
-        return testValue
     }
     
     enum ValidationError: Error {

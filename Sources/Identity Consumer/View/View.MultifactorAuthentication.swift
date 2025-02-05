@@ -2,7 +2,7 @@ import Coenttb_Web
 import CasePaths
 import Identity_Shared
 
-extension Route {
+extension Identity.Consumer.View {
     public enum MultifactorAuthentication: Codable, Hashable, Sendable {
         case setup     // MFA setup page
         case verify    // MFA verification page during login

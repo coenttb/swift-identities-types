@@ -9,14 +9,14 @@ import Coenttb_Web
 import CasePaths
 import Identity_Shared
 
-extension Route {
+extension Identity.Consumer.View {
     public enum Create: Codable, Hashable, Sendable {
         case request
         case verify(Identity_Shared.Create.Verify)
     }
 }
 
-extension Route.Create {
+extension Identity.Consumer.View.Create {
     public struct Verify: Codable, Hashable, Sendable {
         public let token: String
         public let email: String

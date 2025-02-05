@@ -6,10 +6,10 @@ import EmailAddress
 extension Identity.Consumer.Client {
     public static func live(
         provider: Identity.Consumer.Client.Live.Provider,
-        makeRequest: (AnyParserPrinter<URLRequestData, Identity.API>) -> (_ route: Identity.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
+        makeRequest: (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
     ) -> Self {
         
-        let apiRouter = Identity.API.Router().baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
+        let apiRouter = Identity.Consumer.API.Router().baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
         
         let makeRequest = makeRequest(apiRouter)
         
@@ -108,7 +108,7 @@ extension Identity.Consumer.Client {
 }
 
 extension Identity.Consumer.Client.Live {
-    public static var makeRequest: (AnyParserPrinter<URLRequestData, Identity.API>)->(_ route: Identity.API) throws -> URLRequest {
+    public static var makeRequest: (AnyParserPrinter<URLRequestData, Identity.Consumer.API>)->(_ route: Identity.Consumer.API) throws -> URLRequest {
         {
             apiRouter in
             { route in
