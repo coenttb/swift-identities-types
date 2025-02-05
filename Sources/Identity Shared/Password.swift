@@ -85,33 +85,10 @@ extension Identity_Shared.Password.Reset.Confirm {
 }
 
 extension Identity_Shared.Password.Change {
-    public struct Reauthorization: Codable, Hashable, Sendable {
-        public let password: String
-        
-        public init(
-            password: String = ""
-        ) {
-            self.password = password
-        }
-        
-        public enum CodingKeys: String, CodingKey {
-            case password
-        }
-    }
+    public typealias Reauthorization = Identity_Shared.Reauthorization
 }
 
-extension Identity_Shared.Password.Change.Reauthorization {
-    public struct Router: ParserPrinter, Sendable {
-        
-        public init() {}
 
-        public var body: some URLRouting.Router<Identity_Shared.Password.Change.Reauthorization> {
-            Method.post
-            Path.reauthorization
-            Body(.form(Identity_Shared.Password.Change.Reauthorization.self, decoder: .default))
-        }
-    }
-}
  
 extension Identity_Shared.Password.Change {
     public struct Request: Codable, Hashable, Sendable {

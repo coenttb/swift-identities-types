@@ -10,34 +10,9 @@ import Coenttb_Web
 public enum EmailChange {}
 
 extension EmailChange {
-    public struct Reauthorization: Codable, Hashable, Sendable {
-        public let password: String
-        
-        public init(
-            password: String = ""
-        ){
-            self.password = password
-        }
-        
-        public enum CodingKeys: String, CodingKey {
-            case password
-        }
-    }
+    public typealias Reauthorization = Identity_Shared.Reauthorization
 }
  
-extension Identity_Shared.EmailChange.Reauthorization {
-    public struct Router: ParserPrinter, Sendable {
-        
-        public init() {}
-
-        public var body: some URLRouting.Router<Identity_Shared.EmailChange.Reauthorization> {
-            Method.post
-            Path.reauthorization
-            Body(.form(Identity_Shared.EmailChange.Reauthorization.self, decoder: .default))
-        }
-    }
-}
-
 extension EmailChange {
     public struct Request: Codable, Hashable, Sendable {
         public let newEmail: String
