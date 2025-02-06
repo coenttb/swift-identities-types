@@ -10,9 +10,10 @@ import Coenttb_Vapor
 import Coenttb_Web
 import Identity_Provider
 
-extension Identity_Shared.Identity.API {
+
+extension Identity.Provider.API {
     public static func response(
-        api: Identity_Shared.Identity.API,
+        api: Identity.Provider.API,
         client: Identity_Shared.Identity.Provider.Client,
         reauthenticateForEmailChange: (_ password: String) async throws -> Void,
         reauthenticateForPasswordChange: (_ password: String) async throws -> Void,

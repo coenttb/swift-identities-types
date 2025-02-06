@@ -2,39 +2,38 @@
 //  File.swift
 //  coenttb-web
 //
-//  Created by Coen ten Thije Boonkkamp on 10/10/2024.
+//  Created by Coen ten Thije Boonkkamp on 17/10/2024.
 //
 
 import Foundation
 import Coenttb_Web
 import Identity_Consumer
 
-extension Identity_Consumer.Route.EmailChange.Request {
+extension Identity.Consumer.View.Password.Change.Request {
     public struct View: HTML {
         let formActionURL: URL
-        let homeHref: URL
+        let redirectOnSuccess: URL
         let primaryColor: HTMLColor
         
         public init(
             formActionURL: URL,
-            homeHref: URL,
+            redirectOnSuccess: URL,
             primaryColor: HTMLColor
         ) {
             self.formActionURL = formActionURL
-            self.homeHref = homeHref
+            self.redirectOnSuccess = redirectOnSuccess
             self.primaryColor = primaryColor
         }
         
-        private static var pagemodule_request_email_change_id: String { "pagemodule_request_email_change_id" }
-        private static var form_id: String { "form-request-email-change" }
+        private static var pagemodule_change_password_id: String { "pagemodule_change_password_id" }
         
         public var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
                     Paragraph {
                         TranslatedString(
-                            dutch: "Voer uw nieuwe e-mailadres in. We sturen een email naar beide e-mailadressen.",
-                            english: "Enter your new email address. We'll send an email to both email addresses."
+                            dutch: "Voer uw huidige wachtwoord en uw nieuwe wachtwoord in.",
+                            english: "Enter your current password and your new password."
                         )
                     }
                     .fontSize(.secondary)
@@ -43,18 +42,21 @@ extension Identity_Consumer.Route.EmailChange.Request {
                     
                     form {
                         VStack {
-                            Input.default(Identity_Shared.EmailChange.Request.CodingKeys.newEmail)
-                                .type(.email)
-                                .placeholder("New Email")
-                                .focusOnPageLoad()
+                            Input.default(Identity_Shared.Password.Change.Request.CodingKeys.currentPassword)
+                                .type(.password)
+                                .placeholder(TranslatedString(dutch: "Huidig wachtwoord", english: "Current password").description)
+                            
+                            Input.default(Identity_Shared.Password.Change.Request.CodingKeys.newPassword)
+                                .type(.password)
+                                .placeholder(TranslatedString(dutch: "Nieuw wachtwoord", english: "New password").description)
                             
                             Button(
                                 tag: button,
                                 background: self.primaryColor
                             ) {
                                 TranslatedString(
-                                    dutch: "Verzoek indienen",
-                                    english: "Submit Request"
+                                    dutch: "Wachtwoord wijzigen",
+                                    english: "Change Password"
                                 )
                             }
                             .color(.primary.reverse())
@@ -67,7 +69,7 @@ extension Identity_Consumer.Route.EmailChange.Request {
                                     dutch: "Terug naar home",
                                     english: "Back to Home"
                                 ).description,
-                                href: homeHref.absoluteString
+                                href: redirectOnSuccess.absoluteString
                             )
                             .linkColor(self.primaryColor)
                             .fontWeight(.medium)
@@ -75,7 +77,7 @@ extension Identity_Consumer.Route.EmailChange.Request {
                             .textAlign(.center)
                         }
                     }
-                    .id(Self.form_id)
+                    .id("form-change-password")
                     .method(.post)
                     .action(self.formActionURL.absoluteString)
                 }
@@ -86,45 +88,21 @@ extension Identity_Consumer.Route.EmailChange.Request {
             } title: {
                 Header(3) {
                     TranslatedString(
-                        dutch: "E-mailadres wijzigen",
-                        english: "Change Email Address"
+                        dutch: "Wachtwoord wijzigen",
+                        english: "Change Password"
                     )
                 }
                 .display(.inlineBlock)
                 .textAlign(.center)
             }
-            .id(Self.pagemodule_request_email_change_id)
+            .id(Self.pagemodule_change_password_id)
             
-            
-            
-            script {#"""
+            script {"""
             document.addEventListener('DOMContentLoaded', function() {
-                const form = document.getElementById('\#(Self.form_id)');
-                const errorContainer = document.createElement('div');
-                errorContainer.id = 'error-container';
-                errorContainer.style.color = 'red';
-                errorContainer.style.marginTop = '10px';
-                errorContainer.style.display = 'none';
-                form.appendChild(errorContainer);
-
+                const form = document.getElementById('form-change-password');
                 form.addEventListener('submit', async function(event) {
                     event.preventDefault();
-                    errorContainer.style.display = 'none';
-                    errorContainer.textContent = '';
-
                     const formData = new FormData(form);
-                    const newEmail = formData.get('\#(Identity_Shared.EmailChange.Request.CodingKeys.newEmail.rawValue)');
-
-                    const emailRegex = new RegExp("\#(String.emailRegularExpression)", "i");
-
-                    if (!emailRegex.test(newEmail)) {
-                        displayError('\#(TranslatedString(
-                            dutch: "Voer een geldig e-mailadres in.",
-                            english: "Please enter a valid email address."
-                        ))');
-                        return;
-                    }
-
                     try {
                         const response = await fetch(form.action, {
                             method: form.method,
@@ -134,51 +112,40 @@ extension Identity_Consumer.Route.EmailChange.Request {
                             },
                             body: new URLSearchParams(formData).toString()
                         });
-
                         const data = await response.json();
-
-                        if (!response.ok) {
-                            throw new Error(data.reason || '\#(TranslatedString(
-                                dutch: "Verzoek om e-mailadres te wijzigen mislukt",
-                                english: "Email change request failed"
-                            ))');
-                        }
-
                         if (data.success) {
-                            const pageModule = document.getElementById("\#(Self.pagemodule_request_email_change_id)");
-                            pageModule.outerHTML = `\#(html: Identity_Consumer.Route.EmailChange.Request.View.ReceiptConfirmation(homeHref: self.homeHref, primaryColor: self.primaryColor))`;
+                            const pageModule = document.getElementById("\(Self.pagemodule_change_password_id)");
+                            pageModule.outerHTML = `\(html: Identity.Consumer.View.Password.Change.Request.View.Confirmation(redirectOnSuccess: self.redirectOnSuccess, primaryColor: self.primaryColor))`;
                         } else {
-                            throw new Error(data.reason || '\#(TranslatedString(
-                                dutch: "Verzoek om e-mailadres te wijzigen mislukt",
-                                english: "Email change request failed"
+                            throw new Error(data.message || '\(TranslatedString(
+                                dutch: "Wachtwoord wijzigen mislukt",
+                                english: "Password change failed"
                             ))');
                         }
                     } catch (error) {
                         console.error("Error occurred:", error);
-                        displayError(error.message);
+                        alert('\(TranslatedString(
+                            dutch: "Er is een fout opgetreden. Probeer het later opnieuw.",
+                            english: "An error occurred. Please try again later."
+                        ))');
                     }
                 });
-
-                function displayError(message) {
-                    errorContainer.textContent = message;
-                    errorContainer.style.display = 'block';
-                }
             });
-            """#}
+            """}
         }
     }
 }
 
-extension Identity_Consumer.Route.EmailChange.Request.View {
-    public struct ReceiptConfirmation: HTML {
-        let homeHref: URL
+extension Identity.Consumer.View.Password.Change.Request.View {
+    struct Confirmation: HTML {
+        let redirectOnSuccess: URL
         let primaryColor: HTMLColor
         
-        public init(
-            homeHref: URL,
+        init(
+            redirectOnSuccess: URL,
             primaryColor: HTMLColor
         ) {
-            self.homeHref = homeHref
+            self.redirectOnSuccess = redirectOnSuccess
             self.primaryColor = primaryColor
         }
         
@@ -187,8 +154,8 @@ extension Identity_Consumer.Route.EmailChange.Request.View {
                 VStack {
                     Paragraph {
                         TranslatedString(
-                            dutch: "We hebben een bevestigingsmail gestuurd naar beide e-mailadressen.",
-                            english: "We've sent a confirmation email to both email addresses."
+                            dutch: "Uw wachtwoord is succesvol gewijzigd.",
+                            english: "Your password has been successfully changed."
                         )
                     }
                     .textAlign(.center)
@@ -196,8 +163,8 @@ extension Identity_Consumer.Route.EmailChange.Request.View {
                     
                     Paragraph {
                         TranslatedString(
-                            dutch: "Volg de instructies in de e-mails om de wijziging te voltooien.",
-                            english: "Follow the instructions in the emails to complete the change."
+                            dutch: "U kunt nu inloggen met uw nieuwe wachtwoord.",
+                            english: "You can now log in with your new password."
                         )
                     }
                     .textAlign(.center)
@@ -208,7 +175,7 @@ extension Identity_Consumer.Route.EmailChange.Request.View {
                             dutch: "Terug naar home",
                             english: "Back to Home"
                         ).description,
-                        href: homeHref.absoluteString
+                        href: redirectOnSuccess.absoluteString
                     )
                     .linkColor(self.primaryColor)
                 }
@@ -221,8 +188,8 @@ extension Identity_Consumer.Route.EmailChange.Request.View {
             } title: {
                 Header(3) {
                     TranslatedString(
-                        dutch: "Verzoek ontvangen",
-                        english: "Request Received"
+                        dutch: "Wachtwoord gewijzigd",
+                        english: "Password Changed"
                     )
                 }
                 .display(.inlineBlock)
@@ -231,4 +198,3 @@ extension Identity_Consumer.Route.EmailChange.Request.View {
         }
     }
 }
-

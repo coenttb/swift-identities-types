@@ -13,11 +13,11 @@ import Identity_Consumer
 
 extension Identity.Consumer {
     public static func response(
-        route: Identity_Consumer.Route,
+        route: Identity.Consumer.View,
         logo: Logo,
         canonicalHref: URL?,
         favicons: Favicons,
-        hreflang:  @escaping (Identity_Consumer.Route, Language) -> URL,
+        hreflang:  @escaping (Identity.Consumer.View, Language) -> URL,
         termsOfUse: URL,
         privacyStatement: URL,
         dependency: Identity.Consumer.Client,
@@ -74,7 +74,7 @@ extension Identity.Consumer {
             switch create {
             case .request:
                 return accountDefaultContainer {
-                    Identity_Shared.Create.Request.View(
+                    Identity.Create.Request.View(
                         primaryColor: primaryColor,
                         loginHref: loginHref,
                         accountCreateHref: accountCreateHref,
@@ -83,7 +83,7 @@ extension Identity.Consumer {
                 }
             case .verify:
                 return accountDefaultContainer {
-                    Identity_Shared.Create.Verify.View(
+                    Identity.Create.Verify.View(
                         verificationAction: verificationAction,
                         redirectURL: verificationSuccessRedirect
                     )
@@ -94,7 +94,7 @@ extension Identity.Consumer {
             
         case .login:
             return accountDefaultContainer {
-                Identity_Shared.Authenticate.Credentials.View(
+                Identity.Authenticate.Credentials.View(
                     primaryColor: primaryColor,
                     passwordResetHref: passwordResetHref,
                     accountCreateHref: accountCreateHref,
@@ -115,7 +115,7 @@ extension Identity.Consumer {
                 switch reset {
                 case .request:
                     return accountDefaultContainer {
-                        Route.Password.Reset.Request.View(
+                        Identity.Consumer.View.Password.Reset.Request.View(
                             formActionURL: passwordResetAction,
                             homeHref: homeHref,
                             primaryColor: primaryColor
@@ -124,7 +124,7 @@ extension Identity.Consumer {
                     
                 case .confirm(let confirm):
                     return accountDefaultContainer {
-                        Route.Password.Reset.Confirm.View(
+                        Identity.Consumer.View.Password.Reset.Confirm.View(
                             token: confirm.token,
                             passwordResetAction: passwordResetConfirmAction,
                             homeHref: homeHref,
@@ -138,7 +138,7 @@ extension Identity.Consumer {
                 switch change {
                 case .request:
                     return accountDefaultContainer {
-                        Route.Password.Change.Request.View(
+                        Identity.Consumer.View.Password.Change.Request.View(
                             formActionURL: passwordChangeRequestAction,
                             redirectOnSuccess: loginHref,
                             primaryColor: primaryColor
@@ -162,11 +162,11 @@ extension Identity.Consumer {
                 do {
                     try await dependency.emailChange.request(newEmail: nil)
                 }
-                catch let error as Identity_Shared.EmailChange.Request.Error {
+                catch let error as Identity.EmailChange.Request.Error {
                     switch error {
                     case .unauthorized:
                         return accountDefaultContainer {
-                            ConfirmAccess(
+                            Identity.Consumer.View.Reauthorization.View(
                                 currentUserName: currentUserName,
                                 primaryColor: primaryColor,
                                 passwordResetHref: passwordResetHref,
@@ -176,7 +176,7 @@ extension Identity.Consumer {
                         }
                     case .emailIsNil:
                         return accountDefaultContainer {
-                            Route.EmailChange.Request.View(
+                            Identity.Consumer.View.EmailChange.Request.View(
                                 formActionURL: requestEmailChangeAction,
                                 homeHref: homeHref,
                                 primaryColor: primaryColor
@@ -186,7 +186,7 @@ extension Identity.Consumer {
                 }
                 
                 return accountDefaultContainer {
-                    Route.EmailChange.Request.View(
+                    Identity.Consumer.View.EmailChange.Request.View(
                         formActionURL: requestEmailChangeAction,
                         homeHref: homeHref,
                         primaryColor: primaryColor
@@ -198,7 +198,7 @@ extension Identity.Consumer {
                 try await dependency.emailChange.confirm(token: confirm.token)
                 
                 return accountDefaultContainer {
-                    Route.EmailChange.Confirm.View(
+                    Identity.Consumer.View.EmailChange.Confirm.View(
                         redirect: confirmEmailChangeSuccessRedirect,
                         primaryColor: primaryColor
                     )
@@ -206,6 +206,8 @@ extension Identity.Consumer {
             }
 //        case .multifactorAuthentication(_):
 //            fatalError()
+        case .reauthorization:
+            fatalError()
         }
     }
 }

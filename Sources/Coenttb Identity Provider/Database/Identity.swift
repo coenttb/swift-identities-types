@@ -4,92 +4,100 @@ import Foundation
 @preconcurrency import Vapor
 import EmailAddress
 
-public final class Identity: Model, Content, @unchecked Sendable {
-    public static let schema = "identities"
+extension Database {
+    public final class Identity: Model, Content, @unchecked Sendable {
+        public static let schema = "identities"
 
-    @ID(key: .id)
-    public var id: UUID?
-    
-    @Field(key: FieldKeys.email)
-    public internal(set) var email: String
-    
-    @Field(key: FieldKeys.passwordHash)
-    public var passwordHash: String
-    
-    @OptionalField(key: FieldKeys.name)
-    public var name: String?
-    
-    @Field(key: FieldKeys.isAdmin)
-    public var isAdmin: Bool
-    
-    @Enum(key: FieldKeys.emailVerificationStatus)
-    public var emailVerificationStatus: EmailVerificationStatus
-    
-    @Field(key: FieldKeys.sessionVersion)
-    public var sessionVersion: Int
-    
-    @Timestamp(key: FieldKeys.createdAt, on: .create)
-    public var createdAt: Date?
-    
-    @Timestamp(key: FieldKeys.updatedAt, on: .update)
-    public var updatedAt: Date?
-    
-    @OptionalField(key: FieldKeys.lastLoginAt)
-    public var lastLoginAt: Date?
-    
-    public var emailAddress: EmailAddress {
-        get {
-            try! EmailAddress(self.email)
+        @ID(key: .id)
+        public var id: UUID?
+        
+        @Field(key: FieldKeys.email)
+        public internal(set) var email: String
+        
+        @Field(key: FieldKeys.passwordHash)
+        public var passwordHash: String
+
+        @Enum(key: FieldKeys.emailVerificationStatus)
+        public var emailVerificationStatus: EmailVerificationStatus
+        
+        @Field(key: FieldKeys.sessionVersion)
+        public var sessionVersion: Int
+        
+        @Timestamp(key: FieldKeys.createdAt, on: .create)
+        public var createdAt: Date?
+        
+        @Timestamp(key: FieldKeys.updatedAt, on: .update)
+        public var updatedAt: Date?
+        
+        @OptionalField(key: FieldKeys.lastLoginAt)
+        public var lastLoginAt: Date?
+        
+        public var emailAddress: EmailAddress {
+            get {
+                try! EmailAddress(self.email)
+            }
+            set {
+                self.email = newValue.rawValue
+            }
         }
-        set {
-            self.email = newValue.rawValue
+        
+        @OptionalChild(for: \.$identity)
+        public var deletion: Database.Identity.Deletion?
+
+        package enum FieldKeys {
+            public static let email: FieldKey = "email"
+            public static let passwordHash: FieldKey = "password_hash"
+            public static let emailVerificationStatus: FieldKey = "email_verification_status"
+            public static let createdAt: FieldKey = "created_at"
+            public static let updatedAt: FieldKey = "updated_at"
+            public static let lastLoginAt: FieldKey = "last_login_at"
+            public static let sessionVersion: FieldKey = "session-version"
         }
-    }
-    
-    @OptionalChild(for: \.$identity)
-    public var deletion: Identity.Deletion?
+        
+        public enum EmailVerificationStatus: String, Codable, Sendable {
+            case unverified
+            case pending
+            case verified
+            case failed
+        }
 
-    public enum FieldKeys {
-        public static let email: FieldKey = "email"
-        public static let passwordHash: FieldKey = "password_hash"
-        public static let name: FieldKey = "name"
-        public static let isAdmin: FieldKey = "is_admin"
-        public static let emailVerificationStatus: FieldKey = "email_verification_status"
-        public static let createdAt: FieldKey = "created_at"
-        public static let updatedAt: FieldKey = "updated_at"
-        public static let lastLoginAt: FieldKey = "last_login_at"
-        public static let sessionVersion: FieldKey = "session-version"
-    }
-    
-    public enum EmailVerificationStatus: String, Codable, Sendable {
-        case unverified
-        case pending
-        case verified
-        case failed
-    }
+        public init() {}
 
-    public init() {}
-
-    public init(
-        id: UUID? = nil,
-        email: EmailAddress,
-        password: String,
-        name: String? = nil,
-        isAdmin: Bool = false,
-        emailVerificationStatus: EmailVerificationStatus = .unverified,
-        sessionVersion: Int = 0
-    ) throws {
-        self.id = id
-        self.email = email.rawValue
-        self.passwordHash = try Bcrypt.hash(password)
-        self.name = name
-        self.isAdmin = isAdmin
-        self.emailVerificationStatus = emailVerificationStatus
-        self.sessionVersion = sessionVersion
+        public init(
+            id: UUID? = nil,
+            email: EmailAddress,
+            password: String,
+            emailVerificationStatus: EmailVerificationStatus = .unverified,
+            sessionVersion: Int = 0
+        ) throws {
+            self.id = id
+            self.email = email.rawValue
+            self.passwordHash = try Bcrypt.hash(password)
+            self.emailVerificationStatus = emailVerificationStatus
+            self.sessionVersion = sessionVersion
+        }
     }
 }
 
-extension Identity {
+extension Database.Identity: ModelAuthenticatable {
+    public static var usernameKey: KeyPath<Database.Identity, Field<String>> {
+        \Database.Identity.$email
+    }
+
+    public static var passwordHashKey: KeyPath<Database.Identity, Field<String>> {
+        \Database.Identity.$passwordHash
+    }
+
+    public func verify(password: String) throws -> Bool {
+        try Bcrypt.verify(password, created: self.passwordHash) && self.emailVerificationStatus == .verified
+    }
+}
+
+extension Database.Identity: ModelCredentialsAuthenticatable {}
+
+extension Database.Identity: ModelSessionAuthenticatable {}
+
+extension Database.Identity {
     public enum Migration {
         public struct Create: AsyncMigration {
             
@@ -97,14 +105,12 @@ extension Identity {
             
             public init() {}
 
-            public func prepare(on database: Database) async throws {
-                try await database.schema(Identity.schema)
+            public func prepare(on database: Fluent.Database) async throws {
+                try await database.schema(Database.Identity.schema)
                     .id()
                     .field(FieldKeys.email, .string, .required)
                     .unique(on: FieldKeys.email)
                     .field(FieldKeys.passwordHash, .string, .required)
-                    .field(FieldKeys.name, .string)
-                    .field(FieldKeys.isAdmin, .bool, .required, .custom("DEFAULT FALSE"))
                     .field(FieldKeys.emailVerificationStatus, .string, .required)
                     .field(FieldKeys.createdAt, .datetime)
                     .field(FieldKeys.updatedAt, .datetime)
@@ -113,56 +119,18 @@ extension Identity {
                     .create()
             }
 
-            public func revert(on database: Database) async throws {
-                try await database.schema(Identity.schema).delete()
+            public func revert(on database: Fluent.Database) async throws {
+                try await database.schema(Database.Identity.schema).delete()
             }
         }
     }
 }
 
-extension Identity: ModelAuthenticatable {
-    public static var usernameKey: KeyPath<Identity, Field<String>> {
-        \Identity.$email
-    }
 
-    public static var passwordHashKey: KeyPath<Identity, Field<String>> {
-        \Identity.$passwordHash
-    }
 
-    public func verify(password: String) throws -> Bool {
-        try Bcrypt.verify(password, created: self.passwordHash) && self.emailVerificationStatus == .verified
-    }
-}
 
-extension Identity: ModelCredentialsAuthenticatable {}
 
-extension Identity: ModelSessionAuthenticatable {}
-
-extension Identity {
-    public func generateToken(type: Identity.Token.TokenType, validUntil: Date? = nil) throws -> Identity.Token {
-        try .init(
-            identity: self,
-            type: type,
-            validUntil: validUntil
-        )
-    }
-}
-
-extension Identity {
-    private static let tokenGenerationLimit = 5
-    private static let tokenGenerationWindow: TimeInterval = 3600 // 1 hour
-
-    public func canGenerateToken(on db: Database) async throws -> Bool {
-        let recentTokens = try await Identity.Token.query(on: db)
-            .filter(\.$identity.$id == self.id!)
-            .filter(\.$createdAt >= Date().addingTimeInterval(-Self.tokenGenerationWindow))
-            .count()
-
-        return recentTokens < Self.tokenGenerationLimit
-    }
-}
-
-extension Identity {
+extension Database.Identity {
     public func setPassword(_ password: String) throws {
         self.passwordHash = try Bcrypt.hash(password)
     }

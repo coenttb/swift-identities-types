@@ -11,7 +11,7 @@ import Foundation
 @preconcurrency import Vapor
 import Coenttb_Identity_Shared
 
-extension MultifactorAuthentication {
+extension Database.MultifactorAuthentication {
     public final class Challenge: Model, Content, @unchecked Sendable {
         public static let schema = "mfa_challenges"
 
@@ -19,7 +19,7 @@ extension MultifactorAuthentication {
         public var id: UUID?
 
         @Parent(key: FieldKeys.identityId)
-        public var identity: Identity
+        public var identity: Database.Identity
 
         @Enum(key: FieldKeys.type)
         public var type: Identity_Shared.MultifactorAuthentication.Method
@@ -36,7 +36,7 @@ extension MultifactorAuthentication {
         @Field(key: FieldKeys.expiresAt)
         public var expiresAt: Date
 
-        public enum FieldKeys {
+        package enum FieldKeys {
             public static let identityId: FieldKey = "identity_id"
             public static let type: FieldKey = "type"
             public static let code: FieldKey = "code"
@@ -49,7 +49,7 @@ extension MultifactorAuthentication {
 
         public init(
             id: UUID? = nil,
-            identity: Identity,
+            identity: Database.Identity,
             type: Identity_Shared.MultifactorAuthentication.Method,
             code: String,
             attempts: Int = 0,
@@ -66,17 +66,17 @@ extension MultifactorAuthentication {
 }
 
 
-extension MultifactorAuthentication.Challenge {
+extension Database.MultifactorAuthentication.Challenge {
     public enum Migration {
         public struct Create: AsyncMigration {
             public var name: String = "Identity_Provider.MultifactorAuthentication.Challenge.Migration.Create"
             
             public init() {}
 
-            public func prepare(on database: Database) async throws {
-                try await database.schema(MultifactorAuthentication.Challenge.schema)
+            public func prepare(on database: Fluent.Database) async throws {
+                try await database.schema(Database.MultifactorAuthentication.Challenge.schema)
                     .id()
-                    .field(FieldKeys.identityId, .uuid, .required, .references(Identity.schema, "id", onDelete: .cascade))
+                    .field(FieldKeys.identityId, .uuid, .required, .references(Database.Identity.schema, "id", onDelete: .cascade))
                     .field(FieldKeys.type, .string, .required)
                     .field(FieldKeys.code, .string, .required)
                     .field(FieldKeys.attempts, .int, .required)
@@ -85,8 +85,8 @@ extension MultifactorAuthentication.Challenge {
                     .create()
             }
 
-            public func revert(on database: Database) async throws {
-                try await database.schema(MultifactorAuthentication.Challenge.schema).delete()
+            public func revert(on database: Fluent.Database) async throws {
+                try await database.schema(Database.MultifactorAuthentication.Challenge.schema).delete()
             }
         }
     }

@@ -12,7 +12,7 @@ import Foundation
 import Coenttb_Identity_Shared
 
 // MultifactorAuthentication.RecoveryCode.swift
-extension MultifactorAuthentication {
+extension Database.MultifactorAuthentication {
     public final class RecoveryCode: Model, Content, @unchecked Sendable {
         public static let schema = "mfa_recovery_codes"
 
@@ -20,7 +20,7 @@ extension MultifactorAuthentication {
         public var id: UUID?
 
         @Parent(key: FieldKeys.identityId)
-        public var identity: Identity
+        public var identity: Database.Identity
 
         @Field(key: FieldKeys.code)
         public var code: String
@@ -31,7 +31,7 @@ extension MultifactorAuthentication {
         @OptionalField(key: FieldKeys.usedAt)
         public var usedAt: Date?
 
-        public enum FieldKeys {
+        package enum FieldKeys {
             public static let identityId: FieldKey = "identity_id"
             public static let code: FieldKey = "code"
             public static let used: FieldKey = "used"
@@ -42,7 +42,7 @@ extension MultifactorAuthentication {
 
         public init(
             id: UUID? = nil,
-            identity: Identity,
+            identity: Database.Identity,
             code: String,
             used: Bool = false
         ) throws {
@@ -55,25 +55,25 @@ extension MultifactorAuthentication {
 }
 
 
-extension MultifactorAuthentication.RecoveryCode {
+extension Database.MultifactorAuthentication.RecoveryCode {
     public enum Migration {
         public struct Create: AsyncMigration {
             public var name: String = "Identity_Provider.MultifactorAuthentication.RecoveryCode.Migration.Create"
             
             public init() {}
 
-            public func prepare(on database: Database) async throws {
-                try await database.schema(MultifactorAuthentication.RecoveryCode.schema)
+            public func prepare(on database: Fluent.Database) async throws {
+                try await database.schema(Database.MultifactorAuthentication.RecoveryCode.schema)
                     .id()
-                    .field(FieldKeys.identityId, .uuid, .required, .references(Identity.schema, "id", onDelete: .cascade))
+                    .field(FieldKeys.identityId, .uuid, .required, .references(Database.Identity.schema, "id", onDelete: .cascade))
                     .field(FieldKeys.code, .string, .required)
                     .field(FieldKeys.used, .bool, .required)
                     .field(FieldKeys.usedAt, .datetime)
                     .create()
             }
 
-            public func revert(on database: Database) async throws {
-                try await database.schema(MultifactorAuthentication.RecoveryCode.schema).delete()
+            public func revert(on database: Fluent.Database) async throws {
+                try await database.schema(Database.MultifactorAuthentication.RecoveryCode.schema).delete()
             }
         }
     }

@@ -9,9 +9,10 @@ import Dependencies
 @preconcurrency import Fluent
 import Foundation
 @preconcurrency import Vapor
+import Identity_Shared
 import Coenttb_Identity_Shared
 
-extension MultifactorAuthentication {
+extension Database.MultifactorAuthentication {
     public final class Audit {
         public final class Event: Model, Content, @unchecked Sendable {
             public static let schema = "mfa_audit_events"
@@ -34,7 +35,7 @@ extension MultifactorAuthentication {
             @Field(key: FieldKeys.metadata)
             public var metadata: [String: String]
 
-            public enum FieldKeys {
+            package enum FieldKeys {
                 public static let userId: FieldKey = "user_id"
                 public static let type: FieldKey = "type"
                 public static let method: FieldKey = "method"
@@ -63,15 +64,15 @@ extension MultifactorAuthentication {
     }
 }
 
-extension MultifactorAuthentication.Audit.Event {
+extension Database.MultifactorAuthentication.Audit.Event {
     public enum Migration {
         public struct Create: AsyncMigration {
             public var name: String = "Identity_Provider.MultifactorAuthentication.Audit.Event.Migration.Create"
             
             public init() {}
 
-            public func prepare(on database: Database) async throws {
-                try await database.schema(MultifactorAuthentication.Audit.Event.schema)
+            public func prepare(on database: Fluent.Database) async throws {
+                try await database.schema(Database.MultifactorAuthentication.Audit.Event.schema)
                     .id()
                     .field(FieldKeys.userId, .string, .required)
                     .field(FieldKeys.type, .string, .required)
@@ -81,8 +82,8 @@ extension MultifactorAuthentication.Audit.Event {
                     .create()
             }
 
-            public func revert(on database: Database) async throws {
-                try await database.schema(MultifactorAuthentication.Audit.Event.schema).delete()
+            public func revert(on database: Fluent.Database) async throws {
+                try await database.schema(Database.MultifactorAuthentication.Audit.Event.schema).delete()
             }
         }
     }

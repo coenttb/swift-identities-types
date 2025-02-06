@@ -25,11 +25,11 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
             request: { reauthToken in
                 try await database.transaction { db in
                     
-                    let identity = try await Identity.get(by: .auth, on: db)
+                    let identity = try await Database.Identity.get(by: .auth, on: db)
                     
                     guard
                         let id = identity.id,
-                        let _ = try await Identity.Token.query(on: db)
+                        let _ = try await Database.Identity.Token.query(on: db)
                         .filter(\.$identity.$id == id)
                         .filter(\.$type == .reauthenticationToken)
                         .filter(\.$value == reauthToken)
@@ -41,7 +41,7 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                         throw Abort(.badRequest, reason: "User is already pending deletion")
                     }
                     
-                    let deletion: Identity.Deletion = try .init(identity: identity)
+                    let deletion: Database.Identity.Deletion = try .init(identity: identity)
                     
                     deletion.state = .pending
                     deletion.requestedAt = Date()
@@ -55,7 +55,7 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
             cancel: {
                 try await database.transaction { db in
                     
-                    let identity = try await Identity.get(by: .auth, on: db)
+                    let identity = try await Database.Identity.get(by: .auth, on: db)
                    
                     guard identity.deletion?.state == .pending else {
                         throw Abort(.badRequest, reason: "User is not pending deletion")
@@ -71,7 +71,7 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
             confirm: {
                 try await database.transaction { db in
                     
-                    let identity = try await Identity.get(by: .auth, on: db)
+                    let identity = try await Database.Identity.get(by: .auth, on: db)
                     
                     guard
                         let deletion = identity.deletion,

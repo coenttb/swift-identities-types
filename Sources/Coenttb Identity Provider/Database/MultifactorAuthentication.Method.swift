@@ -9,9 +9,10 @@ import Dependencies
 @preconcurrency import Fluent
 import Foundation
 @preconcurrency import Vapor
+import Identity_Shared
 import Coenttb_Identity_Shared
 
-extension MultifactorAuthentication {
+extension Database.MultifactorAuthentication {
     public final class Method: Model, Content, @unchecked Sendable {
         public static let schema = "mfa_methods"
 
@@ -19,7 +20,7 @@ extension MultifactorAuthentication {
         public var id: UUID?
 
         @Parent(key: FieldKeys.identityId)
-        public var identity: Identity
+        public var identity: Database.Identity
 
         @Enum(key: FieldKeys.type)
         public var type: Identity_Shared.MultifactorAuthentication.Method
@@ -36,7 +37,7 @@ extension MultifactorAuthentication {
         @OptionalField(key: FieldKeys.lastUsedAt)
         public var lastUsedAt: Date?
 
-        public enum FieldKeys {
+        package enum FieldKeys {
             public static let identityId: FieldKey = "identity_id"
             public static let type: FieldKey = "type"
             public static let identifier: FieldKey = "identifier"
@@ -49,7 +50,7 @@ extension MultifactorAuthentication {
 
         public init(
             id: UUID? = nil,
-            identity: Identity,
+            identity: Database.Identity,
             type: Identity_Shared.MultifactorAuthentication.Method,
             identifier: String,
             verified: Bool = false
@@ -64,17 +65,17 @@ extension MultifactorAuthentication {
 }
 
 
-extension Coenttb_Identity_Provider.MultifactorAuthentication.Method {
+extension Database.MultifactorAuthentication.Method {
     public enum Migration {
         public struct Create: AsyncMigration {
             public var name: String = "Identity_Provider.MultifactorAuthentication.Method.Migration.Create"
             
             public init() {}
 
-            public func prepare(on database: Database) async throws {
-                try await database.schema(MultifactorAuthentication.Method.schema)
+            public func prepare(on database: Fluent.Database) async throws {
+                try await database.schema(Database.MultifactorAuthentication.Method.schema)
                     .id()
-                    .field(FieldKeys.identityId, .uuid, .required, .references(Identity.schema, "id", onDelete: .cascade))
+                    .field(FieldKeys.identityId, .uuid, .required, .references(Database.Identity.schema, "id", onDelete: .cascade))
                     .field(FieldKeys.type, .string, .required)
                     .field(FieldKeys.identifier, .string, .required)
                     .field(FieldKeys.verified, .bool, .required)
@@ -84,8 +85,8 @@ extension Coenttb_Identity_Provider.MultifactorAuthentication.Method {
                     .create()
             }
 
-            public func revert(on database: Database) async throws {
-                try await database.schema(MultifactorAuthentication.Method.schema).delete()
+            public func revert(on database: Fluent.Database) async throws {
+                try await database.schema(Database.MultifactorAuthentication.Method.schema).delete()
             }
         }
     }

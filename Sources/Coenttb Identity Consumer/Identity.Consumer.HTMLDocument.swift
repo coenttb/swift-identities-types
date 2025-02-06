@@ -13,27 +13,27 @@ extension Identity.Consumer {
     public struct HTMLDocument<
         Body: HTML
     >: Coenttb_Web.HTMLDocument {
-        let route: Identity_Consumer.Route
-        let title: (Identity_Consumer.Route) -> String
-        let description: (Identity_Consumer.Route) -> String
+        let route: Identity.Consumer.View
+        let title: (Identity.Consumer.View) -> String
+        let description: (Identity.Consumer.View) -> String
         let primaryColor: HTMLColor
         let accentColor: HTMLColor
         let favicons: Favicons
         let canonicalHref: URL?
-        let hreflang: (Identity_Consumer.Route, Languages.Language) -> URL
+        let hreflang: (Identity.Consumer.View, Languages.Language) -> URL
         let termsOfUse: URL
         let privacyStatement: URL
         let _body: Body
         
         public init(
-            route: Identity_Consumer.Route,
-            title: @escaping (Identity_Consumer.Route) -> String,
-            description: @escaping (Identity_Consumer.Route) -> String,
+            route: Identity.Consumer.View,
+            title: @escaping (Identity.Consumer.View) -> String,
+            description: @escaping (Identity.Consumer.View) -> String,
             primaryColor: HTMLColor,
             accentColor: HTMLColor,
             @HTMLBuilder favicons: () -> Favicons,
             canonicalHref: URL?,
-            hreflang: @escaping (Identity_Consumer.Route, Languages.Language) -> URL,
+            hreflang: @escaping (Identity.Consumer.View, Languages.Language) -> URL,
             termsOfUse: URL,
             privacyStatement: URL,
             @HTMLBuilder body: () -> Body

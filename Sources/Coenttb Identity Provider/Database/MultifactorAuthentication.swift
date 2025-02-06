@@ -6,5 +6,6 @@
 //
 
 import Foundation
-
-public enum MultifactorAuthentication {}
+extension Database {
+    public enum MultifactorAuthentication {}    
+}

@@ -27,6 +27,7 @@ extension Target.Dependency {
     static var dependenciesTestSupport: Self { .product(name: "DependenciesTestSupport", package: "swift-dependencies") }
     static var mailgun: Self { .product(name: "Mailgun", package: "coenttb-mailgun") }
     static var fluentSqlLite: Self { .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver") }
+    static var vaporJWT: Self { .product(name: "JWT", package: "jwt") }
 }
 
 let package = Package(
@@ -48,6 +49,7 @@ let package = Package(
         .package(url: "https://github.com/coenttb/swift-identity", branch: "main"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3"),
         .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
+        .package(url: "https://github.com/vapor/jwt.git", from: "5.0.0")
     ],
     targets: [
         .target(
@@ -56,6 +58,7 @@ let package = Package(
                 .identityShared,
                 .coenttbWeb,
                 .dependenciesMacros,
+                .vaporJWT,
             ]
         ),
         .target(
@@ -65,7 +68,8 @@ let package = Package(
                 .coenttbWeb,
                 .dependenciesMacros,
                 .coenttbIdentityShared,
-                .coenttbServerVapor
+                .coenttbServerVapor,
+                .vaporJWT,
             ]
         ),
         .target(
@@ -78,6 +82,7 @@ let package = Package(
                 .coenttbServerFluent,
                 .coenttbIdentityShared,
                 .mailgun,
+
             ]
         ),
         .testTarget(

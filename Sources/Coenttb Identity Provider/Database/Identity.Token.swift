@@ -10,7 +10,7 @@ import Dependencies
 import Foundation
 import Vapor
 
-extension Identity {
+extension Database.Identity {
     public final class Token: Model, Content, @unchecked Sendable  {
         public static let schema = "identity_tokens"
         
@@ -24,10 +24,10 @@ extension Identity {
         public var validUntil: Date
         
         @Parent(key: FieldKeys.identityId)
-        public var identity: Identity
+        public var identity: Database.Identity
         
         @Enum(key: FieldKeys.type)
-        public var type: TokenType
+        public var type: Database.Identity.Token.TokenType
         
         @Timestamp(key: FieldKeys.createdAt, on: .create)
         public var createdAt: Date?
@@ -35,7 +35,7 @@ extension Identity {
         @OptionalField(key: FieldKeys.lastUsedAt)
         public var lastUsedAt: Date?
         
-        public enum FieldKeys {
+        package enum FieldKeys {
             public static let value: FieldKey = "value"
             public static let validUntil: FieldKey = "valid_until"
             public static let identityId: FieldKey = "identity_id"
@@ -76,11 +76,16 @@ extension Identity {
         
         public init() {}
         
-        public init(id: UUID? = nil, identity: Identity, type: TokenType, validUntil: Date? = nil) throws {
+        public init(
+            id: UUID? = nil,
+            identity: Database.Identity,
+            type: Database.Identity.Token.TokenType,
+            validUntil: Date? = nil
+        ) throws {
             self.id = id
             self.$identity.id = try identity.requireID()
             self.type = type
-            self.value = Identity.Token.generateSecureToken()
+            self.value = Database.Identity.Token.generateSecureToken()
             self.validUntil = validUntil ?? Date().addingTimeInterval(3600) // Default 1 hour validity
         }
         
@@ -89,40 +94,18 @@ extension Identity {
                 .withUnsafeBytes { Data($0) }
                 .base64EncodedString()
         }
-        
-        public struct Migration: AsyncMigration {
-            
-            public var name: String = "Coenttb_Identity.Identity.Token.Migration.Create"
-            
-            public init(){}
-            
-            public func prepare(on database: Database) async throws {
-                try await database.schema(Token.schema)
-                    .id()
-                    .field(FieldKeys.value, .string, .required)
-                    .field(FieldKeys.validUntil, .datetime, .required)
-                    .field(FieldKeys.identityId, .uuid, .required, .references(Identity.schema, "id", onDelete: .cascade))
-                    .field(FieldKeys.type, .string, .required)
-                    .field(FieldKeys.createdAt, .datetime, .required)
-                    .field(FieldKeys.lastUsedAt, .datetime)
-                    .unique(on: FieldKeys.value)
-                    .create()
-            }
-            
-            public func revert(on database: Database) async throws {
-                try await database.schema(Token.schema).delete()
-            }
-        }
     }
 }
 
-extension Identity.Token: ModelTokenAuthenticatable {
-    public static var valueKey: KeyPath<Identity.Token, Field<String>> {
-        \Identity.Token.$value
+
+
+extension Database.Identity.Token: ModelTokenAuthenticatable {
+    public static var valueKey: KeyPath<Database.Identity.Token, Field<String>> {
+        \Database.Identity.Token.$value
     }
     
-    public static var userKey: KeyPath<Identity.Token, Parent<Identity>> {
-        \Identity.Token.$identity
+    public static var userKey: KeyPath<Database.Identity.Token, Parent<Database.Identity>> {
+        \Database.Identity.Token.$identity
     }
     
     public var isValid: Bool {
@@ -130,8 +113,8 @@ extension Identity.Token: ModelTokenAuthenticatable {
     }
 }
 
-extension Identity.Token {
-    public func rotateIfNecessary(on db: Database) async throws -> Identity.Token {
+extension Database.Identity.Token {
+    public func rotateIfNecessary(on db: Fluent.Database) async throws -> Database.Identity.Token {
         guard self.type == .apiAccess || self.type == .refreshToken else {
             return self
         }
@@ -143,5 +126,55 @@ extension Identity.Token {
         }
         
         return self
+    }
+}
+
+extension Database.Identity {
+    public func generateToken(type: Database.Identity.Token.TokenType, validUntil: Date? = nil) throws -> Database.Identity.Token {
+        try .init(
+            identity: self,
+            type: type,
+            validUntil: validUntil
+        )
+    }
+}
+
+extension Database.Identity.Token {
+    public struct Migration: AsyncMigration {
+        
+        public var name: String = "Coenttb_Identity.Identity.Token.Migration.Create"
+        
+        public init(){}
+        
+        public func prepare(on database: Fluent.Database) async throws {
+            try await database.schema(Database.Identity.Token.schema)
+                .id()
+                .field(FieldKeys.value, .string, .required)
+                .field(FieldKeys.validUntil, .datetime, .required)
+                .field(FieldKeys.identityId, .uuid, .required, .references(Database.Identity.schema, "id", onDelete: .cascade))
+                .field(FieldKeys.type, .string, .required)
+                .field(FieldKeys.createdAt, .datetime, .required)
+                .field(FieldKeys.lastUsedAt, .datetime)
+                .unique(on: FieldKeys.value)
+                .create()
+        }
+        
+        public func revert(on database: Fluent.Database) async throws {
+            try await database.schema(Database.Identity.Token.schema).delete()
+        }
+    }
+}
+
+extension Database.Identity {
+    private static let tokenGenerationLimit = 5
+    private static let tokenGenerationWindow: TimeInterval = 3600 // 1 hour
+
+    public func canGenerateToken(on db: Fluent.Database) async throws -> Bool {
+        let recentTokens = try await Database.Identity.Token.query(on: db)
+            .filter(\.$identity.$id == self.id!)
+            .filter(\.$createdAt >= Date().addingTimeInterval(-Self.tokenGenerationWindow))
+            .count()
+
+        return recentTokens < Self.tokenGenerationLimit
     }
 }

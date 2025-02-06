@@ -9,11 +9,11 @@ import Foundation
 import Coenttb_Web
 import Identity_Consumer
 
-extension Identity_Consumer.Route.Create {
+extension Identity.Consumer.View.Create {
     public enum View: HTML {
-        case request(Identity_Shared.Create.Request.View)
-        case requestReceivedConfirmationPage(Identity_Shared.Create.RequestReceivedConfirmationPage)
-        case verify(Identity_Shared.Create.Verify.View)
+        case request(Identity.Create.Request.View)
+        case requestReceivedConfirmationPage(Identity.Create.RequestReceivedConfirmationPage)
+        case verify(Identity.Create.Verify.View)
         
         public var body: some HTML {
             switch self {
@@ -28,7 +28,7 @@ extension Identity_Consumer.Route.Create {
     }
 }
 
-extension Identity_Shared.Create.Request {
+extension Identity.Create.Request {
     public struct View: HTML {
         
         let primaryColor: HTMLColor
@@ -54,12 +54,12 @@ extension Identity_Shared.Create.Request {
             PageModule(theme: .login) {
                 form {
                     VStack {
-                        Input.default(Identity_Shared.Create.Request.CodingKeys.email)
+                        Input.default(Identity.Create.Request.CodingKeys.email)
                             .type(.email)
                             .placeholder(String.email.description)
                             .focusOnPageLoad()
                         
-                        Input.default(Identity_Shared.Create.Request.CodingKeys.password)
+                        Input.default(Identity.Create.Request.CodingKeys.password)
                             .type(.password)
                             .placeholder(String.password.description)
                         
@@ -109,8 +109,8 @@ extension Identity_Shared.Create.Request {
                     event.preventDefault();
                     
                     const formData = new FormData(form);
-                    const email = formData.get('\(Identity_Shared.Create.Request.CodingKeys.email.rawValue)');
-                    const password = formData.get('\(Identity_Shared.Create.Request.CodingKeys.password.rawValue)');
+                    const email = formData.get('\(Identity.Create.Request.CodingKeys.email.rawValue)');
+                    const password = formData.get('\(Identity.Create.Request.CodingKeys.password.rawValue)');
                     
                     try {
                         const response = await fetch(form.action, {
@@ -120,8 +120,8 @@ extension Identity_Shared.Create.Request {
                                 'Accept': 'application/json'
                             },
                             body: new URLSearchParams({
-                                 \(Identity_Shared.Create.Request.CodingKeys.email.rawValue): email,
-                                 \(Identity_Shared.Create.Request.CodingKeys.password.rawValue): password
+                                 \(Identity.Create.Request.CodingKeys.email.rawValue): email,
+                                 \(Identity.Create.Request.CodingKeys.password.rawValue): password
                             }).toString()
                         });
                         
@@ -133,7 +133,7 @@ extension Identity_Shared.Create.Request {
                         
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_create_identity)");
-                            pageModule.outerHTML = "\(html: Create.RequestReceivedConfirmationPage(primaryColor: primaryColor, loginHref: loginHref))";
+                            pageModule.outerHTML = "\(html: Identity.Create.RequestReceivedConfirmationPage(primaryColor: primaryColor, loginHref: loginHref))";
                         } else {
                             throw new Error(data.message || 'Account creation failed');
                         }
@@ -153,7 +153,7 @@ extension Identity_Shared.Create.Request {
     }
 }
 
-extension Create {
+extension Identity.Create {
     public struct RequestReceivedConfirmationPage: HTML {
         
         let primaryColor: HTMLColor
@@ -208,7 +208,7 @@ extension Create {
     }
 }
 
-extension Identity_Shared.Create.Verify {
+extension Identity.Create.Verify {
     public struct View: HTML {
         let verificationAction: URL
         let redirectURL: URL
@@ -282,7 +282,7 @@ extension Identity_Shared.Create.Verify {
                        
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_verify_id)");
-                            pageModule.outerHTML = "\(html: Create.VerifyConfirmationPage(redirectURL: redirectURL))";
+                            pageModule.outerHTML = "\(html: Identity.Create.VerifyConfirmationPage(redirectURL: redirectURL))";
                             setTimeout(() => { window.location.href = '\(redirectURL.absoluteString)'; }, 5000);
 
                         } else {
@@ -306,7 +306,7 @@ extension Identity_Shared.Create.Verify {
     }
 }
 
-extension Create {
+extension Identity.Create {
     public struct VerifyConfirmationPage: HTML {
         let redirectURL: URL
         

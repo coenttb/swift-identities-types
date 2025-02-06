@@ -9,7 +9,7 @@ import Foundation
 import Coenttb_Web
 import Identity_Consumer
 
-extension Identity_Consumer.Route.Password.Reset.Request {
+extension Identity.Consumer.View.Password.Reset.Request {
     public struct View: HTML {
         let formActionURL: URL
         let homeHref: URL
@@ -113,7 +113,7 @@ extension Identity_Consumer.Route.Password.Reset.Request {
                         const data = await response.json();
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_forgot_password_id)");
-                            pageModule.outerHTML = `\(html: Identity_Consumer.Route.Password.Reset.Request.View.Confirmation(homeHref: self.homeHref, primaryColor: self.primaryColor))`;
+                            pageModule.outerHTML = `\(html: Identity.Consumer.View.Password.Reset.Request.View.Confirmation(homeHref: self.homeHref, primaryColor: self.primaryColor))`;
                         } else {
                             throw new Error(data.message || '\(TranslatedString(
                                 dutch: "Verzoek om wachtwoord te resetten mislukt",
@@ -135,7 +135,7 @@ extension Identity_Consumer.Route.Password.Reset.Request {
 }
 
 
-extension Identity_Consumer.Route.Password.Reset.Request.View {
+extension Identity.Consumer.View.Password.Reset.Request.View {
     struct Confirmation: HTML {
         let homeHref: URL
         let primaryColor: HTMLColor
@@ -198,7 +198,7 @@ extension Identity_Consumer.Route.Password.Reset.Request.View {
     }
 }
 
-extension Identity_Consumer.Route.Password.Reset.Confirm {
+extension Identity.Consumer.View.Password.Reset.Confirm {
     public struct View: HTML {
         let token: String
         let passwordResetAction: URL
@@ -319,7 +319,7 @@ extension Identity_Consumer.Route.Password.Reset.Confirm {
             
                            if (data.success) {
                                const pageModule = document.getElementById("\(Self.passwordResetId)");
-                               pageModule.outerHTML = `\(html: Identity_Consumer.Route.Password.Reset.Confirm.View.Confirm(redirect: self.redirect, primaryColor: self.primaryColor))`;
+                               pageModule.outerHTML = `\(html: Identity.Consumer.View.Password.Reset.Confirm.View.Confirm(redirect: self.redirect, primaryColor: self.primaryColor))`;
                            } else {
                                throw new Error(data.message || '\(TranslatedString(
                                    dutch: "Verzoek om wachtwoord te resetten mislukt",
@@ -343,9 +343,7 @@ extension Identity_Consumer.Route.Password.Reset.Confirm {
     }
 }
 
-
-
-extension Identity_Consumer.Route.Password.Reset.Confirm.View {
+extension Identity.Consumer.View.Password.Reset.Confirm.View {
     struct Confirm: HTML {
         let redirect: URL
         let primaryColor: HTMLColor

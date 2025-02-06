@@ -51,7 +51,7 @@ extension Identity_Provider.Identity.Provider.Client {
             backoffMultiplier: 2.0
         )
         
-        return Identity_Provider.Identity.Provider.Client(
+        return Identity.Provider.Client(
             create: .live(
                 database: database,
                 logger: logger,
@@ -74,7 +74,7 @@ extension Identity_Provider.Identity.Provider.Client {
                     try await database.transaction { db in
                         logger.log(.info, "Login attempt for email: \(email)")
                         
-                        guard let identity = try await Identity.query(on: db)
+                        guard let identity = try await Database.Identity.query(on: db)
                             .filter(\.$email == email.rawValue)
                             .first()
                         else {
@@ -123,7 +123,7 @@ extension Identity_Provider.Identity.Provider.Client {
                     
                     do {
                         try await database.transaction { db in
-                            guard let apiKey = try await Coenttb_Identity_Provider.ApiKey.query(on: db)
+                            guard let apiKey = try await Database.ApiKey.query(on: db)
                                 .filter(\.$key == token)
                                 .filter(\.$isActive == true)
                                 .with(\.$identity)
@@ -203,7 +203,7 @@ extension Identity_Provider.Identity.Provider.Client {
 //            },
             logout: {
                 @Dependency(\.request) var request
-                request?.auth.logout(Identity.self)
+                request?.auth.logout(Database.Identity.self)
             },
             password: .live(
                 database: database,

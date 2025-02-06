@@ -31,7 +31,7 @@ extension Identity_Provider.Identity.Provider.Client.Password {
             reset: .init(
                 request: { email in
                     try await database.transaction { db in
-                        guard let identity = try await Identity.query(on: db)
+                        guard let identity = try await Database.Identity.query(on: db)
                             .filter(\.$email == email.rawValue)
                             .first() else {
                             logger.warning("Password reset requested for non-existent email: \(email)")
@@ -43,7 +43,7 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                         }
                         
                         // Delete existing reset tokens
-                        try await Identity.Token.query(on: db)
+                        try await Database.Identity.Token.query(on: db)
                             .filter(\.$identity.$id == identityId)
                             .filter(\.$type == .passwordReset)
                             .delete()
@@ -65,7 +65,7 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                         
                         try await database.transaction { db in
                             // Fetch and validate token within transaction for consistency
-                            guard let resetToken = try await Identity.Token.query(on: db)
+                            guard let resetToken = try await Database.Identity.Token.query(on: db)
                                 .filter(\.$value == token)
                                 .filter(\.$type == .passwordReset)
                                 .with(\.$identity)
@@ -100,7 +100,7 @@ extension Identity_Provider.Identity.Provider.Client.Password {
             change: .init(
                 request: { currentPassword, newPassword in
                     try await database.transaction { db in
-                        let identity = try await Identity.get(by: .auth, on: db)
+                        let identity = try await Database.Identity.get(by: .auth, on: db)
                         
                         guard try identity.verifyPassword(currentPassword) else {
                             throw AuthenticationError.invalidCredentials

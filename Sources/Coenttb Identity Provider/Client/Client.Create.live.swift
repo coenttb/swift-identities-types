@@ -28,17 +28,17 @@ extension Identity_Provider.Identity.Provider.Client.Create {
                     try validatePassword(password)
                     
                     try await database.transaction { database in
-                        guard try await Identity
+                        guard try await Database.Identity
                             .query(on: database)
                             .filter(\.$email == email.rawValue)
                             .first() == nil
                         else { throw ValidationError.invalidInput("Email already in use") }
                         
-                        let identity = try Identity(email: email, password: password)
+                        let identity = try Database.Identity(email: email, password: password)
                         try await identity.save(on: database)
                         
                         // Claude: Delete any existing verification tokens for this identity
-                        try await Identity.Token.query(on: database)
+                        try await Database.Identity.Token.query(on: database)
                             .filter(\.$identity.$id == identity.id!)
                             .filter(\.$type == .emailVerification)
                             .delete()
@@ -47,7 +47,7 @@ extension Identity_Provider.Identity.Provider.Client.Create {
                         else { throw Abort(.tooManyRequests, reason: "Token generation limit exceeded") }
                         
                         // Delete existing verification tokens first
-                        try await Identity.Token.query(on: database)
+                        try await Database.Identity.Token.query(on: database)
                             .filter(\.$identity.$id == identity.id!)
                             .filter(\.$type == .emailVerification)
                             .delete()
@@ -67,7 +67,7 @@ extension Identity_Provider.Identity.Provider.Client.Create {
             verify: { token, email in
                 do {
                     try await database.transaction { db in
-                        guard let identityToken = try await Identity.Token.query(on: db)
+                        guard let identityToken = try await Database.Identity.Token.query(on: db)
                             .filter(\.$value == token)
                             .with(\.$identity)
                             .first() else {
