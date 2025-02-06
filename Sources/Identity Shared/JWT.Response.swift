@@ -8,7 +8,7 @@
 import Foundation
 
 extension JWT {
-    public struct Response: Codable {
+    public struct Response: Codable, Hashable, Sendable {
         public let token: String
         public var type: String { "Bearer" }
         public let expiresIn: TimeInterval
