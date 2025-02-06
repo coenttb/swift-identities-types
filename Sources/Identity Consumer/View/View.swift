@@ -16,6 +16,7 @@ extension Identity.Consumer {
         case delete
         case login
         case logout
+        case reauthorization
         case password(Identity.Consumer.View.Password)
         case emailChange(Identity.Consumer.View.EmailChange)
     //    case multifactorAuthentication(Identity.Consumer.Route.MultifactorAuthentication)
@@ -55,6 +56,10 @@ extension Identity.Consumer.View {
                 
                 URLRouting.Route(.case(Identity.Consumer.View.logout)) {
                     Path.logout
+                }
+                
+                URLRouting.Route(.case(Identity.Consumer.View.reauthorization)) {
+                    Path.reauthorization
                 }
                 
                 URLRouting.Route(.case(Identity.Consumer.View.password)) {

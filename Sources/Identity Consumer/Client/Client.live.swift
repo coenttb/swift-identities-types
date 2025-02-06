@@ -31,24 +31,26 @@ extension Identity.Consumer.Client {
             delete: .init(
                 request: { reauthToken in
                     try await handleRequest(
-                        for: makeRequest(.delete(.request(.init(/*userId: String(userId),*/ reauthToken: reauthToken))))
+                        for: makeRequest(.delete(.request(.init(reauthToken: reauthToken))))
                     )
                 },
                 cancel: {
                     try await handleRequest(
-                        for: makeRequest(.delete(.cancel/*(.init(/*userId: String(userId)*/))*/))
+                        for: makeRequest(.delete(.cancel))
                     )
                 }
             ),
             authenticate: .init(
                 credentials: { credentials in
                     try await handleRequest(
-                        for: makeRequest(.authenticate(.credentials(credentials)))
+                        for: makeRequest(.authenticate(.credentials(credentials))),
+                        decodingTo: Envelope<JWT.Response>.self
                     )
                 },
                 bearer: { token in
                     try await handleRequest(
-                        for: makeRequest(.authenticate(.bearer(.init(token: token))))
+                        for: makeRequest(.authenticate(.bearer(.init(token: token)))),
+                        decodingTo: Envelope<JWT.Response>.self
                     )
                 }
             ),

@@ -10,6 +10,7 @@ import EmailAddress
 import Dependencies
 import DependenciesMacros
 import Identity_Shared
+import Coenttb_Web
 
 extension Identity.Consumer {
     @DependencyClient
@@ -125,11 +126,11 @@ extension Identity.Consumer.Client {
     public struct Authenticate: @unchecked Sendable {
         public var credentials: (
             _ credentials: Identity.Authenticate.Credentials
-        ) async throws -> Void
+        ) async throws -> Envelope<JWT.Response>
         
         public var bearer: (
             _ token: String
-        ) async throws -> Void
+        ) async throws -> Envelope<JWT.Response>
     }
 }
 
