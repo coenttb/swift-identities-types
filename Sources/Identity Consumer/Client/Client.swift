@@ -126,11 +126,11 @@ extension Identity.Consumer.Client {
     public struct Authenticate: @unchecked Sendable {
         public var credentials: (
             _ credentials: Identity.Authenticate.Credentials
-        ) async throws -> Envelope<JWT.Response>
+        ) async throws -> JWT.Response
         
         public var bearer: (
             _ token: String
-        ) async throws -> Envelope<JWT.Response>
+        ) async throws -> JWT.Response
     }
 }
 

@@ -44,13 +44,13 @@ extension Identity.Consumer.Client {
                 credentials: { credentials in
                     try await handleRequest(
                         for: makeRequest(.authenticate(.credentials(credentials))),
-                        decodingTo: Envelope<JWT.Response>.self
+                        decodingTo: JWT.Response.self
                     )
                 },
                 bearer: { token in
                     try await handleRequest(
                         for: makeRequest(.authenticate(.bearer(.init(token: token)))),
-                        decodingTo: Envelope<JWT.Response>.self
+                        decodingTo: JWT.Response.self
                     )
                 }
             ),

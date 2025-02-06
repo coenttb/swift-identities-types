@@ -192,10 +192,10 @@ extension Identity.Consumer.Client.Authenticate: TestDependencyKey {
     public static var testValue: Self {
         .init(
             credentials: { credentials in
-                    .init(success: true, data: .init(token: "test", expiresIn: 10), message: nil)
+                    .init(token: "test", expiresIn: 10)
             },
             bearer: { token in
-                    .init(success: true, data: .init(token: "test", expiresIn: 10), message: nil)
+                    .init(token: "test", expiresIn: 10)
             }
         )
     }
