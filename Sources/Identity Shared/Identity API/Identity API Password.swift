@@ -23,7 +23,7 @@ extension Identity.API.Password {
 
 extension Identity.API.Password {
     public enum Change: Equatable, Sendable {
-        case reauthorization(Identity_Shared.Password.Change.Reauthorization)
+//        case reauthorization(Identity_Shared.Password.Change.Reauthorization)
         case request(change: Identity_Shared.Password.Change.Request)
     }
 }
@@ -51,9 +51,9 @@ extension Identity.API.Password {
                 URLRouting.Route(.case(Identity.API.Password.change)) {
                     Path.change
                     OneOf {
-                        URLRouting.Route(.case(Identity.API.Password.Change.reauthorization)) {
-                            Identity_Shared.Password.Change.Reauthorization.Router()
-                        }
+//                        URLRouting.Route(.case(Identity.API.Password.Change.reauthorization)) {
+//                            Identity_Shared.Password.Change.Reauthorization.Router()
+//                        }
                         
                         URLRouting.Route(.case(Identity.API.Password.Change.request)) {
                             Identity_Shared.Password.Change.Request.Router()
