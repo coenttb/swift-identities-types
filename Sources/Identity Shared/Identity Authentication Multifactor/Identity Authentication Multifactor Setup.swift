@@ -11,6 +11,7 @@ extension Identity.Authentication.Multifactor {
     public enum Setup {}
 }
 
+
 extension Identity.Authentication.Multifactor.Setup {
     public struct Request: Codable, Hashable, Sendable {
         public let method: Identity.Authentication.Multifactor.Method

@@ -16,7 +16,7 @@ extension Identity {
         case logout
         case reauthorize(Identity.API.Reauthorize)
         case password(Identity.API.Password)
-        case multifactorAuthentication(Identity.API.MultifactorAuthentication)
+        case multifactorAuthentication(Identity.API.Authenticate.Multifactor)
     }
 }
 
@@ -40,7 +40,7 @@ extension Identity.API {
                 
                 URLRouting.Route(.case(Identity.API.authenticate)) {
                     Path.authenticate
-                    Identity.Authentication.Router()
+                    Identity.API.Authenticate.Router()
                 }
 
                 URLRouting.Route(.case(Identity.API.logout)) {

@@ -10,7 +10,10 @@ import BearerAuth
 import Coenttb_Web
 
 extension Identity.API {
-    public typealias Authenticate = Identity.Authentication
+    public enum Authenticate: Equatable, Sendable {
+        case credentials(Identity.Authentication.Credentials)
+        case bearer(BearerAuth)
+    }
 }
 
 extension Identity.API.Authenticate {

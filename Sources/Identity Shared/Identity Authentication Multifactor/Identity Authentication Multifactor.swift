@@ -9,7 +9,7 @@ import Foundation
 
 //// Base namespace
 extension Identity.Authentication {
-    public struct Multifactor {}
+    public enum Multifactor {}
 }
 
 

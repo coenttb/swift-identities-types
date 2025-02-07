@@ -19,7 +19,7 @@ extension Identity.Consumer {
         case reauthorization
         case password(Identity.Consumer.View.Password)
         case emailChange(Identity.Consumer.View.EmailChange)
-    //    case multifactorAuthentication(Identity.Consumer.Route.MultifactorAuthentication)
+        case multifactorAuthentication(Identity.Consumer.View.MultifactorAuthentication)
     }
 }
 
@@ -111,22 +111,22 @@ extension Identity.Consumer.View {
                     }
                 }
                 
-    //            URLRouting.Route(.case(Identity.Consumer.Route.multifactorAuthentication)) {
-    //                Path.multifactorAuthentication
-    //                OneOf {
-    //                    URLRouting.Route(.case(Identity.Consumer.Route.MultifactorAuthentication.setup)) {
-    //                        Path.setup
-    //                    }
-    //
-    //                    URLRouting.Route(.case(Identity.Consumer.Route.MultifactorAuthentication.verify)) {
-    //                        Path.verify
-    //                    }
-    //
-    //                    URLRouting.Route(.case(Identity.Consumer.Route.MultifactorAuthentication.manage)) {
-    //                        Path.manage
-    //                    }
-    //                }
-    //            }
+                URLRouting.Route(.case(Identity.Consumer.View.multifactorAuthentication)) {
+                    Path.multifactorAuthentication
+                    OneOf {
+                        URLRouting.Route(.case(Identity.Consumer.View.MultifactorAuthentication.setup)) {
+                            Path.setup
+                        }
+    
+                        URLRouting.Route(.case(Identity.Consumer.View.MultifactorAuthentication.verify)) {
+                            Path.verify
+                        }
+    
+                        URLRouting.Route(.case(Identity.Consumer.View.MultifactorAuthentication.manage)) {
+                            Path.manage
+                        }
+                    }
+                }
             }
         }
     }
