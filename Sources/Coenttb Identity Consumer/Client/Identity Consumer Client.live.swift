@@ -72,8 +72,8 @@ extension Identity.Consumer.Client {
                             }
                             let newTokenResponse = try await client.authenticate.token.refresh(token: refreshToken)
                             request.headers.bearerAuthorization = .init(token: newTokenResponse.accessToken.value)
-                            request.cookies.accessToken = .accessToken(response: newTokenResponse)
-                            request.cookies.refreshToken = .refreshToken(response: newTokenResponse)
+                            request.cookies.accessToken = .accessToken(response: newTokenResponse, domain: provider.domain)
+                            request.cookies.refreshToken = .refreshToken(response: newTokenResponse, domain: provider.domain)
                             await rateLimiter.tokenAccess.recordSuccess(token)
                             return
                         }
@@ -98,7 +98,7 @@ extension Identity.Consumer.Client {
                             }
                             
                             @Dependency(\.request) var request
-                            request?.cookies.accessToken = .accessToken(response: response)
+                            request?.cookies.accessToken = .accessToken(response: response, domain: provider.domain)
                             
                             await rateLimiter.tokenRefresh.recordSuccess(token)
                             return response
@@ -107,11 +107,37 @@ extension Identity.Consumer.Client {
                             throw Abort(.unauthorized)
                         }
                     }
-                )
+                ),
+                apiKey: { apiKey in
+                    let rateLimit = await rateLimiter.apiKey.checkLimit(apiKey)
+                    guard rateLimit.isAllowed else {
+                        if let nextAttempt = rateLimit.nextAllowedAttempt {
+                            throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(nextAttempt.timeIntervalSinceNow))"])
+                        }
+                        throw Abort(.tooManyRequests)
+                    }
+                    
+                    do {
+                        guard let response = try await handleRequest(
+                            for: makeRequest(.authenticate(.apiKey(.init(token: apiKey)))),
+                            decodingTo: JWT.Response.self
+                        ) else {
+                            throw Abort(.internalServerError, reason: "Invalid response format")
+                        }
+                        
+                        await rateLimiter.apiKey.recordSuccess(apiKey)
+                        return response
+                    } catch {
+                        await rateLimiter.apiKey.recordFailure(apiKey)
+                        throw Abort(.unauthorized)
+                    }
+                }
             ),
             logout: {
                 @Dependency(\.request) var request
-                let rateLimitKey = request?.realIP ?? "logout"
+                guard let request else { throw Abort(.internalServerError)}
+                
+                let rateLimitKey = request.realIP
                 
                 let rateLimit = await rateLimiter.logout.checkLimit(rateLimitKey)
                 guard rateLimit.isAllowed else {
@@ -122,7 +148,7 @@ extension Identity.Consumer.Client {
                 
                 do {
                     //
-                    request?.auth.logout(JWT.Token.Access.self)
+                    request.auth.logout(JWT.Token.Access.self)
                     try await handleRequest(for: makeRequest(.logout))
                     await rateLimiter.logout.recordSuccess(rateLimitKey)
                 } catch {
@@ -132,7 +158,9 @@ extension Identity.Consumer.Client {
             },
             reauthorize: { password in
                 @Dependency(\.request) var request
-                let rateLimitKey = request?.realIP ?? "reauthorize"
+                guard let request else { throw Abort(.internalServerError)}
+                
+                let rateLimitKey = request.realIP
                 
                 let rateLimit = await rateLimiter.reauthorize.checkLimit(rateLimitKey)
                 guard rateLimit.isAllowed else {
@@ -189,7 +217,9 @@ extension Identity.Consumer.Client {
             delete: .init(
                request: { reauthToken in
                    @Dependency(\.request) var request
-                   let rateLimitKey = request?.realIP ?? "delete-request"
+                   guard let request else { throw Abort(.internalServerError)}
+                   
+                   let rateLimitKey = request.realIP
                    
                    let rateLimit = await rateLimiter.deleteRequest.checkLimit(rateLimitKey)
                    guard rateLimit.isAllowed else {
@@ -206,7 +236,9 @@ extension Identity.Consumer.Client {
                },
                cancel: {
                    @Dependency(\.request) var request
-                   let rateLimitKey = request?.realIP ?? "delete-cancel"
+                   guard let request else { throw Abort(.internalServerError)}
+                   
+                   let rateLimitKey = request.realIP
                    
                    let rateLimit = await rateLimiter.deleteCancel.checkLimit(rateLimitKey)
                    guard rateLimit.isAllowed else {
@@ -223,7 +255,9 @@ extension Identity.Consumer.Client {
                },
                confirm: {
                    @Dependency(\.request) var request
-                   let rateLimitKey = request?.realIP ?? "delete-confirm"
+                   guard let request else { throw Abort(.internalServerError)}
+                   
+                   let rateLimitKey = request.realIP
                    
                    let rateLimit = await rateLimiter.deleteConfirm.checkLimit(rateLimitKey)
                    guard rateLimit.isAllowed else {
@@ -240,7 +274,7 @@ extension Identity.Consumer.Client {
                }
             ),
             emailChange: .init(
-                request: { newEmail in
+                request: { newEmail in                    
                     guard let newEmail = newEmail?.rawValue else { return }
                     let rateLimit = await rateLimiter.emailChangeRequest.checkLimit(newEmail)
                     guard rateLimit.isAllowed else {
@@ -311,7 +345,9 @@ extension Identity.Consumer.Client {
                 change: .init(
                     request: { currentPassword, newPassword in
                         @Dependency(\.request) var request
-                        let rateLimitKey = request?.realIP ?? "password_change"
+                        guard let request else { throw Abort(.internalServerError)}
+                        
+                        let rateLimitKey = request.realIP
                         
                         let rateLimit = await rateLimiter.passwordChangeRequest.checkLimit(rateLimitKey)
                         guard rateLimit.isAllowed else {
@@ -337,9 +373,11 @@ extension Identity.Consumer.Client {
     public enum Live {
         public struct Provider {
             public let baseURL: URL
+            public let domain: String
             
-            public init(baseURL: URL) {
+            public init(baseURL: URL, domain: String) {
                 self.baseURL = baseURL
+                self.domain = domain
             }
         }
     }

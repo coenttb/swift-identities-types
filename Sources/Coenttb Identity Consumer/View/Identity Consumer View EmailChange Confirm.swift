@@ -54,7 +54,7 @@ extension Identity.Consumer.View.EmailChange.Confirm {
                             dutch: "Klik hier als je niet automatisch wordt doorgestuurd",
                             english: "Click here if you are not automatically redirected"
                         ).description,
-                        href: redirect.absoluteString
+                        href: redirect.relativePath
                     )
                     .linkColor(self.primaryColor)
                     .fontWeight(.medium)
@@ -80,7 +80,7 @@ extension Identity.Consumer.View.EmailChange.Confirm {
             script {"""
                 document.addEventListener('DOMContentLoaded', function() {
                     setTimeout(function() {
-                        window.location.href = '\(redirect.absoluteString)';
+                        window.location.href = '\(redirect.relativePath)';
                     }, 5000); // Redirect after 5 seconds
                 });
             """}

@@ -5,34 +5,34 @@ import Foundation
 import EmailAddress
 
 extension Database {
-    public final class Identity: Model, Content, @unchecked Sendable {
-        public static let schema = "identities"
+    package final class Identity: Model, Content, @unchecked Sendable {
+        package static let schema = "identities"
 
         @ID(key: .id)
-        public var id: UUID?
+        package var id: UUID?
         
         @Field(key: FieldKeys.email)
-        public internal(set) var email: String
+        package internal(set) var email: String
         
         @Field(key: FieldKeys.passwordHash)
-        public var passwordHash: String
+        package var passwordHash: String
 
         @Enum(key: FieldKeys.emailVerificationStatus)
-        public var emailVerificationStatus: EmailVerificationStatus
+        package var emailVerificationStatus: EmailVerificationStatus
         
         @Field(key: FieldKeys.sessionVersion)
-        public var sessionVersion: Int
+        package var sessionVersion: Int
         
         @Timestamp(key: FieldKeys.createdAt, on: .create)
-        public var createdAt: Date?
+        package var createdAt: Date?
         
         @Timestamp(key: FieldKeys.updatedAt, on: .update)
-        public var updatedAt: Date?
+        package var updatedAt: Date?
         
         @OptionalField(key: FieldKeys.lastLoginAt)
-        public var lastLoginAt: Date?
+        package var lastLoginAt: Date?
         
-        public var emailAddress: EmailAddress {
+        package var emailAddress: EmailAddress {
             get {
                 try! EmailAddress(self.email)
             }
@@ -42,28 +42,28 @@ extension Database {
         }
         
         @OptionalChild(for: \.$identity)
-        public var deletion: Database.Identity.Deletion?
+        package var deletion: Database.Identity.Deletion?
 
         package enum FieldKeys {
-            public static let email: FieldKey = "email"
-            public static let passwordHash: FieldKey = "password_hash"
-            public static let emailVerificationStatus: FieldKey = "email_verification_status"
-            public static let createdAt: FieldKey = "created_at"
-            public static let updatedAt: FieldKey = "updated_at"
-            public static let lastLoginAt: FieldKey = "last_login_at"
-            public static let sessionVersion: FieldKey = "session-version"
+            package static let email: FieldKey = "email"
+            package static let passwordHash: FieldKey = "password_hash"
+            package static let emailVerificationStatus: FieldKey = "email_verification_status"
+            package static let createdAt: FieldKey = "created_at"
+            package static let updatedAt: FieldKey = "updated_at"
+            package static let lastLoginAt: FieldKey = "last_login_at"
+            package static let sessionVersion: FieldKey = "session-version"
         }
         
-        public enum EmailVerificationStatus: String, Codable, Sendable {
+        package enum EmailVerificationStatus: String, Codable, Sendable {
             case unverified
             case pending
             case verified
             case failed
         }
 
-        public init() {}
+        package init() {}
 
-        public init(
+        package init(
             id: UUID? = nil,
             email: EmailAddress,
             password: String,
@@ -82,15 +82,15 @@ extension Database {
 extension Database.Identity: Authenticatable {}
 
 //extension Database.Identity: ModelAuthenticatable {
-//    public static var usernameKey: KeyPath<Database.Identity, Field<String>> {
+//    package static var usernameKey: KeyPath<Database.Identity, Field<String>> {
 //        \Database.Identity.$email
 //    }
 //
-//    public static var passwordHashKey: KeyPath<Database.Identity, Field<String>> {
+//    package static var passwordHashKey: KeyPath<Database.Identity, Field<String>> {
 //        \Database.Identity.$passwordHash
 //    }
 //
-//    public func verify(password: String) throws -> Bool {
+//    package func verify(password: String) throws -> Bool {
 //        try Bcrypt.verify(password, created: self.passwordHash) && self.emailVerificationStatus == .verified
 //    }
 //}
@@ -100,14 +100,14 @@ extension Database.Identity: Authenticatable {}
 //extension Database.Identity: ModelSessionAuthenticatable {}
 
 extension Database.Identity {
-    public enum Migration {
-        public struct Create: AsyncMigration {
+    package enum Migration {
+        package struct Create: AsyncMigration {
             
-            public var name:String = "Coenttb_Identity.Identity.Migration.Create"
+            package var name:String = "Coenttb_Identity.Identity.Migration.Create"
             
-            public init() {}
+            package init() {}
 
-            public func prepare(on database: Fluent.Database) async throws {
+            package func prepare(on database: Fluent.Database) async throws {
                 try await database.schema(Database.Identity.schema)
                     .id()
                     .field(FieldKeys.email, .string, .required)
@@ -121,7 +121,7 @@ extension Database.Identity {
                     .create()
             }
 
-            public func revert(on database: Fluent.Database) async throws {
+            package func revert(on database: Fluent.Database) async throws {
                 try await database.schema(Database.Identity.schema).delete()
             }
         }
@@ -133,11 +133,11 @@ extension Database.Identity {
 
 
 extension Database.Identity {
-    public func setPassword(_ password: String) throws {
+    package func setPassword(_ password: String) throws {
         self.passwordHash = try Bcrypt.hash(password)
     }
     
-    public func verifyPassword(_ password: String) throws -> Bool {
+    package func verifyPassword(_ password: String) throws -> Bool {
         try Bcrypt.verify(password, created: self.passwordHash)
     }
 }

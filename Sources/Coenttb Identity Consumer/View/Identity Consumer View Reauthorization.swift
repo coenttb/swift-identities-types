@@ -60,7 +60,7 @@ extension Identity.Consumer.View.Reauthorization {
                                         .type(.password)
                                         .placeholder(String.password.capitalizingFirstLetter().description)
                                     
-                                    Link(href: passwordResetHref.absoluteString)    {
+                                    Link(href: passwordResetHref.relativePath)    {
                                         String.forgot_password.capitalizingFirstLetter().questionmark
                                     }
                                     .linkColor(primaryColor)
@@ -97,7 +97,7 @@ extension Identity.Consumer.View.Reauthorization {
                             }
                             .id("form-confirm-access")
                             .method(.post)
-                            .action(confirmFormAction.absoluteString)
+                            .action(confirmFormAction.relativePath)
                             .width(100.percent)
                             .maxWidth(20.rem)
                             .maxWidth(24.rem, media: .mobile)
@@ -149,7 +149,7 @@ extension Identity.Consumer.View.Reauthorization {
                                const data = await response.json();
                 
                                if (data.success) {
-                                   window.location.href = "\(redirectOnSuccess.absoluteString)";  
+                                   window.location.href = "\(redirectOnSuccess.relativePath)";  
                                } else {
                                    throw new Error(data.message || 'Confirmation failed');
                                }

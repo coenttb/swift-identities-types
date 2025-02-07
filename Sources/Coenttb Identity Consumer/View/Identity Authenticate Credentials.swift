@@ -56,7 +56,7 @@ extension Identity.Authentication.Credentials {
                             .type(.password)
                             .placeholder(String.password.capitalizingFirstLetter().description)
                         
-                        Link(href: passwordResetHref.absoluteString) {
+                        Link(href: passwordResetHref.relativePath) {
                             String.forgot_password.capitalizingFirstLetter().questionmark
                         }
                         .linkColor(primaryColor)
@@ -77,7 +77,7 @@ extension Identity.Authentication.Credentials {
                             
                             div {
                                 HTMLText("\(String.dont_have_an_account.capitalizingFirstLetter().questionmark) ")
-                                Link(href: accountCreateHref.absoluteString) {
+                                Link(href: accountCreateHref.relativePath) {
                                     String.signup.capitalizingFirstLetter()
                                 }
                                 .linkColor(primaryColor)
@@ -93,7 +93,7 @@ extension Identity.Authentication.Credentials {
                 }
                 .id(Self.form_id)
                 .method(.post)
-                .action(loginFormAction.absoluteString)
+                .action(loginFormAction.relativePath)
                 .width(100.percent)
                 .maxWidth(20.rem)
                 .maxWidth(24.rem, media: .mobile)

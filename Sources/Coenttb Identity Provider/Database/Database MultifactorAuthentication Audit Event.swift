@@ -13,39 +13,39 @@ import Identity_Shared
 import Coenttb_Identity_Shared
 
 extension Database.MultifactorAuthentication {
-    public final class Audit {
-        public final class Event: Model, Content, @unchecked Sendable {
-            public static let schema = "mfa_audit_events"
+    package final class Audit {
+        package final class Event: Model, Content, @unchecked Sendable {
+            package static let schema = "mfa_audit_events"
 
             @ID(key: .id)
-            public var id: UUID?
+            package var id: UUID?
 
             @Field(key: FieldKeys.userId)
-            public var userId: String
+            package var userId: String
 
             @Enum(key: FieldKeys.type)
-            public var type: Identity.Authentication.Multifactor.Audit.Event.`Type`
+            package var type: Identity.Authentication.Multifactor.Audit.Event.`Type`
 
             @OptionalEnum(key: FieldKeys.method)
-            public var method: Identity.Authentication.Multifactor.Method?
+            package var method: Identity.Authentication.Multifactor.Method?
 
             @Field(key: FieldKeys.timestamp)
-            public var timestamp: Date
+            package var timestamp: Date
 
             @Field(key: FieldKeys.metadata)
-            public var metadata: [String: String]
+            package var metadata: [String: String]
 
             package enum FieldKeys {
-                public static let userId: FieldKey = "user_id"
-                public static let type: FieldKey = "type"
-                public static let method: FieldKey = "method"
-                public static let timestamp: FieldKey = "timestamp"
-                public static let metadata: FieldKey = "metadata"
+                package static let userId: FieldKey = "user_id"
+                package static let type: FieldKey = "type"
+                package static let method: FieldKey = "method"
+                package static let timestamp: FieldKey = "timestamp"
+                package static let metadata: FieldKey = "metadata"
             }
 
-            public init() {}
+            package init() {}
 
-            public init(
+            package init(
                 id: UUID? = nil,
                 userId: String,
                 eventType: Identity.Authentication.Multifactor.Audit.Event.`Type`,
@@ -65,13 +65,13 @@ extension Database.MultifactorAuthentication {
 }
 
 extension Database.MultifactorAuthentication.Audit.Event {
-    public enum Migration {
-        public struct Create: AsyncMigration {
-            public var name: String = "Identity_Provider.MultifactorAuthentication.Audit.Event.Migration.Create"
+    package enum Migration {
+        package struct Create: AsyncMigration {
+            package var name: String = "Identity_Provider.MultifactorAuthentication.Audit.Event.Migration.Create"
             
-            public init() {}
+            package init() {}
 
-            public func prepare(on database: Fluent.Database) async throws {
+            package func prepare(on database: Fluent.Database) async throws {
                 try await database.schema(Database.MultifactorAuthentication.Audit.Event.schema)
                     .id()
                     .field(FieldKeys.userId, .string, .required)
@@ -82,7 +82,7 @@ extension Database.MultifactorAuthentication.Audit.Event {
                     .create()
             }
 
-            public func revert(on database: Fluent.Database) async throws {
+            package func revert(on database: Fluent.Database) async throws {
                 try await database.schema(Database.MultifactorAuthentication.Audit.Event.schema).delete()
             }
         }

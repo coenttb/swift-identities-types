@@ -29,14 +29,16 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                     
                     guard
                         let id = identity.id,
-                        let _ = try await Database.Identity.Token.query(on: db)
+                        let token = try await Database.Identity.Token.query(on: db)
                         .filter(\.$identity.$id == id)
                         .filter(\.$type == .reauthenticationToken)
                         .filter(\.$value == reauthToken)
                         .filter(\.$validUntil > Date())
                         .first()
                     else { throw Abort(.unauthorized, reason: "Invalid reauthorization token") }
-//                    
+                    
+                    try await token.delete(on: db)
+                    
                     guard identity.deletion?.state == nil else {
                         throw Abort(.badRequest, reason: "User is already pending deletion")
                     }

@@ -67,7 +67,7 @@ extension Identity.Consumer.View.EmailChange.Request {
                                     dutch: "Terug naar home",
                                     english: "Back to Home"
                                 ).description,
-                                href: homeHref.absoluteString
+                                href: homeHref.relativePath
                             )
                             .linkColor(self.primaryColor)
                             .fontWeight(.medium)
@@ -77,7 +77,7 @@ extension Identity.Consumer.View.EmailChange.Request {
                     }
                     .id(Self.form_id)
                     .method(.post)
-                    .action(self.formActionURL.absoluteString)
+                    .action(self.formActionURL.relativePath)
                 }
                 .width(100.percent)
                 .maxWidth(20.rem)
@@ -208,7 +208,7 @@ extension Identity.Consumer.View.EmailChange.Request.View {
                             dutch: "Terug naar home",
                             english: "Back to Home"
                         ).description,
-                        href: homeHref.absoluteString
+                        href: homeHref.relativePath
                     )
                     .linkColor(self.primaryColor)
                 }

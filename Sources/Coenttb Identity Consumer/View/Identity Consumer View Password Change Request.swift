@@ -69,7 +69,7 @@ extension Identity.Consumer.View.Password.Change.Request {
                                     dutch: "Terug naar home",
                                     english: "Back to Home"
                                 ).description,
-                                href: redirectOnSuccess.absoluteString
+                                href: redirectOnSuccess.relativePath
                             )
                             .linkColor(self.primaryColor)
                             .fontWeight(.medium)
@@ -79,7 +79,7 @@ extension Identity.Consumer.View.Password.Change.Request {
                     }
                     .id("form-change-password")
                     .method(.post)
-                    .action(self.formActionURL.absoluteString)
+                    .action(self.formActionURL.relativePath)
                 }
                 .width(100.percent)
                 .maxWidth(20.rem)
@@ -175,7 +175,7 @@ extension Identity.Consumer.View.Password.Change.Request.View {
                             dutch: "Terug naar home",
                             english: "Back to Home"
                         ).description,
-                        href: redirectOnSuccess.absoluteString
+                        href: redirectOnSuccess.relativePath
                     )
                     .linkColor(self.primaryColor)
                 }

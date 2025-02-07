@@ -6,10 +6,10 @@
 //
 
 
-import Dependencies
-@preconcurrency import Vapor
-import JWT
+import Identity_Consumer
 import Coenttb_Identity_Shared
+import Coenttb_Vapor
+import JWT
 
 extension Identity.Consumer {
     public struct AccessTokenAuthenticator: AsyncBearerAuthenticator {

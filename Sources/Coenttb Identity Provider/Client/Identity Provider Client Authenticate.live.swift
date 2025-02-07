@@ -167,7 +167,46 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                         throw Abort(.internalServerError)
                     }
                 }
-            )
+            ),
+            apiKey: { apiKey in
+                @Dependency(\.request) var request
+                @Dependency(\.logger) var logger
+
+                do {
+                    guard let request = request else {
+                        throw Abort(.internalServerError)
+                    }
+                    
+                    guard let apiKey = try await Database.ApiKey.query(on: request.db)
+                        .filter(\.$key == apiKey)
+                        .with(\.$identity)
+                        .first() else {
+                            logger.warning("API key authentication failed: No identity found for API key \(apiKey)")
+                            throw Abort(.unauthorized, reason: "Invalid API key")
+                    }
+                    
+                    let identity = apiKey.identity
+                    
+                    let response = try await identity.generateJWTResponse(
+                        accessTokenConfig: .forAccessToken(issuer: issuer),
+                        refreshTokenConfig: .forRefreshToken(issuer: issuer)
+                    )
+                    
+                    request.headers.bearerAuthorization = .init(token: response.accessToken.value)
+                    
+                    identity.lastLoginAt = Date()
+                    try await identity.save(on: request.db)
+                    
+                    request.auth.login(identity)
+                    
+                    logger.notice("API key authentication successful for identity: \(identity.id?.uuidString ?? "unknown")")
+                    
+                    return response
+                } catch {
+                    logger.error("Unexpected error during api key verification: \(error.localizedDescription)")
+                    throw Abort(.internalServerError)
+                }
+            }
         )
     }
 }

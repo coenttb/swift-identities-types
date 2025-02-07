@@ -8,7 +8,7 @@ import EmailAddress
 
 extension Identity.Provider.Client.Authenticate.Multifactor {
     public static func live(
-        database: Database,
+        database: Fluent.Database,
         logger: Logger,
         sendSMSCode: @escaping @Sendable (String, String) async throws -> Void,
         sendEmailCode: @escaping @Sendable (EmailAddress, String) async throws -> Void,
@@ -16,10 +16,10 @@ extension Identity.Provider.Client.Authenticate.Multifactor {
             SymmetricKey(size: .bits256).withUnsafeBytes { Data($0) }.base64EncodedString()
         }
     ) -> Self {
-        fatalError()
+    fatalError()
 //        return .init(
 //            setup: .init(
-//                initialize: { method, identifier async throws -> Identity_Shared.MultifactorAuthentication.Setup.Response in
+//                initialize: { method, identifier async throws -> Identity.Authentication.Multifactor.Setup.Response in
 //                    try await database.transaction { db in
 //                        // Verify user exists
 //                        guard let _ = try await Identity.find(on: db) else {
@@ -27,7 +27,7 @@ extension Identity.Provider.Client.Authenticate.Multifactor {
 //                        }
 //                        
 //                        // Check if method already exists
-//                        if try await MultifactorAuthentication.Method.query(on: db)
+//                        if try await Database.MultifactorAuthentication.Method.query(on: db)
 //                            .filter(\.$identity.$id == userId)
 //                            .filter(\.$type == method)
 //                            .first() != nil {
@@ -163,7 +163,7 @@ extension Identity.Provider.Client.Authenticate.Multifactor {
 //                }
 //            ),
 //            verification: .init(
-//                createChallenge: { method async throws -> Identity_Shared.MultifactorAuthentication.Challenge in
+//                createChallenge: { method async throws -> Identity.Authentication.Multifactor.Challenge in
 //                    try await database.transaction { db in
 //                        guard let method = try await MultifactorAuthentication.Method.query(on: db)
 //                            .filter(\.$identity.$id == userId)
@@ -304,7 +304,7 @@ extension Identity.Provider.Client.Authenticate.Multifactor {
 //                        .filter(\.$timestamp <= endDate)
 //                        .sort(\.$timestamp, .descending)
 //                        .all()
-//                        .map(Identity_Shared.MultifactorAuthentication.Audit.Event.init)
+//                        .map(Identity.Authentication.Multifactor.Audit.Event.init)
 //                        
 //                },
 //                bulkDisable: { userIds in
@@ -333,7 +333,7 @@ extension Identity.Provider.Client.Authenticate.Multifactor {
 //                    return results
 //                },
 //                getStatus: { userIds in
-//                    var results: [UUID: Identity_Shared.MultifactorAuthentication.Status] = [:]
+//                    var results: [UUID: Identity.Authentication.Multifactor.Status] = [:]
 //                    for userId in userIds {
 //                        let methods = try await MultifactorAuthentication.Method.query(on: database)
 //                            .filter(\.$identity.$id == userId)
@@ -347,63 +347,63 @@ extension Identity.Provider.Client.Authenticate.Multifactor {
 //        )
     }
 }
-//
-//// In the recovery codes generation function:
-//private func generateRecoveryCodes(for userId: UUID, on database: Database) async throws -> [String] {
-//    // Delete existing unused recovery codes
-//    try await MultifactorAuthentication.RecoveryCode.query(on: database)
-//        .filter(\.$identity.$id == userId)
-//        .filter(\.$used == false)
-//        .delete()
-//    
-//    // Generate new codes
-//    let codes = try (0..<10).map { _ in
-//        try MultifactorAuthentication.generateSecureRecoveryCode()
-//    }
-//    
-//    // Save hashed codes
-//    for code in codes {
-//        let recoveryCode = MultifactorAuthentication.RecoveryCode()
-//        recoveryCode.$identity.id = userId
-//        recoveryCode.code = try Bcrypt.hash(code)
-//        recoveryCode.used = false
-//        try await recoveryCode.save(on: database)
-//    }
-//    
-//    return codes
-//}
-//
-//extension MultifactorAuthentication {
-//    // Generate a secure random number within a range
-//    static func secureRandomNumber(min: Int, max: Int) throws -> Int {
-//        guard min < max else {
-//            throw SecureRandomError.invalidRange
-//        }
-//        
-//        let range = UInt64(max - min + 1)
-//        var random = SystemRandomNumberGenerator()
-//        
-//        // Generate random number using uniform distribution to avoid modulo bias
-//        let secureRandom = random.next(upperBound: range)
-//        return Int(secureRandom) + min
-//    }
-//    
-//    // Generate a secure verification code
-//    static func generateSecureVerificationCode() throws -> String {
-//        // Generate 6 random digits (100000-999999)
-//        let secureNumber = try secureRandomNumber(min: 100000, max: 999999)
-//        return String(secureNumber)
-//    }
-//    
-//    // Generate a secure recovery code segment
-//    static func generateSecureRecoveryCode() throws -> String {
-//        // Generate 5 random digits for each recovery code
-//        return try (0..<5).map { _ in
-//            String(try secureRandomNumber(min: 0, max: 9))
-//        }.joined()
-//    }
-//}
-//
-//enum SecureRandomError: Error {
-//    case invalidRange
-//}
+
+// In the recovery codes generation function:
+private func generateRecoveryCodes(for userId: UUID, on database: Fluent.Database) async throws -> [String] {
+    // Delete existing unused recovery codes
+    try await Database.MultifactorAuthentication.RecoveryCode.query(on: database)
+        .filter(\.$identity.$id == userId)
+        .filter(\.$used == false)
+        .delete()
+    
+    // Generate new codes
+    let codes = try (0..<10).map { _ in
+        try Database.MultifactorAuthentication.generateSecureRecoveryCode()
+    }
+    
+    // Save hashed codes
+    for code in codes {
+        let recoveryCode = Database.MultifactorAuthentication.RecoveryCode()
+        recoveryCode.$identity.id = userId
+        recoveryCode.code = try Bcrypt.hash(code)
+        recoveryCode.used = false
+        try await recoveryCode.save(on: database)
+    }
+    
+    return codes
+}
+
+extension Database.MultifactorAuthentication {
+    // Generate a secure random number within a range
+    static func secureRandomNumber(min: Int, max: Int) throws -> Int {
+        guard min < max else {
+            throw SecureRandomError.invalidRange
+        }
+        
+        let range = UInt64(max - min + 1)
+        var random = SystemRandomNumberGenerator()
+        
+        // Generate random number using uniform distribution to avoid modulo bias
+        let secureRandom = random.next(upperBound: range)
+        return Int(secureRandom) + min
+    }
+    
+    // Generate a secure verification code
+    static func generateSecureVerificationCode() throws -> String {
+        // Generate 6 random digits (100000-999999)
+        let secureNumber = try secureRandomNumber(min: 100000, max: 999999)
+        return String(secureNumber)
+    }
+    
+    // Generate a secure recovery code segment
+    static func generateSecureRecoveryCode() throws -> String {
+        // Generate 5 random digits for each recovery code
+        return try (0..<5).map { _ in
+            String(try secureRandomNumber(min: 0, max: 9))
+        }.joined()
+    }
+}
+
+enum SecureRandomError: Error {
+    case invalidRange
+}

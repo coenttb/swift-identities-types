@@ -13,61 +13,57 @@ import JWT
 import Coenttb_Identity_Shared
 
 extension Database.Identity {
-    public func generateJWTAccess(
-        config: JWT.Token.PayloadConfig,
+    package func generateJWTAccess(
         includeTokenId: Bool = false,
         includeNotBefore: Bool = false
     ) async throws -> String {
         @Dependency(\.request) var request
+        @Dependency(\.accessTokenConfig) var config
         
         guard let request else { throw Abort(.internalServerError) }
         
         let payload = try JWT.Token.Access(
             identity: self,
-            config: config,
             includeTokenId: includeTokenId,
             includeNotBefore: includeNotBefore
         )
         return try await request.jwt.sign(payload)
     }
     
-    public func generateJWTRefresh(
-        config: JWT.Token.PayloadConfig,
+    package func generateJWTRefresh(
         includeTokenId: Bool = false,
         includeNotBefore: Bool = false
     ) async throws -> String {
         @Dependency(\.request) var request
+        @Dependency(\.refreshTokenConfig) var config
         
         guard let request else { throw Abort(.internalServerError) }
         
         let payload = try JWT.Token.Access(
             identity: self,
-            config: config,
             includeTokenId: includeTokenId,
             includeNotBefore: includeNotBefore
         )
         return try await request.jwt.sign(payload)
     }
     
-    public func generateJWTResponse(
-        accessTokenConfig: JWT.Token.PayloadConfig,
-        refreshTokenConfig: JWT.Token.PayloadConfig
+    package func generateJWTResponse(
     ) async throws -> JWT.Response {
         
         @Dependency(\.request) var request
-        // Generate access token with short lifetime and token ID
+        
         let accessToken = try await self.generateJWTAccess(
-            config: accessTokenConfig,
-            includeTokenId: true,  // Always include jti for access tokens
-            includeNotBefore: true // Immediate validity
+            includeTokenId: true,
+            includeNotBefore: true
         )
         
-        // Generate refresh token with longer lifetime and token ID
         let refreshToken = try await self.generateJWTRefresh(
-            config: refreshTokenConfig,
-            includeTokenId: true,   // Always include jti for refresh tokens
-            includeNotBefore: false // Allow some clock skew for refresh
+            includeTokenId: true,
+            includeNotBefore: false
         )
+        
+        @Dependency(\.accessTokenConfig) var accessTokenConfig
+        @Dependency(\.refreshTokenConfig) var refreshTokenConfig
         
         return .init(
             accessToken: .init(
@@ -84,16 +80,16 @@ extension Database.Identity {
     }
 }
 
-
 extension JWT.Token.Access {
-    public init(
+    package init(
         identity: Database.Identity,
-        config: JWT.Token.PayloadConfig,
         currentTime: Date = .init(),
         includeTokenId: Bool = false,
         includeNotBefore: Bool = false
     ) throws {
         @Dependency(\.uuid) var uuid
+        @Dependency(\.accessTokenConfig) var config
+        
         self = .init(
             expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expiration)),
             issuedAt: IssuedAtClaim(value: currentTime),
@@ -109,14 +105,15 @@ extension JWT.Token.Access {
 }
 
 extension JWT.Token.Refresh {
-    public init(
+    package init(
         identity: Database.Identity,
-        config: JWT.Token.PayloadConfig,
         currentTime: Date = .init(),
         includeTokenId: Bool = false,
         includeNotBefore: Bool = false
     ) throws {
         @Dependency(\.uuid) var uuid
+        @Dependency(\.refreshTokenConfig) var config
+        
         self = .init(
             expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expiration)),
             issuedAt: IssuedAtClaim(value: currentTime),

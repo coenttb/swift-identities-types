@@ -38,8 +38,7 @@ let package = Package(
     ],
     products: [
         .library(name: .coenttbIdentityProvider, targets: [.coenttbIdentityProvider]),
-        .library(name: .coenttbIdentityConsumer, targets: [.coenttbIdentityConsumer]),
-        .library(name: .coenttbIdentityShared, targets: [.coenttbIdentityShared]),
+        .library(name: .coenttbIdentityConsumer, targets: [.coenttbIdentityConsumer])
     ],
     dependencies: [
         .package(url: "https://github.com/coenttb/coenttb-web", branch: "main"),

@@ -76,7 +76,7 @@ extension Identity.Create.Request {
                         
                         div {
                             HTMLText("\(String.already_have_an_account.capitalizingFirstLetter().questionmark) ")
-                            Link(href: loginHref.absoluteString) {
+                            Link(href: loginHref.relativePath) {
                                 String.login.capitalizingFirstLetter()
                             }
                             .linkColor(primaryColor)
@@ -87,7 +87,7 @@ extension Identity.Create.Request {
                 }
                 .id("form-create-identity")
                 .method(.post)
-                .action(createFormAction.absoluteString)
+                .action(createFormAction.relativePath)
                 .width(100.percent)
                 .maxWidth(20.rem, media: .desktop)
                 .maxWidth(24.rem, media: .mobile)
@@ -185,7 +185,7 @@ extension Identity.Create {
                     
                     //                div {
                     //                    HTMLText("\(String.already_have_an_account.capitalizingFirstLetter().questionmark) ")
-                    //                    Link(href: loginHref.absoluteString) {
+                    //                    Link(href: loginHref.relativePath) {
                     //                        String.login.capitalizingFirstLetter()
                     //                    }
                     //                    .linkColor(primaryColor)
@@ -268,7 +268,7 @@ extension Identity.Create.Verify {
                 async function verifyEmail(token, email) {
                     try {
                         // Create a URL object from the verificationAction
-                        const url = new URL('\(verificationAction.absoluteString)');
+                        const url = new URL('\(verificationAction.relativePath)');
                         
                         // Update or add the token and email parameters
                         url.searchParams.set('token', token);
@@ -283,7 +283,7 @@ extension Identity.Create.Verify {
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_verify_id)");
                             pageModule.outerHTML = "\(html: Identity.Create.VerifyConfirmationPage(redirectURL: redirectURL))";
-                            setTimeout(() => { window.location.href = '\(redirectURL.absoluteString)'; }, 5000);
+                            setTimeout(() => { window.location.href = '\(redirectURL.relativePath)'; }, 5000);
 
                         } else {
                             throw new Error(data.message || 'Account creation failed');
@@ -335,7 +335,7 @@ extension Identity.Create {
                     .textAlign(.center)
                     .margin(bottom: 2.rem)
                     
-                    Link(href: redirectURL.absoluteString) {
+                    Link(href: redirectURL.relativePath) {
                         TranslatedString(
                             dutch: "Klik hier als u niet automatisch wordt doorgestuurd",
                             english: "Click here if you are not redirected automatically"

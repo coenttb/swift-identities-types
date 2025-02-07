@@ -13,42 +13,42 @@ import Identity_Shared
 import Coenttb_Identity_Shared
 
 extension Database.MultifactorAuthentication {
-    public final class Method: Model, Content, @unchecked Sendable {
-        public static let schema = "mfa_methods"
+    package final class Method: Model, Content, @unchecked Sendable {
+        package static let schema = "mfa_methods"
 
         @ID(key: .id)
-        public var id: UUID?
+        package var id: UUID?
 
         @Parent(key: FieldKeys.identityId)
-        public var identity: Database.Identity
+        package var identity: Database.Identity
 
         @Enum(key: FieldKeys.type)
-        public var type: Identity.Authentication.Multifactor.Method
+        package var type: Identity.Authentication.Multifactor.Method
 
         @Field(key: FieldKeys.identifier)
-        public var identifier: String
+        package var identifier: String
 
         @Field(key: FieldKeys.verified)
-        public var verified: Bool
+        package var verified: Bool
 
         @Timestamp(key: FieldKeys.createdAt, on: .create)
-        public var createdAt: Date?
+        package var createdAt: Date?
 
         @OptionalField(key: FieldKeys.lastUsedAt)
-        public var lastUsedAt: Date?
+        package var lastUsedAt: Date?
 
         package enum FieldKeys {
-            public static let identityId: FieldKey = "identity_id"
-            public static let type: FieldKey = "type"
-            public static let identifier: FieldKey = "identifier"
-            public static let verified: FieldKey = "verified"
-            public static let createdAt: FieldKey = "created_at"
-            public static let lastUsedAt: FieldKey = "last_used_at"
+            package static let identityId: FieldKey = "identity_id"
+            package static let type: FieldKey = "type"
+            package static let identifier: FieldKey = "identifier"
+            package static let verified: FieldKey = "verified"
+            package static let createdAt: FieldKey = "created_at"
+            package static let lastUsedAt: FieldKey = "last_used_at"
         }
 
-        public init() {}
+        package init() {}
 
-        public init(
+        package init(
             id: UUID? = nil,
             identity: Database.Identity,
             type: Identity.Authentication.Multifactor.Method,
@@ -66,13 +66,13 @@ extension Database.MultifactorAuthentication {
 
 
 extension Database.MultifactorAuthentication.Method {
-    public enum Migration {
-        public struct Create: AsyncMigration {
-            public var name: String = "Identity_Provider.MultifactorAuthentication.Method.Migration.Create"
+    package enum Migration {
+        package struct Create: AsyncMigration {
+            package var name: String = "Identity_Provider.MultifactorAuthentication.Method.Migration.Create"
             
-            public init() {}
+            package init() {}
 
-            public func prepare(on database: Fluent.Database) async throws {
+            package func prepare(on database: Fluent.Database) async throws {
                 try await database.schema(Database.MultifactorAuthentication.Method.schema)
                     .id()
                     .field(FieldKeys.identityId, .uuid, .required, .references(Database.Identity.schema, "id", onDelete: .cascade))
@@ -85,7 +85,7 @@ extension Database.MultifactorAuthentication.Method {
                     .create()
             }
 
-            public func revert(on database: Fluent.Database) async throws {
+            package func revert(on database: Fluent.Database) async throws {
                 try await database.schema(Database.MultifactorAuthentication.Method.schema).delete()
             }
         }

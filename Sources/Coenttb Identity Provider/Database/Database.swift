@@ -7,4 +7,4 @@
 
 import Foundation
 
-public enum Database {}
+package enum Database {}

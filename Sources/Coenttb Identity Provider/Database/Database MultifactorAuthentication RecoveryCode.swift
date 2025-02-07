@@ -13,34 +13,34 @@ import Coenttb_Identity_Shared
 
 // MultifactorAuthentication.RecoveryCode.swift
 extension Database.MultifactorAuthentication {
-    public final class RecoveryCode: Model, Content, @unchecked Sendable {
-        public static let schema = "mfa_recovery_codes"
+    package final class RecoveryCode: Model, Content, @unchecked Sendable {
+        package static let schema = "mfa_recovery_codes"
 
         @ID(key: .id)
-        public var id: UUID?
+        package var id: UUID?
 
         @Parent(key: FieldKeys.identityId)
-        public var identity: Database.Identity
+        package var identity: Database.Identity
 
         @Field(key: FieldKeys.code)
-        public var code: String
+        package var code: String
 
         @Field(key: FieldKeys.used)
-        public var used: Bool
+        package var used: Bool
 
         @OptionalField(key: FieldKeys.usedAt)
-        public var usedAt: Date?
+        package var usedAt: Date?
 
         package enum FieldKeys {
-            public static let identityId: FieldKey = "identity_id"
-            public static let code: FieldKey = "code"
-            public static let used: FieldKey = "used"
-            public static let usedAt: FieldKey = "used_at"
+            package static let identityId: FieldKey = "identity_id"
+            package static let code: FieldKey = "code"
+            package static let used: FieldKey = "used"
+            package static let usedAt: FieldKey = "used_at"
         }
 
-        public init() {}
+        package init() {}
 
-        public init(
+        package init(
             id: UUID? = nil,
             identity: Database.Identity,
             code: String,
@@ -56,13 +56,13 @@ extension Database.MultifactorAuthentication {
 
 
 extension Database.MultifactorAuthentication.RecoveryCode {
-    public enum Migration {
-        public struct Create: AsyncMigration {
-            public var name: String = "Identity_Provider.MultifactorAuthentication.RecoveryCode.Migration.Create"
+    package enum Migration {
+        package struct Create: AsyncMigration {
+            package var name: String = "Identity_Provider.MultifactorAuthentication.RecoveryCode.Migration.Create"
             
-            public init() {}
+            package init() {}
 
-            public func prepare(on database: Fluent.Database) async throws {
+            package func prepare(on database: Fluent.Database) async throws {
                 try await database.schema(Database.MultifactorAuthentication.RecoveryCode.schema)
                     .id()
                     .field(FieldKeys.identityId, .uuid, .required, .references(Database.Identity.schema, "id", onDelete: .cascade))
@@ -72,7 +72,7 @@ extension Database.MultifactorAuthentication.RecoveryCode {
                     .create()
             }
 
-            public func revert(on database: Fluent.Database) async throws {
+            package func revert(on database: Fluent.Database) async throws {
                 try await database.schema(Database.MultifactorAuthentication.RecoveryCode.schema).delete()
             }
         }

@@ -12,42 +12,42 @@ import Foundation
 import Coenttb_Identity_Shared
 
 extension Database.MultifactorAuthentication {
-    public final class Challenge: Model, Content, @unchecked Sendable {
-        public static let schema = "mfa_challenges"
+    package final class Challenge: Model, Content, @unchecked Sendable {
+        package static let schema = "mfa_challenges"
 
         @ID(key: .id)
-        public var id: UUID?
+        package var id: UUID?
 
         @Parent(key: FieldKeys.identityId)
-        public var identity: Database.Identity
+        package var identity: Database.Identity
 
         @Enum(key: FieldKeys.type)
-        public var type: Identity.Authentication.Multifactor.Method
+        package var type: Identity.Authentication.Multifactor.Method
 
         @Field(key: FieldKeys.code)
-        public var code: String
+        package var code: String
 
         @Field(key: FieldKeys.attempts)
-        public var attempts: Int
+        package var attempts: Int
 
         @Timestamp(key: FieldKeys.createdAt, on: .create)
-        public var createdAt: Date?
+        package var createdAt: Date?
 
         @Field(key: FieldKeys.expiresAt)
-        public var expiresAt: Date
+        package var expiresAt: Date
 
         package enum FieldKeys {
-            public static let identityId: FieldKey = "identity_id"
-            public static let type: FieldKey = "type"
-            public static let code: FieldKey = "code"
-            public static let attempts: FieldKey = "attempts"
-            public static let createdAt: FieldKey = "created_at"
-            public static let expiresAt: FieldKey = "expires_at"
+            package static let identityId: FieldKey = "identity_id"
+            package static let type: FieldKey = "type"
+            package static let code: FieldKey = "code"
+            package static let attempts: FieldKey = "attempts"
+            package static let createdAt: FieldKey = "created_at"
+            package static let expiresAt: FieldKey = "expires_at"
         }
 
-        public init() {}
+        package init() {}
 
-        public init(
+        package init(
             id: UUID? = nil,
             identity: Database.Identity,
             type: Identity.Authentication.Multifactor.Method,
@@ -67,13 +67,13 @@ extension Database.MultifactorAuthentication {
 
 
 extension Database.MultifactorAuthentication.Challenge {
-    public enum Migration {
-        public struct Create: AsyncMigration {
-            public var name: String = "Identity_Provider.MultifactorAuthentication.Challenge.Migration.Create"
+    package enum Migration {
+        package struct Create: AsyncMigration {
+            package var name: String = "Identity_Provider.MultifactorAuthentication.Challenge.Migration.Create"
             
-            public init() {}
+            package init() {}
 
-            public func prepare(on database: Fluent.Database) async throws {
+            package func prepare(on database: Fluent.Database) async throws {
                 try await database.schema(Database.MultifactorAuthentication.Challenge.schema)
                     .id()
                     .field(FieldKeys.identityId, .uuid, .required, .references(Database.Identity.schema, "id", onDelete: .cascade))
@@ -85,7 +85,7 @@ extension Database.MultifactorAuthentication.Challenge {
                     .create()
             }
 
-            public func revert(on database: Fluent.Database) async throws {
+            package func revert(on database: Fluent.Database) async throws {
                 try await database.schema(Database.MultifactorAuthentication.Challenge.schema).delete()
             }
         }

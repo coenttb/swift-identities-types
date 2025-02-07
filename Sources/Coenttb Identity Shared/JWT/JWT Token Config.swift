@@ -1,0 +1,69 @@
+import Dependencies
+@preconcurrency import Fluent
+import Foundation
+@preconcurrency import Vapor
+import JWT
+import Vapor
+
+extension JWT.Token {
+    public struct Config: Codable, Hashable, Sendable {
+        public static let accessTokenLifetime: TimeInterval = 60 * 15     // 15 minutes
+        public static let refreshTokenLifetime: TimeInterval = 60 * 60 * 24 * 7  // 7 days
+        
+        public let issuer: String
+        public let expiration: TimeInterval
+        
+        private init(
+            issuer: String,
+            expiration: TimeInterval
+        ) {
+            self.issuer = issuer
+            self.expiration = expiration
+        }
+    }
+}
+
+private enum AccessTokenConfig: TestDependencyKey {
+    public static let testValue: JWT.Token.Config = .forAccessToken(issuer: "default-issuer")
+}
+
+extension DependencyValues {
+    public var accessTokenConfig: JWT.Token.Config {
+        get { self[AccessTokenConfig.self] }
+        set { self[AccessTokenConfig.self] = newValue }
+    }
+}
+
+private enum RefreshTokenConfig: TestDependencyKey {
+    public static let testValue: JWT.Token.Config = .forAccessToken(issuer: "default-issuer")
+}
+
+extension DependencyValues {
+    public var refreshTokenConfig: JWT.Token.Config {
+        get { self[RefreshTokenConfig.self] }
+        set { self[RefreshTokenConfig.self] = newValue }
+    }
+}
+
+
+extension JWT.Token.Config {
+    public static func forAccessToken(
+        issuer: String,
+        expiration: TimeInterval = Self.accessTokenLifetime
+    ) -> Self {
+        .init(
+            issuer: issuer,
+            expiration: expiration
+        )
+    }
+    
+    public static func forRefreshToken(
+        issuer: String,
+        expiration: TimeInterval = Self.refreshTokenLifetime
+    ) -> Self {
+        .init(
+            issuer: issuer,
+            expiration: expiration
+        )
+    }
+}

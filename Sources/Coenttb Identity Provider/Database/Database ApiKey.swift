@@ -4,38 +4,38 @@ import Foundation
 @preconcurrency import Vapor
 
 extension Database {
-    public final class ApiKey: Model, Content, @unchecked Sendable {
-        public static let schema = "api_keys"
+    package final class ApiKey: Model, Content, @unchecked Sendable {
+        package static let schema = "api_keys"
 
         @ID(key: .id)
-        public var id: UUID?
+        package var id: UUID?
         
         @Field(key: FieldKeys.name)
-        public var name: String
+        package var name: String
         
         @Field(key: FieldKeys.key)
-        public var key: String
+        package var key: String
         
         @Field(key: FieldKeys.scopes)
-        public var scopes: [String]
+        package var scopes: [String]
         
         @Parent(key: FieldKeys.identityId)
-        public var identity: Identity
+        package var identity: Identity
         
         @Field(key: FieldKeys.isActive)
-        public var isActive: Bool
+        package var isActive: Bool
         
         @Field(key: FieldKeys.rateLimit)
-        public var rateLimit: Int
+        package var rateLimit: Int
         
         @Field(key: FieldKeys.validUntil)
-        public var validUntil: Date
+        package var validUntil: Date
         
         @Timestamp(key: FieldKeys.createdAt, on: .create)
-        public var createdAt: Date?
+        package var createdAt: Date?
         
         @OptionalField(key: FieldKeys.lastUsedAt)
-        public var lastUsedAt: Date?
+        package var lastUsedAt: Date?
         
         package enum FieldKeys {
             static let name: FieldKey = "name"
@@ -49,9 +49,9 @@ extension Database {
             static let lastUsedAt: FieldKey = "last_used_at"
         }
 
-        public init() {}
+        package init() {}
         
-        public init(
+        package init(
             id: UUID? = nil,
             name: String,
             identity: Identity,
@@ -89,12 +89,12 @@ extension Database {
 
 
 extension Database.ApiKey {
-    public enum Migration {
-        public struct Create: AsyncMigration {
+    package enum Migration {
+        package struct Create: AsyncMigration {
             
-            public var name: String = "Identity_Provider.ApiKey.Migration.Create"
+            package var name: String = "Identity_Provider.ApiKey.Migration.Create"
             
-            public func prepare(on database: Fluent.Database) async throws {
+            package func prepare(on database: Fluent.Database) async throws {
                 try await database.schema(Database.ApiKey.schema)
                     .id()
                     .field(FieldKeys.name, .string, .required)
@@ -110,11 +110,11 @@ extension Database.ApiKey {
                     .create()
             }
 
-            public func revert(on database: Fluent.Database) async throws {
+            package func revert(on database: Fluent.Database) async throws {
                 try await database.schema(Database.ApiKey.schema).delete()
             }
             
-            public init(){}
+            package init(){}
         }
     }
 }

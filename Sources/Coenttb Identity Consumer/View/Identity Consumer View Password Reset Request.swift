@@ -67,7 +67,7 @@ extension Identity.Consumer.View.Password.Reset.Request {
                                     dutch: "Terug naar home",
                                     english: "Back to Home"
                                 ).description,
-                                href: homeHref.absoluteString
+                                href: homeHref.relativePath
                             )
                             .linkColor(self.primaryColor)
                             .fontWeight(.medium)
@@ -77,7 +77,7 @@ extension Identity.Consumer.View.Password.Reset.Request {
                     }
                     .id("form-forgot-password")
                     .method(.post)
-                    .action(self.formActionURL.absoluteString)
+                    .action(self.formActionURL.relativePath)
                 }
                 .width(100.percent)
                 .maxWidth(20.rem)
@@ -174,7 +174,7 @@ extension Identity.Consumer.View.Password.Reset.Request.View {
                             dutch: "Terug naar home",
                             english: "Back to Home"
                         ).description,
-                        href: homeHref.absoluteString
+                        href: homeHref.relativePath
                     )
                     .linkColor(self.primaryColor)
                 }
@@ -260,7 +260,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
                                     dutch: "Terug naar de homepagina",
                                     english: "Back to home"
                                 ).description,
-                                href: homeHref.absoluteString
+                                href: homeHref.relativePath
                             )
                             .linkColor(self.primaryColor)
                             .fontWeight(.medium)
@@ -270,7 +270,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
                     }
                     .id("form-password-reset")
                     .method(.post)
-                    .action(self.passwordResetAction.absoluteString)
+                    .action(self.passwordResetAction.relativePath)
                 }
                 .width(100.percent)
                 .maxWidth(20.rem)
@@ -385,7 +385,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm.View {
                             dutch: "Klik hier als je niet automatisch wordt doorgestuurd",
                             english: "Click here if you are not automatically redirected"
                         ).description,
-                        href: redirect.absoluteString
+                        href: redirect.relativePath
                     )
                     .linkColor(self.primaryColor)
                     .fontWeight(.medium)
@@ -411,7 +411,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm.View {
             script {"""
                 document.addEventListener('DOMContentLoaded', function() {
                     setTimeout(function() {
-                        window.location.href = '\(redirect.absoluteString)';
+                        window.location.href = '\(redirect.relativePath)';
                     }, 5000); // Redirect after 5 seconds
                 });
             """}

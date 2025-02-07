@@ -8,11 +8,11 @@ import Fluent
 import Vapor
 
 extension Database {
-    public final class EmailChangeRequest: Model, @unchecked Sendable {
-        public static let schema = "email_change_requests"
+    package final class EmailChangeRequest: Model, @unchecked Sendable {
+        package static let schema = "email_change_requests"
         
         @ID(key: .id)
-        public var id: UUID?
+        package var id: UUID?
         
         @Parent(key: FieldKeys.identityId)
         package var identity: Database.Identity
@@ -29,7 +29,7 @@ extension Database {
             static let tokenId: FieldKey = "token_id"
         }
         
-        public init() {}
+        package init() {}
         
         package init(
             id: UUID? = nil,
@@ -50,12 +50,12 @@ extension Database {
 
 extension Database.EmailChangeRequest {
     
-    public struct Migration: AsyncMigration {
+    package struct Migration: AsyncMigration {
         
-        public var name: String = "Coenttb_Identity.EmailChangeRequest.Migration.Create"
+        package var name: String = "Coenttb_Identity.EmailChangeRequest.Migration.Create"
         
-        public init(){}
-        public func prepare(on database: Fluent.Database) async throws {
+        package init(){}
+        package func prepare(on database: Fluent.Database) async throws {
             try await database.schema(Database.EmailChangeRequest.schema)
                 .id()
                 .field(FieldKeys.identityId, .uuid, .required, .references(Database.Identity.schema, "id", onDelete: .cascade))
@@ -65,7 +65,7 @@ extension Database.EmailChangeRequest {
                 .create()
         }
         
-        public func revert(on database: Fluent.Database) async throws {
+        package func revert(on database: Fluent.Database) async throws {
             try await database.schema(Database.EmailChangeRequest.schema).delete()
         }
     }
