@@ -23,7 +23,6 @@ extension Identity.Consumer.View.Password {
     }
     
     public enum Change: Codable, Hashable, Sendable {
-        case reauthorization
         case request
     }
 }

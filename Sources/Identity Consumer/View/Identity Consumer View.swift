@@ -85,9 +85,6 @@ extension Identity.Consumer.View {
                                 URLRouting.Route(.case(Identity.Consumer.View.Password.Change.request)) {
                                     Path.request
                                 }
-                                URLRouting.Route(.case(Identity.Consumer.View.Password.Change.reauthorization)) {
-                                    Path.reauthorization
-                                }
                             }
                         }
                     }
