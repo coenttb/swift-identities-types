@@ -28,8 +28,7 @@ extension Identity.Consumer.Client {
                 token: .init(
                     access: { token in
                         try await handleRequest(
-                            for: makeRequest(.authenticate(.token(.access(.init(token: token))))),
-                            decodingTo: JWT.Response.self
+                            for: makeRequest(.authenticate(.token(.access(.init(token: token)))))
                         )
                     },
                     refresh: { token in

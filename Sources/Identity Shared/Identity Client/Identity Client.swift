@@ -130,7 +130,7 @@ extension Identity.Client.Authenticate {
     public struct Token: @unchecked Sendable {
         public var access: (
             _ token: String
-        ) async throws -> JWT.Response
+        ) async throws -> Void
         
         public var refresh: (
             _ token: String
