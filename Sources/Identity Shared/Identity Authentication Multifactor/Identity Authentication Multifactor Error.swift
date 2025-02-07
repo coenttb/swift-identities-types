@@ -8,7 +8,7 @@
 import Foundation
 
 // Error types
-extension Identity.Authenticate.Multifactor {
+extension Identity.Authentication.Multifactor {
     public enum Error: Swift.Error, Sendable {
         case invalidMethod
         case invalidCode

@@ -24,7 +24,7 @@ extension Identity.Consumer.Client.Authenticate.Multifactor {
                 initialize: { method, identifier in
                     try await handleRequest(
                         for: makeRequest(.multifactorAuthentication(.setup(.initialize(.init(method: method, identifier: identifier))))),
-                        decodingTo: Identity.Authenticate.Multifactor.Setup.Response.self
+                        decodingTo: Identity.Authentication.Multifactor.Setup.Response.self
                     )
                 },
                 confirm: { code in
@@ -40,7 +40,7 @@ extension Identity.Consumer.Client.Authenticate.Multifactor {
                 createChallenge: { method in
                     try await handleRequest(
                         for: makeRequest(.multifactorAuthentication(.challenge(.create(.init(method: method))))),
-                        decodingTo: Identity.Authenticate.Multifactor.Challenge.self
+                        decodingTo: Identity.Authentication.Multifactor.Challenge.self
                     )
                 },
                 verify: { challengeId, code in
@@ -77,7 +77,7 @@ extension Identity.Consumer.Client.Authenticate.Multifactor {
             configuration: {
                 try await handleRequest(
                     for: makeRequest(.multifactorAuthentication(.configuration)),
-                    decodingTo: Identity.Authenticate.Multifactor.Configuration.self
+                    decodingTo: Identity.Authentication.Multifactor.Configuration.self
                 )
             },
             disable: {

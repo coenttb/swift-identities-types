@@ -9,7 +9,7 @@ import Foundation
 import DependenciesMacros
 
 // Client interface
-extension Identity.Authenticate.Multifactor {
+extension Identity.Authentication.Multifactor {
     @DependencyClient
     public struct Client: @unchecked Sendable {
         public var setup: Client.Setup
@@ -24,29 +24,29 @@ extension Identity.Authenticate.Multifactor {
     }
 }
 
-extension Identity.Authenticate.Multifactor.Client {
+extension Identity.Authentication.Multifactor.Client {
     @DependencyClient
     public struct Setup: @unchecked Sendable {
         @DependencyEndpoint
-        public var initialize: (_ method: Identity.Authenticate.Multifactor.Method, _ identifier: String) async throws -> Identity.Authenticate.Multifactor.Setup.Response
+        public var initialize: (_ method: Identity.Authentication.Multifactor.Method, _ identifier: String) async throws -> Identity.Authentication.Multifactor.Setup.Response
         
         @DependencyEndpoint
         public var confirm: (_ code: String) async throws -> Void
     }
 }
 
-extension Identity.Authenticate.Multifactor.Client {
+extension Identity.Authentication.Multifactor.Client {
     @DependencyClient
     public struct Verification: @unchecked Sendable {
         @DependencyEndpoint
-        public var createChallenge: (_ method: Identity.Authenticate.Multifactor.Method) async throws -> Identity.Authenticate.Multifactor.Challenge
+        public var createChallenge: (_ method: Identity.Authentication.Multifactor.Method) async throws -> Identity.Authentication.Multifactor.Challenge
         
         @DependencyEndpoint
         public var verify: (_ challengeId: String, _ code: String) async throws -> Void
     }
 }
 
-extension Identity.Authenticate.Multifactor.Client {
+extension Identity.Authentication.Multifactor.Client {
     @DependencyClient
     public struct Recovery: @unchecked Sendable {
         @DependencyEndpoint

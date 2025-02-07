@@ -9,11 +9,12 @@ import Coenttb_Web
 
 extension Identity {
     public enum API: Equatable, Sendable {
-        case authenticate(Identity.Authenticate)
+        case authenticate(Identity.API.Authenticate)
         case create(Identity.API.Create)
         case delete(Identity.API.Delete)
         case emailChange(Identity.API.EmailChange)
         case logout
+        case reauthorize(Identity.API.Reauthorize)
         case password(Identity.API.Password)
         case multifactorAuthentication(Identity.API.MultifactorAuthentication)
     }
@@ -39,12 +40,17 @@ extension Identity.API {
                 
                 URLRouting.Route(.case(Identity.API.authenticate)) {
                     Path.authenticate
-                    Identity.Authenticate.Router()
+                    Identity.Authentication.Router()
                 }
 
                 URLRouting.Route(.case(Identity.API.logout)) {
                     Path.logout
                     Method.post
+                }
+                
+                URLRouting.Route(.case(Identity.API.reauthorize)) {
+                    Path.authenticate
+                    Body(.form(Identity.API.Reauthorize.self, decoder: .default))
                 }
                 
                 URLRouting.Route(.case(Identity.API.password)) {
@@ -68,4 +74,9 @@ extension UrlFormDecoder {
         decoder.parsingStrategy = .bracketsWithIndices
         return decoder
     }
+}
+
+extension Identity.API.Router: TestDependencyKey {
+    public static let testValue: Identity.API.Router = liveValue
+    public static let liveValue: Identity.API.Router = .init()
 }

@@ -18,6 +18,9 @@ extension Identity {
         @DependencyEndpoint
         public var logout: () async throws -> Void
         
+        @DependencyEndpoint
+        public var reauthorize: (_ password: String) async throws -> JWT.Response
+        
         public var create: Identity.Client.Create
         
         public var delete: Identity.Client.Delete
@@ -47,8 +50,6 @@ extension Identity {
         }
     }
 }
-
-
 
 extension Identity.Client {
     @DependencyClient
@@ -115,7 +116,7 @@ extension Identity.Client {
     @DependencyClient
     public struct Authenticate: @unchecked Sendable {
         public var credentials: (
-            _ credentials: Identity.Authenticate.Credentials
+            _ credentials: Identity.Authentication.Credentials
         ) async throws -> JWT.Response
         
         public var bearer: (

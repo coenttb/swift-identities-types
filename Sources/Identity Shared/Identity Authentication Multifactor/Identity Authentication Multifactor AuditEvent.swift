@@ -7,22 +7,22 @@
 
 import Foundation
 
-extension Identity.Authenticate.Multifactor {
+extension Identity.Authentication.Multifactor {
     public enum Audit {}
 }
 
-extension Identity.Authenticate.Multifactor.Audit {
+extension Identity.Authentication.Multifactor.Audit {
     public struct Event: Codable, Hashable, Sendable {
         public let userId: String
-        public let type: Identity.Authenticate.Multifactor.Audit.Event.`Type`
-        public let method: Identity.Authenticate.Multifactor.Method?
+        public let type: Identity.Authentication.Multifactor.Audit.Event.`Type`
+        public let method: Identity.Authentication.Multifactor.Method?
         public let timestamp: Date
         public let metadata: [String: String]
         
         public init(
             userId: String,
             eventType: `Type`,
-            method: Identity.Authenticate.Multifactor.Method? = nil,
+            method: Identity.Authentication.Multifactor.Method? = nil,
             timestamp: Date = .now,
             metadata: [String: String] = [:]
         ) {
@@ -35,7 +35,7 @@ extension Identity.Authenticate.Multifactor.Audit {
     }
 }
 
-extension Identity.Authenticate.Multifactor.Audit.Event {
+extension Identity.Authentication.Multifactor.Audit.Event {
     public enum `Type`: String, Codable, Hashable, Sendable {
         case setupInitiated = "SetupInitiated"
         case setupCompleted = "SetupCompleted"

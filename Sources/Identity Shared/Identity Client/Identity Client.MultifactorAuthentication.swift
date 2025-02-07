@@ -18,7 +18,7 @@ extension Identity.Client.Authenticate {
         public var administration: Identity.Client.Authenticate.Multifactor.Administration
         
         @DependencyEndpoint
-        public var configuration: () async throws -> Identity.Authenticate.Multifactor.Configuration
+        public var configuration: () async throws -> Identity.Authentication.Multifactor.Configuration
         
         @DependencyEndpoint
         public var disable: () async throws -> Void
@@ -29,13 +29,13 @@ extension Identity.Client.Authenticate.Multifactor {
     @DependencyClient
     public struct Setup: @unchecked Sendable {
         @DependencyEndpoint
-        public var initialize: (_ method: Identity.Authenticate.Multifactor.Method, _ identifier: String) async throws -> Identity.Authenticate.Multifactor.Setup.Response
+        public var initialize: (_ method: Identity.Authentication.Multifactor.Method, _ identifier: String) async throws -> Identity.Authentication.Multifactor.Setup.Response
         
         @DependencyEndpoint
         public var confirm: (_ code: String) async throws -> Void
         
         @DependencyEndpoint
-        public var resetSecret: (_ method: Identity.Authenticate.Multifactor.Method) async throws -> String
+        public var resetSecret: (_ method: Identity.Authentication.Multifactor.Method) async throws -> String
     }
 }
 
@@ -43,7 +43,7 @@ extension Identity.Client.Authenticate.Multifactor {
     @DependencyClient
     public struct Verification: @unchecked Sendable {
         @DependencyEndpoint
-        public var createChallenge: (_ method: Identity.Authenticate.Multifactor.Method) async throws -> Identity.Authenticate.Multifactor.Challenge
+        public var createChallenge: (_ method: Identity.Authentication.Multifactor.Method) async throws -> Identity.Authentication.Multifactor.Challenge
         
         @DependencyEndpoint
         public var verify: (_ challengeId: String, _ code: String) async throws -> Void

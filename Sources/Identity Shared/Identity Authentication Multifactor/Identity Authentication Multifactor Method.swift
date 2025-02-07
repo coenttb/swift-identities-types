@@ -8,7 +8,7 @@
 import Foundation
 
 
-extension Identity.Authenticate.Multifactor {
+extension Identity.Authentication.Multifactor {
     public enum Method: String, Codable, Hashable, Sendable, CaseIterable {
         case totp = "TOTP"
         case sms = "SMS"

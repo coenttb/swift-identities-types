@@ -8,7 +8,7 @@
 import Foundation
 
 //// Base namespace
-extension Identity.Authenticate {
+extension Identity.Authentication {
     public struct Multifactor {}
 }
 

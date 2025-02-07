@@ -8,11 +8,11 @@
 import Foundation
 
 // Recovery codes management
-extension Identity.Authenticate.Multifactor {
+extension Identity.Authentication.Multifactor {
     public enum Recovery {}
 }
 
-extension Identity.Authenticate.Multifactor.Recovery {
+extension Identity.Authentication.Multifactor.Recovery {
     public struct Codes: Codable, Hashable, Sendable {
         public let codes: [String]
         public let usedCodes: Set<String>

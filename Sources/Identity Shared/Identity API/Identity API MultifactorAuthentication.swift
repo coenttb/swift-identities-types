@@ -21,7 +21,7 @@ extension Identity.API {
 
 extension Identity.API.MultifactorAuthentication {
     public enum Setup: Equatable, Sendable {
-        case initialize(Identity.Authenticate.Multifactor.Setup.Request)
+        case initialize(Identity.Authentication.Multifactor.Setup.Request)
         case confirm(Setup.Confirm)
     }
 }
@@ -44,9 +44,9 @@ extension Identity.API.MultifactorAuthentication {
 
 extension Identity.API.MultifactorAuthentication.Challenge {
     public struct Create: Codable, Hashable, Sendable {
-        public let method: Identity.Authenticate.Multifactor.Method
+        public let method: Identity.Authentication.Multifactor.Method
         
-        public init(method: Identity.Authenticate.Multifactor.Method) {
+        public init(method: Identity.Authentication.Multifactor.Method) {
             self.method = method
         }
     }
@@ -54,7 +54,7 @@ extension Identity.API.MultifactorAuthentication.Challenge {
 
 extension Identity.API.MultifactorAuthentication {
     public enum Verify: Equatable, Sendable {
-        case verify(Identity.Authenticate.Multifactor.Verification)
+        case verify(Identity.Authentication.Multifactor.Verification)
     }
 }
 
@@ -77,7 +77,7 @@ extension Identity.API.MultifactorAuthentication {
                         URLRouting.Route(.case(Identity.API.MultifactorAuthentication.Setup.initialize)) {
                             Path.initialize
                             Method.post
-                            Body(.form(Identity.Authenticate.Multifactor.Setup.Request.self, decoder: .default))
+                            Body(.form(Identity.Authentication.Multifactor.Setup.Request.self, decoder: .default))
                         }
                         
                         URLRouting.Route(.case(Identity.API.MultifactorAuthentication.Setup.confirm)) {
@@ -100,7 +100,7 @@ extension Identity.API.MultifactorAuthentication {
                     Path.verify
                     URLRouting.Route(.case(Identity.API.MultifactorAuthentication.Verify.verify)) {
                         Method.post
-                        Body(.form(Identity.Authenticate.Multifactor.Verification.self, decoder: .default))
+                        Body(.form(Identity.Authentication.Multifactor.Verification.self, decoder: .default))
                     }
                 }
                 

@@ -7,17 +7,17 @@
 
 import Foundation
 
-extension Identity.Authenticate.Multifactor {
+extension Identity.Authentication.Multifactor {
     public enum Setup {}
 }
 
-extension Identity.Authenticate.Multifactor.Setup {
+extension Identity.Authentication.Multifactor.Setup {
     public struct Request: Codable, Hashable, Sendable {
-        public let method: Identity.Authenticate.Multifactor.Method
+        public let method: Identity.Authentication.Multifactor.Method
         public let identifier: String
         
         public init(
-            method: Identity.Authenticate.Multifactor.Method,
+            method: Identity.Authentication.Multifactor.Method,
             identifier: String = ""
         ) {
             self.method = method
@@ -26,7 +26,7 @@ extension Identity.Authenticate.Multifactor.Setup {
     }
 }
 
-extension Identity.Authenticate.Multifactor.Setup {
+extension Identity.Authentication.Multifactor.Setup {
     public struct Response: Codable, Hashable, Sendable {
         public let secret: String
         public let recoveryCodes: [String]
