@@ -16,7 +16,6 @@ extension Identity.Consumer {
         case delete
         case login
         case logout
-        case reauthorization
         case password(Identity.Consumer.View.Password)
         case emailChange(Identity.Consumer.View.EmailChange)
         case multifactorAuthentication(Identity.Consumer.View.MultifactorAuthentication)
@@ -58,10 +57,6 @@ extension Identity.Consumer.View {
                     Path.logout
                 }
                 
-                URLRouting.Route(.case(Identity.Consumer.View.reauthorization)) {
-                    Path.reauthorization
-                }
-                
                 URLRouting.Route(.case(Identity.Consumer.View.password)) {
                     Path.password
                     OneOf {
@@ -86,8 +81,13 @@ extension Identity.Consumer.View {
                         
                         URLRouting.Route(.case(Identity.Consumer.View.Password.change)) {
                             Path.change
-                            URLRouting.Route(.case(Identity.Consumer.View.Password.Change.request)) {
-                                Path.request
+                            OneOf {
+                                URLRouting.Route(.case(Identity.Consumer.View.Password.Change.request)) {
+                                    Path.request
+                                }
+                                URLRouting.Route(.case(Identity.Consumer.View.Password.Change.reauthorization)) {
+                                    Path.reauthorization
+                                }
                             }
                         }
                     }
@@ -96,6 +96,10 @@ extension Identity.Consumer.View {
                 URLRouting.Route(.case(Identity.Consumer.View.emailChange)) {
                     Path.emailChange
                     OneOf {
+                        URLRouting.Route(.case(Identity.Consumer.View.EmailChange.reauthorization)) {
+                            Path.reauthorization
+                        }
+                        
                         URLRouting.Route(.case(Identity.Consumer.View.EmailChange.request)) {
                             Path.request
                         }
