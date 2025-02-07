@@ -8,6 +8,8 @@
 import Foundation
 import Identity_Shared
 import Coenttb_Web
+import Dependencies
+
 
 extension Identity.Consumer {
     public enum Route: Equatable, Sendable {
@@ -35,4 +37,9 @@ extension Identity.Consumer.Route {
             }
         }
     }
+}
+
+extension Identity.Consumer.Route.Router: DependencyKey {
+    public static let liveValue: Self = .init()
+    public static let testValue: Self = liveValue
 }
