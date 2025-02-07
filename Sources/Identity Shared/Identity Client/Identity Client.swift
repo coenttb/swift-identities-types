@@ -9,70 +9,59 @@ import Foundation
 import EmailAddress
 import Dependencies
 import DependenciesMacros
-import Identity_Shared
-import Coenttb_Web
 
-extension Identity.Consumer {
+extension Identity {
     @DependencyClient
     public struct Client: @unchecked Sendable {
-        public var create: Client.Create
-        
-        public var delete: Client.Delete
-        
-        public var authenticate: Client.Authenticate
-        
-//        @DependencyEndpoint
-//        public var currentUser: () async throws -> User?
-//        
-//        @DependencyEndpoint
-//        public var update: (User?) async throws -> User?
+        public var authenticate: Identity.Client.Authenticate
         
         @DependencyEndpoint
         public var logout: () async throws -> Void
         
-        public var password: Client.Password
+        public var create: Identity.Client.Create
         
-        public var emailChange: Client.EmailChange
+        public var delete: Identity.Client.Delete
         
-//        public var multifactorAuthentication: Client.MultifactorAuthentication?
+        public var emailChange: Identity.Client.EmailChange
+        
+        public var password: Identity.Client.Password        
+        
+        public var multifactorAuthentication: Identity.Client.Authenticate.Multifactor?
         
         public init(
-            create: Client.Create,
-            delete: Client.Delete,
-            authenticate: Client.Authenticate,
-//            currentUser: @escaping () -> User?,
-//            update: @escaping (User?) -> User?,
+            authenticate: Identity.Client.Authenticate,
             logout: @escaping () -> Void,
-            password: Client.Password,
-            emailChange: Client.EmailChange
-//            multifactorAuthentication: Client.MultifactorAuthentication? = nil
+            create: Identity.Client.Create,
+            delete: Identity.Client.Delete,
+            emailChange: Identity.Client.EmailChange,
+            password: Identity.Client.Password,
+            multifactorAuthentication: Identity.Client.Authenticate.Multifactor? = nil
         ) {
             self.create = create
             self.delete = delete
             self.authenticate = authenticate
-//            self.currentUser = currentUser
-//            self.update = update
             self.logout = logout
             self.password = password
             self.emailChange = emailChange
-//            self.multifactorAuthentication = multifactorAuthentication
+            self.multifactorAuthentication = multifactorAuthentication
         }
     }
 }
 
 
 
-extension Identity.Consumer.Client {
+extension Identity.Client {
     @DependencyClient
     public struct Create: @unchecked Sendable {
         @DependencyEndpoint
         public var request: (_ email: EmailAddress, _ password: String) async throws -> Void
+        
         @DependencyEndpoint
         public var verify: (_ email: EmailAddress, _ token: String) async throws -> Void
     }
 }
 
-extension Identity.Consumer.Client {
+extension Identity.Client {
     @DependencyClient
     public struct Password: @unchecked Sendable {
         public var reset: Password.Reset
@@ -85,22 +74,22 @@ extension Identity.Consumer.Client {
     }
 }
 
-extension Identity.Consumer.Client.Password {
+extension Identity.Client.Password {
     @DependencyClient
     public struct Reset: @unchecked Sendable {
         public var request: (_ email: EmailAddress) async throws -> Void
-        public var confirm: (_ token: String, _ newPassword: String) async throws -> Void
+        public var confirm: (_ newPassword: String, _ token: String) async throws -> Void
     }
 }
 
-extension Identity.Consumer.Client.Password {
+extension Identity.Client.Password {
     @DependencyClient
     public struct Change: @unchecked Sendable {
         public var request: (_ currentPassword: String, _ newPassword: String) async throws -> Void
     }
 }
 
-extension Identity.Consumer.Client {
+extension Identity.Client {
     @DependencyClient
     public struct EmailChange: @unchecked Sendable {
         public var request: (_ newEmail: EmailAddress?) async throws -> Void
@@ -108,20 +97,21 @@ extension Identity.Consumer.Client {
     }
 }
 
-extension Identity.Consumer.Client {
+extension Identity.Client {
     @DependencyClient
     public struct Delete: @unchecked Sendable {
         public var request: (
-//            _ userId: User.ID,
+//            _ userId: UUID,
             _ reauthToken: String
         ) async throws -> Void
         
         public var cancel: (/*_ userId: User.ID*/) async throws -> Void
         
+        public var confirm: (/*_ userId: User.ID*/) async throws -> Void
     }
 }
 
-extension Identity.Consumer.Client {
+extension Identity.Client {
     @DependencyClient
     public struct Authenticate: @unchecked Sendable {
         public var credentials: (

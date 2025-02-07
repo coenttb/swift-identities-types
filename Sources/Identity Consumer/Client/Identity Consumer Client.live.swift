@@ -16,6 +16,25 @@ extension Identity.Consumer.Client {
         @Dependency(URLRequest.Handler.self) var handleRequest
         
         return .init(
+            authenticate: .init(
+                credentials: { credentials in
+                    try await handleRequest(
+                        for: makeRequest(.authenticate(.credentials(credentials))),
+                        decodingTo: JWT.Response.self
+                    )
+                },
+                bearer: { token in
+                    try await handleRequest(
+                        for: makeRequest(.authenticate(.bearer(.init(token: token)))),
+                        decodingTo: JWT.Response.self
+                    )
+                }
+            ),
+            logout: {
+                try await handleRequest(
+                    for: makeRequest(.logout)
+                )
+            },
             create: .init(
                 request: { email, password in
                     try await handleRequest(
@@ -38,27 +57,26 @@ extension Identity.Consumer.Client {
                     try await handleRequest(
                         for: makeRequest(.delete(.cancel))
                     )
+                },
+                confirm: {
+                    try await handleRequest(
+                        for: makeRequest(.delete(.confirm))
+                    )
                 }
             ),
-            authenticate: .init(
-                credentials: { credentials in
+            emailChange: .init(
+                request: { newEmail in
+                    guard let newEmail = newEmail?.rawValue else { return }
                     try await handleRequest(
-                        for: makeRequest(.authenticate(.credentials(credentials))),
-                        decodingTo: JWT.Response.self
+                        for: makeRequest(.emailChange(.request(.init(newEmail: newEmail))))
                     )
                 },
-                bearer: { token in
+                confirm: { token in
                     try await handleRequest(
-                        for: makeRequest(.authenticate(.bearer(.init(token: token)))),
-                        decodingTo: JWT.Response.self
+                        for: makeRequest(.emailChange(.confirm(.init(token: token))))
                     )
                 }
             ),
-            logout: {
-                try await handleRequest(
-                    for: makeRequest(.logout)
-                )
-            },
             password: .init(
                 reset: .init(
                     request: { email in
@@ -79,20 +97,7 @@ extension Identity.Consumer.Client {
                         )
                     }
                 )
-            ),
-            emailChange: .init(
-                request: { newEmail in
-                    guard let newEmail = newEmail?.rawValue else { return }
-                    try await handleRequest(
-                        for: makeRequest(.emailChange(.request(.init(newEmail: newEmail))))
-                    )
-                },
-                confirm: { token in
-                    try await handleRequest(
-                        for: makeRequest(.emailChange(.confirm(.init(token: token))))
-                    )
-                }
-            )
+            )            
         )
     }
 }

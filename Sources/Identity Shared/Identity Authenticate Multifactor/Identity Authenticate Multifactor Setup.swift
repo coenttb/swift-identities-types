@@ -1,5 +1,5 @@
 //
-//  MultifactorAuthentication.Setup.swift
+//  Identity.Authenticate.Multifactor.Setup.swift
 //  swift-identity
 //
 //  Created by Coen ten Thije Boonkkamp on 31/01/2025.
@@ -7,17 +7,17 @@
 
 import Foundation
 
-extension MultifactorAuthentication {
+extension Identity.Authenticate.Multifactor {
     public enum Setup {}
 }
 
-extension MultifactorAuthentication.Setup {
+extension Identity.Authenticate.Multifactor.Setup {
     public struct Request: Codable, Hashable, Sendable {
-        public let method: MultifactorAuthentication.Method
+        public let method: Identity.Authenticate.Multifactor.Method
         public let identifier: String
         
         public init(
-            method: MultifactorAuthentication.Method,
+            method: Identity.Authenticate.Multifactor.Method,
             identifier: String = ""
         ) {
             self.method = method
@@ -26,7 +26,7 @@ extension MultifactorAuthentication.Setup {
     }
 }
 
-extension MultifactorAuthentication.Setup {
+extension Identity.Authenticate.Multifactor.Setup {
     public struct Response: Codable, Hashable, Sendable {
         public let secret: String
         public let recoveryCodes: [String]

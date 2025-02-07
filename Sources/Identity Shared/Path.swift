@@ -14,6 +14,10 @@ extension Path<PathBuilder.Component<String>> {
         "request"
     }
     
+    nonisolated(unsafe) public static let api = Path {
+        "api"
+    }
+    
     nonisolated(unsafe) public static let verify = Path {
         "verify"
     }

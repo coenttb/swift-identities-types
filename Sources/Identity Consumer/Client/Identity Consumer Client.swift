@@ -8,6 +8,6 @@
 import Foundation
 import Identity_Shared
 
-extension Identity.Provider {
+extension Identity.Consumer {
     public typealias Client = Identity_Shared.Identity.Client
 }

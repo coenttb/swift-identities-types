@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension MultifactorAuthentication {
+extension Identity.Authenticate.Multifactor {
     public struct Configuration: Codable, Hashable, Sendable {
         public let methods: Set<Method>
         public let status: Status

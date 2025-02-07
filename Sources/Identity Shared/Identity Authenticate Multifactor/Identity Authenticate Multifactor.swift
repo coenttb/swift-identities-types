@@ -8,9 +8,9 @@
 import Foundation
 
 //// Base namespace
-extension Identity.API {
-    
+extension Identity.Authenticate {
+    public struct Multifactor {}
 }
 
-public struct MultifactorAuthentication {}
+
 

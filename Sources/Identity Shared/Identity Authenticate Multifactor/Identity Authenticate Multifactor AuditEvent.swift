@@ -1,5 +1,5 @@
 //
-//  MultifactorAuthentication.AuditEvent.swift
+//  Identity.Authenticate.Multifactor.AuditEvent.swift
 //  swift-identity
 //
 //  Created by Coen ten Thije Boonkkamp on 31/01/2025.
@@ -7,22 +7,22 @@
 
 import Foundation
 
-extension MultifactorAuthentication {
+extension Identity.Authenticate.Multifactor {
     public enum Audit {}
 }
 
-extension MultifactorAuthentication.Audit {
+extension Identity.Authenticate.Multifactor.Audit {
     public struct Event: Codable, Hashable, Sendable {
         public let userId: String
-        public let type: MultifactorAuthentication.Audit.Event.`Type`
-        public let method: MultifactorAuthentication.Method?
+        public let type: Identity.Authenticate.Multifactor.Audit.Event.`Type`
+        public let method: Identity.Authenticate.Multifactor.Method?
         public let timestamp: Date
         public let metadata: [String: String]
         
         public init(
             userId: String,
             eventType: `Type`,
-            method: MultifactorAuthentication.Method? = nil,
+            method: Identity.Authenticate.Multifactor.Method? = nil,
             timestamp: Date = .now,
             metadata: [String: String] = [:]
         ) {
@@ -35,7 +35,7 @@ extension MultifactorAuthentication.Audit {
     }
 }
 
-extension MultifactorAuthentication.Audit.Event {
+extension Identity.Authenticate.Multifactor.Audit.Event {
     public enum `Type`: String, Codable, Hashable, Sendable {
         case setupInitiated = "SetupInitiated"
         case setupCompleted = "SetupCompleted"

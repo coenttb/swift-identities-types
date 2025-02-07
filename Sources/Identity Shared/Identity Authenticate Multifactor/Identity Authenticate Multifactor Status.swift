@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension MultifactorAuthentication {
+extension Identity.Authenticate.Multifactor {
     public enum Status: String, Codable, Hashable, Sendable {
         case disabled = "Disabled"
         case enabled = "Enabled"

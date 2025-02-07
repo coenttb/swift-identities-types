@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension MultifactorAuthentication {
+extension Identity.Authenticate.Multifactor {
     public struct Verification: Codable, Hashable, Sendable {
         public let challengeId: String
         public let code: String

@@ -2,21 +2,15 @@ import Foundation
 import Dependencies
 import EmailAddress
 
-extension Identity.Provider.Client: TestDependencyKey {
-    public static var testValue: Identity.Provider.Client {
+extension Identity.Client: TestDependencyKey {
+    public static var testValue: Identity.Client {
         .init(
+            authenticate: .testValue,
             create: .testValue,
             delete: .testValue,
-            authenticate: .testValue,
-//            currentUser: {
-//                return nil
-//            },
-//            update: { user in
-//                return user
-//            },
-            logout: { },
+            emailChange: .testValue,
             password: .testValue,
-            emailChange: .testValue
+            multifactorAuthentication: nil
         )
     }
     
@@ -25,7 +19,7 @@ extension Identity.Provider.Client: TestDependencyKey {
     }
 }
 
-extension Identity.Provider.Client.Create: TestDependencyKey {
+extension Identity.Client.Create: TestDependencyKey {
     public static var testValue: Self {
         .init(
             request: { email, password in
@@ -36,7 +30,7 @@ extension Identity.Provider.Client.Create: TestDependencyKey {
                     throw ValidationError.weakPassword
                 }
             },
-            verify: { token, email in
+            verify: { email, token in
                 guard !token.isEmpty else {
                     throw ValidationError.invalidToken
                 }
@@ -54,7 +48,7 @@ extension Identity.Provider.Client.Create: TestDependencyKey {
     }
 }
 
-extension Identity.Provider.Client.Password: TestDependencyKey {
+extension Identity.Client.Password: TestDependencyKey {
     public static var testValue: Self {
         .init(
             reset: .init(
@@ -93,7 +87,7 @@ extension Identity.Provider.Client.Password: TestDependencyKey {
     }
 }
 
-extension Identity.Provider.Client.EmailChange: TestDependencyKey {
+extension Identity.Client.EmailChange: TestDependencyKey {
     public static var testValue: Self {
         .init(
             request: { newEmail in
@@ -109,7 +103,7 @@ extension Identity.Provider.Client.EmailChange: TestDependencyKey {
                     throw ValidationError.invalidToken
                 }
                 
-                return try! .init("test@example.com")
+//                return try! .init("test@example.com")
             }
         )
     }
@@ -121,7 +115,7 @@ extension Identity.Provider.Client.EmailChange: TestDependencyKey {
     }
 }
 
-extension Identity.Provider.Client.Delete: TestDependencyKey {
+extension Identity.Client.Delete: TestDependencyKey {
     public static var testValue: Self {
         .init(
             request: { /*userId,*/ reauthToken in
@@ -148,15 +142,16 @@ extension Identity.Provider.Client.Delete: TestDependencyKey {
     }
 }
 
-extension Identity.Provider.Client.Authenticate: TestDependencyKey {
+extension Identity.Client.Authenticate: TestDependencyKey {
     public static var testValue: Self {
         .init(
             credentials: { credentials in
-                guard credentials.password.count >= 8 else {
-                    fatalError()
-                }
+//                guard credentials.password.count >= 8 else {
+//                }
+                fatalError()
             },
             bearer: { token in
+                fatalError()
             }
         )
     }
