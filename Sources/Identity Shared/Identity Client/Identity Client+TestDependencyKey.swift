@@ -103,7 +103,7 @@ extension Identity.Client.EmailChange: TestDependencyKey {
                     throw ValidationError.invalidToken
                 }
                 
-//                return try! .init("test@example.com")
+                //                return try! .init("test@example.com")
             }
         )
     }
@@ -118,20 +118,11 @@ extension Identity.Client.EmailChange: TestDependencyKey {
 extension Identity.Client.Delete: TestDependencyKey {
     public static var testValue: Self {
         .init(
-            request: { /*userId,*/ reauthToken in
-                guard !reauthToken.isEmpty else {
-                    throw ValidationError.missingToken
-                }
+            request: { _ in
             },
-            cancel: { /*userId in*/
-//                guard !String(userId).isEmpty else {
-//                    throw ValidationError.invalidUserId
-//                }
+            cancel: {
             },
-            confirm: { /*userId in*/
-//                guard !String(userId).isEmpty else {
-//                    throw ValidationError.invalidUserId
-//                }
+            confirm: {
             }
         )
     }
@@ -155,7 +146,10 @@ extension Identity.Client.Authenticate: TestDependencyKey {
                 refresh: { token in
                     fatalError()
                 }
-            )
+            ),
+            apiKey: { apiKey in
+                fatalError()
+            }
         )
     }
 }

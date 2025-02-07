@@ -122,6 +122,11 @@ extension Identity.Client {
         ) async throws -> JWT.Response
         
         public var token: Identity.Client.Authenticate.Token
+        
+        @DependencyEndpoint
+        public var apiKey: (
+            _ apiKey: String
+        ) async throws -> JWT.Response
     }
 }
 

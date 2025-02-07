@@ -8,11 +8,13 @@
 import Foundation
 import BearerAuth
 import Coenttb_Web
+import URLRouting
 
 extension Identity.API {
     public enum Authenticate: Equatable, Sendable {
         case credentials(Identity.Authentication.Credentials)
         case token(Identity.API.Authenticate.Token)
+        case apiKey(BearerAuth)
     }
 }
 
@@ -48,6 +50,11 @@ extension Identity.API.Authenticate {
                             BearerAuth.Router()
                         }
                     }
+                }
+                
+                URLRouting.Route(.case(Identity.API.Authenticate.apiKey)) {
+                    Path.apiKey
+                    BearerAuth.Router()
                 }
             }
         }

@@ -18,6 +18,10 @@ extension Path<PathBuilder.Component<String>> {
         "api"
     }
     
+    nonisolated(unsafe) public static let apiKey = Path {
+        "api-key"
+    }
+    
     nonisolated(unsafe) public static let verify = Path {
         "verify"
     }
