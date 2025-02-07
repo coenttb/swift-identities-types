@@ -10,12 +10,12 @@ import Coenttb_Web
 import Identity_Consumer
 
 extension Identity.Consumer.View.EmailChange.Request {
-    public struct View: HTML {
+    package struct View: HTML {
         let formActionURL: URL
         let homeHref: URL
         let primaryColor: HTMLColor
         
-        public init(
+        package init(
             formActionURL: URL,
             homeHref: URL,
             primaryColor: HTMLColor
@@ -28,7 +28,7 @@ extension Identity.Consumer.View.EmailChange.Request {
         private static var pagemodule_request_email_change_id: String { "pagemodule_request_email_change_id" }
         private static var form_id: String { "form-request-email-change" }
         
-        public var body: some HTML {
+        package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
                     Paragraph {
@@ -170,11 +170,11 @@ extension Identity.Consumer.View.EmailChange.Request {
 }
 
 extension Identity.Consumer.View.EmailChange.Request.View {
-    public struct ReceiptConfirmation: HTML {
+    package struct ReceiptConfirmation: HTML {
         let homeHref: URL
         let primaryColor: HTMLColor
         
-        public init(
+        package init(
             homeHref: URL,
             primaryColor: HTMLColor
         ) {
@@ -182,7 +182,7 @@ extension Identity.Consumer.View.EmailChange.Request.View {
             self.primaryColor = primaryColor
         }
         
-        public var body: some HTML {
+        package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
                     Paragraph {

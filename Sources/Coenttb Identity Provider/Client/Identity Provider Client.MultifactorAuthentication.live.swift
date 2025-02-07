@@ -7,7 +7,7 @@ import Identity_Provider
 import EmailAddress
 
 extension Identity.Provider.Client.Authenticate.Multifactor {
-    public static func live(
+    package static func live(
         database: Fluent.Database,
         logger: Logger,
         sendSMSCode: @escaping @Sendable (String, String) async throws -> Void,

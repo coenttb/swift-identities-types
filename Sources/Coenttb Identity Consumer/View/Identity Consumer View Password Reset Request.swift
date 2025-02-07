@@ -10,12 +10,12 @@ import Coenttb_Web
 import Identity_Consumer
 
 extension Identity.Consumer.View.Password.Reset.Request {
-    public struct View: HTML {
+    package struct View: HTML {
         let formActionURL: URL
         let homeHref: URL
         let primaryColor: HTMLColor
         
-        public init(
+        package init(
             formActionURL: URL,
             homeHref: URL,
             primaryColor: HTMLColor
@@ -27,7 +27,7 @@ extension Identity.Consumer.View.Password.Reset.Request {
         
         private static var pagemodule_forgot_password_id: String { "pagemodule_forgot_password_id" }
         
-        public var body: some HTML {
+        package var body: some HTML {
             PageModule(theme: .login) {
                 
                 VStack {
@@ -148,7 +148,7 @@ extension Identity.Consumer.View.Password.Reset.Request.View {
             self.primaryColor = primaryColor
         }
         
-        public var body: some HTML {
+        package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
                     Paragraph {
@@ -199,14 +199,14 @@ extension Identity.Consumer.View.Password.Reset.Request.View {
 }
 
 extension Identity.Consumer.View.Password.Reset.Confirm {
-    public struct View: HTML {
+    package struct View: HTML {
         let token: String
         let passwordResetAction: URL
         let homeHref: URL
         let redirect: URL
         let primaryColor: HTMLColor
         
-        public init(
+        package init(
             token: String,
             passwordResetAction: URL,
             homeHref: URL,
@@ -222,7 +222,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
         
         private static var passwordResetId:String { "password-reset-id" }
         
-        public var body: some HTML {
+        package var body: some HTML {
             PageModule(theme: .login) {
                 
                 VStack {
@@ -344,18 +344,18 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
 }
 
 extension Identity.Consumer.View.Password.Reset.Confirm.View {
-    struct Confirm: HTML {
-        let redirect: URL
-        let primaryColor: HTMLColor
+    package struct Confirm: HTML {
+        package let redirect: URL
+        package let primaryColor: HTMLColor
         
-        init(redirect: URL, primaryColor: HTMLColor) {
+        package init(redirect: URL, primaryColor: HTMLColor) {
             self.redirect = redirect
             self.primaryColor = primaryColor
         }
         
         private static var confirmationId: String { "password-reset-confirmation-id" }
         
-        var body: some HTML {
+        package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
                     Paragraph {

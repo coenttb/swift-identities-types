@@ -15,7 +15,7 @@ import Identity_Provider
 import FluentKit
 
 extension Identity_Provider.Identity.Provider.Client.Delete {
-    public static func live(
+    package static func live(
         database: Fluent.Database,
         logger: Logger,
         sendDeletionRequestNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,

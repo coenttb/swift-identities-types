@@ -8,7 +8,7 @@
 import Coenttb_Vapor
 
 extension HTTPCookies.Value {
-    public static func jwt(
+    package static func jwt(
         token: String,
         expiresIn: TimeInterval,
         path: String = "/",
@@ -29,7 +29,7 @@ extension HTTPCookies.Value {
         )
     }
     
-    static func accessToken(
+    package static func accessToken(
         response: JWT.Response,
         domain: String?
     )-> Self {
@@ -42,7 +42,7 @@ extension HTTPCookies.Value {
         )
     }
     
-    static func refreshToken(response: JWT.Response, domain: String?)-> Self {
+    package static func refreshToken(response: JWT.Response, domain: String?)-> Self {
         @Dependency(Identity.Consumer.Route.Router.self) var router
         return .jwt(
             token: response.refreshToken.value,

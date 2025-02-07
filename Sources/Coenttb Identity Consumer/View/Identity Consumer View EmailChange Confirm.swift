@@ -10,11 +10,11 @@ import Coenttb_Web
 import Identity_Consumer
 
 extension Identity.Consumer.View.EmailChange.Confirm {
-    public struct View: HTML {
+    package struct View: HTML {
         let redirect: URL
         let primaryColor: HTMLColor
         
-        public init(
+        package init(
             redirect: URL,
             primaryColor: HTMLColor
         ) {
@@ -24,7 +24,7 @@ extension Identity.Consumer.View.EmailChange.Confirm {
         
         private static var confirmationId: String { "email-change-confirmation-id" }
         
-        public var body: some HTML {
+        package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
                     Paragraph {

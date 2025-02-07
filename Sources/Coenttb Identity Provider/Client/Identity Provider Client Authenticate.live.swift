@@ -22,7 +22,7 @@ import FluentKit
 import JWT
 
 extension Identity_Provider.Identity.Provider.Client.Authenticate {
-    public static func live(
+    package static func live(
         database: Fluent.Database,
         logger: Logger,
         issuer: String
@@ -55,10 +55,7 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                 }
                 
                 
-                let response = try await identity.generateJWTResponse(
-                    accessTokenConfig: .forAccessToken(issuer: issuer),
-                    refreshTokenConfig: .forRefreshToken(issuer: issuer)
-                )
+                let response = try await identity.generateJWTResponse()
                 
                 // HOW TO CORRECT THIS ALSO?
                 request.headers.bearerAuthorization = .init(token: response.accessToken.value)
@@ -150,10 +147,7 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                         
                         logger.notice("Refresh token verification successful for identity: \(identity.id?.uuidString ?? "unknown")")
                         
-                        let response = try await identity.generateJWTResponse(
-                            accessTokenConfig: .forAccessToken(issuer: issuer),
-                            refreshTokenConfig: .forRefreshToken(issuer: issuer)
-                        )
+                        let response = try await identity.generateJWTResponse()
                         
                         request.auth.login(identity)
                         
@@ -187,10 +181,7 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                     
                     let identity = apiKey.identity
                     
-                    let response = try await identity.generateJWTResponse(
-                        accessTokenConfig: .forAccessToken(issuer: issuer),
-                        refreshTokenConfig: .forRefreshToken(issuer: issuer)
-                    )
+                    let response = try await identity.generateJWTResponse()
                     
                     request.headers.bearerAuthorization = .init(token: response.accessToken.value)
                     

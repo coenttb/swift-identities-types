@@ -11,11 +11,11 @@ import Identity_Consumer
 import Identity_Shared
 
 extension Identity.Consumer.View {
-    public typealias Reauthorization = Identity.Reauthorization
+    package typealias Reauthorization = Identity.Reauthorization
 }
 
 extension Identity.Consumer.View.Reauthorization {
-    public struct View<CodingKey: RawRepresentable>: HTML where CodingKey.RawValue == String {
+    package struct View<CodingKey: RawRepresentable>: HTML where CodingKey.RawValue == String {
         let codingKey: CodingKey
         let currentUserName: String
         let primaryColor: HTMLColor
@@ -23,7 +23,7 @@ extension Identity.Consumer.View.Reauthorization {
         let confirmFormAction: URL
         let redirectOnSuccess: URL
 
-        public init(
+        package init(
             codingKey: CodingKey = Identity.EmailChange.Reauthorization.CodingKeys.password,
             currentUserName: String,
             primaryColor: HTMLColor,
@@ -39,7 +39,7 @@ extension Identity.Consumer.View.Reauthorization {
             self.redirectOnSuccess = redirectOnSuccess
         }
         
-        public var body: some HTML {
+        package var body: some HTML {
                 
                 PageModule(theme: .confirmAccess) {
                     VStack {

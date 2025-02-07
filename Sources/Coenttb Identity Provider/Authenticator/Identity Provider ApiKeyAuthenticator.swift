@@ -55,10 +55,7 @@ extension Identity.Provider {
                 throw Abort(.tooManyRequests)
             }
             
-            let response = try await apiKey.identity.generateJWTResponse(
-                accessTokenConfig: .forAccessToken(issuer: issuer),
-                refreshTokenConfig: .forRefreshToken(issuer: issuer)
-            )
+            let response = try await apiKey.identity.generateJWTResponse()
             
             request.headers.bearerAuthorization = .init(token: response.accessToken.value)
             

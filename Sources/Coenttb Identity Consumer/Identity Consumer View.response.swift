@@ -11,7 +11,7 @@ import Favicon
 import Identity_Consumer
 
 extension Identity.Consumer.View {
-    public static func response(
+    package static func response(
         view: Identity.Consumer.View,
         currentUserName: () -> String?,
         logo: Identity.Consumer.View.Logo,

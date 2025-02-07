@@ -21,7 +21,7 @@ import Identity_Provider
 import FluentKit
 
 extension Identity_Provider.Identity.Provider.Client.EmailChange {
-    public static func live(
+    package static func live(
         database: Fluent.Database,
         logger: Logger,
         sendEmailChangeConfirmation: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress, _ token: String) async throws -> Void,

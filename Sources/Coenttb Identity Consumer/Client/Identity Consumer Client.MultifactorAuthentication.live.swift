@@ -12,7 +12,7 @@ import Identity_Consumer
 import Coenttb_Identity_Shared
 
 extension Identity.Consumer.Client.Authenticate.Multifactor {
-    public static func live(
+    package static func live(
         provider: Identity.Consumer.Client.Live.Provider,
         makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ api: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
     ) -> Self {

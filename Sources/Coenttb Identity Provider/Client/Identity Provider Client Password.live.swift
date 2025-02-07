@@ -21,7 +21,7 @@ import Identity_Provider
 import FluentKit
 
 extension Identity_Provider.Identity.Provider.Client.Password {
-    public static func live(
+    package static func live(
         database: Fluent.Database,
         logger: Logger,
         sendPasswordResetEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,

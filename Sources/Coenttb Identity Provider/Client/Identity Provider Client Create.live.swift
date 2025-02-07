@@ -16,7 +16,7 @@ import Identity_Provider
 import FluentKit
 
 extension Identity_Provider.Identity.Provider.Client.Create {
-    public static func live<DatabaseUser: Fluent.Model & Sendable>(
+    package static func live<DatabaseUser: Fluent.Model & Sendable>(
         database: Fluent.Database,
         logger: Logger,
         createDatabaseUser: @escaping @Sendable (_ identityId: UUID) async throws -> DatabaseUser,

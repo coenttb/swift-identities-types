@@ -10,12 +10,12 @@ import Coenttb_Web
 import Identity_Consumer
 
 extension Identity.Consumer.View.Create {
-    public enum View: HTML {
+    package enum View: HTML {
         case request(Identity.Create.Request.View)
         case requestReceivedConfirmationPage(Identity.Create.RequestReceivedConfirmationPage)
         case verify(Identity.Create.Verify.View)
         
-        public var body: some HTML {
+        package var body: some HTML {
             switch self {
             case .request(let request):
                 request
@@ -29,14 +29,14 @@ extension Identity.Consumer.View.Create {
 }
 
 extension Identity.Create.Request {
-    public struct View: HTML {
+    package struct View: HTML {
         
         let primaryColor: HTMLColor
         let loginHref: URL
         let accountCreateHref: URL
         let createFormAction: URL
         
-        public init(
+        package init(
             primaryColor: HTMLColor,
             loginHref: URL,
             accountCreateHref: URL,
@@ -50,7 +50,7 @@ extension Identity.Create.Request {
         
         private static let pagemodule_create_identity: String = "pagemodule-create-identity"
         
-        public var body: some HTML {
+        package var body: some HTML {
             PageModule(theme: .login) {
                 form {
                     VStack {
@@ -154,12 +154,12 @@ extension Identity.Create.Request {
 }
 
 extension Identity.Create {
-    public struct RequestReceivedConfirmationPage: HTML {
+    package struct RequestReceivedConfirmationPage: HTML {
         
         let primaryColor: HTMLColor
         let loginHref: URL
         
-        public init(
+        package init(
             primaryColor: HTMLColor,
             loginHref: URL
         ) {
@@ -167,7 +167,7 @@ extension Identity.Create {
             self.loginHref = loginHref
         }
         
-        public var body: some HTML {
+        package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
                     Paragraph {
@@ -209,11 +209,11 @@ extension Identity.Create {
 }
 
 extension Identity.Create.Verify {
-    public struct View: HTML {
+    package struct View: HTML {
         let verificationAction: URL
         let redirectURL: URL
         
-        public init(
+        package init(
             verificationAction: URL,
             redirectURL: URL
         ) {
@@ -223,7 +223,7 @@ extension Identity.Create.Verify {
         
         private static let pagemodule_verify_id: String = "pagemodule_verify_id"
         
-        public var body: some HTML {
+        package var body: some HTML {
             PageModule(theme: .login) {
                 VStack(alignment: .center) {
                     div()
@@ -307,14 +307,14 @@ extension Identity.Create.Verify {
 }
 
 extension Identity.Create {
-    public struct VerifyConfirmationPage: HTML {
+    package struct VerifyConfirmationPage: HTML {
         let redirectURL: URL
         
-        public init(redirectURL: URL) {
+        package init(redirectURL: URL) {
             self.redirectURL = redirectURL
         }
         
-        public var body: some HTML {
+        package var body: some HTML {
             PageModule(theme: .login) {
                 VStack(alignment: .center) {
                     Paragraph {

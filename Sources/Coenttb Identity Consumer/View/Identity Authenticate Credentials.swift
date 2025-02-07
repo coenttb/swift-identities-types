@@ -10,13 +10,13 @@ import Coenttb_Web
 import Identity_Consumer
 
 extension Identity.Authentication.Credentials {
-    public struct View: HTML {
+    package struct View: HTML {
         let primaryColor: HTMLColor
         let passwordResetHref: URL
         let accountCreateHref: URL
         let loginFormAction: URL
         
-        public init(
+        package init(
             primaryColor: HTMLColor,
             passwordResetHref: URL,
             accountCreateHref: URL,
@@ -42,7 +42,7 @@ extension Identity.Authentication.Credentials {
             """#
         }
         
-        public var body: some HTML {
+        package var body: some HTML {
             
             PageModule(theme: .login) {
                 form {

@@ -10,7 +10,7 @@ import Favicon
 import Identity_Consumer
 
 extension Identity.Consumer {
-    public struct HTMLDocument<
+    package struct HTMLDocument<
         Body: HTML
     >: Coenttb_Web.HTMLDocument {
         let view: Identity.Consumer.View
@@ -25,7 +25,7 @@ extension Identity.Consumer {
         let privacyStatement: URL
         let _body: Body
         
-        public init(
+        package init(
             view: Identity.Consumer.View,
             title: @escaping (Identity.Consumer.View) -> String,
             description: @escaping (Identity.Consumer.View) -> String,
@@ -53,7 +53,7 @@ extension Identity.Consumer {
         
         @Dependency(\.languages) var languages
         
-        public var head: some HTML {
+        package var head: some HTML {
             CoenttbWebHTMLDocumentHeader(
                 title: title(view),
                 description: description(view),
@@ -70,7 +70,7 @@ extension Identity.Consumer {
         
         @Dependencies.Dependency(\.language) var language
         
-        public var body: some HTML {
+        package var body: some HTML {
             HTMLGroup {
                 _body
                 

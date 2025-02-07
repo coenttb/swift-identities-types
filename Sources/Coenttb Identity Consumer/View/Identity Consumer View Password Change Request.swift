@@ -10,12 +10,12 @@ import Coenttb_Web
 import Identity_Consumer
 
 extension Identity.Consumer.View.Password.Change.Request {
-    public struct View: HTML {
+    package  struct View: HTML {
         let formActionURL: URL
         let redirectOnSuccess: URL
         let primaryColor: HTMLColor
         
-        public init(
+        package  init(
             formActionURL: URL,
             redirectOnSuccess: URL,
             primaryColor: HTMLColor
@@ -27,7 +27,7 @@ extension Identity.Consumer.View.Password.Change.Request {
         
         private static var pagemodule_change_password_id: String { "pagemodule_change_password_id" }
         
-        public var body: some HTML {
+        package  var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
                     Paragraph {
@@ -137,11 +137,11 @@ extension Identity.Consumer.View.Password.Change.Request {
 }
 
 extension Identity.Consumer.View.Password.Change.Request.View {
-    struct Confirmation: HTML {
-        let redirectOnSuccess: URL
-        let primaryColor: HTMLColor
+    package struct Confirmation: HTML {
+        package let redirectOnSuccess: URL
+        package let primaryColor: HTMLColor
         
-        init(
+        package init(
             redirectOnSuccess: URL,
             primaryColor: HTMLColor
         ) {
@@ -149,7 +149,7 @@ extension Identity.Consumer.View.Password.Change.Request.View {
             self.primaryColor = primaryColor
         }
         
-        public var body: some HTML {
+        package  var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
                     Paragraph {
