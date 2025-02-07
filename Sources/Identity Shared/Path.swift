@@ -22,6 +22,14 @@ extension Path<PathBuilder.Component<String>> {
         "verify"
     }
     
+    nonisolated(unsafe) public static let refresh = Path {
+        "refresh"
+    }
+    
+    nonisolated(unsafe) public static let access = Path {
+        "access"
+    }
+    
     nonisolated(unsafe) public static let cancel = Path {
         "cancel"
     }

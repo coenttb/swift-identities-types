@@ -12,7 +12,14 @@ import Coenttb_Web
 extension Identity.API {
     public enum Authenticate: Equatable, Sendable {
         case credentials(Identity.Authentication.Credentials)
-        case bearer(BearerAuth)
+        case token(Identity.API.Authenticate.Token)
+    }
+}
+
+extension Identity.API.Authenticate {
+    public enum Token: Codable, Hashable, Sendable {
+        case access(BearerAuth)
+        case refresh(BearerAuth)
     }
 }
 
@@ -28,9 +35,19 @@ extension Identity.API.Authenticate {
                     Body(.form(Identity.Authentication.Credentials.self, decoder: .default))
                 }
                 
-                URLRouting.Route(.case(Identity.API.Authenticate.bearer)) {
+                URLRouting.Route(.case(Identity.API.Authenticate.token)) {
                     Method.post
-                    BearerAuth.Router()
+                    OneOf {
+                        URLRouting.Route(.case(Identity.API.Authenticate.Token.access)) {
+                            Path.access
+                            BearerAuth.Router()
+                        }
+                        
+                        URLRouting.Route(.case(Identity.API.Authenticate.Token.refresh)) {
+                            Path.refresh
+                            BearerAuth.Router()
+                        }
+                    }
                 }
             }
         }

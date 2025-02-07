@@ -12,8 +12,8 @@ import Identity_Shared
 extension Identity.Consumer.View {
     public enum EmailChange: Codable, Hashable, Sendable {
         case request
-        case reauthorization
         case confirm(EmailChange.Confirm)
+        case reauthorization
     }
 }
 

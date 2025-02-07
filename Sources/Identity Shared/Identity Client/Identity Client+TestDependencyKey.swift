@@ -146,13 +146,16 @@ extension Identity.Client.Authenticate: TestDependencyKey {
     public static var testValue: Self {
         .init(
             credentials: { credentials in
-//                guard credentials.password.count >= 8 else {
-//                }
                 fatalError()
             },
-            bearer: { token in
-                fatalError()
-            }
+            token: .init(
+                access: { token in
+                    fatalError()
+                },
+                refresh: { token in
+                    fatalError()
+                }
+            )
         )
     }
 }

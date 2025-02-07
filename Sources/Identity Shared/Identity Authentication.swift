@@ -13,7 +13,7 @@ import BearerAuth
 extension Identity {
     public enum Authentication: Equatable, Sendable {
         case credentials(Credentials)
-        case bearer(BearerAuth)
+        case token(Identity.Authentication.Token)
     }
 }
 
@@ -46,3 +46,9 @@ extension Identity.Authentication.Credentials {
     }
 }
 
+extension Identity.Authentication {
+    public enum Token: Equatable, Sendable {
+        case access(BearerAuth)
+        case refresh(BearerAuth)
+    }
+}

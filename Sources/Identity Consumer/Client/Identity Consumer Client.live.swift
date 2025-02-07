@@ -25,12 +25,20 @@ extension Identity.Consumer.Client {
                         decodingTo: JWT.Response.self
                     )
                 },
-                bearer: { token in
-                    try await handleRequest(
-                        for: makeRequest(.authenticate(.bearer(.init(token: token)))),
-                        decodingTo: JWT.Response.self
-                    )
-                }
+                token: .init(
+                    access: { token in
+                        try await handleRequest(
+                            for: makeRequest(.authenticate(.token(.access(.init(token: token))))),
+                            decodingTo: JWT.Response.self
+                        )
+                    },
+                    refresh: { token in
+                        try await handleRequest(
+                            for: makeRequest(.authenticate(.token(.refresh(.init(token: token))))),
+                            decodingTo: JWT.Response.self
+                        )
+                    }
+                )
             ),
             logout: {
                 try await handleRequest(
