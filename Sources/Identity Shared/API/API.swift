@@ -9,14 +9,12 @@ import Coenttb_Web
 
 extension Identity {
     public enum API: Equatable, Sendable {
-        case create(Identity.API.Create)
         case authenticate(Identity.Authenticate)
-//        case currentUser
-        case logout
-//        case update(User?)
+        case create(Identity.API.Create)
         case delete(Identity.API.Delete)
-        case password(Identity.API.Password)
         case emailChange(Identity.API.EmailChange)
+        case logout
+        case password(Identity.API.Password)
 //        case multifactorAuthentication(Identity.API.MultifactorAuthentication)
     }
 }
@@ -34,12 +32,6 @@ extension Identity.API {
                     Identity.API.Create.Router()
                 }
                 
-//                URLRouting.Route(.case(Identity.API.update)) {
-//                    Path.update
-//                    Method.post
-//                    Body(.form(User?.self, decoder: .default))
-//                }
-                
                 URLRouting.Route(.case(Identity.API.delete)) {
                     Path.delete
                     Identity.API.Delete.Router()
@@ -49,12 +41,7 @@ extension Identity.API {
                     Path.authenticate
                     Identity.Authenticate.Router()
                 }
-//                
-//                URLRouting.Route(.case(Identity.API.currentUser)) {
-//                    Path.currentUser
-//                    Method.get
-//                }
-                
+
                 URLRouting.Route(.case(Identity.API.logout)) {
                     Path.logout
                     Method.post
