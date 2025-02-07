@@ -9,12 +9,11 @@ import Dependencies
 @preconcurrency import Fluent
 import Foundation
 @preconcurrency import Vapor
-import Identity_Shared
 import Coenttb_Identity_Shared
 
 extension Database.MultifactorAuthentication {
-    public final class Method: Model, Content, @unchecked Sendable {
-        public static let schema = "mfa_methods"
+    public final class Challenge: Model, Content, @unchecked Sendable {
+        public static let schema = "mfa_challenges"
 
         @ID(key: .id)
         public var id: UUID?
@@ -23,27 +22,27 @@ extension Database.MultifactorAuthentication {
         public var identity: Database.Identity
 
         @Enum(key: FieldKeys.type)
-        public var type: Identity_Shared.MultifactorAuthentication.Method
+        public var type: Identity.Authentication.Multifactor.Method
 
-        @Field(key: FieldKeys.identifier)
-        public var identifier: String
+        @Field(key: FieldKeys.code)
+        public var code: String
 
-        @Field(key: FieldKeys.verified)
-        public var verified: Bool
+        @Field(key: FieldKeys.attempts)
+        public var attempts: Int
 
         @Timestamp(key: FieldKeys.createdAt, on: .create)
         public var createdAt: Date?
 
-        @OptionalField(key: FieldKeys.lastUsedAt)
-        public var lastUsedAt: Date?
+        @Field(key: FieldKeys.expiresAt)
+        public var expiresAt: Date
 
         package enum FieldKeys {
             public static let identityId: FieldKey = "identity_id"
             public static let type: FieldKey = "type"
-            public static let identifier: FieldKey = "identifier"
-            public static let verified: FieldKey = "verified"
+            public static let code: FieldKey = "code"
+            public static let attempts: FieldKey = "attempts"
             public static let createdAt: FieldKey = "created_at"
-            public static let lastUsedAt: FieldKey = "last_used_at"
+            public static let expiresAt: FieldKey = "expires_at"
         }
 
         public init() {}
@@ -51,42 +50,43 @@ extension Database.MultifactorAuthentication {
         public init(
             id: UUID? = nil,
             identity: Database.Identity,
-            type: Identity_Shared.MultifactorAuthentication.Method,
-            identifier: String,
-            verified: Bool = false
+            type: Identity.Authentication.Multifactor.Method,
+            code: String,
+            attempts: Int = 0,
+            expiresAt: Date = Date().addingTimeInterval(300)
         ) throws {
             self.id = id
             self.$identity.id = try identity.requireID()
             self.type = type
-            self.identifier = identifier
-            self.verified = verified
+            self.code = code
+            self.attempts = attempts
+            self.expiresAt = expiresAt
         }
     }
 }
 
 
-extension Database.MultifactorAuthentication.Method {
+extension Database.MultifactorAuthentication.Challenge {
     public enum Migration {
         public struct Create: AsyncMigration {
-            public var name: String = "Identity_Provider.MultifactorAuthentication.Method.Migration.Create"
+            public var name: String = "Identity_Provider.MultifactorAuthentication.Challenge.Migration.Create"
             
             public init() {}
 
             public func prepare(on database: Fluent.Database) async throws {
-                try await database.schema(Database.MultifactorAuthentication.Method.schema)
+                try await database.schema(Database.MultifactorAuthentication.Challenge.schema)
                     .id()
                     .field(FieldKeys.identityId, .uuid, .required, .references(Database.Identity.schema, "id", onDelete: .cascade))
                     .field(FieldKeys.type, .string, .required)
-                    .field(FieldKeys.identifier, .string, .required)
-                    .field(FieldKeys.verified, .bool, .required)
+                    .field(FieldKeys.code, .string, .required)
+                    .field(FieldKeys.attempts, .int, .required)
                     .field(FieldKeys.createdAt, .datetime)
-                    .field(FieldKeys.lastUsedAt, .datetime)
-                    .unique(on: FieldKeys.identityId, FieldKeys.type)
+                    .field(FieldKeys.expiresAt, .datetime, .required)
                     .create()
             }
 
             public func revert(on database: Fluent.Database) async throws {
-                try await database.schema(Database.MultifactorAuthentication.Method.schema).delete()
+                try await database.schema(Database.MultifactorAuthentication.Challenge.schema).delete()
             }
         }
     }

@@ -8,22 +8,23 @@
 import Identity_Provider
 import Mailgun
 import Coenttb_Web
+import Messages
 
 extension Email {
     public init(
         business: BusinessDetails,
-        emailChange: EmailChange
+        emailChange: Email.Change
     ) {
         switch emailChange {
         case .confirmation(let confirmation):
             switch confirmation {
             case .request(let request):
-                self = Email.init(
+                self = .init(
                     business: business,
                     emailChangeConfirmationRequest: request
                 )
             case .notification(let notification):
-                self = Email.init(
+                self = .init(
                     business: business,
                     emailChangeConfirmationNotification: notification
                 )
@@ -32,7 +33,7 @@ extension Email {
         case .request(let request):
             switch request {
             case .notification(let notification):
-                self = Email.init(
+                self = .init(
                     business: business,
                     emailChangeRequestNotification: notification
                 )
@@ -41,25 +42,29 @@ extension Email {
     }
 }
 
-public enum EmailChange {
-    case confirmation(EmailChange.Confirmation)
-    case request(EmailChange.Request)
+extension Email {
+    public enum Change {
+        case confirmation(Email.Change.Confirmation)
+        case request(Email.Change.Request)
+    }
 }
 
-extension EmailChange {
+
+
+extension Email.Change {
     public enum Request {
-        case notification(EmailChange.Request.Notification)
+        case notification(Email.Change.Request.Notification)
     }
 }
 
-extension EmailChange {
+extension Email.Change {
     public enum Confirmation: Sendable  {
-        case request(EmailChange.Confirmation.Request)
-        case notification(EmailChange.Confirmation.Notification)
+        case request(Email.Change.Confirmation.Request)
+        case notification(Email.Change.Confirmation.Notification)
     }
 }
 
-extension EmailChange.Confirmation {
+extension Email.Change.Confirmation {
     public struct Request: Sendable  {
         public let verificationURL: URL
         public let currentEmail: EmailAddress
@@ -80,7 +85,7 @@ extension EmailChange.Confirmation {
     }
 }
 
-extension EmailChange.Request {
+extension Email.Change.Request {
     public struct Notification: Sendable  {
         public let currentEmail: EmailAddress
         public let newEmail: EmailAddress
@@ -98,7 +103,7 @@ extension EmailChange.Request {
     }
 }
 
-extension EmailChange.Confirmation {
+extension Email.Change.Confirmation {
     public enum Notification: Sendable  {
         case currentEmail(CurrentEmail)
         case newEmail(NewEmail)
@@ -127,7 +132,7 @@ extension EmailChange.Confirmation {
 extension Email {
     public init(
         business: BusinessDetails,
-        emailChangeRequestNotification: EmailChange.Request.Notification
+        emailChangeRequestNotification: Email.Change.Request.Notification
     ) {
         let html = TableEmailDocument(
             preheader: TranslatedString(
@@ -202,7 +207,7 @@ extension Email {
 extension Email {
     public init(
         business: BusinessDetails,
-        emailChangeConfirmationRequest: EmailChange.Confirmation.Request
+        emailChangeConfirmationRequest: Email.Change.Confirmation.Request
     ) {
         let html = TableEmailDocument(
             preheader: TranslatedString(
@@ -294,7 +299,7 @@ extension Email {
 extension Email {
     public init(
         business: BusinessDetails,
-        emailChangeConfirmationNotification: EmailChange.Confirmation.Notification
+        emailChangeConfirmationNotification: Email.Change.Confirmation.Notification
     ) {
         switch emailChangeConfirmationNotification {
         case .currentEmail(let notification):

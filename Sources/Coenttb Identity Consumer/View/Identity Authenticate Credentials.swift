@@ -9,7 +9,7 @@ import Foundation
 import Coenttb_Web
 import Identity_Consumer
 
-extension Identity.Authenticate.Credentials {
+extension Identity.Authentication.Credentials {
     public struct View: HTML {
         let primaryColor: HTMLColor
         let passwordResetHref: URL
@@ -47,12 +47,12 @@ extension Identity.Authenticate.Credentials {
             PageModule(theme: .login) {
                 form {
                     VStack {
-                        Input.default(Identity.Authenticate.Credentials.CodingKeys.email)
+                        Input.default(Identity.Authentication.Credentials.CodingKeys.email)
                             .type(.email)
                             .placeholder(String.email.capitalizingFirstLetter().description)
                             .focusOnPageLoad()
                         
-                        Input.default(Identity.Authenticate.Credentials.CodingKeys.password)
+                        Input.default(Identity.Authentication.Credentials.CodingKeys.password)
                             .type(.password)
                             .placeholder(String.password.capitalizingFirstLetter().description)
                         
@@ -112,8 +112,8 @@ extension Identity.Authenticate.Credentials {
                     event.preventDefault();  
             
                     const formData = new FormData(form);
-                    const email = formData.get('\#(Identity.Authenticate.Credentials.CodingKeys.email.rawValue)');      
-                    const password = formData.get('\#(Identity.Authenticate.Credentials.CodingKeys.password.rawValue)'); 
+                    const email = formData.get('\#(Identity.Authentication.Credentials.CodingKeys.email.rawValue)');      
+                    const password = formData.get('\#(Identity.Authentication.Credentials.CodingKeys.password.rawValue)'); 
                 
                     try {
                         const response = await fetch(form.action, {
@@ -123,8 +123,8 @@ extension Identity.Authenticate.Credentials {
                                 'Accept': 'application/json'  
                             },
                             body: new URLSearchParams({
-                                 \#(Identity.Authenticate.Credentials.CodingKeys.email.rawValue): email,      
-                                 \#(Identity.Authenticate.Credentials.CodingKeys.password.rawValue): password
+                                 \#(Identity.Authentication.Credentials.CodingKeys.email.rawValue): email,      
+                                 \#(Identity.Authentication.Credentials.CodingKeys.password.rawValue): password
                             }).toString()  
                         });
                 

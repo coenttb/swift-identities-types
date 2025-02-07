@@ -13,7 +13,7 @@ extension Identity.Consumer {
     public struct HTMLDocument<
         Body: HTML
     >: Coenttb_Web.HTMLDocument {
-        let route: Identity.Consumer.View
+        let view: Identity.Consumer.View
         let title: (Identity.Consumer.View) -> String
         let description: (Identity.Consumer.View) -> String
         let primaryColor: HTMLColor
@@ -26,7 +26,7 @@ extension Identity.Consumer {
         let _body: Body
         
         public init(
-            route: Identity.Consumer.View,
+            view: Identity.Consumer.View,
             title: @escaping (Identity.Consumer.View) -> String,
             description: @escaping (Identity.Consumer.View) -> String,
             primaryColor: HTMLColor,
@@ -38,7 +38,7 @@ extension Identity.Consumer {
             privacyStatement: URL,
             @HTMLBuilder body: () -> Body
         ) {
-            self.route = route
+            self.view = view
             self.title = title
             self.description = description
             self.primaryColor = primaryColor
@@ -55,13 +55,13 @@ extension Identity.Consumer {
         
         public var head: some HTML {
             CoenttbWebHTMLDocumentHeader(
-                title: title(route),
-                description: description(route),
+                title: title(view),
+                description: description(view),
                 canonicalHref: canonicalHref,
                 rssXml: nil,
                 themeColor: accentColor,
                 language: language,
-                hreflang: { language in hreflang(route, language) },
+                hreflang: { language in hreflang(view, language) },
                 styles: { HTMLEmpty() },
                 scripts: { fontAwesomeScript },
                 favicons: { favicons }

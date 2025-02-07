@@ -148,7 +148,6 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                         // Trigger post-change callback after database changes succeed
                         try await onEmailChangeSuccess(oldEmail, newEmail)
                         
-                        return newEmail
                     }
                 } catch {
                     logger.error("Error in confirmEmailChange: \(String(describing: error))")

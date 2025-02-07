@@ -24,10 +24,10 @@ extension Database.MultifactorAuthentication {
             public var userId: String
 
             @Enum(key: FieldKeys.type)
-            public var type: Identity_Shared.MultifactorAuthentication.Audit.Event.`Type`
+            public var type: Identity.Authentication.Multifactor.Audit.Event.`Type`
 
             @OptionalEnum(key: FieldKeys.method)
-            public var method: Identity_Shared.MultifactorAuthentication.Method?
+            public var method: Identity.Authentication.Multifactor.Method?
 
             @Field(key: FieldKeys.timestamp)
             public var timestamp: Date
@@ -48,8 +48,8 @@ extension Database.MultifactorAuthentication {
             public init(
                 id: UUID? = nil,
                 userId: String,
-                eventType: Identity_Shared.MultifactorAuthentication.Audit.Event.`Type`,
-                method: Identity_Shared.MultifactorAuthentication.Method? = nil,
+                eventType: Identity.Authentication.Multifactor.Audit.Event.`Type`,
+                method: Identity.Authentication.Multifactor.Method? = nil,
                 timestamp: Date = .now,
                 metadata: [String: String] = [:]
             ) {
@@ -89,8 +89,8 @@ extension Database.MultifactorAuthentication.Audit.Event {
     }
 }
 
-extension Identity_Shared.MultifactorAuthentication.Audit.Event {
-    init(_ event: MultifactorAuthentication.Audit.Event) {
+extension Identity.Authentication.Multifactor.Audit.Event {
+    init(_ event: Database.MultifactorAuthentication.Audit.Event) {
         self.init(
             userId: event.userId,
             eventType: event.type,

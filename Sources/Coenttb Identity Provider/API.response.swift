@@ -15,8 +15,6 @@ extension Identity.Provider.API {
     public static func response(
         api: Identity.Provider.API,
         client: Identity_Shared.Identity.Provider.Client,
-        reauthenticateForEmailChange: (_ password: String) async throws -> Void,
-        reauthenticateForPasswordChange: (_ password: String) async throws -> Void,
         logoutRedirectURL: () -> URL
     ) async throws -> any AsyncResponseEncodable {
         switch api {
@@ -24,12 +22,24 @@ extension Identity.Provider.API {
             do {
                 switch authenticate {
                 case .credentials(let credentials):
-                    try await client.authenticate.credentials(credentials)
-                case .bearer(let bearerAuth):
-                    try await client.authenticate.bearer(token: bearerAuth.token)
+                    let response = try await client.authenticate.credentials(credentials)
+                    
+                    return Response.success(true, data: response)
+                case .token(let token):
+                    switch token {
+                    case .access(let access):
+                        do {
+                            try await client.authenticate.token.access(access.token)
+                            return Response.success(true)
+                        } catch {
+                            return Response.success(false)
+                        }
+                        
+                    case .refresh(let refresh):
+                        let response = try await client.authenticate.token.refresh(refresh.token)
+                        return Response.success(true, data: response)
+                    }
                 }
-                
-                return Response.success(true)
             } catch {
                 @Dependencies.Dependency(\.logger) var logger
                 logger.log(.critical, "Failed to authenticate account. Error: \(String(describing: error))")
@@ -51,7 +61,7 @@ extension Identity.Provider.API {
                 }
             case .verify(let verify):
                 do {
-                    try await client.create.verify(token: verify.token, email: .init(verify.email))
+                    try await client.create.verify(email: .init(verify.email), token: verify.token)
                     return Response.success(true)
                 } catch {
                     print(error)
@@ -62,7 +72,6 @@ extension Identity.Provider.API {
         case .delete(let delete):
             switch delete {
             case .request(let request):
-                
                 if request.reauthToken.isEmpty {
                     throw Abort(.unauthorized, reason: "Invalid token")
                 }
@@ -125,15 +134,6 @@ extension Identity.Provider.API {
                 }
             case .change(let change):
                 switch change {
-                case let .reauthorization(reauthorization):
-                    do {
-                        try await reauthenticateForPasswordChange(reauthorization.password)
-                        return Response.success(true)
-                    } catch {
-                        @Dependencies.Dependency(\.logger) var logger
-                        logger.log(.error, "Failed to reauthorize for password change. Error: \(String(describing: error))")
-                        throw Abort(.unauthorized, reason: "Failed to reauthorize")
-                    }
                 case let .request(change: request):
                     do {
                         try await client.password.change.request(
@@ -150,14 +150,6 @@ extension Identity.Provider.API {
             }
         case let .emailChange(emailChange):
             switch emailChange {
-            case .reauthorization(let reauthorization):
-                do {
-                    try await reauthenticateForEmailChange(reauthorization.password)
-                    
-                    return Response.success(true)
-                } catch {
-                    return Response.success(false)
-                }
             case .request(let request):
                 do {
                     let _ = try await client.emailChange.request(
@@ -174,16 +166,16 @@ extension Identity.Provider.API {
                 
             case .confirm(let confirm):
                 do {
-                    let newEmail = try await client.emailChange.confirm(token: confirm.token)
+                    try await client.emailChange.confirm(token: confirm.token)
                     
                     @Dependencies.Dependency(\.logger) var logger
-                    logger.log(.info, "Email change confirmed for new email: \(newEmail)")
+                    logger.log(.info, "Email change confirmed for new email")
                     
                     return Response.success(true)
                 } catch {
                     @Dependencies.Dependency(\.logger) var logger
                     logger.log(.error, "Failed to confirm email change. Error: \(String(describing: error))")
-                    throw Abort(.internalServerError, reason: "Failed to confirm email change")
+                    return Response.success(false)
                 }
             }
 //        case .multifactorAuthentication(let multifactorAuthentication):
@@ -268,6 +260,11 @@ extension Identity.Provider.API {
 //                    throw Abort(.internalServerError, reason: "Failed to disable MFA")
 //                }
 //            }
+        case .multifactorAuthentication(_):
+            fatalError()
+        case .reauthorize(let reauthorize):
+            let response = try await client.reauthorize(password: reauthorize.password)
+            return Response.success(true, data: response)
         }
     }
 }

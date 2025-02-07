@@ -1,27 +1,28 @@
-//// Client.MultifactorAuthentication.live.swift
-//import Foundation
-//import Fluent
-//import Vapor
-//import Crypto
-//import Identity_Provider
-//import EmailAddress
-//
-//extension Identity_Provider.Identity.Provider.Client.MultifactorAuthentication {
-//    public static func live(
-//        database: Database,
-//        logger: Logger,
-//        sendSMSCode: @escaping @Sendable (String, String) async throws -> Void,
-//        sendEmailCode: @escaping @Sendable (EmailAddress, String) async throws -> Void,
-//        generateTOTPSecret: @escaping @Sendable () -> String = { // Default TOTP secret generator
-//            SymmetricKey(size: .bits256).withUnsafeBytes { Data($0) }.base64EncodedString()
-//        }
-//    ) -> Self where User.ID == UUID {
+// Client.MultifactorAuthentication.live.swift
+import Foundation
+import Fluent
+import Vapor
+import Crypto
+import Identity_Provider
+import EmailAddress
+
+extension Identity.Provider.Client.Authenticate.Multifactor {
+    public static func live(
+        database: Database,
+        logger: Logger,
+        sendSMSCode: @escaping @Sendable (String, String) async throws -> Void,
+        sendEmailCode: @escaping @Sendable (EmailAddress, String) async throws -> Void,
+        generateTOTPSecret: @escaping @Sendable () -> String = { // Default TOTP secret generator
+            SymmetricKey(size: .bits256).withUnsafeBytes { Data($0) }.base64EncodedString()
+        }
+    ) -> Self {
+        fatalError()
 //        return .init(
 //            setup: .init(
-//                initialize: { userId, method, identifier async throws -> Identity_Shared.MultifactorAuthentication.Setup.Response in
+//                initialize: { method, identifier async throws -> Identity_Shared.MultifactorAuthentication.Setup.Response in
 //                    try await database.transaction { db in
 //                        // Verify user exists
-//                        guard let _ = try await Identity.find(userId, on: db) else {
+//                        guard let _ = try await Identity.find(on: db) else {
 //                            throw Abort(.notFound)
 //                        }
 //                        
@@ -45,7 +46,7 @@
 //                            mfaMethod.identifier = secret
 //                            
 //                            // Generate recovery codes
-//                            let recoveryCodes = try await generateRecoveryCodes(for: userId, on: db)
+//                            let recoveryCodes = try await generateRecoveryCodes(for: on: db)
 //                            
 //                            try await mfaMethod.save(on: db)
 //                            
@@ -99,7 +100,7 @@
 //                        }
 //                    }
 //                },
-//                confirm: { userId, code async throws -> Void in
+//                confirm: { code async throws -> Void in
 //                    try await database.transaction { db in
 //                        guard let challenge = try await MultifactorAuthentication.Challenge.query(on: db)
 //                            .filter(\.$identity.$id == userId)
@@ -131,7 +132,7 @@
 //                        try await challenge.delete(on: db)
 //                    }
 //                },
-//                resetSecret: { userId, method in
+//                resetSecret: { method in
 //                    try await database.transaction { db in
 //                        guard let mfaMethod = try await MultifactorAuthentication.Method.query(on: db)
 //                            .filter(\.$identity.$id == userId)
@@ -162,7 +163,7 @@
 //                }
 //            ),
 //            verification: .init(
-//                createChallenge: { userId, method async throws -> Identity_Shared.MultifactorAuthentication.Challenge in
+//                createChallenge: { method async throws -> Identity_Shared.MultifactorAuthentication.Challenge in
 //                    try await database.transaction { db in
 //                        guard let method = try await MultifactorAuthentication.Method.query(on: db)
 //                            .filter(\.$identity.$id == userId)
@@ -203,7 +204,7 @@
 //                        )
 //                    }
 //                },
-//                verify: { userId, challengeId, code async throws -> Void in
+//                verify: { challengeId, code async throws -> Void in
 //                    try await database.transaction { db in
 //                        guard let challenge = try await MultifactorAuthentication.Challenge.query(on: db)
 //                            .filter(\.$id == UUID(uuidString: challengeId)!)
@@ -231,7 +232,7 @@
 //                        try await challenge.delete(on: db)
 //                    }
 //                },
-//                bypass: { userId, challengeId in
+//                bypass: { challengeId in
 //                    try await database.transaction { db in
 //                        guard let challengeUUID = UUID(uuidString: challengeId) else {
 //                            throw Abort(.badRequest, reason: "Invalid challenge ID format")
@@ -262,7 +263,7 @@
 //            
 //            recovery: .init(
 //                generateNewCodes: { userId async throws -> [String] in
-//                    try await generateRecoveryCodes(for: userId, on: database)
+//                    try await generateRecoveryCodes(for: on: database)
 //                },
 //                
 //                getRemainingCodeCount: { userId async throws -> Int in
@@ -296,7 +297,7 @@
 //                        ).save(on: db)
 //                    }
 //                },
-//                getAuditLog: { userId, startDate, endDate in
+//                getAuditLog: { startDate, endDate in
 //                    try await MultifactorAuthentication.Audit.Event.query(on: database)
 //                        .filter(\.$userId == userId.uuidString)
 //                        .filter(\.$timestamp >= startDate)
@@ -344,8 +345,8 @@
 //                }
 //            )
 //        )
-//    }
-//}
+    }
+}
 //
 //// In the recovery codes generation function:
 //private func generateRecoveryCodes(for userId: UUID, on database: Database) async throws -> [String] {

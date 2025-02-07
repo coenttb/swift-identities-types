@@ -127,7 +127,7 @@ extension Identity.Consumer.View.Reauthorization {
                        form.addEventListener('submit', async function(event) {
                            event.preventDefault();  
                            const formData = new FormData(form);
-                           const password = formData.get('\(Identity.Authenticate.Credentials.CodingKeys.password.rawValue)'); 
+                           const password = formData.get('\(Identity.Authentication.Credentials.CodingKeys.password.rawValue)'); 
                 
                            try {
                                
@@ -138,7 +138,7 @@ extension Identity.Consumer.View.Reauthorization {
                                        'Accept': 'application/json'  
                                    },
                                    body: new URLSearchParams({
-                                        \(Identity.Authenticate.Credentials.CodingKeys.password.rawValue): password
+                                        \(Identity.Authentication.Credentials.CodingKeys.password.rawValue): password
                                    }).toString()  
                                });
                 

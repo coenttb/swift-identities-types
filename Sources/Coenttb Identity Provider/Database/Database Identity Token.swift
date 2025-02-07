@@ -99,19 +99,21 @@ extension Database.Identity {
 
 
 
-extension Database.Identity.Token: ModelTokenAuthenticatable {
-    public static var valueKey: KeyPath<Database.Identity.Token, Field<String>> {
-        \Database.Identity.Token.$value
-    }
-    
-    public static var userKey: KeyPath<Database.Identity.Token, Parent<Database.Identity>> {
-        \Database.Identity.Token.$identity
-    }
-    
-    public var isValid: Bool {
-        Date() < self.validUntil
-    }
-}
+
+
+//extension Database.Identity.Token: ModelTokenAuthenticatable {
+//    public static var valueKey: KeyPath<Database.Identity.Token, Field<String>> {
+//        \Database.Identity.Token.$value
+//    }
+//    
+//    public static var userKey: KeyPath<Database.Identity.Token, Parent<Database.Identity>> {
+//        \Database.Identity.Token.$identity
+//    }
+//    
+//    public var isValid: Bool {
+//        Date() < self.validUntil
+//    }
+//}
 
 extension Database.Identity.Token {
     public func rotateIfNecessary(on db: Fluent.Database) async throws -> Database.Identity.Token {

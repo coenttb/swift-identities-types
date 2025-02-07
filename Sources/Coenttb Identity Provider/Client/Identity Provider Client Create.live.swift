@@ -64,7 +64,7 @@ extension Identity_Provider.Identity.Provider.Client.Create {
                     throw error
                 }
             },
-            verify: { token, email in
+            verify: { email, token in
                 do {
                     try await database.transaction { db in
                         guard let identityToken = try await Database.Identity.Token.query(on: db)

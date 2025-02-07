@@ -70,12 +70,12 @@ extension Email {
         case .reset(let reset):
             switch reset {
             case .request(let request):
-                self = Email.init(
+                self = .init(
                     business: business,
                     passwordResetRequest: request
                 )
             case .confirmation(let confirmation):
-                self = Email.init(
+                self = .init(
                     business: business,
                     passwordResetConfirmation: confirmation
                 )
@@ -83,7 +83,7 @@ extension Email {
         case .change(let change):
             switch change {
             case .notification(let notification):
-                self = Email.init(
+                self = .init(
                     business: business,
                     passwordChangeNotification: notification
                 )

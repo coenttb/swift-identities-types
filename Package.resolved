@@ -43,7 +43,7 @@
       "location" : "https://github.com/coenttb/coenttb-mailgun",
       "state" : {
         "branch" : "main",
-        "revision" : "623a8116c14e8ab3f5586224c1ffda5a627ec5b3"
+        "revision" : "d6d03138e32b42c7f1d062fc6378648343c19288"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/fluent-kit.git",
       "state" : {
-        "revision" : "153c495198ad29508e9c89baf87cbfda798c5338",
-        "version" : "1.50.1"
+        "revision" : "dd5a92d3b5e9e7fb72fd2325eda5bcea36cc4ea1",
+        "version" : "1.50.2"
       }
     },
     {
@@ -430,7 +430,7 @@
       "location" : "https://github.com/coenttb/swift-identity",
       "state" : {
         "branch" : "main",
-        "revision" : "ca6ab6c65cf14b34391b68048edb61c06b4254a5"
+        "revision" : "b072ae488500f9bab94ad257ee4e11d47d81bc14"
       }
     },
     {
