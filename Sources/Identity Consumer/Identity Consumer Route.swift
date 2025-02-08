@@ -39,7 +39,6 @@ extension Identity.Consumer.Route {
     }
 }
 
-extension Identity.Consumer.Route.Router: DependencyKey {
-    public static let liveValue: Self = .init()
-    public static let testValue: Self = liveValue
+extension Identity.Consumer.Route.Router: TestDependencyKey {
+    public static let testValue: Self = .init()
 }
