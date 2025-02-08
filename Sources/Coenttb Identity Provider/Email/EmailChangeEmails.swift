@@ -11,7 +11,7 @@ import Coenttb_Web
 import Messages
 
 extension Email {
-    package init(
+    public init(
         business: BusinessDetails,
         emailChange: Email.Change
     ) {
@@ -43,7 +43,7 @@ extension Email {
 }
 
 extension Email {
-    package enum Change {
+    public enum Change {
         case confirmation(Email.Change.Confirmation)
         case request(Email.Change.Request)
     }
@@ -52,26 +52,26 @@ extension Email {
 
 
 extension Email.Change {
-    package enum Request {
+    public enum Request {
         case notification(Email.Change.Request.Notification)
     }
 }
 
 extension Email.Change {
-    package enum Confirmation: Sendable  {
+    public enum Confirmation: Sendable  {
         case request(Email.Change.Confirmation.Request)
         case notification(Email.Change.Confirmation.Notification)
     }
 }
 
 extension Email.Change.Confirmation {
-    package struct Request: Sendable  {
-        package let verificationURL: URL
-        package let currentEmail: EmailAddress
-        package let newEmail: EmailAddress
-        package let userName: String?
+    public struct Request: Sendable  {
+        public let verificationURL: URL
+        public let currentEmail: EmailAddress
+        public let newEmail: EmailAddress
+        public let userName: String?
         
-        package init(
+        public init(
             verificationURL: URL,
             currentEmail: EmailAddress,
             newEmail: EmailAddress,
@@ -86,12 +86,12 @@ extension Email.Change.Confirmation {
 }
 
 extension Email.Change.Request {
-    package struct Notification: Sendable  {
-        package let currentEmail: EmailAddress
-        package let newEmail: EmailAddress
-        package let userName: String?
+    public struct Notification: Sendable  {
+        public let currentEmail: EmailAddress
+        public let newEmail: EmailAddress
+        public let userName: String?
         
-        package init(
+        public init(
             currentEmail: EmailAddress,
             newEmail: EmailAddress,
             userName: String?
@@ -104,16 +104,16 @@ extension Email.Change.Request {
 }
 
 extension Email.Change.Confirmation {
-    package enum Notification: Sendable  {
+    public enum Notification: Sendable  {
         case currentEmail(CurrentEmail)
         case newEmail(NewEmail)
         
-        package struct Payload: Sendable  {
-            package let currentEmail: EmailAddress
-            package let newEmail: EmailAddress
-            package let userName: String?
+        public struct Payload: Sendable  {
+            public let currentEmail: EmailAddress
+            public let newEmail: EmailAddress
+            public let userName: String?
             
-            package init(
+            public init(
                 currentEmail: EmailAddress,
                 newEmail: EmailAddress,
                 userName: String?
@@ -124,13 +124,13 @@ extension Email.Change.Confirmation {
             }
         }
         
-        package typealias CurrentEmail = Payload
-        package typealias NewEmail = Payload
+        public typealias CurrentEmail = Payload
+        public typealias NewEmail = Payload
     }
 }
 
 extension Email {
-    package init(
+    public init(
         business: BusinessDetails,
         emailChangeRequestNotification: Email.Change.Request.Notification
     ) {
@@ -205,7 +205,7 @@ extension Email {
 }
 
 extension Email {
-    package init(
+    public init(
         business: BusinessDetails,
         emailChangeConfirmationRequest: Email.Change.Confirmation.Request
     ) {
@@ -297,7 +297,7 @@ extension Email {
 
 
 extension Email {
-    package init(
+    public init(
         business: BusinessDetails,
         emailChangeConfirmationNotification: Email.Change.Confirmation.Notification
     ) {

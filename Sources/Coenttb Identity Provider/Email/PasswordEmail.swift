@@ -9,40 +9,40 @@ import Identity_Provider
 import Mailgun
 import Coenttb_Web
 
-package enum PasswordEmail {
+public enum PasswordEmail {
     case reset(PasswordEmail.Reset)
     case change(PasswordEmail.Change)
 }
 
 extension PasswordEmail {
-    package enum Reset {
+    public enum Reset {
         case request(PasswordEmail.Reset.Request)
         case confirmation(PasswordEmail.Reset.Confirmation)
     }
     
-    package enum Change {
+    public enum Change {
         case notification(PasswordEmail.Change.Notification)
     }
 }
 
 extension PasswordEmail.Reset {
-    package struct Request: Sendable {
-        package let resetUrl: URL
-        package let userName: String?
-        package let userEmail: EmailAddress
+    public struct Request: Sendable {
+        public let resetUrl: URL
+        public let userName: String?
+        public let userEmail: EmailAddress
         
-        package init(resetUrl: URL, userName: String?, userEmail: EmailAddress) {
+        public init(resetUrl: URL, userName: String?, userEmail: EmailAddress) {
             self.resetUrl = resetUrl
             self.userName = userName
             self.userEmail = userEmail
         }
     }
     
-    package struct Confirmation: Sendable {
-        package let userName: String?
-        package let userEmail: EmailAddress
+    public struct Confirmation: Sendable {
+        public let userName: String?
+        public let userEmail: EmailAddress
         
-        package init(userName: String?, userEmail: EmailAddress) {
+        public init(userName: String?, userEmail: EmailAddress) {
             self.userName = userName
             self.userEmail = userEmail
         }
@@ -50,11 +50,11 @@ extension PasswordEmail.Reset {
 }
 
 extension PasswordEmail.Change {
-    package struct Notification: Sendable {
-        package let userName: String?
-        package let userEmail: EmailAddress
+    public struct Notification: Sendable {
+        public let userName: String?
+        public let userEmail: EmailAddress
         
-        package init(userName: String?, userEmail: EmailAddress) {
+        public init(userName: String?, userEmail: EmailAddress) {
             self.userName = userName
             self.userEmail = userEmail
         }
@@ -62,7 +62,7 @@ extension PasswordEmail.Change {
 }
 
 extension Email {
-    package init(
+    public init(
         business: BusinessDetails,
         passwordEmail: PasswordEmail
     ) {

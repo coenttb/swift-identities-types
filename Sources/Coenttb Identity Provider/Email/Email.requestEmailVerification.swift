@@ -11,7 +11,7 @@ import Mailgun
 import Messages
 
 extension Email {
-    package static func requestEmailVerification(
+    public static func requestEmailVerification(
         verificationUrl: URL,
         businessName: String,
         supportEmail: EmailAddress,
