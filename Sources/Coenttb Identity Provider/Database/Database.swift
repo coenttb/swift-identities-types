@@ -13,7 +13,13 @@ public enum Database {}
 extension Database {
     public struct Migration: AsyncMigration {
         
-        public var name: String = "Coenttb_Identity_Provider.Database.Migration.Create"
+        public var name: String
+        
+        public init(
+            name: String = "Coenttb_Identity_Provider.Database.Migration.Create"
+        ) {
+            self.name = name
+        }
         
         private static let migrations: [any Fluent.Migration] = {
             var migrations: [any Fluent.Migration] = [
