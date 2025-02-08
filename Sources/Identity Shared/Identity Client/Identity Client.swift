@@ -33,7 +33,7 @@ extension Identity {
         
         public init(
             authenticate: Identity.Client.Authenticate,
-            logout: @escaping () -> Void,
+            logout: @escaping () async throws -> Void,
             create: Identity.Client.Create,
             delete: Identity.Client.Delete,
             emailChange: Identity.Client.EmailChange,
