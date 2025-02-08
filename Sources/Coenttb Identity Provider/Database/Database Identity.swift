@@ -12,7 +12,7 @@ extension Database {
         public var id: UUID?
         
         @Field(key: FieldKeys.email)
-        package internal(set) var email: String
+        public internal(set) var email: String
         
         @Field(key: FieldKeys.passwordHash)
         package var passwordHash: String
@@ -32,7 +32,7 @@ extension Database {
         @OptionalField(key: FieldKeys.lastLoginAt)
         package var lastLoginAt: Date?
         
-        package var emailAddress: EmailAddress {
+        public var emailAddress: EmailAddress {
             get {
                 try! EmailAddress(self.email)
             }
