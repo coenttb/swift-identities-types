@@ -38,6 +38,32 @@ extension Identity.Consumer.Route {
     }
 }
 
-extension Identity.Consumer.Route.Router: TestDependencyKey {
-    public static let testValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = Identity.Consumer.Route.Router().eraseToAnyParserPrinter()
+private enum IdentityConsumerRouteRouterConsumer: TestDependencyKey {
+    static let testValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = liveValue
+    static let liveValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = Identity.Consumer.Route.Router().eraseToAnyParserPrinter()
 }
+
+extension DependencyValues {
+    public var identityConsumerRouter: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> {
+        get { self[IdentityConsumerRouteRouterConsumer.self] }
+        set { self[IdentityConsumerRouteRouterConsumer.self] = newValue }
+    }
+}
+
+private enum IdentityConsumerRouteRouterProvider: TestDependencyKey {
+    static let testValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = liveValue
+    static let liveValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = Identity.Consumer.Route.Router().eraseToAnyParserPrinter()
+}
+
+extension DependencyValues {
+    public var identityProviderRouter: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> {
+        get { self[IdentityConsumerRouteRouterProvider.self] }
+        set { self[IdentityConsumerRouteRouterProvider.self] = newValue }
+    }
+}
+
+
+
+//extension Identity.Consumer.Route.Router: TestDependencyKey {
+//    public static let testValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = Identity.Consumer.Route.Router().eraseToAnyParserPrinter()
+//}
