@@ -9,7 +9,7 @@ import Identity_Provider
 import Mailgun
 import Coenttb_Web
 
-package struct BusinessDetails: Sendable {
+public struct BusinessDetails: Sendable {
     public let name: String
     public let supportEmail: EmailAddress
     public let fromEmail: EmailAddress
