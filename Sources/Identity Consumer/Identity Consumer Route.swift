@@ -10,7 +10,6 @@ import Identity_Shared
 import Coenttb_Web
 import Dependencies
 
-
 extension Identity.Consumer {
     public enum Route: Equatable, Sendable {
         case api(Identity.Consumer.API)
@@ -40,5 +39,5 @@ extension Identity.Consumer.Route {
 }
 
 extension Identity.Consumer.Route.Router: TestDependencyKey {
-    public static let testValue: Self = .init()
+    public static let testValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = Identity.Consumer.Route.Router().eraseToAnyParserPrinter()
 }

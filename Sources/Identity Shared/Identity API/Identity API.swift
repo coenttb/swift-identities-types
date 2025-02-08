@@ -76,7 +76,11 @@ extension UrlFormDecoder {
     }
 }
 
+extension URLRequestData: @retroactive @unchecked Sendable {}
+extension AnyParserPrinter: @unchecked Sendable where Input: Sendable, Output: Sendable {}
+
+
 extension Identity.API.Router: TestDependencyKey {
-    public static let testValue: Identity.API.Router = liveValue
-    public static let liveValue: Identity.API.Router = .init()
+    public static let testValue: AnyParserPrinter<URLRequestData, Identity.API> = Identity.API.Router().eraseToAnyParserPrinter()
+    
 }
