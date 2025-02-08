@@ -10,8 +10,8 @@ import Coenttb_Server
 public struct RateLimiters: Sendable {
     public let credentials = RateLimiter<String>(
         windows: [
-            .minutes(1, maxAttempts: 5),
-            .hours(1, maxAttempts: 20)
+            .minutes(1, maxAttempts: /*5*/ 1000),
+            .hours(1, maxAttempts: /*20*/ 1000)
         ],
         metricsCallback: { key, result async in
             @Dependency(\.logger) var logger
@@ -23,8 +23,8 @@ public struct RateLimiters: Sendable {
     
     public let tokenAccess = RateLimiter<String>(
         windows: [
-            .minutes(1, maxAttempts: 60),
-            .hours(1, maxAttempts: 3000)
+            .minutes(1, maxAttempts: /*60*/ 1000),
+            .hours(1, maxAttempts: /*3000*/ 1000)
         ],
         metricsCallback: { key, result async in
             @Dependency(\.logger) var logger
@@ -36,8 +36,8 @@ public struct RateLimiters: Sendable {
     
     public let tokenRefresh = RateLimiter<String>(
         windows: [
-            .minutes(1, maxAttempts: 10),
-            .hours(1, maxAttempts: 100)
+            .minutes(1, maxAttempts: /*10*/ 1000),
+            .hours(1, maxAttempts: /*100*/ 1000)
         ],
         metricsCallback: { key, result async in
             @Dependency(\.logger) var logger
