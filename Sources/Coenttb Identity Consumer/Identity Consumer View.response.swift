@@ -11,7 +11,7 @@ import Favicon
 import Identity_Consumer
 
 extension Identity.Consumer.View {
-    package static func response(
+    public static func response(
         view: Identity.Consumer.View,
         currentUserName: () -> String?,
         logo: Identity.Consumer.View.Logo,
@@ -111,7 +111,6 @@ extension Identity.Consumer.View {
         } catch {
             throw Abort(.unauthorized)
         }
-        
         
         
         func accountDefaultContainer<Content: HTML>(
