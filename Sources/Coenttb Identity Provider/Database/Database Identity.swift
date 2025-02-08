@@ -5,11 +5,11 @@ import Foundation
 import EmailAddress
 
 extension Database {
-    package final class Identity: Model, Content, @unchecked Sendable {
-        package static let schema = "identities"
+    public final class Identity: Model, Content, @unchecked Sendable {
+        public static let schema = "identities"
 
         @ID(key: .id)
-        package var id: UUID?
+        public var id: UUID?
         
         @Field(key: FieldKeys.email)
         package internal(set) var email: String
@@ -61,7 +61,7 @@ extension Database {
             case failed
         }
 
-        package init() {}
+        public init() {}
 
         package init(
             id: UUID? = nil,
