@@ -39,8 +39,7 @@ extension Identity.Consumer.Route {
 }
 
 private enum IdentityConsumerRouteRouterConsumer: TestDependencyKey {
-    static let testValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = liveValue
-    static let liveValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = Identity.Consumer.Route.Router().eraseToAnyParserPrinter()
+    static let testValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = Identity.Consumer.Route.Router().eraseToAnyParserPrinter()
 }
 
 extension DependencyValues {
@@ -51,8 +50,7 @@ extension DependencyValues {
 }
 
 private enum IdentityConsumerRouteRouterProvider: TestDependencyKey {
-    static let testValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = liveValue
-    static let liveValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = Identity.Consumer.Route.Router().eraseToAnyParserPrinter()
+    static let testValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = Identity.Consumer.Route.Router().eraseToAnyParserPrinter()
 }
 
 extension DependencyValues {
