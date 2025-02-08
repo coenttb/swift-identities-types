@@ -4,7 +4,7 @@ import Dependencies
 import EmailAddress
 import Identity_Consumer
 import Coenttb_Identity_Shared
-import Vapor
+import Coenttb_Vapor
 import RateLimiter
 
 extension Identity.Consumer.Client {

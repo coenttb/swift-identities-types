@@ -2,7 +2,7 @@
 
 import Foundation
 import Coenttb_Web
-import Coenttb_Server
+import Coenttb_Vapor
 import Identity_Provider_Fluent
 import FluentSQLiteDriver
 

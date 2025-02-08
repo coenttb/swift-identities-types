@@ -1,5 +1,5 @@
 {
-  "originHash" : "e65b9436bc1f385db2f419d0e617d563a14f03711157921b04ca8a9bbba0fc17",
+  "originHash" : "e4fcea8c4da75ef4e4bd40b91fc73c66e87cd6634927c27ea1407a0181bc569d",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -430,7 +430,7 @@
       "location" : "https://github.com/coenttb/swift-identity",
       "state" : {
         "branch" : "main",
-        "revision" : "1bcb6ee38bc78baf38c353b04ff33af58e23c791"
+        "revision" : "8244223ff3238204fc8eac109d75395ad7189480"
       }
     },
     {
@@ -618,8 +618,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/vapor.git",
       "state" : {
-        "revision" : "8589cb562feab069f2563bdcdeb8f9608a07a2c7",
-        "version" : "4.112.0"
+        "revision" : "91d6f94fd9f0e8ca659de2ac3465b7aeaf8ecbdc",
+        "version" : "4.112.1"
       }
     },
     {

@@ -8,7 +8,7 @@
 import Dependencies
 @preconcurrency import Fluent
 import Foundation
-@preconcurrency import Vapor
+import Coenttb_Vapor
 import JWT
 import Coenttb_Identity_Shared
 
