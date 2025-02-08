@@ -46,6 +46,10 @@ extension Path<PathBuilder.Component<String>> {
         "reauthorization"
     }
     
+    nonisolated(unsafe) public static let reauthorize = Path {
+        "reauthorize"
+    }
+    
     nonisolated(unsafe) public static let create = Path {
         "create"
     }

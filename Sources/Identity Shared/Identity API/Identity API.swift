@@ -49,7 +49,7 @@ extension Identity.API {
                 }
                 
                 URLRouting.Route(.case(Identity.API.reauthorize)) {
-                    Path.authenticate
+                    Path.reauthorize
                     Body(.form(Identity.API.Reauthorize.self, decoder: .default))
                 }
                 
