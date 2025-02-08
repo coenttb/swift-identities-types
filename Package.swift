@@ -18,8 +18,8 @@ extension Target.Dependency {
 extension Target.Dependency {
     static var coenttbWeb: Self { .product(name: "Coenttb Web", package: "coenttb-web") }
     static var coenttbServer: Self { .product(name: "Coenttb Server", package: "coenttb-server") }
-    static var coenttbServerVapor: Self { .product(name: "Coenttb Vapor", package: "coenttb-server-vapor") }
-    static var coenttbServerFluent: Self { .product(name: "Coenttb Fluent", package: "coenttb-server-vapor") }
+    static var coenttbVapor: Self { .product(name: "Coenttb Vapor", package: "coenttb-server-vapor") }
+    static var coenttbFluent: Self { .product(name: "Coenttb Fluent", package: "coenttb-server-vapor") }
     static var identityConsumer: Self { .product(name: "Identity Consumer", package: "swift-identity") }
     static var identityProvider: Self { .product(name: "Identity Provider", package: "swift-identity") }
     static var identityShared: Self { .product(name: "Identity Shared", package: "swift-identity") }
@@ -58,6 +58,7 @@ let package = Package(
                 .coenttbWeb,
                 .dependenciesMacros,
                 .vaporJWT,
+                .coenttbVapor,
             ]
         ),
         .target(
@@ -67,7 +68,7 @@ let package = Package(
                 .coenttbWeb,
                 .dependenciesMacros,
                 .coenttbIdentityShared,
-                .coenttbServerVapor,
+                .coenttbVapor,
                 .vaporJWT,
             ]
         ),
@@ -77,8 +78,8 @@ let package = Package(
                 .identityProvider,
                 .coenttbWeb,
                 .coenttbServer,
-                .coenttbServerVapor,
-                .coenttbServerFluent,
+                .coenttbVapor,
+                .coenttbFluent,
                 .coenttbIdentityShared,
                 .mailgun,
 
