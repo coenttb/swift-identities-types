@@ -10,10 +10,11 @@ import RateLimiter
 extension Identity.Consumer.Client {
     public static func live(
         provider: Identity.Consumer.Client.Live.Provider,
+        router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
         makeRequest: (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
     ) -> Self {
         
-        @Dependency(Identity.Consumer.API.Router.self) var router
+//        @Dependency(Identity.Consumer.API.Router.self) var router
         
         let apiRouter = router.baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
         
@@ -50,8 +51,6 @@ extension Identity.Consumer.Client {
                 },
                 token: .init(
                     access: { token in
-                        
-                        
                         let rateLimit = await rateLimiter.tokenAccess.checkLimit(token)
                         guard rateLimit.isAllowed else {
                             throw Abort(.tooManyRequests, headers: [
@@ -59,9 +58,9 @@ extension Identity.Consumer.Client {
                             ])
                         }
                         
-                        @Dependency(\.request) var request
                         @Dependency(Identity.Consumer.Client.self) var client
-                        guard let request else { throw Abort(.internalServerError) }
+                        @Dependency(\.request) var request
+                        guard let request else { throw Abort.requestUnavailable }
                         
                         let currentToken = try await request.jwt.verify(token, as: JWT.Token.Access.self)
                         
@@ -98,7 +97,9 @@ extension Identity.Consumer.Client {
                             }
                             
                             @Dependency(\.request) var request
-                            request?.cookies.accessToken = .accessToken(response: response, domain: provider.domain)
+                            guard let request else { throw Abort.requestUnavailable }
+                            
+                            request.cookies.accessToken = .accessToken(response: response, domain: provider.domain)
                             
                             await rateLimiter.tokenRefresh.recordSuccess(token)
                             return response
@@ -135,7 +136,7 @@ extension Identity.Consumer.Client {
             ),
             logout: {
                 @Dependency(\.request) var request
-                guard let request else { throw Abort(.internalServerError)}
+                guard let request else { throw Abort.requestUnavailable }
                 
                 let rateLimitKey = request.realIP
                 
@@ -158,7 +159,7 @@ extension Identity.Consumer.Client {
             },
             reauthorize: { password in
                 @Dependency(\.request) var request
-                guard let request else { throw Abort(.internalServerError)}
+                guard let request else { throw Abort.requestUnavailable }
                 
                 let rateLimitKey = request.realIP
                 
@@ -217,7 +218,7 @@ extension Identity.Consumer.Client {
             delete: .init(
                request: { reauthToken in
                    @Dependency(\.request) var request
-                   guard let request else { throw Abort(.internalServerError)}
+                   guard let request else { throw Abort.requestUnavailable }
                    
                    let rateLimitKey = request.realIP
                    
@@ -236,7 +237,7 @@ extension Identity.Consumer.Client {
                },
                cancel: {
                    @Dependency(\.request) var request
-                   guard let request else { throw Abort(.internalServerError)}
+                   guard let request else { throw Abort.requestUnavailable }
                    
                    let rateLimitKey = request.realIP
                    
@@ -255,7 +256,7 @@ extension Identity.Consumer.Client {
                },
                confirm: {
                    @Dependency(\.request) var request
-                   guard let request else { throw Abort(.internalServerError)}
+                   guard let request else { throw Abort.requestUnavailable }
                    
                    let rateLimitKey = request.realIP
                    
@@ -345,7 +346,7 @@ extension Identity.Consumer.Client {
                 change: .init(
                     request: { currentPassword, newPassword in
                         @Dependency(\.request) var request
-                        guard let request else { throw Abort(.internalServerError)}
+                        guard let request else { throw Abort.requestUnavailable }
                         
                         let rateLimitKey = request.realIP
                         

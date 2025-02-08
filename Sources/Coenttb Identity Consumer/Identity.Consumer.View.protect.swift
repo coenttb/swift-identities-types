@@ -17,7 +17,7 @@ extension Identity.Consumer.View {
         loginProtectedRedirect: URL
     ) throws -> (any AsyncResponseEncodable)? {
         @Dependency(\.request) var request
-        guard let request else { throw Abort(.internalServerError) }
+        guard let request else { throw Abort.requestUnavailable }
         
         switch view {
         case .create:

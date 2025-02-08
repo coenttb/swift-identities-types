@@ -110,8 +110,8 @@ extension Identity.Provider.API {
         case .logout:
             try await client.logout()
             @Dependency(\.request) var request
+            guard let request else { throw Abort.requestUnavailable }
             
-            guard let request else { throw Abort(.internalServerError) }
             return request.redirect(to: logoutRedirectURL().absoluteString)
             
         case let .password(password):

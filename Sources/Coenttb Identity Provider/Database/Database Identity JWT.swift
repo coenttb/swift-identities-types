@@ -18,10 +18,10 @@ extension Database.Identity {
         includeNotBefore: Bool = false
     ) async throws -> String {
         @Dependency(\.request) var request
+        guard let request else { throw Abort.requestUnavailable }
+        
         @Dependency(\.accessTokenConfig) var config
-        
-        guard let request else { throw Abort(.internalServerError) }
-        
+
         let payload = try JWT.Token.Access(
             identity: self,
             includeTokenId: includeTokenId,
@@ -35,9 +35,9 @@ extension Database.Identity {
         includeNotBefore: Bool = false
     ) async throws -> String {
         @Dependency(\.request) var request
-        @Dependency(\.refreshTokenConfig) var config
+        guard let request else { throw Abort.requestUnavailable }
         
-        guard let request else { throw Abort(.internalServerError) }
+        @Dependency(\.refreshTokenConfig) var config
         
         let payload = try JWT.Token.Access(
             identity: self,
@@ -49,8 +49,6 @@ extension Database.Identity {
     
     package func generateJWTResponse(
     ) async throws -> JWT.Response {
-        
-        @Dependency(\.request) var request
         
         let accessToken = try await self.generateJWTAccess(
             includeTokenId: true,

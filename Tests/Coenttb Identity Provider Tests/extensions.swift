@@ -56,6 +56,7 @@ extension Coenttb_Identity.Client<TestUser> {
     ) -> Self {
         @Dependency(\.application) var app
         @Dependency(\.request) var request
+        guard let request else { throw Abort.requestUnavailable }
         
         return .live(
             database: app.db,

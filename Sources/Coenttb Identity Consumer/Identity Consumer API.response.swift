@@ -19,7 +19,7 @@ extension Identity.Consumer.API {
         
         @Dependency(Identity.Consumer.Client.self) var client
         @Dependency(\.request) var request
-        guard let request else { throw Abort(.internalServerError) }
+        guard let request else { throw Abort.requestUnavailable }
         
         do {
             if let response = try Identity.Consumer.API.protect(

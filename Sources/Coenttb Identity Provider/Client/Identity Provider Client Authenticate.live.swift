@@ -31,8 +31,7 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
             credentials: { credentials in
                 
                 @Dependency(\.request) var request
-                
-                guard let request else { throw Abort(.internalServerError) }
+                guard let request else { throw Abort.requestUnavailable }
                 
                 let email: EmailAddress = try .init(credentials.email)
                 
@@ -72,10 +71,10 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
             },
             token: .init(
                 access: { token in
-                    @Dependency(\.request) var request
                     @Dependency(\.logger) var logger
                     
-                    guard let request = request else { throw Abort(.internalServerError) }
+                    @Dependency(\.request) var request
+                    guard let request else { throw Abort.requestUnavailable }
                     
                     do {
                         let payload = try await request.jwt.verify(as: JWT.Token.Access.self)
@@ -117,10 +116,10 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                     }
                 },
                 refresh: { token in
-                    @Dependency(\.request) var request
                     @Dependency(\.logger) var logger
                     
-                    guard let request = request else { throw Abort(.internalServerError) }
+                    @Dependency(\.request) var request
+                    guard let request else { throw Abort.requestUnavailable }
                     
                     do {
                         let payload = try await request.jwt.verify(as: JWT.Token.Refresh.self)
@@ -165,11 +164,9 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
             apiKey: { apiKey in
                 @Dependency(\.request) var request
                 @Dependency(\.logger) var logger
-
+                guard let request else { throw Abort.requestUnavailable }
+                
                 do {
-                    guard let request = request else {
-                        throw Abort(.internalServerError)
-                    }
                     
                     guard let apiKey = try await Database.ApiKey.query(on: request.db)
                         .filter(\.$key == apiKey)

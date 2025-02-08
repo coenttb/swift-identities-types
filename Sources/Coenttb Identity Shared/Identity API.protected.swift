@@ -13,7 +13,7 @@ extension Identity.API {
         with type: Authenticatable.Type
     ) throws -> (any AsyncResponseEncodable)? {
         @Dependency(\.request) var request
-        guard let request else { throw Abort(.internalServerError) }
+        guard let request else { throw Abort.requestUnavailable }
         
         switch api {
         case .authenticate:

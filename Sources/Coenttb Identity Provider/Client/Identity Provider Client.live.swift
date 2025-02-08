@@ -50,7 +50,8 @@ extension Identity_Provider.Identity.Provider.Client {
             ),
             logout: {
                 @Dependency(\.request) var request
-                request?.auth.logout(Database.Identity.self)
+                guard let request else { throw Abort.requestUnavailable }
+                request.auth.logout(Database.Identity.self)
             },
             create: .live(
                 database: database,
