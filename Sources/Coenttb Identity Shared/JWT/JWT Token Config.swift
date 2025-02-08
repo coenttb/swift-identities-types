@@ -21,8 +21,9 @@ extension JWT.Token {
     }
 }
 
-private enum AccessTokenConfig: TestDependencyKey {
-    public static let testValue: JWT.Token.Config = .forAccessToken(issuer: "default-issuer")
+private enum AccessTokenConfig: DependencyKey {
+    public static let liveValue: JWT.Token.Config = .forAccessToken(issuer: "default-issuer")
+    public static let testValue: JWT.Token.Config = liveValue
 }
 
 extension DependencyValues {
@@ -32,8 +33,9 @@ extension DependencyValues {
     }
 }
 
-private enum RefreshTokenConfig: TestDependencyKey {
-    public static let testValue: JWT.Token.Config = .forAccessToken(issuer: "default-issuer")
+private enum RefreshTokenConfig: DependencyKey {
+    public static let liveValue: JWT.Token.Config = .forAccessToken(issuer: "default-issuer")
+    public static let testValue: JWT.Token.Config = liveValue
 }
 
 extension DependencyValues {
