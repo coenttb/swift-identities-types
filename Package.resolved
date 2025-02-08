@@ -240,8 +240,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/sqlite-nio.git",
       "state" : {
-        "revision" : "256c6b816e3bb3764ab98639c7f04d10cec88cff",
-        "version" : "1.11.0"
+        "revision" : "eee2b26558741fe6f461aa5b07bc3227f2a2deb3",
+        "version" : "1.11.1"
       }
     },
     {
@@ -430,7 +430,7 @@
       "location" : "https://github.com/coenttb/swift-identity",
       "state" : {
         "branch" : "main",
-        "revision" : "8244223ff3238204fc8eac109d75395ad7189480"
+        "revision" : "b834dc63e49c611433aa132ccba5701cecfd3620"
       }
     },
     {
