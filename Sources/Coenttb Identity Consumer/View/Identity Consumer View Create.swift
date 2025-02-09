@@ -268,7 +268,7 @@ extension Identity.Create.Verify {
                 async function verifyEmail(token, email) {
                     try {
                         // Create a URL object from the verificationAction
-                        const url = new URL('\(verificationAction.relativePath)');
+                        const url = new URL('\(verificationAction.absoluteString)');
                         
                         // Update or add the token and email parameters
                         url.searchParams.set('token', token);
@@ -283,7 +283,7 @@ extension Identity.Create.Verify {
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_verify_id)");
                             pageModule.outerHTML = "\(html: Identity.Create.VerifyConfirmationPage(redirectURL: redirectURL))";
-                            setTimeout(() => { window.location.href = '\(redirectURL.relativePath)'; }, 5000);
+                            setTimeout(() => { window.location.href = '\(redirectURL.absoluteString)'; }, 5000);
 
                         } else {
                             throw new Error(data.message || 'Account creation failed');
