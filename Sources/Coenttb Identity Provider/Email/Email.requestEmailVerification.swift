@@ -94,19 +94,19 @@ extension Email {
         
         let bytes: ContiguousArray<UInt8> = html.render()
         let string: String = String(decoding: bytes, as: UTF8.self)
-        
+            .replacingOccurrences(of: "&", with: "&amp;")
+            .replacingOccurrences(of: "<", with: "&lt;")
+            .replacingOccurrences(of: ">", with: "&gt;")
+
         print(string)
+
         
         return .init(
             from: from,
             to: [ user.email ],
             subject: "\(businessName) | \(subjectAdd)",
             html: string,
-            text: nil,
-            headers: [
-                "Content-Type": "text/html; charset=utf-8",
-                "Content-Transfer-Encoding": "quoted-printable"
-            ]
+            text: nil
         )
     }
 }
