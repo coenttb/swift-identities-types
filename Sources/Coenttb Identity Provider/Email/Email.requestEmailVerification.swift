@@ -102,7 +102,7 @@ extension Email {
             to: [ user ],
             subject: "\(businessName) | \(subjectAdd)",
             html: nil,
-            text: "Please verify your email address for \(businessName) by visiting: \(verificationUrl.absoluteString)"
+            text: "\(verificationUrl.absoluteString)"
         )
     }
 }
