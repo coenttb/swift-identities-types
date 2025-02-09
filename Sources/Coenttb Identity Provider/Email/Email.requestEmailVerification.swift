@@ -101,8 +101,8 @@ extension Email {
             from: from,
             to: [ user ],
             subject: "\(businessName) | \(subjectAdd)",
-            html: string.addingPercentEncoding(withAllowedCharacters: .urlQueryParamAllowed),
-            text: verificationUrl.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryParamAllowed)
+            html: string,
+            text: verificationUrl.absoluteString
         )
     }
 }
