@@ -16,7 +16,7 @@ extension Email {
         businessName: String,
         supportEmail: EmailAddress,
         from: EmailAddress,
-        to user: (name: String?, email: EmailAddress),
+        to user: EmailAddress,
         primaryColor: HTMLColor
     ) -> Self {
         
@@ -94,19 +94,15 @@ extension Email {
         
         let bytes: ContiguousArray<UInt8> = html.render()
         let string: String = String(decoding: bytes, as: UTF8.self)
-            .replacingOccurrences(of: "&", with: "&amp;")
-            .replacingOccurrences(of: "<", with: "&lt;")
-            .replacingOccurrences(of: ">", with: "&gt;")
-
+        
         print(string)
-
         
         return .init(
             from: from,
-            to: [ user.email ],
+            to: [ user ],
             subject: "\(businessName) | \(subjectAdd)",
             html: string,
-            text: nil,
+            text: "Please verify your email address for \(businessName) by visiting: \(verificationUrl.absoluteString)",
             headers: [
                 "Content-Type": "text/html; charset=utf-8",
                 "Content-Transfer-Encoding": "quoted-printable"
