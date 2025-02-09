@@ -42,6 +42,8 @@ extension Identity.Consumer.View {
                             Parse(.memberwise(Identity.Create.Verify.init)) {
                                 Query {
                                     Field(Identity.Create.Verify.CodingKeys.token.rawValue, .string)
+                                }
+                                Query {
                                     Field(Identity.Create.Verify.CodingKeys.email.rawValue, .string)
                                 }
                             }
@@ -72,6 +74,8 @@ extension Identity.Consumer.View {
                                     Parse(.memberwise(Identity.Consumer.View.Password.Reset.Confirm.init)) {
                                         Query {
                                             Field(Identity.Consumer.View.Password.Reset.Confirm.CodingKeys.token.rawValue, .string)
+                                        }
+                                        Query {
                                             Field(Identity.Consumer.View.Password.Reset.Confirm.CodingKeys.newPassword.rawValue, .string)
                                         }
                                     }
