@@ -98,7 +98,11 @@ extension Email {
             to: [ user.email ],
             subject: "\(businessName) | \(subjectAdd)",
             html: String(decoding: html.render(), as: UTF8.self),
-            text: nil
+            text: nil,
+            headers: [
+                "Content-Type": "text/html; charset=utf-8",
+                "Content-Transfer-Encoding": "base64"
+            ]
         )
     }
 }
