@@ -106,7 +106,11 @@ extension Email {
             to: [ user.email ],
             subject: "\(businessName) | \(subjectAdd)",
             html: string,
-            text: nil
+            text: nil,
+            headers: [
+                "Content-Type": "text/html; charset=utf-8",
+                "Content-Transfer-Encoding": "quoted-printable"
+            ]
         )
     }
 }
