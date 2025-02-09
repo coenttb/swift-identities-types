@@ -93,7 +93,7 @@ extension Email {
         )
         
         let bytes: ContiguousArray<UInt8> = html.render()
-        let string: String = String(decoding: bytes, as: UTF8.self)
+        let string: String = String(decoding: bytes, as: UTF8.self).base64String()
         
         print(string)
         
