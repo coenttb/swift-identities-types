@@ -17,11 +17,11 @@ struct EmailTests {
     @Test("Creating email with html should render")
     func test1() async throws {
         let email = Email.requestEmailVerification(
-            verificationUrl: .homeDirectory,
+            verificationUrl: URL(string: "http://localhost:8080/verify?token=test&email=test@test.com")!,
             businessName: "Test",
             supportEmail: try! .init("test@test.com"),
             from: try! .init("test@test.com"),
-            to: ("hello", try! .init("test@test.com")),
+            to: (try! .init("test@test.com")),
             primaryColor: .red
         )
         
