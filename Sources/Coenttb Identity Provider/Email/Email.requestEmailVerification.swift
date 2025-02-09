@@ -93,7 +93,7 @@ extension Email {
         )
         
         let bytes: ContiguousArray<UInt8> = html.render()
-        let string: String = String(decoding: bytes, as: UTF8.self).base64String()
+        let string: String = String(decoding: bytes, as: UTF8.self)
         
         print(string)
         
@@ -101,12 +101,8 @@ extension Email {
             from: from,
             to: [ user ],
             subject: "\(businessName) | \(subjectAdd)",
-            html: string,
-            text: "Please verify your email address for \(businessName) by visiting: \(verificationUrl.absoluteString)",
-            headers: [
-                "Content-Type": "text/html; charset=utf-8",
-                "Content-Transfer-Encoding": "quoted-printable"
-            ]
+            html: nil,
+            text: "Please verify your email address for \(businessName) by visiting: \(verificationUrl.absoluteString)"
         )
     }
 }
