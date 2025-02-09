@@ -87,22 +87,21 @@ extension Email {
         }
             .backgroundColor(.primary.reverse())
             
-
         let subjectAdd = TranslatedString(
             dutch: "Verifieer je e-mailadres",
             english: "Verify your email address"
         )
         
+        let bytes: ContiguousArray<UInt8> = html.render()
+        let string: String = String(decoding: bytes, as: UTF8.self)
+        
+        
         return .init(
             from: from,
             to: [ user.email ],
             subject: "\(businessName) | \(subjectAdd)",
-            html: String(decoding: html.render(), as: UTF8.self),
-            text: nil,
-            headers: [
-                "Content-Type": "text/html; charset=utf-8",
-                "Content-Transfer-Encoding": "base64"
-            ]
+            html: string,
+            text: nil
         )
     }
 }
