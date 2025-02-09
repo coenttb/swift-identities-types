@@ -55,7 +55,7 @@ extension Email {
                             )
                         }
                         .color(.primary.reverse())
-                        .href(verificationUrl.absoluteString)
+                        .href(verificationUrl.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed))
                         .padding(bottom: Length.medium)
                         
                         
@@ -102,7 +102,7 @@ extension Email {
             to: [ user ],
             subject: "\(businessName) | \(subjectAdd)",
             html: nil,
-            text: "\(verificationUrl.absoluteString)"
+            text: verificationUrl.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         )
     }
 }
