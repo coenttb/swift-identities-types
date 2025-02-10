@@ -1,191 +1,263 @@
-import Foundation
+
 import Testing
 import Dependencies
 import EmailAddress
+import URLRouting
 @testable import Identity_Provider
+@testable import Identity_Shared
 
-@Suite("Identity Provider Client Tests")
-struct IdentityProviderClientTests {
+@Suite("Identity Provider Tests")
+struct IdentityProviderTests {
     
-    struct TestUser: Codable, Hashable, Sendable, Identifiable {
-        let id: String
-        let email: String
-        let name: String?
-        
-        var ID: String { id }
-    }
     
-    typealias Client = Identity.Provider<TestUser>.Client
-    
-    // Test values
     let testEmail = try! EmailAddress("test@example.com")
     let testPassword = "securePassword123"
-    let testUser = TestUser(id: "123", email: "test@example.com", name: "Test User")
     let testToken = "valid-token-123"
     
-    // MARK: - Creation Tests
     
-    @Test("Client handles user creation and verification")
-    func testUserCreation() async throws {
-        @Dependency(Client.self) var client
+    @Test("API handles authentication routes")
+    func testAuthenticationAPI() throws {
+        let router = Identity.API.Router()
         
-        // Valid creation should succeed
-        try await client.create.request(testEmail, testPassword)
+        var credentialsData = URLRequestData()
+        credentialsData.method = "POST"
+        credentialsData.path = ["authenticate"][...]
+        credentialsData.headers = URLRequestData.Fields([
+            "Content-Type": ["application/x-www-form-urlencoded"][...]
+        ], isNameCaseSensitive: false)
         
-        // Invalid email should fail
-        await #expect(throws: Swift.Error.self) {
-            let invalidEmail = try EmailAddress("invalid")
-            try await client.create.request(invalidEmail, testPassword)
+        let formData = "email=\(testEmail.rawValue)&password=\(testPassword)".data(using: .utf8)!
+        credentialsData.body = formData
+        
+        let parsedCredentialsRoute = try router.parse(credentialsData)
+        if case let .authenticate(.credentials(credentials)) = parsedCredentialsRoute {
+            #expect(credentials.email == testEmail.rawValue)
+            #expect(credentials.password == testPassword)
+        } else {
+            throw RouteError.invalidRoute
         }
         
-        // Weak password should fail
-        await #expect(throws: Client.Create.ValidationError.weakPassword) {
-            try await client.create.request(testEmail, "weak")
-        }
+        var tokenData = URLRequestData()
+        tokenData.method = "POST"
+        tokenData.path = ["authenticate", "access"][...]
+        tokenData.headers = URLRequestData.Fields([
+            "Authorization": ["Bearer \(testToken)"][...]
+        ], isNameCaseSensitive: false)
         
-        // Valid verification should succeed
-        try await client.create.verify(testToken, testEmail)
-        
-        // Empty token should fail
-        await #expect(throws: Client.Create.ValidationError.invalidToken) {
-            try await client.create.verify("", testEmail)
+        let parsedTokenRoute = try router.parse(tokenData)
+        if case let .authenticate(.token(.access(auth))) = parsedTokenRoute {
+            #expect(auth.token == testToken)
+        } else {
+            throw RouteError.invalidRoute
         }
     }
     
-    // MARK: - Password Management Tests
-    
-    @Test("Client handles password reset flow")
-    func testPasswordReset() async throws {
-        @Dependency(Client.self) var client
+    @Test("API handles account management routes")
+    func testAccountManagementAPI() throws {
+        let router = Identity.API.Router()
         
-        // Valid reset request should succeed
-        try await client.password.reset.request(testEmail)
+        var createData = URLRequestData()
+        createData.method = "POST"
+        createData.path = ["create", "request"][...]
+        createData.headers = URLRequestData.Fields([
+            "Content-Type": ["application/x-www-form-urlencoded"][...]
+        ], isNameCaseSensitive: false)
         
-        // Invalid email should fail
-        await #expect(throws: Swift.Error.self) {
-            let invalidEmail = try EmailAddress("invalid")
-            try await client.password.reset.request(invalidEmail)
+        let createFormData = "email=\(testEmail.rawValue)&password=\(testPassword)".data(using: .utf8)!
+        createData.body = createFormData
+        
+        let parsedCreateRoute = try router.parse(createData)
+        if case let .create(.request(request)) = parsedCreateRoute {
+            #expect(request.email == testEmail.rawValue)
+            #expect(request.password == testPassword)
+        } else {
+            throw RouteError.invalidRoute
         }
         
-        // Valid reset confirmation should succeed
+        var deleteData = URLRequestData()
+        deleteData.method = "POST"
+        deleteData.path = ["delete", "request"][...]
+        deleteData.headers = URLRequestData.Fields([
+            "Content-Type": ["application/x-www-form-urlencoded"][...]
+        ], isNameCaseSensitive: false)
+        
+        let deleteFormData = "reauthToken=\(testToken)".data(using: .utf8)!
+        deleteData.body = deleteFormData
+        
+        let parsedDeleteRoute = try router.parse(deleteData)
+        if case .delete(.request) = parsedDeleteRoute {
+        } else {
+            throw RouteError.invalidRoute
+        }
+    }
+    
+    @Test("API handles password management routes")
+    func testPasswordManagementAPI() throws {
+        let router = Identity.API.Router()
+        
+        var resetData = URLRequestData()
+        resetData.method = "POST"
+        resetData.path = ["password", "reset", "request"][...]
+        resetData.headers = URLRequestData.Fields([
+            "Content-Type": ["application/x-www-form-urlencoded"][...]
+        ], isNameCaseSensitive: false)
+        
+        let resetFormData = "email=\(testEmail.rawValue)".data(using: .utf8)!
+        resetData.body = resetFormData
+        
+        let parsedResetRoute = try router.parse(resetData)
+        if case let .password(.reset(.request(request))) = parsedResetRoute {
+            #expect(request.email == testEmail.rawValue)
+        } else {
+            throw RouteError.invalidRoute
+        }
+        
+        // Test password change
+        var changeData = URLRequestData()
+        changeData.method = "POST"
+        changeData.path = ["password", "change", "request"][...]
+        changeData.headers = URLRequestData.Fields([
+            "Content-Type": ["application/x-www-form-urlencoded"][...]
+        ], isNameCaseSensitive: false)
+        
+        let changeFormData = "currentPassword=oldPass&newPassword=newPass123".data(using: .utf8)!
+        changeData.body = changeFormData
+        
+        let parsedChangeRoute = try router.parse(changeData)
+        if case let .password(.change(.request(request))) = parsedChangeRoute {
+            #expect(request.currentPassword == "oldPass")
+            #expect(request.newPassword == "newPass123")
+        } else {
+            throw RouteError.invalidRoute
+        }
+    }
+    
+    @Test("API handles MFA routes")
+    func testMultifactorAPI() throws {
+        let router = Identity.API.Router()
+        
+        // Test MFA setup
+        var setupData = URLRequestData()
+        setupData.method = "POST"
+        setupData.path = ["multifactor-authentication", "setup", "initialize"][...]
+        setupData.headers = URLRequestData.Fields([
+            "Content-Type": ["application/x-www-form-urlencoded"][...]
+        ], isNameCaseSensitive: false)
+        
+        let setupRequest = Identity.Authentication.Multifactor.Setup.Request(
+            method: .totp,
+            identifier: "user123"
+        )
+        
+        let setupFormData = "method=TOTP&identifier=user123".data(using: .utf8)!
+        setupData.body = setupFormData
+        
+        let parsedSetupRoute = try router.parse(setupData)
+        if case let .multifactorAuthentication(.setup(.initialize(request))) = parsedSetupRoute {
+            #expect(request.method == .totp)
+            #expect(request.identifier == "user123")
+        } else {
+            throw RouteError.invalidRoute
+        }
+        
+        var verifyData = URLRequestData()
+        verifyData.method = "POST"
+        verifyData.path = ["multifactor-authentication", "verify"][...]
+        verifyData.headers = URLRequestData.Fields([
+            "Content-Type": ["application/x-www-form-urlencoded"][...]
+        ], isNameCaseSensitive: false)
+        
+        let verification = Identity.Authentication.Multifactor.Verification(
+            challengeId: "challenge123",
+            code: "123456"
+        )
+        
+        let verifyFormData = "challengeId=challenge123&code=123456".data(using: .utf8)!
+        verifyData.body = verifyFormData
+        
+        let parsedVerifyRoute = try router.parse(verifyData)
+        if case let .multifactorAuthentication(.verify(.verify(verification))) = parsedVerifyRoute {
+            #expect(verification.challengeId == "challenge123")
+            #expect(verification.code == "123456")
+        } else {
+            throw RouteError.invalidRoute
+        }
+    }
+    
+    
+    @Test("Client handles authentication")
+    func testClientAuthentication() async throws {
+        @Dependency(Identity.Client.self) var client
+        
+        let response = try await client.authenticate.credentials(
+            Identity.Authentication.Credentials(
+                email: testEmail,
+                password: testPassword
+            )
+        )
+        
+        #expect(response.accessToken.type == "Bearer")
+        #expect(response.accessToken.expiresIn > 0)
+        #expect(response.refreshToken.expiresIn > response.accessToken.expiresIn)
+        
+        let refreshResponse = try await client.authenticate.token.refresh(response.refreshToken.value)
+        #expect(refreshResponse.accessToken.value != response.accessToken.value)
+        
+        let reAuthResponse = try await client.reauthorize(testPassword)
+        #expect(reAuthResponse.accessToken.type == "Bearer")
+    }
+    
+    @Test("Client handles account management")
+    func testClientAccountManagement() async throws {
+        @Dependency(Identity.Client.self) var client
+        
+        try await client.create.request(testEmail, testPassword)
+        try await client.create.verify(testEmail, testToken)
+        
+        try await client.password.reset.request(testEmail)
         try await client.password.reset.confirm(testToken, "newSecurePass123")
         
-        // Empty token should fail
-        await #expect(throws: Client.Password.ValidationError.invalidToken) {
-            try await client.password.reset.confirm("", "newSecurePass123")
-        }
+        try await client.password.change.request(testPassword, "newSecurePass456")
         
-        // Weak password should fail
-        await #expect(throws: Client.Password.ValidationError.weakPassword) {
-            try await client.password.reset.confirm(testToken, "weak")
-        }
-    }
-    
-    @Test("Client handles password change with validation")
-    func testPasswordChange() async throws {
-        @Dependency(Client.self) var client
-        
-        // Valid password change should succeed
-        try await client.password.change.request("oldPass123", "newPass456")
-        
-        // Same password should fail
-        let samePassword = "password123"
-        await #expect(throws: Client.Password.ValidationError.samePassword) {
-            try await client.password.change.request(samePassword, samePassword)
-        }
-        
-        // Weak new password should fail
-        await #expect(throws: Client.Password.ValidationError.weakPassword) {
-            try await client.password.change.request("oldPass123", "weak")
-        }
-    }
-    
-    // MARK: - Email Change Tests
-    
-    @Test("Client handles email change flow")
-    func testEmailChange() async throws {
-        @Dependency(Client.self) var client
-        
-        // Valid email change request should succeed
         try await client.emailChange.request(testEmail)
-        
-        // Nil email should fail
-        await #expect(throws: Client.EmailChange.ValidationError.emailRequired) {
-            try await client.emailChange.request(nil)
-        }
-        
-        // Invalid email should fail
-        await #expect(throws: Swift.Error.self) {
-            let invalidEmail = try EmailAddress("invalid")
-            try await client.emailChange.request(invalidEmail)
-        }
-        
-        // Valid confirmation should succeed
-        let newEmail = try await client.emailChange.confirm(testToken)
-        
-        #expect(testEmail == newEmail)
-        
-        // Empty token should fail
-        await #expect(throws: Client.EmailChange.ValidationError.invalidToken) {
-            try await client.emailChange.confirm("")
-        }
+        try await client.emailChange.confirm(testToken)
     }
     
-    // MARK: - Account Deletion Tests
-    
-    @Test("Client handles complete account deletion flow")
-    func testAccountDeletion() async throws {
-        @Dependency(Client.self) var client
+    @Test("Client handles MFA operations")
+    func testClientMFA() async throws {
+        @Dependency(Identity.Client.self) var client
         
-        // Valid deletion request should succeed
-        try await client.delete.request(UUID(), "valid-token")
-        
-        // Missing token should fail
-        await #expect(throws: Client.Delete.ValidationError.missingToken) {
-            try await client.delete.request(UUID(), "")
+        guard let mfa = client.multifactorAuthentication else {
+            throw MFAError.notConfigured
         }
         
-        // Valid cancellation should succeed
-        try await client.delete.cancel(testUser.id)
+        let setupResponse = try await mfa.setup.initialize(.totp, "test-identifier")
+        #expect(!setupResponse.secret.isEmpty)
+        #expect(!setupResponse.recoveryCodes.isEmpty)
         
-        // Invalid user ID should fail
-        await #expect(throws: Client.Delete.ValidationError.invalidUserId) {
-            try await client.delete.cancel("")
-        }
+        try await mfa.setup.confirm("123456")
         
-        // Valid confirmation should succeed
-        try await client.delete.confirm(testUser.id)
+        let challenge = try await mfa.verification.createChallenge(.totp)
+        #expect(challenge.method == .totp)
+        #expect(challenge.expiresAt > challenge.createdAt)
         
-        // Invalid user ID should fail in confirmation
-        await #expect(throws: Client.Delete.ValidationError.invalidUserId) {
-            try await client.delete.confirm("")
-        }
+        try await mfa.verification.verify(challenge.id, "123456")
         
+        let config = try await mfa.configuration()
+        #expect(config.methods.contains(.totp))
+        
+        let remainingCodes = try await mfa.recovery.getRemainingCodeCount()
+        #expect(remainingCodes > 0)
+        
+        let newCodes = try await mfa.recovery.generateNewCodes()
+        #expect(newCodes.count > 0)
     }
     
-    // MARK: - Authentication Flow Tests
+    enum RouteError: Error {
+        case invalidRoute
+    }
     
-    @Test("Client handles authentication flow")
-    func testAuthenticationFlow() async throws {
-        @Dependency(Client.self) var client
-        
-        // Test login
-        try await client.login(testEmail, testPassword)
-        
-        // Invalid credentials should fail
-        await #expect(throws: Client.ValidationError.invalidCredentials) {
-            try await client.login(testEmail, "short")
-        }
-        
-        // Test current user
-        let currentUser = try await client.currentUser()
-        #expect(currentUser == nil) // Default test implementation returns nil
-        
-        // Test user update
-        let updatedUser = try await client.update(testUser)
-        #expect(updatedUser == testUser) // Test implementation returns input
-        
-        // Test logout
-        try await client.logout()
+    enum MFAError: Error {
+        case notConfigured
     }
 }

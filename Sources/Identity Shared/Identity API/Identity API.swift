@@ -62,6 +62,11 @@ extension Identity.API {
                     Path.emailChange
                     Identity.API.EmailChange.Router()
                 }
+                
+                URLRouting.Route(.case(Identity.API.multifactorAuthentication)) {
+                    Path.multifactorAuthentication
+                    Identity.API.Authenticate.Multifactor.Router()
+                }
             }
         }
     }

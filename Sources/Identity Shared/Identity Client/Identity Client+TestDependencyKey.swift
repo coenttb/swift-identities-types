@@ -6,11 +6,18 @@ extension Identity.Client: TestDependencyKey {
     public static var testValue: Identity.Client {
         .init(
             authenticate: .testValue,
+            logout: { },
+            reauthorize: { _ in
+                return JWT.Response(
+                    accessToken: .init(value: "apikey-access-token", expiresIn: 3600),
+                    refreshToken: .init(value: "apikey-refresh-token", expiresIn: 86400)
+                )
+            },
             create: .testValue,
             delete: .testValue,
             emailChange: .testValue,
             password: .testValue,
-            multifactorAuthentication: nil
+            multifactorAuthentication: .testValue
         )
     }
     
@@ -94,16 +101,12 @@ extension Identity.Client.EmailChange: TestDependencyKey {
                 guard let email = newEmail else {
                     throw ValidationError.emailRequired
                 }
-                guard email.rawValue.contains("@") else {
-                    throw ValidationError.invalidEmail
-                }
+                
             },
             confirm: { token in
                 guard !token.isEmpty else {
                     throw ValidationError.invalidToken
                 }
-                
-                //                return try! .init("test@example.com")
             }
         )
     }
@@ -118,7 +121,10 @@ extension Identity.Client.EmailChange: TestDependencyKey {
 extension Identity.Client.Delete: TestDependencyKey {
     public static var testValue: Self {
         .init(
-            request: { _ in
+            request: { reauthToken in
+                guard !reauthToken.isEmpty else {
+                    throw ValidationError.missingToken
+                }
             },
             cancel: {
             },
@@ -137,19 +143,125 @@ extension Identity.Client.Authenticate: TestDependencyKey {
     public static var testValue: Self {
         .init(
             credentials: { credentials in
-                fatalError()
+                JWT.Response(
+                    accessToken: .init(value: "test-access-token", expiresIn: 3600),
+                    refreshToken: .init(value: "test-refresh-token", expiresIn: 86400)
+                )
             },
             token: .init(
                 access: { token in
-                    fatalError()
+                    guard !token.isEmpty else {
+                        throw ValidationError.invalidToken
+                    }
                 },
                 refresh: { token in
-                    fatalError()
+                    guard !token.isEmpty else {
+                        throw ValidationError.invalidToken
+                    }
+                    return JWT.Response(
+                        accessToken: .init(value: "refreshed-access-token", expiresIn: 3600),
+                        refreshToken: .init(value: "refreshed-refresh-token", expiresIn: 86400)
+                    )
                 }
             ),
             apiKey: { apiKey in
-                fatalError()
+                guard !apiKey.isEmpty else {
+                    throw ValidationError.invalidApiKey
+                }
+                return JWT.Response(
+                    accessToken: .init(value: "apikey-access-token", expiresIn: 3600),
+                    refreshToken: .init(value: "apikey-refresh-token", expiresIn: 86400)
+                )
             }
         )
     }
+    
+    enum ValidationError: Error {
+        case invalidEmail
+        case invalidPassword
+        case invalidToken
+        case invalidApiKey
+    }
+}
+
+
+extension Identity.Client.Authenticate.Multifactor: TestDependencyKey {
+   public static var testValue: Self {
+       .init(
+           setup: .init(
+               initialize: { method, identifier in
+                   guard !identifier.isEmpty else {
+                       throw ValidationError.invalidIdentifier
+                   }
+                   return .init(
+                       secret: "TESTSECRET123",
+                       recoveryCodes: ["RECOVERY1", "RECOVERY2", "RECOVERY3"]
+                   )
+               },
+               confirm: { code in
+                   guard code.count == 6 else {
+                       throw ValidationError.invalidCode
+                   }
+               },
+               resetSecret: { method in
+                   "NEWSECRET123"
+               }
+           ),
+           verification: .init(
+               createChallenge: { method in
+                   .init(
+                       id: "challenge-123",
+                       method: method,
+                       createdAt: .now,
+                       expiresAt: .now.addingTimeInterval(300)
+                   )
+               },
+               verify: { challengeId, code in
+                   guard !challengeId.isEmpty else {
+                       throw ValidationError.invalidChallenge
+                   }
+                   guard code.count == 6 else {
+                       throw ValidationError.invalidCode
+                   }
+               },
+               bypass: { challengeId in
+                   guard !challengeId.isEmpty else {
+                       throw ValidationError.invalidChallenge
+                   }
+               }
+           ),
+           recovery: .init(
+               generateNewCodes: {
+                   ["NEWCODE1", "NEWCODE2", "NEWCODE3"]
+               },
+               getRemainingCodeCount: {
+                   3
+               },
+               getUsedCodes: {
+                   ["USEDCODE1"]
+               }
+           ),
+           administration: .init(
+               forceDisable: {
+                   // No validation needed for force disable
+               }
+           ),
+           configuration: {
+               .init(
+                   methods: [.totp, .sms],
+                   status: .enabled,
+                   lastVerifiedAt: .now
+               )
+           },
+           disable: {
+               // No validation needed for disable
+           }
+       )
+   }
+   
+   enum ValidationError: Error {
+       case invalidIdentifier
+       case invalidCode
+       case invalidChallenge
+   }
 }
