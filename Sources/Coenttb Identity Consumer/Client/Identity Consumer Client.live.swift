@@ -40,6 +40,15 @@ extension Identity.Consumer.Client {
                             for: makeRequest(.authenticate(.credentials(credentials))),
                             decodingTo: JWT.Response.self
                         )
+                        @Dependency(\.request) var request
+                        guard let request else { throw Abort.requestUnavailable }
+                        
+                        let accessToken = try await request.jwt.verify(
+                            response.accessToken.value,
+                            as: JWT.Token.Access.self
+                        )
+                        request.auth.login(accessToken)
+                        
                         await rateLimiter.credentials.recordSuccess(credentials.email)
                         return response
                     } catch {
@@ -68,12 +77,23 @@ extension Identity.Consumer.Client {
                                 throw Abort(.unauthorized)
                             }
                             let newTokenResponse = try await client.authenticate.token.refresh(token: refreshToken)
+                            
+                            // Verify and login new token
+                            let newAccessToken = try await request.jwt.verify(
+                                newTokenResponse.accessToken.value,
+                                as: JWT.Token.Access.self
+                            )
+                            request.auth.login(newAccessToken)
+                            
                             request.headers.bearerAuthorization = .init(token: newTokenResponse.accessToken.value)
                             request.cookies.accessToken = .accessToken(response: newTokenResponse, domain: provider.domain)
                             request.cookies.refreshToken = .refreshToken(response: newTokenResponse, domain: provider.domain)
                             await rateLimiter.tokenAccess.recordSuccess(token)
                             return
                         }
+                        
+                        // Log in the current token if it's still valid
+                        request.auth.login(currentToken)
                         await rateLimiter.tokenAccess.recordSuccess(token)
                     },
                     refresh: { token in
