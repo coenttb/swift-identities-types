@@ -15,17 +15,20 @@ extension Identity.Authentication.Credentials {
         let passwordResetHref: URL
         let accountCreateHref: URL
         let loginFormAction: URL
+        let successfulLoginRedirect: URL
         
         package init(
             primaryColor: HTMLColor,
             passwordResetHref: URL,
             accountCreateHref: URL,
-            loginFormAction: URL
+            loginFormAction: URL,
+            successfulLoginRedirect: URL
         ) {
             self.primaryColor = primaryColor
             self.passwordResetHref = passwordResetHref
             self.accountCreateHref = accountCreateHref
             self.loginFormAction = loginFormAction
+            self.successfulLoginRedirect = successfulLoginRedirect
         }
         
         private static let form_id: String = "login-form-id"
@@ -136,7 +139,7 @@ extension Identity.Authentication.Credentials {
                 
                         
                         if (data.success) {
-                            window.location.href = "/";  
+                            window.location.href = "\#(successfulLoginRedirect.absoluteString)";  
                         } else {
                             throw new Error(data.message || 'Login failed');
                         }
