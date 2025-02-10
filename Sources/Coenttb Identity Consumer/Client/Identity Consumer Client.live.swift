@@ -36,12 +36,10 @@ extension Identity.Consumer.Client {
                         throw Abort(.tooManyRequests)
                     }
                     do {
-                        guard let response = try await handleRequest(
+                        let response = try await handleRequest(
                             for: makeRequest(.authenticate(.credentials(credentials))),
                             decodingTo: JWT.Response.self
-                        ) else {
-                            throw Abort(.internalServerError, reason: "Invalid response format")
-                        }
+                        )
                         await rateLimiter.credentials.recordSuccess(credentials.email)
                         return response
                     } catch {
@@ -88,13 +86,10 @@ extension Identity.Consumer.Client {
                         }
                         
                         do {
-                            guard let response = try await handleRequest(
+                            let response = try await handleRequest(
                                 for: makeRequest(.authenticate(.token(.refresh(.init(token: token))))),
                                 decodingTo: JWT.Response.self
-                            ) else {
-                                await rateLimiter.tokenRefresh.recordFailure(token)
-                                throw Abort(.unauthorized)
-                            }
+                            )
                             
                             @Dependency(\.request) var request
                             guard let request else { throw Abort.requestUnavailable }
@@ -119,14 +114,13 @@ extension Identity.Consumer.Client {
                     }
                     
                     do {
-                        guard let response = try await handleRequest(
+                        let response = try await handleRequest(
                             for: makeRequest(.authenticate(.apiKey(.init(token: apiKey)))),
                             decodingTo: JWT.Response.self
-                        ) else {
-                            throw Abort(.internalServerError, reason: "Invalid response format")
-                        }
+                        )
                         
                         await rateLimiter.apiKey.recordSuccess(apiKey)
+                        
                         return response
                     } catch {
                         await rateLimiter.apiKey.recordFailure(apiKey)
@@ -171,15 +165,15 @@ extension Identity.Consumer.Client {
                 }
                 
                 do {
-                    guard let response = try await handleRequest(
+                    let response = try await handleRequest(
                         for: makeRequest(.reauthorize(.init(password: password))),
                         decodingTo: JWT.Response.self
-                    ) else {
-                        await rateLimiter.reauthorize.recordFailure(rateLimitKey)
-                        throw Abort(.internalServerError)
-                    }
+                    )
+                    
                     await rateLimiter.reauthorize.recordSuccess(rateLimitKey)
+                    
                     return response
+                    
                 } catch {
                     await rateLimiter.reauthorize.recordFailure(rateLimitKey)
                     throw Abort(.unauthorized)
