@@ -35,7 +35,7 @@ extension Identity.Consumer.View {
             : nil
             
         case .logout:
-            try request.auth.require(type)
+//            try request.auth.require(type)
             return nil
             
         case .password(let password):

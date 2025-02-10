@@ -156,16 +156,12 @@ extension Identity.Consumer.View {
             try? await client.logout()
             
             let response = Response(status: .ok)
-            response.cookies.accessToken = nil
-            response.cookies.refreshToken = nil
-            
-            
+            response.cookies.accessToken?.expires = .distantPast
+            response.cookies.refreshToken?.expires = .distantPast
             
             let html = accountDefaultContainer {
                 PageHeader(title: "Hope to see you soon!") {}
             }
-            
-            
             
             response.headers.contentType = .html
             
