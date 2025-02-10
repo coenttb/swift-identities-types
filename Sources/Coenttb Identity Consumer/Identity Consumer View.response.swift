@@ -161,6 +161,7 @@ extension Identity.Consumer.View {
             
         case .logout:
             try request.auth.require(JWT.Token.Access.self)
+            try await client.logout()
             return accountDefaultContainer {
                 PageHeader(title: "Hope to see you soon!") {}
             }

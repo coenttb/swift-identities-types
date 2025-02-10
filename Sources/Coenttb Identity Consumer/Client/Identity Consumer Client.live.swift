@@ -14,9 +14,7 @@ extension Identity.Consumer.Client {
         router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
         makeRequest: (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
     ) -> Self {
-        
-//        @Dependency(Identity.API.Router.self) var router
-        
+                
         let apiRouter = router.baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
         
         let makeRequest = makeRequest(apiRouter)
