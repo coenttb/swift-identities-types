@@ -10,3 +10,10 @@ import Vapor
 import Coenttb_Identity_Shared
 
 extension JWT.Token.Access: Authenticatable {}
+
+extension JWT.Token.Access: SessionAuthenticatable {
+    public var sessionID: String {
+        self.tokenId!.value.description
+    }
+    
+}

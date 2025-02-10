@@ -12,16 +12,14 @@ import Coenttb_Vapor
 import JWT
 
 extension Identity.Consumer {
-    public struct RefreshTokenAuthenticator: AsyncBearerAuthenticator {
-                
-        public init() {}
+    public struct RefreshTokenCookieAuthenticator: AsyncSessionAuthenticator {
+        public typealias User = JWT.Token.Access
         
-        public func authenticate(
-            bearer: BearerAuthorization,
-            for request: Request
-        ) async throws {
+        public func authenticate(sessionID: String, for request: Request) async throws {
             @Dependency(Identity.Consumer.Client.self) var client
-            let _ = try await client.authenticate.token.refresh(token: bearer.token)
+            let _ = try await client.authenticate.token.refresh(token: sessionID)
         }
     }
 }
+
+

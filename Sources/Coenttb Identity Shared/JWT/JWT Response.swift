@@ -8,4 +8,4 @@
 import Foundation
 import Vapor
 
-extension JWT.Response: Vapor.Content {}
+extension JWT.Response {}
