@@ -13,7 +13,13 @@ extension HTTPCookies.Value {
         expiresIn: TimeInterval,
         path: String = "/",
         domain: String? = nil,
-        isSecure: Bool = true,
+        isSecure: Bool = {
+#if DEBUG
+            return false
+#elseif !DEBUG
+            return true
+#endif
+        }(),
         isHTTPOnly: Bool = true,
         sameSite: HTTPCookies.SameSitePolicy = .lax
     ) -> HTTPCookies.Value {
@@ -37,7 +43,13 @@ extension HTTPCookies.Value {
             token: response.accessToken.value,
             expiresIn: response.accessToken.expiresIn,
             domain: domain,
-            isSecure: true,
+            isSecure: {
+#if DEBUG
+                return false
+#elseif !DEBUG
+                return true
+#endif
+}(),
             sameSite: .strict
         )
     }
@@ -49,7 +61,13 @@ extension HTTPCookies.Value {
             expiresIn: response.refreshToken.expiresIn,
             path: router.url(for: .api(.authenticate(.token(.refresh(.init(token: response.refreshToken.value)))))).relativePath,
             domain: domain,
-            isSecure: true
+            isSecure: {
+#if DEBUG
+            return false
+#elseif !DEBUG
+            return true
+#endif
+        }()
         )
     }
 }

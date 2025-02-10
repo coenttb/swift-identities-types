@@ -67,7 +67,7 @@ extension Identity.Consumer.API {
                     do {
                         print("Starting credentials authentication...")
                         let apiResponse = try await client.authenticate.credentials(credentials: credentials)
-                        print("Got auth response:", response)
+                        print("Got auth response:", apiResponse)
                         
                         let response = Response.success(true, data: apiResponse)
                         
