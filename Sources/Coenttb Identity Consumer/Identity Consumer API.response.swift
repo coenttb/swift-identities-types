@@ -147,10 +147,14 @@ extension Identity.Consumer.API {
             do {
                 try await client.logout()
                 let response = Response.success(true)
+                var accessToken = request.cookies.accessToken
+                accessToken?.expires = .distantPast
                 
-                print("expiring cookies 1")
-                response.cookies.accessToken?.expires = .distantPast
-                response.cookies.refreshToken?.expires = .distantPast
+                var refreshToken = request.cookies.refreshToken
+                refreshToken?.expires = .distantPast
+                 
+                response.cookies.accessToken = accessToken
+                response.cookies.refreshToken = refreshToken
                 return response
             } catch {
                 throw Abort(.internalServerError, reason: "Failed to logout")
