@@ -19,10 +19,13 @@ extension Identity.Consumer {
         
         public func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
             if let token = request.cookies["refresh_token"]?.string {
-                
-                let response = try await client.authenticate.token.refresh(token: token)
-                request.cookies.accessToken = .accessToken(response: response, domain: nil)
-                request.cookies.refreshToken = .refreshToken(response: response, domain: nil)
+                try await withDependencies {
+                    $0.request = request
+                } operation: {
+                    let response = try await client.authenticate.token.refresh(token: token)
+                    request.cookies.accessToken = .accessToken(response: response, domain: nil)
+                    request.cookies.refreshToken = .refreshToken(response: response, domain: nil)
+                }
             }
             return try await next.respond(to: request)
         }

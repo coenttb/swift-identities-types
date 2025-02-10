@@ -19,7 +19,11 @@ extension Identity.Consumer {
        
        public func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
            if let token = request.cookies["access_token"]?.string {
-               try await client.authenticate.token.access(token: token)           }
+               try await withDependencies {
+                   $0.request = request
+               } operation: {
+                   try await client.authenticate.token.access(token: token)           }
+               }
            return try await next.respond(to: request)
        }
    }
