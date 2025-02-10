@@ -54,7 +54,7 @@ extension Database {
             package static let sessionVersion: FieldKey = "session-version"
         }
         
-        package enum EmailVerificationStatus: String, Codable, Sendable {
+        public enum EmailVerificationStatus: String, Codable, Sendable {
             case unverified
             case pending
             case verified
