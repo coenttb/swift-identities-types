@@ -12,7 +12,7 @@ import Coenttb_Vapor
 import JWT
 
 extension Identity.Consumer {
-    public struct RefreshTokenCookieAuthenticator: AsyncSessionAuthenticator {
+    public struct RefreshTokenAuthenticator: AsyncSessionAuthenticator {
         public typealias User = JWT.Token.Access
         
         public func authenticate(sessionID: String, for request: Request) async throws {
