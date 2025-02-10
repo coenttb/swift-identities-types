@@ -77,6 +77,8 @@ extension Identity.Consumer.API {
                         response.cookies.refreshToken = .refreshToken(response: apiResponse, domain: tokenDomain)
                         print("Returning success response...")
                         
+                        print("Final response headers:", response.headers.debugDescription)
+                        
                         return response
                     } catch {
                         print("Failed in credentials case with error:", error)
