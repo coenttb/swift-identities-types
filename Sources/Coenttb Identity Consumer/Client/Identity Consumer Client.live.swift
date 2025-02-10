@@ -368,9 +368,9 @@ extension Identity.Consumer.Client {
     public enum Live {
         public struct Provider {
             public let baseURL: URL
-            public let domain: String
+            public let domain: String?
             
-            public init(baseURL: URL, domain: String) {
+            public init(baseURL: URL, domain: String?) {
                 self.baseURL = baseURL
                 self.domain = domain
             }
