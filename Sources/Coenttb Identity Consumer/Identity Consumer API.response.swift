@@ -58,11 +58,27 @@ extension Identity.Consumer.API {
                     }
                     
                 case .credentials(let credentials):
-                    let response = try await client.authenticate.credentials(credentials: credentials)
+//                    let response = try await client.authenticate.credentials(credentials: credentials)
+//                    
+//                    request.cookies.accessToken = .accessToken(response: response, domain: tokenDomain)
+//                    request.cookies.refreshToken = .refreshToken(response: response, domain: tokenDomain)
+//                    return Response.success(true, data: response)
                     
-                    request.cookies.accessToken = .accessToken(response: response, domain: tokenDomain)
-                    request.cookies.refreshToken = .refreshToken(response: response, domain: tokenDomain)
-                    return Response.success(true, data: response)
+                    do {
+                        print("Starting credentials authentication...")
+                        let response = try await client.authenticate.credentials(credentials: credentials)
+                        print("Got auth response:", response)
+                        
+                        print("Setting access token cookie...")
+                        request.cookies.accessToken = .accessToken(response: response, domain: tokenDomain)
+                        print("Setting refresh token cookie...")
+                        request.cookies.refreshToken = .refreshToken(response: response, domain: tokenDomain)
+                        print("Returning success response...")
+                        return Response.success(true, data: response)
+                    } catch {
+                        print("Failed in credentials case with error:", error)
+                        throw Abort(.internalServerError, reason: "Failed to authenticate account: \(error)")
+                    }
                     
                 case .apiKey(let apiKey):
                     let response = try await client.authenticate.apiKey(apiKey: apiKey.token)

@@ -61,7 +61,7 @@
       "location" : "https://github.com/coenttb/coenttb-server-vapor",
       "state" : {
         "branch" : "main",
-        "revision" : "f3ab6262baf35e1eae2f29ed1486c57e198aa16a"
+        "revision" : "afb4f509dc28f5f5224058f6af92471a416c6625"
       }
     },
     {
@@ -79,7 +79,7 @@
       "location" : "https://github.com/coenttb/coenttb-web",
       "state" : {
         "branch" : "main",
-        "revision" : "f1e4029a312897983c536e1d29dd723183f83ee5"
+        "revision" : "781e0547d9fc9c486197e76679f0de101081c587"
       }
     },
     {
@@ -430,7 +430,7 @@
       "location" : "https://github.com/coenttb/swift-identity",
       "state" : {
         "branch" : "main",
-        "revision" : "cc039272cbd4e13b00160559fbae3398e772e095"
+        "revision" : "e492b414245ae854903074a480a7c357e86108e6"
       }
     },
     {
