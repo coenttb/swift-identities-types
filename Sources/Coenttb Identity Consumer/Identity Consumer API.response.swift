@@ -46,7 +46,7 @@ extension Identity.Consumer.API {
                         let response = try await client.authenticate.token.refresh(token: refresh.token)
                         
 
-                        request.cookies["refresh_token"] = .jwt(
+                        request.cookies.refreshToken = .jwt(
                             token: response.refreshToken.value,
                             expiresIn: response.refreshToken.expiresIn,
                             path: "/auth/refresh",

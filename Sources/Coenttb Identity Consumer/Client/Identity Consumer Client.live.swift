@@ -6,6 +6,7 @@ import Identity_Consumer
 import Coenttb_Identity_Shared
 import Coenttb_Vapor
 import RateLimiter
+import JWT
 
 extension Identity.Consumer.Client {
     public static func live(
@@ -27,31 +28,34 @@ extension Identity.Consumer.Client {
         return .init(
             authenticate: .init(
                 credentials: { credentials in
-                    let rateLimit = await rateLimiter.credentials.checkLimit(credentials.email)
-                    guard rateLimit.isAllowed else {
-                        if let nextAttempt = rateLimit.nextAllowedAttempt {
-                            throw Abort(.tooManyRequests,
-                                        headers: ["Retry-After": "\(Int(nextAttempt.timeIntervalSinceNow))"])
-                        }
-                        throw Abort(.tooManyRequests)
-                    }
                     do {
+                        print("Starting authentication flow...")
                         let response = try await handleRequest(
                             for: makeRequest(.authenticate(.credentials(credentials))),
                             decodingTo: JWT.Response.self
                         )
+                        print("Got JWT response from provider")
+                        
                         @Dependency(\.request) var request
                         guard let request else { throw Abort.requestUnavailable }
                         
+                        print("About to verify token:", response.accessToken.value)
                         let accessToken = try await request.jwt.verify(
                             response.accessToken.value,
                             as: JWT.Token.Access.self
                         )
+                        print("Token verified successfully, logging in...")
+                        
                         request.auth.login(accessToken)
+                        print("Login successful")
                         
                         await rateLimiter.credentials.recordSuccess(credentials.email)
                         return response
                     } catch {
+                        print("Authentication failed with error:", error)
+                        if let jwtError = error as? JWTError {
+                            print("JWT specific error:", jwtError)
+                        }
                         await rateLimiter.credentials.recordFailure(credentials.email)
                         throw Abort(.unauthorized)
                     }
@@ -73,7 +77,7 @@ extension Identity.Consumer.Client {
                         
                         if !(Date() < currentToken.expiration.value) {
                             await rateLimiter.tokenAccess.recordFailure(token)
-                            guard let refreshToken = request.cookies["refresh_token"]?.string else {
+                            guard let refreshToken = request.cookies.refreshToken?.string else {
                                 throw Abort(.unauthorized)
                             }
                             let newTokenResponse = try await client.authenticate.token.refresh(token: refreshToken)
