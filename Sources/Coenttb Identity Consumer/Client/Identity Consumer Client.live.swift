@@ -153,25 +153,7 @@ extension Identity.Consumer.Client {
             logout: {
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
-                
-                let rateLimitKey = request.realIP
-                
-                let rateLimit = await rateLimiter.logout.checkLimit(rateLimitKey)
-                guard rateLimit.isAllowed else {
-                    throw Abort(.tooManyRequests, headers: [
-                        "Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"
-                    ])
-                }
-                
-                do {
-                    //
-                    request.auth.logout(JWT.Token.Access.self)
-                    try await handleRequest(for: makeRequest(.logout))
-                    await rateLimiter.logout.recordSuccess(rateLimitKey)
-                } catch {
-                    await rateLimiter.logout.recordFailure(rateLimitKey)
-                    throw Abort(.unauthorized)
-                }
+                request.auth.logout(JWT.Token.Access.self)
             },
             reauthorize: { password in
                 @Dependency(\.request) var request

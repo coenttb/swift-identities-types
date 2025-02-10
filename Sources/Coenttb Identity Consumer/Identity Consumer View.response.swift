@@ -153,14 +153,19 @@ extension Identity.Consumer.View {
             }
             
         case .logout:
-            try await client.logout()
+            try? await client.logout()
+            
             let response = Response(status: .ok)
             response.cookies.accessToken = nil
             response.cookies.refreshToken = nil
             
+            
+            
             let html = accountDefaultContainer {
                 PageHeader(title: "Hope to see you soon!") {}
             }
+            
+            
             
             response.headers.contentType = .html
             
