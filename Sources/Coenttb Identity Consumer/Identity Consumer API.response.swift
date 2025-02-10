@@ -66,15 +66,18 @@ extension Identity.Consumer.API {
                     
                     do {
                         print("Starting credentials authentication...")
-                        let response = try await client.authenticate.credentials(credentials: credentials)
+                        let apiResponse = try await client.authenticate.credentials(credentials: credentials)
                         print("Got auth response:", response)
                         
+                        let response = Response.success(true, data: apiResponse)
+                        
                         print("Setting access token cookie...")
-                        request.cookies.accessToken = .accessToken(response: response, domain: tokenDomain)
+                        response.cookies.accessToken = .accessToken(response: apiResponse, domain: tokenDomain)
                         print("Setting refresh token cookie...")
-                        request.cookies.refreshToken = .refreshToken(response: response, domain: tokenDomain)
+                        response.cookies.refreshToken = .refreshToken(response: apiResponse, domain: tokenDomain)
                         print("Returning success response...")
-                        return Response.success(true, data: response)
+                        
+                        return response
                     } catch {
                         print("Failed in credentials case with error:", error)
                         throw Abort(.internalServerError, reason: "Failed to authenticate account: \(error)")
