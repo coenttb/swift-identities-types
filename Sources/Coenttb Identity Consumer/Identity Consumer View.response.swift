@@ -163,9 +163,27 @@ extension Identity.Consumer.View {
         case .logout:
             try request.auth.require(JWT.Token.Access.self)
             try await client.logout()
-            let response = request.redirect(to: logoutSuccessRedirect.absoluteString)
+            let response = Response(status: .ok)
+            // Clear cookies
             response.cookies.accessToken = nil
             response.cookies.refreshToken = nil
+            
+            // Add HTML content
+            let html = accountDefaultContainer {
+                PageHeader(title: "Hope to see you soon!") {}
+            }
+            response.headers.contentType = .html
+            
+            let bytes: ContiguousArray<UInt8> = html.render()
+            
+            response.body = .init(data: Data(bytes))
+            
+            // Add redirect after delay using meta refresh
+//            let meta = """
+//               <meta http-equiv="refresh" content="2;url=\(logoutSuccessRedirect.absoluteString)">
+//               """
+//            response.body = try .init(string: meta + (String(data: response.body.data, encoding: .utf8) ?? ""))
+            
             return response
             
         case let .password(password):
