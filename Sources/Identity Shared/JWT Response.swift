@@ -36,7 +36,7 @@ extension JWT {
             self.expiresIn = expiresIn
         }
         
-        enum CodingKeys: String, CodingKey {
+        public enum CodingKeys: String, CodingKey {
             case value = "token"
             case type
             case expiresIn = "exp"
