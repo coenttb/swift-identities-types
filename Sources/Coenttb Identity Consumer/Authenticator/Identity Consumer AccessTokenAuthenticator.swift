@@ -15,6 +15,8 @@ extension Identity.Consumer {
     public struct AccessTokenAuthenticator: AsyncSessionAuthenticator {
         public typealias User = JWT.Token.Access
         
+        public init(){}
+        
         public func authenticate(sessionID: String, for request: Request) async throws {
             @Dependency(Identity.Consumer.Client.self) var client
             try await client.authenticate.token.access(token: sessionID)
