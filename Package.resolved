@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/async-http-client",
       "state" : {
-        "revision" : "60fa3dcfc52d09ed0411e9c4bc99928bf63656bd",
-        "version" : "1.24.2"
+        "revision" : "89dc8d0068eb4d3dea050eac6a0c913098c60d97",
+        "version" : "1.25.0"
       }
     },
     {
@@ -34,7 +34,7 @@
       "location" : "https://github.com/coenttb/coenttb-html",
       "state" : {
         "branch" : "main",
-        "revision" : "1ce8153312b4f78e38744858a116cadcb096bbca"
+        "revision" : "3896deb56cba616c3465eca7030f7818981d3659"
       }
     },
     {
@@ -52,7 +52,7 @@
       "location" : "https://github.com/coenttb/coenttb-server",
       "state" : {
         "branch" : "main",
-        "revision" : "0f9a8b7aac0e97258f43b728a1797701ed9310c7"
+        "revision" : "fc00b2a14fd5a607d81eb59219c22309077c0e0f"
       }
     },
     {
@@ -61,7 +61,7 @@
       "location" : "https://github.com/coenttb/coenttb-server-vapor",
       "state" : {
         "branch" : "main",
-        "revision" : "0afc0b22bd1e3117dfe59dcb60ed69bcd8997cbb"
+        "revision" : "f3ab6262baf35e1eae2f29ed1486c57e198aa16a"
       }
     },
     {
@@ -79,7 +79,7 @@
       "location" : "https://github.com/coenttb/coenttb-web",
       "state" : {
         "branch" : "main",
-        "revision" : "f4824fea0331144c4e3c2a87e3b4cf0578a79560"
+        "revision" : "f1e4029a312897983c536e1d29dd723183f83ee5"
       }
     },
     {
@@ -169,7 +169,7 @@
       "location" : "https://github.com/coenttb/pointfree-html.git",
       "state" : {
         "branch" : "main",
-        "revision" : "517a823ffb482d588fbd46c2606a87dc8f35f3ec"
+        "revision" : "f9f34189a23da8c443f311ab56c8f7c8c384aa07"
       }
     },
     {
@@ -348,8 +348,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "f2f3774fd116a305136b6866e5e7cb7dff39d8f2",
-        "version" : "3.10.1"
+        "revision" : "b828ba476ab068f0b00d6b41f92f364961b0f323",
+        "version" : "3.10.2"
       }
     },
     {
@@ -403,7 +403,7 @@
       "location" : "https://github.com/coenttb/swift-html.git",
       "state" : {
         "branch" : "main",
-        "revision" : "23bd43704174c2cab50f01e8c04263427e59f088"
+        "revision" : "977162ee3acb9334c5e0b6ac01a16682c343355f"
       }
     },
     {
@@ -430,7 +430,7 @@
       "location" : "https://github.com/coenttb/swift-identity",
       "state" : {
         "branch" : "main",
-        "revision" : "b834dc63e49c611433aa132ccba5701cecfd3620"
+        "revision" : "cc039272cbd4e13b00160559fbae3398e772e095"
       }
     },
     {
@@ -474,8 +474,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio",
       "state" : {
-        "revision" : "dff45738d84a53dbc8ee899c306b3a7227f54f89",
-        "version" : "2.80.0"
+        "revision" : "c51907a839e63ebf0ba2076bba73dd96436bd1b9",
+        "version" : "2.81.0"
       }
     },
     {
