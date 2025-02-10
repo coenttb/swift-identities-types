@@ -155,10 +155,15 @@ extension Identity.Consumer.View {
         case .logout:
             try? await client.logout()
             
-            let response = Response(status: .ok)
-            print("expiring cookies 2")
-            response.cookies.accessToken?.expires = .distantPast
-            response.cookies.refreshToken?.expires = .distantPast
+            let response = Response.success(true)
+            var accessToken = request.cookies.accessToken
+            accessToken?.expires = .distantPast
+            
+            var refreshToken = request.cookies.refreshToken
+            refreshToken?.expires = .distantPast
+             
+            response.cookies.accessToken = accessToken
+            response.cookies.refreshToken = refreshToken
             
             let html = accountDefaultContainer {
                 PageHeader(title: "Hope to see you soon!") {}
