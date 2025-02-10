@@ -163,7 +163,10 @@ extension Identity.Consumer.API {
         case .logout:
             do {
                 try await client.logout()
-                return Response.success(true)
+                let response = Response.success(true)
+                response.cookies.accessToken = nil
+                response.cookies.refreshToken = nil
+                return response
             } catch {
                 throw Abort(.internalServerError, reason: "Failed to logout")
             }
