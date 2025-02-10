@@ -15,11 +15,12 @@ extension Identity.Provider {
     public struct AccessTokenAuthenticator: AsyncBearerAuthenticator {                
         public init() {}
         
+        @Dependency(Identity.Provider.Client.self) var client
+        
         public func authenticate(
             bearer: BearerAuthorization,
             for request: Request
         ) async throws {
-            @Dependency(Identity.Provider.Client.self) var client
             try await client.authenticate.token.access(token: bearer.token)
         }
     }
