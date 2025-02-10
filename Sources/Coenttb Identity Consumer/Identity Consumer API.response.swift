@@ -62,7 +62,7 @@ extension Identity.Consumer.API {
                     
                     request.cookies.accessToken = .accessToken(response: response, domain: tokenDomain)
                     request.cookies.refreshToken = .refreshToken(response: response, domain: tokenDomain)
-                    return Response.success(true)
+                    return Response.success(true, data: response)
                     
                 case .apiKey(let apiKey):
                     let response = try await client.authenticate.apiKey(apiKey: apiKey.token)
