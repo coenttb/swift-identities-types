@@ -98,8 +98,7 @@ extension Identity.Consumer.View {
         func accountDefaultContainer<Content: HTML>(
             @HTMLBuilder _ content: @escaping () -> Content
         ) -> Identity.Consumer.HTMLDocument<_HTMLTuple<HTMLInlineStyle<Identity.Consumer.View.Logo>, Content>> {
-            
-            let x = Identity.Consumer.HTMLDocument(
+            Identity.Consumer.HTMLDocument(
                 view: view,
                 title: { _ in "" },
                 description: { _ in "" },
@@ -117,8 +116,6 @@ extension Identity.Consumer.View {
                     content()
                 }
             )
-            
-            return x
         }
         
         switch view {
@@ -142,14 +139,9 @@ extension Identity.Consumer.View {
                 }
             }
         case .delete:
-            try request.auth.require(JWT.Token.Access.self)
             fatalError()
             
         case .login:
-            guard (try? request.auth.require(JWT.Token.Access.self)) == nil else {
-                print("Already logged in")
-                return request.redirect(to: homeHref.relativePath)
-            }
             return accountDefaultContainer {
                 Identity.Authentication.Credentials.View(
                     primaryColor: primaryColor,
@@ -161,29 +153,21 @@ extension Identity.Consumer.View {
             }
             
         case .logout:
-            try request.auth.require(JWT.Token.Access.self)
             try await client.logout()
             let response = Response(status: .ok)
-            // Clear cookies
             response.cookies.accessToken = nil
             response.cookies.refreshToken = nil
             
-            // Add HTML content
             let html = accountDefaultContainer {
                 PageHeader(title: "Hope to see you soon!") {}
             }
+            
             response.headers.contentType = .html
             
             let bytes: ContiguousArray<UInt8> = html.render()
             
             response.body = .init(data: Data(bytes))
-            
-            // Add redirect after delay using meta refresh
-//            let meta = """
-//               <meta http-equiv="refresh" content="2;url=\(logoutSuccessRedirect.absoluteString)">
-//               """
-//            response.body = try .init(string: meta + (String(data: response.body.data, encoding: .utf8) ?? ""))
-            
+
             return response
             
         case let .password(password):
@@ -229,7 +213,6 @@ extension Identity.Consumer.View {
             
             switch emailChange {
             case .request:
-                try request.auth.require(JWT.Token.Access.self)
                 
                 guard
                     let currentUserName = currentUserName()
@@ -282,7 +265,6 @@ extension Identity.Consumer.View {
                     )
                 }
             case .reauthorization:
-                try request.auth.require(JWT.Token.Access.self)
                 return accountDefaultContainer {
                     Identity.Consumer.View.Reauthorization.View(
                         currentUserName: "",
