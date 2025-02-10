@@ -165,6 +165,7 @@ extension Identity.Consumer.View {
             
         case .login:
             guard (try? request.auth.require(JWT.Token.Access.self)) == nil else {
+                print("Already logged in")
                 return request.redirect(to: homeHref.relativePath)
             }
             return accountDefaultContainer {
