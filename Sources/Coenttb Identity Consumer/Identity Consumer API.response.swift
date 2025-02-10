@@ -44,14 +44,10 @@ extension Identity.Consumer.API {
                         
                     case .refresh(let refresh):
                         let apiResponse = try await client.authenticate.token.refresh(token: refresh.token)
-                        
-                        request.cookies.refreshToken = .jwt(
-                            token: apiResponse.refreshToken.value,
-                            expiresIn: apiResponse.refreshToken.expiresIn,
-                            path: "/auth/refresh",
-                            isHTTPOnly: true,
-                            sameSite: .strict
-                        )
+                        @Dependency(Identity.Consumer.Route.Router.self) var router
+
+                        request.cookies.accessToken = .accessToken(response: apiResponse, domain: nil)
+                        request.cookies.refreshToken = .refreshToken(response: apiResponse, domain: nil)
                         
                         return Response.success(true, data: apiResponse)
                     }
