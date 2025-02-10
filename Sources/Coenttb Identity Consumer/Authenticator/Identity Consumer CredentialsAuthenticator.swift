@@ -20,13 +20,17 @@ extension Identity.Consumer {
             basic: BasicAuthorization,
             for request: Request
         ) async throws {
-            @Dependency(Identity.Consumer.Client.self) var client
-            let _ = try await client.authenticate.credentials(
-                .init(
-                    email: try .init(basic.username),
-                    password: basic.password
+            try await withDependencies {
+                $0.request = request
+            } operation: {
+                @Dependency(Identity.Consumer.Client.self) var client
+                let _ = try await client.authenticate.credentials(
+                    .init(
+                        email: try .init(basic.username),
+                        password: basic.password
+                    )
                 )
-            )
+            }
         }
     }
 }

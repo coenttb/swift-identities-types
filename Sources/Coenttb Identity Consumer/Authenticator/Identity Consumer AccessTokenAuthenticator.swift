@@ -18,8 +18,13 @@ extension Identity.Consumer {
         public init(){}
         
         public func authenticate(sessionID: String, for request: Request) async throws {
-            @Dependency(Identity.Consumer.Client.self) var client
-            try await client.authenticate.token.access(token: sessionID)
+            
+            try await withDependencies {
+                $0.request = request
+            } operation: {
+                @Dependency(Identity.Consumer.Client.self) var client
+                try await client.authenticate.token.access(token: sessionID)
+            }
         }
     }
 }
