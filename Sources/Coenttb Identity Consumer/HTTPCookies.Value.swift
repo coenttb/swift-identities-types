@@ -56,6 +56,7 @@ extension HTTPCookies.Value {
     
     package static func refreshToken(response: JWT.Response, domain: String?)-> Self {
         @Dependency(Identity.Consumer.Route.Router.self) var router
+        print(#"router.url(for: .api(.authenticate(.token(.refresh(.init(token: response.refreshToken.value)))))).relativePath"#, router.url(for: .api(.authenticate(.token(.refresh(.init(token: response.refreshToken.value)))))).relativePath)
         return .jwt(
             token: response.refreshToken.value,
             expiresIn: response.refreshToken.expiresIn,
