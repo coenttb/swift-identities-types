@@ -45,15 +45,12 @@ extension Identity.Consumer.API {
                     case .refresh(let refresh):
                         let apiResponse = try await client.authenticate.token.refresh(token: refresh.token)
                         
-                        request.cookies.refreshToken = .jwt(
-                            token: apiResponse.refreshToken.value,
-                            expiresIn: apiResponse.refreshToken.expiresIn,
-                            path: "/auth/refresh",
-                            isHTTPOnly: true,
-                            sameSite: .strict
-                        )
+                        let response = Response.success(true, data: apiResponse)
+                        response.cookies.refreshToken = .refreshToken(response: apiResponse, domain: nil)
+                        response.cookies.refreshToken?.sameSite = .strict
+                        response.cookies.refreshToken?.isHTTPOnly = true
                         
-                        return Response.success(true, data: apiResponse)
+                        return response
                     }
                     
                 case .credentials(let credentials):
