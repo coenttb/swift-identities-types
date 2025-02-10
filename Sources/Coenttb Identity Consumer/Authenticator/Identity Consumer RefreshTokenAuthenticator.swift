@@ -18,7 +18,7 @@ extension Identity.Consumer {
         @Dependency(Identity.Consumer.Client.self) var client
         
         public func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
-            if let token = request.cookies["refresh_token"]?.string {
+            if let token = request.cookies.refreshToken?.string {
                 try await withDependencies {
                     $0.request = request
                 } operation: {

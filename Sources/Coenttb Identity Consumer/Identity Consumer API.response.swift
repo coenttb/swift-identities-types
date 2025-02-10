@@ -43,42 +43,25 @@ extension Identity.Consumer.API {
                         return Response.success(true)
                         
                     case .refresh(let refresh):
-                        let response = try await client.authenticate.token.refresh(token: refresh.token)
+                        let apiResponse = try await client.authenticate.token.refresh(token: refresh.token)
                         
-
                         request.cookies.refreshToken = .jwt(
-                            token: response.refreshToken.value,
-                            expiresIn: response.refreshToken.expiresIn,
+                            token: apiResponse.refreshToken.value,
+                            expiresIn: apiResponse.refreshToken.expiresIn,
                             path: "/auth/refresh",
                             isHTTPOnly: true,
                             sameSite: .strict
                         )
                         
-                        return Response.success(true, data: response)
+                        return Response.success(true, data: apiResponse)
                     }
                     
                 case .credentials(let credentials):
-//                    let response = try await client.authenticate.credentials(credentials: credentials)
-//                    
-//                    request.cookies.accessToken = .accessToken(response: response, domain: tokenDomain)
-//                    request.cookies.refreshToken = .refreshToken(response: response, domain: tokenDomain)
-//                    return Response.success(true, data: response)
-                    
                     do {
-                        print("Starting credentials authentication...")
                         let apiResponse = try await client.authenticate.credentials(credentials: credentials)
-                        print("Got auth response:", apiResponse)
-                        
                         let response = Response.success(true, data: apiResponse)
-                        
-                        print("Setting access token cookie...")
                         response.cookies.accessToken = .accessToken(response: apiResponse, domain: tokenDomain)
-                        print("Setting refresh token cookie...")
                         response.cookies.refreshToken = .refreshToken(response: apiResponse, domain: tokenDomain)
-                        print("Returning success response...")
-                        
-                        print("Final response headers:", response.headers.debugDescription)
-                        
                         return response
                     } catch {
                         print("Failed in credentials case with error:", error)
@@ -86,8 +69,8 @@ extension Identity.Consumer.API {
                     }
                     
                 case .apiKey(let apiKey):
-                    let response = try await client.authenticate.apiKey(apiKey: apiKey.token)
-                    return Response.success(true, data: response)
+                    let apiResponse = try await client.authenticate.apiKey(apiKey: apiKey.token)
+                    return Response.success(true, data: apiResponse)
                 }
                 
             } catch {
@@ -208,8 +191,8 @@ extension Identity.Consumer.API {
             
         case .reauthorize(let reauthorize):
             do {
-                let response = try await client.reauthorize(password: reauthorize.password)
-                return Response.success(true, data: response)
+                let apiResponse = try await client.reauthorize(password: reauthorize.password)
+                return Response.success(true, data: apiResponse)
             } catch {
                 throw Abort(.internalServerError, reason: "Failed to reauthorize")
             }
