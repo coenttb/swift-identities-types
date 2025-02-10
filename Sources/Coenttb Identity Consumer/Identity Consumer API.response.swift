@@ -147,6 +147,8 @@ extension Identity.Consumer.API {
             do {
                 try await client.logout()
                 let response = Response.success(true)
+                
+                print("expiring cookies 1")
                 response.cookies.accessToken?.expires = .distantPast
                 response.cookies.refreshToken?.expires = .distantPast
                 return response

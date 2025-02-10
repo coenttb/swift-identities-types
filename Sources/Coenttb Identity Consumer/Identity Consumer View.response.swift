@@ -156,6 +156,7 @@ extension Identity.Consumer.View {
             try? await client.logout()
             
             let response = Response(status: .ok)
+            print("expiring cookies 2")
             response.cookies.accessToken?.expires = .distantPast
             response.cookies.refreshToken?.expires = .distantPast
             
