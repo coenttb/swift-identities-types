@@ -20,14 +20,15 @@ extension Identity.Consumer.View {
         accentColor: HTMLColor,
         favicons: Favicons,
         canonicalHref: URL?,
+        homeHref: URL = URL(string: "/")!,
+        createVerificationSuccessRedirect: URL,
         createProtectedRedirect: URL,
+        loginSuccessRedirect: URL,
         loginProtectedRedirect: URL,
-        successfulLoginRedirect: URL,
-        homeHref: URL,
-        verificationSuccessRedirect: URL,
+        logoutSuccessRedirect: URL,
         passwordResetSuccessRedirect: URL,
         emailChangeReauthorizationSuccessRedirect: URL,
-        confirmEmailChangeSuccessRedirect: URL,
+        emailChangeConfirmSuccessRedirect: URL,
         termsOfUse: URL,
         privacyStatement: URL,
         loginHref: URL = {
@@ -136,7 +137,7 @@ extension Identity.Consumer.View {
                 return accountDefaultContainer {
                     Identity.Create.Verify.View(
                         verificationAction: verificationAction,
-                        redirectURL: verificationSuccessRedirect
+                        redirectURL: createVerificationSuccessRedirect
                     )
                 }
             }
@@ -155,16 +156,17 @@ extension Identity.Consumer.View {
                     passwordResetHref: passwordResetHref,
                     accountCreateHref: accountCreateHref,
                     loginFormAction: loginFormAction,
-                    successfulLoginRedirect: successfulLoginRedirect
+                    loginSuccessRedirect: loginSuccessRedirect
                 )
             }
             
         case .logout:
             try request.auth.require(JWT.Token.Access.self)
             try await client.logout()
-            return accountDefaultContainer {
-                PageHeader(title: "Hope to see you soon!") {}
-            }
+            let response = request.redirect(to: logoutSuccessRedirect.absoluteString)
+            response.cookies.accessToken = nil
+            response.cookies.refreshToken = nil
+            return response
             
         case let .password(password):
             switch password {
@@ -257,7 +259,7 @@ extension Identity.Consumer.View {
                 
                 return accountDefaultContainer {
                     Identity.Consumer.View.EmailChange.Confirm.View(
-                        redirect: confirmEmailChangeSuccessRedirect,
+                        redirect: emailChangeConfirmSuccessRedirect,
                         primaryColor: primaryColor
                     )
                 }
@@ -294,12 +296,12 @@ extension Identity.Consumer.View {
 //        canonicalHref: URL?,
 //        createProtectedRedirect: URL,
 //        loginProtectedRedirect: URL,
-//        successfulLoginRedirect: URL,
+//        loginSuccessRedirect: URL,
 //        homeHref: URL,
-//        verificationSuccessRedirect: URL,
+//        createVerificationSuccessRedirect: URL,
 //        passwordResetSuccessRedirect: URL,
 //        emailChangeReauthorizationSuccessRedirect: URL,
-//        confirmEmailChangeSuccessRedirect: URL,
+//        emailChangeConfirmSuccessRedirect: URL,
 //        termsOfUse: URL,
 //        privacyStatement: URL
 //    ) async throws -> any AsyncResponseEncodable {
@@ -319,11 +321,11 @@ extension Identity.Consumer.View {
 //            createProtectedRedirect: createProtectedRedirect,
 //            loginProtectedRedirect: loginProtectedRedirect,
 //            loginHref: router.url(for: .view(.login)),
-//            successfulLoginRedirect: successfulLoginRedirect,
+//            loginSuccessRedirect: loginSuccessRedirect,
 //            accountCreateHref: router.url(for: .view(.create(.request))),
 //            createFormAction: router.url(for: .api(.create(.request(.init())))),
 //            verificationAction: router.url(for: .api(.create(.verify(.init())))),
-//            verificationSuccessRedirect: verificationSuccessRedirect,
+//            createVerificationSuccessRedirect: createVerificationSuccessRedirect,
 //            passwordResetHref: router.url(for: .view(.password(.reset(.request)))),
 //            loginFormAction: router.url(for: .api(.authenticate(.credentials(.init())))),
 //            passwordChangeRequestAction: router.url(for: .api(.password(.change(.request(change: .init()))))),
@@ -334,7 +336,7 @@ extension Identity.Consumer.View {
 //            emailChangeRequestAction: router.url(for: .api(.emailChange(.request(.init())))),
 //            emailChangeConfirmFormAction: router.url(for: .api(.emailChange(.confirm(.init())))),
 //            emailChangeReauthorizationSuccessRedirect: emailChangeReauthorizationSuccessRedirect,
-//            confirmEmailChangeSuccessRedirect: confirmEmailChangeSuccessRedirect
+//            emailChangeConfirmSuccessRedirect: emailChangeConfirmSuccessRedirect
 //        )
 //    }
     

@@ -11,94 +11,72 @@ import Favicon
 import Identity_Consumer
 
 extension Identity.Consumer.Route {
-    public static func response(
-        route: Identity.Consumer.Route,
-        currentUserName: () -> String?,
-        logo: Identity.Consumer.View.Logo,
-        hreflang:  @escaping (Identity.Consumer.View, Language) -> URL,
-        primaryColor: HTMLColor,
-        accentColor: HTMLColor,
-        favicons: Favicons,
-        canonicalHref: URL?,
-        tokenDomain: String?,
-        createProtectedRedirect: URL,
-        loginProtectedRedirect: URL,
-        homeHref: URL,
-        successfulLoginRedirect: URL,
-        verificationSuccessRedirect: URL,
-        passwordResetSuccessRedirect: URL,
-        emailChangeReauthorizationSuccessRedirect: URL,
-        confirmEmailChangeSuccessRedirect: URL,
-        termsOfUse: URL,
-        privacyStatement: URL
-    ) async throws -> any AsyncResponseEncodable {
-        @Dependency(Identity.Consumer.Route.Router.self) var router
-        
-        return try await Self.response(
-            route: route,
-            logo: logo,
-            canonicalHref: canonicalHref,
-            tokenDomain: tokenDomain,
-            favicons: favicons,
-            hreflang: hreflang,
-            termsOfUse: termsOfUse,
-            privacyStatement: privacyStatement,
-            primaryColor: primaryColor,
-            accentColor: accentColor,
-            homeHref: homeHref,
-            createProtectedRedirect: createProtectedRedirect,
-            loginProtectedRedirect: loginProtectedRedirect,
-            loginHref: router.url(for: .view(.login)),
-            successfulLoginRedirect: successfulLoginRedirect,
-            accountCreateHref: router.url(for: .view(.create(.request))),
-            createFormAction: router.url(for: .api(.create(.request(.init())))),
-            verificationAction: router.url(for: .api(.create(.verify(.init())))),
-            verificationSuccessRedirect: verificationSuccessRedirect,
-            passwordResetHref: router.url(for: .view(.password(.reset(.request)))),
-            loginFormAction: router.url(for: .api(.authenticate(.credentials(.init())))),
-            passwordChangeRequestAction: router.url(for: .api(.password(.change(.request(change: .init()))))),
-            passwordResetAction: router.url(for: .api(.password(.reset(.request(.init()))))),
-            passwordResetConfirmAction: router.url(for: .api(.password(.reset(.confirm(.init()))))),
-            passwordResetSuccessRedirect: passwordResetSuccessRedirect,
-            currentUserName: currentUserName,
-            emailChangeRequestAction: router.url(for: .api(.emailChange(.request(.init())))),
-            emailChangeConfirmFormAction: router.url(for: .api(.emailChange(.confirm(.init())))),
-            emailChangeReauthorizationSuccessRedirect: emailChangeReauthorizationSuccessRedirect,
-            confirmEmailChangeSuccessRedirect: confirmEmailChangeSuccessRedirect
-        )
-    }
     
-    private static func response(
-        route: Identity.Consumer.Route,
-        logo: Identity.Consumer.View.Logo,
-        canonicalHref: URL?,
-        tokenDomain: String?,
-        favicons: Favicons,
-        hreflang:  @escaping (Identity.Consumer.View, Language) -> URL,
-        termsOfUse: URL,
-        privacyStatement: URL,
-        primaryColor: HTMLColor,
-        accentColor: HTMLColor,
-        homeHref: URL,
-        createProtectedRedirect: URL,
-        loginProtectedRedirect: URL,
-        loginHref: URL,
-        successfulLoginRedirect: URL,
-        accountCreateHref: URL,
-        createFormAction: URL,
-        verificationAction: URL,
-        verificationSuccessRedirect: URL,
-        passwordResetHref: URL,
-        loginFormAction: URL,
-        passwordChangeRequestAction: URL,
-        passwordResetAction: URL,
-        passwordResetConfirmAction: URL,
-        passwordResetSuccessRedirect: URL,
-        currentUserName: () -> String?,
-        emailChangeRequestAction: URL,
-        emailChangeConfirmFormAction: URL,
-        emailChangeReauthorizationSuccessRedirect: URL,
-        confirmEmailChangeSuccessRedirect: URL
+    public static func response(
+       route: Identity.Consumer.Route,
+       logo: Identity.Consumer.View.Logo,
+       canonicalHref: URL?,
+       tokenDomain: String?,
+       favicons: Favicons,
+       hreflang: @escaping (Identity.Consumer.View, Language) -> URL,
+       termsOfUse: URL,
+       privacyStatement: URL,
+       primaryColor: HTMLColor,
+       accentColor: HTMLColor,
+       homeHref: URL,
+       createProtectedRedirect: URL,
+       loginProtectedRedirect: URL,
+       logoutSuccessRedirect: URL,
+       loginHref: URL = {
+           @Dependency(Identity.Consumer.Route.Router.self) var router
+           return router.url(for: .view(.login))
+       }(),
+       loginSuccessRedirect: URL,
+       accountCreateHref: URL = {
+           @Dependency(Identity.Consumer.Route.Router.self) var router
+           return router.url(for: .view(.create(.request)))
+       }(),
+       createFormAction: URL = {
+           @Dependency(Identity.Consumer.Route.Router.self) var router
+           return router.url(for: .api(.create(.request(.init()))))
+       }(),
+       verificationAction: URL = {
+           @Dependency(Identity.Consumer.Route.Router.self) var router
+           return router.url(for: .api(.create(.verify(.init()))))
+       }(),
+       createVerificationSuccessRedirect: URL,
+       passwordResetHref: URL = {
+           @Dependency(Identity.Consumer.Route.Router.self) var router
+           return router.url(for: .view(.password(.reset(.request))))
+       }(),
+       loginFormAction: URL = {
+           @Dependency(Identity.Consumer.Route.Router.self) var router
+           return router.url(for: .api(.authenticate(.credentials(.init()))))
+       }(),
+       passwordChangeRequestAction: URL = {
+           @Dependency(Identity.Consumer.Route.Router.self) var router
+           return router.url(for: .api(.password(.change(.request(change: .init())))))
+       }(),
+       passwordResetAction: URL = {
+           @Dependency(Identity.Consumer.Route.Router.self) var router
+           return router.url(for: .api(.password(.reset(.request(.init())))))
+       }(),
+       passwordResetConfirmAction: URL = {
+           @Dependency(Identity.Consumer.Route.Router.self) var router
+           return router.url(for: .api(.password(.reset(.confirm(.init())))))
+       }(),
+       passwordResetSuccessRedirect: URL,
+       currentUserName: () -> String?,
+       emailChangeRequestAction: URL = {
+           @Dependency(Identity.Consumer.Route.Router.self) var router
+           return router.url(for: .api(.emailChange(.request(.init()))))
+       }(),
+       emailChangeConfirmFormAction: URL = {
+           @Dependency(Identity.Consumer.Route.Router.self) var router
+           return router.url(for: .api(.emailChange(.confirm(.init()))))
+       }(),
+       emailChangeReauthorizationSuccessRedirect: URL,
+       emailChangeConfirmSuccessRedirect: URL
     ) async throws -> any AsyncResponseEncodable {
         
         @Dependency(Identity.Consumer.Client.self) var client
@@ -133,14 +111,14 @@ extension Identity.Consumer.Route {
                 accentColor: accentColor,
                 favicons: favicons,
                 canonicalHref: canonicalHref,
+                createVerificationSuccessRedirect: createVerificationSuccessRedirect,
                 createProtectedRedirect: createProtectedRedirect,
+                loginSuccessRedirect: loginSuccessRedirect,
                 loginProtectedRedirect: loginProtectedRedirect,
-                successfulLoginRedirect: successfulLoginRedirect,
-                homeHref: homeHref,
-                verificationSuccessRedirect: verificationSuccessRedirect,
+                logoutSuccessRedirect: logoutSuccessRedirect,
                 passwordResetSuccessRedirect: passwordResetSuccessRedirect,
                 emailChangeReauthorizationSuccessRedirect: emailChangeReauthorizationSuccessRedirect,
-                confirmEmailChangeSuccessRedirect: confirmEmailChangeSuccessRedirect,
+                emailChangeConfirmSuccessRedirect: emailChangeConfirmSuccessRedirect,
                 termsOfUse: termsOfUse,
                 privacyStatement: privacyStatement
             )
