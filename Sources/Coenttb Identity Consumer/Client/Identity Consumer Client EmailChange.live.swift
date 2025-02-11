@@ -49,10 +49,12 @@ extension Identity.Consumer.Client.EmailChange {
                 }
                 
                 do {
+                    
                     try await handleRequest( for: makeRequest(apiRouter)(.emailChange(.request(.init(newEmail: newEmail)))) )
                     
                     await rateLimiter.emailChangeRequest.recordSuccess(newEmail)
-                } catch {
+                }
+                catch {
                     await rateLimiter.emailChangeRequest.recordFailure(newEmail)
                     
                     throw Abort(.unauthorized)

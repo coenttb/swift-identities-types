@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/async-http-client",
       "state" : {
-        "revision" : "89dc8d0068eb4d3dea050eac6a0c913098c60d97",
-        "version" : "1.25.0"
+        "revision" : "b645ad40822b5c59ac92b758c5c17af054b5b01f",
+        "version" : "1.25.1"
       }
     },
     {
@@ -61,7 +61,7 @@
       "location" : "https://github.com/coenttb/coenttb-server-vapor",
       "state" : {
         "branch" : "main",
-        "revision" : "afb4f509dc28f5f5224058f6af92471a416c6625"
+        "revision" : "e4b64d0d74e341dddbdf4534b0bf65439aa1b19e"
       }
     },
     {
@@ -79,7 +79,7 @@
       "location" : "https://github.com/coenttb/coenttb-web",
       "state" : {
         "branch" : "main",
-        "revision" : "781e0547d9fc9c486197e76679f0de101081c587"
+        "revision" : "d441b6ad580145c9c6165188d0ea7a19ed69533e"
       }
     },
     {
@@ -204,8 +204,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/postgres-nio.git",
       "state" : {
-        "revision" : "fd0e415a705c490499f983639b04f491a2ed9d99",
-        "version" : "1.23.0"
+        "revision" : "8d07f2049531a60c08b8dda7011a3ad8ac3c989b",
+        "version" : "1.24.0"
       }
     },
     {
@@ -249,8 +249,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-algorithms.git",
       "state" : {
-        "revision" : "f6919dfc309e7f1b56224378b11e28bab5bccc42",
-        "version" : "1.2.0"
+        "revision" : "87e50f483c54e6efd60e885f7f5aa946cee68023",
+        "version" : "1.2.1"
       }
     },
     {
@@ -430,7 +430,7 @@
       "location" : "https://github.com/coenttb/swift-identity",
       "state" : {
         "branch" : "main",
-        "revision" : "e492b414245ae854903074a480a7c357e86108e6"
+        "revision" : "e6f3cca61bdfd452708cc5f6ec9339cda6f22e59"
       }
     },
     {
@@ -618,8 +618,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/vapor.git",
       "state" : {
-        "revision" : "91d6f94fd9f0e8ca659de2ac3465b7aeaf8ecbdc",
-        "version" : "4.112.1"
+        "revision" : "91efabd62487dcd03a8ed4702deee30550595649",
+        "version" : "4.113.0"
       }
     },
     {

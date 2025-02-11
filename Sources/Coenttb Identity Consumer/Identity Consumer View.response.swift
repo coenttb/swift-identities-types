@@ -221,11 +221,11 @@ extension Identity.Consumer.View {
             switch emailChange {
             case .request:
                 
-                guard
-                    let currentUserName = currentUserName()
-                else {
-                    return request.redirect(to: loginHref.relativePath)
-                }
+//                guard
+//                    let currentUserName = currentUserName()
+//                else {
+//                    return request.redirect(to: loginHref.relativePath)
+//                }
                 
                 do {
                     try await client.emailChange.request(newEmail: nil)
@@ -235,7 +235,7 @@ extension Identity.Consumer.View {
                     case .unauthorized:
                         return accountDefaultContainer {
                             Identity.Consumer.View.Reauthorization.View(
-                                currentUserName: currentUserName,
+                                currentUserName: "currentUserName",
                                 primaryColor: primaryColor,
                                 passwordResetHref: passwordResetHref,
                                 confirmFormAction: emailChangeConfirmFormAction,
