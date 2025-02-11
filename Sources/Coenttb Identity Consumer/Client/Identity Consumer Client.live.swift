@@ -8,14 +8,23 @@ import Coenttb_Vapor
 import RateLimiter
 import JWT
 
+
+
 extension Identity.Consumer.Client {
     public static func live(
         provider: Identity.Consumer.Client.Live.Provider,
         router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
         makeRequest: (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
     ) -> Self {
-                
-        let apiRouter = router.baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
+        
+        @Dependency(\.request) var request
+        guard let request else { fatalError() }
+        
+        let apiRouter = router
+            .baseURL(provider.baseURL.absoluteString)
+            .cookie("acces-token", request.cookies.accessToken)
+            .cookie("refresh-token", request.cookies.refreshToken)
+            .eraseToAnyParserPrinter()
         
         let makeRequest = makeRequest(apiRouter)
         
@@ -214,66 +223,66 @@ extension Identity.Consumer.Client {
                 }
             ),
             delete: .init(
-               request: { reauthToken in
-                   @Dependency(\.request) var request
-                   guard let request else { throw Abort.requestUnavailable }
-                   
-                   let rateLimitKey = request.realIP
-                   
-                   let rateLimit = await rateLimiter.deleteRequest.checkLimit(rateLimitKey)
-                   guard rateLimit.isAllowed else {
-                       throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"])
-                   }
-                   
-                   do {
-                       try await handleRequest(for: makeRequest(.delete(.request(.init(reauthToken: reauthToken)))))
-                       await rateLimiter.deleteRequest.recordSuccess(rateLimitKey)
-                   } catch {
-                       await rateLimiter.deleteRequest.recordFailure(rateLimitKey)
-                       throw Abort(.unauthorized)
-                   }
-               },
-               cancel: {
-                   @Dependency(\.request) var request
-                   guard let request else { throw Abort.requestUnavailable }
-                   
-                   let rateLimitKey = request.realIP
-                   
-                   let rateLimit = await rateLimiter.deleteCancel.checkLimit(rateLimitKey)
-                   guard rateLimit.isAllowed else {
-                       throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"])
-                   }
-                   
-                   do {
-                       try await handleRequest(for: makeRequest(.delete(.cancel)))
-                       await rateLimiter.deleteCancel.recordSuccess(rateLimitKey)
-                   } catch {
-                       await rateLimiter.deleteCancel.recordFailure(rateLimitKey)
-                       throw Abort(.unauthorized)
-                   }
-               },
-               confirm: {
-                   @Dependency(\.request) var request
-                   guard let request else { throw Abort.requestUnavailable }
-                   
-                   let rateLimitKey = request.realIP
-                   
-                   let rateLimit = await rateLimiter.deleteConfirm.checkLimit(rateLimitKey)
-                   guard rateLimit.isAllowed else {
-                       throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"])
-                   }
-                   
-                   do {
-                       try await handleRequest(for: makeRequest(.delete(.confirm)))
-                       await rateLimiter.deleteConfirm.recordSuccess(rateLimitKey)
-                   } catch {
-                       await rateLimiter.deleteConfirm.recordFailure(rateLimitKey)
-                       throw Abort(.unauthorized)
-                   }
-               }
+                request: { reauthToken in
+                    @Dependency(\.request) var request
+                    guard let request else { throw Abort.requestUnavailable }
+                    
+                    let rateLimitKey = request.realIP
+                    
+                    let rateLimit = await rateLimiter.deleteRequest.checkLimit(rateLimitKey)
+                    guard rateLimit.isAllowed else {
+                        throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"])
+                    }
+                    
+                    do {
+                        try await handleRequest(for: makeRequest(.delete(.request(.init(reauthToken: reauthToken)))))
+                        await rateLimiter.deleteRequest.recordSuccess(rateLimitKey)
+                    } catch {
+                        await rateLimiter.deleteRequest.recordFailure(rateLimitKey)
+                        throw Abort(.unauthorized)
+                    }
+                },
+                cancel: {
+                    @Dependency(\.request) var request
+                    guard let request else { throw Abort.requestUnavailable }
+                    
+                    let rateLimitKey = request.realIP
+                    
+                    let rateLimit = await rateLimiter.deleteCancel.checkLimit(rateLimitKey)
+                    guard rateLimit.isAllowed else {
+                        throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"])
+                    }
+                    
+                    do {
+                        try await handleRequest(for: makeRequest(.delete(.cancel)))
+                        await rateLimiter.deleteCancel.recordSuccess(rateLimitKey)
+                    } catch {
+                        await rateLimiter.deleteCancel.recordFailure(rateLimitKey)
+                        throw Abort(.unauthorized)
+                    }
+                },
+                confirm: {
+                    @Dependency(\.request) var request
+                    guard let request else { throw Abort.requestUnavailable }
+                    
+                    let rateLimitKey = request.realIP
+                    
+                    let rateLimit = await rateLimiter.deleteConfirm.checkLimit(rateLimitKey)
+                    guard rateLimit.isAllowed else {
+                        throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"])
+                    }
+                    
+                    do {
+                        try await handleRequest(for: makeRequest(.delete(.confirm)))
+                        await rateLimiter.deleteConfirm.recordSuccess(rateLimitKey)
+                    } catch {
+                        await rateLimiter.deleteConfirm.recordFailure(rateLimitKey)
+                        throw Abort(.unauthorized)
+                    }
+                }
             ),
             emailChange: .init(
-                request: { newEmail in                    
+                request: { newEmail in
                     guard let newEmail = newEmail?.rawValue else { return }
                     let rateLimit = await rateLimiter.emailChangeRequest.checkLimit(newEmail)
                     guard rateLimit.isAllowed else {
@@ -425,5 +434,32 @@ extension HTTPCookies {
         set {
             self["refresh_token"] = newValue
         }
+    }
+}
+
+
+extension ParserPrinter where Input == URLRequestData {
+    @inlinable
+    public func cookie(_ name: String, _ value: HTTPCookies.Value) -> BaseURLPrinter<Self> {
+        var requestData = URLRequestData()
+        requestData.headers["cookie", default: []].append("\(name)=\(value.string)"[...])
+        return self.baseRequestData(requestData)
+    }
+    
+    @inlinable
+     public func cookie(_ name: String, _ value: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
+       guard let value = value else { return self.baseRequestData(.init()) }
+       return self.cookie(name, value)
+     }
+    
+    @inlinable
+    public func cookies(_ cookies: [String: HTTPCookies.Value]) -> BaseURLPrinter<Self> {
+        var requestData = URLRequestData()
+        requestData.headers["cookie", default: []].append(
+            cookies
+                .map { name, value in "\(name)=\(value.string)" }
+                .joined(separator: "; ")[...]
+        )
+        return self.baseRequestData(requestData)
     }
 }
