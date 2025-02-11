@@ -35,10 +35,9 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                         throw Identity.EmailChange.Request.Error.emailIsNil
                     }
                     
+                    let identity = try await Database.Identity.get(by: .auth, on: database)
+                    
                     try await database.transaction { db in
-                        
-                        let identity = try await Database.Identity.get(by: .auth, on: db)
-                        
                         guard let reauthToken = try await Database.Identity.Token.query(on: db)
                             .filter(\.$identity.$id == identity.id!)
                             .filter(\.$type == .reauthenticationToken)

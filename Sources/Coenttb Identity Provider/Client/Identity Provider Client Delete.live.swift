@@ -23,9 +23,9 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
     ) -> Self {
         .init(
             request: { reauthToken in
+                let identity = try await Database.Identity.get(by: .auth, on: database)
+                
                 try await database.transaction { db in
-                    
-                    let identity = try await Database.Identity.get(by: .auth, on: db)
                     
                     guard
                         let id = identity.id,
@@ -55,9 +55,11 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                 }
             },
             cancel: {
+                let identity = try await Database.Identity.get(by: .auth, on: database)
+                
                 try await database.transaction { db in
                     
-                    let identity = try await Database.Identity.get(by: .auth, on: db)
+                    
                    
                     guard identity.deletion?.state == .pending else {
                         throw Abort(.badRequest, reason: "User is not pending deletion")
@@ -71,10 +73,9 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                 }
             },
             confirm: {
+                let identity = try await Database.Identity.get(by: .auth, on: database)
+                
                 try await database.transaction { db in
-                    
-                    let identity = try await Database.Identity.get(by: .auth, on: db)
-                    
                     guard
                         let deletion = identity.deletion,
                         deletion.state == .pending,
