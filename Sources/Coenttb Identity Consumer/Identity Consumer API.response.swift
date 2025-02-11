@@ -128,7 +128,8 @@ extension Identity.Consumer.API {
                     try await client.emailChange.request(newEmail: try .init(request.newEmail))
                     return Response.success(true)
                 } catch {
-                    throw Abort(.internalServerError, reason: "Failed to request email change")
+                    throw error
+//                    throw Abort(.internalServerError, reason: "Failed to request email change")
                 }
                 
             case .confirm(let confirm):
