@@ -78,20 +78,20 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                     do {
                         let payload = try await request.jwt.verify(as: JWT.Token.Access.self)
                         
-                        guard payload.audience.value.contains("access") else {
-                            throw JWTError.claimVerificationFailure(
-                                failedClaim: payload.audience,
-                                reason: "Invalid audience for access token"
-                            )
-                        }
-                        
-                        guard payload.issuer.value == issuer else {
-                            throw JWTError.claimVerificationFailure(
-                                failedClaim: payload.issuer,
-                                reason: "Invalid issuer"
-                            )
-                        }
-                        
+//                        guard payload.audience.value.contains("access") else {
+//                            throw JWTError.claimVerificationFailure(
+//                                failedClaim: payload.audience,
+//                                reason: "Invalid audience for access token"
+//                            )
+//                        }
+//                        
+//                        guard payload.issuer.value == issuer else {
+//                            throw JWTError.claimVerificationFailure(
+//                                failedClaim: payload.issuer,
+//                                reason: "Invalid issuer"
+//                            )
+//                        }
+//                        
                         let identity = try await Database.Identity.get(by: .id(payload.identityId), on: request.db)
                         
                         guard identity.email == payload.email else {
