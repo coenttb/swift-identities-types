@@ -23,6 +23,7 @@ extension Identity.Consumer.Client.Password {
     ) -> Self {
         
         @Dependency(RateLimiters.self) var rateLimiter
+        @Dependency(URLRequest.Handler.self) var handleRequest
         
         return .init(
             reset: .init(
@@ -31,18 +32,13 @@ extension Identity.Consumer.Client.Password {
                         .baseURL(provider.baseURL.absoluteString)
                         .eraseToAnyParserPrinter()
                     
-                    let makeRequest = makeRequest(apiRouter)
-                    
-                    @Dependency(URLRequest.Handler.self) var handleRequest
-                    
                     let rateLimit = await rateLimiter.passwordResetRequest.checkLimit(email.rawValue)
-                    guard rateLimit.isAllowed else {
-                        throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
-                    }
+                    
+                    guard rateLimit.isAllowed
+                    else { throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt) }
+                    
                     do {
-                        try await handleRequest(
-                            for: makeRequest(.password(.reset(.request(.init(email: email)))))
-                        )
+                        try await handleRequest(for: makeRequest(apiRouter)(.password(.reset(.request(.init(email: email))))) )
                         await rateLimiter.passwordResetRequest.recordSuccess(email.rawValue)
                     } catch {
                         await rateLimiter.passwordResetRequest.recordFailure(email.rawValue)
@@ -50,22 +46,18 @@ extension Identity.Consumer.Client.Password {
                     }
                 },
                 confirm: { token, newPassword in
+                    
+                    let rateLimit = await rateLimiter.passwordResetConfirm.checkLimit(token)
+                    
+                    guard rateLimit.isAllowed
+                    else { throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt) }
+                    
                     let apiRouter = router
                         .baseURL(provider.baseURL.absoluteString)
                         .eraseToAnyParserPrinter()
                     
-                    let makeRequest = makeRequest(apiRouter)
-                    
-                    @Dependency(URLRequest.Handler.self) var handleRequest
-                    
-                    let rateLimit = await rateLimiter.passwordResetConfirm.checkLimit(token)
-                    guard rateLimit.isAllowed else {
-                        throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
-                    }
                     do {
-                        try await handleRequest(
-                            for: makeRequest(.password(.reset(.confirm(.init(token: token, newPassword: newPassword)))))
-                        )
+                        try await handleRequest(for: makeRequest(apiRouter)(.password(.reset(.confirm(.init(token: token, newPassword: newPassword))))))
                         await rateLimiter.passwordResetConfirm.recordSuccess(token)
                     } catch {
                         await rateLimiter.passwordResetConfirm.recordFailure(token)
@@ -87,29 +79,13 @@ extension Identity.Consumer.Client.Password {
                     
                     let apiRouter = router
                         .baseURL(provider.baseURL.absoluteString)
-                        .cookie("access_token", request.cookies.accessToken)
-                        .cookie("refresh_token", request.cookies.refreshToken)
-                        .transform{ urlRequestData in
-                            if let accessToken = request.cookies.accessToken?.string {
-                                var data = urlRequestData
-                                data.headers["Authorization"] = ["Bearer \(accessToken)"][...].map { Substring($0) }[...]
-                                return data
-                            }
-                            return urlRequestData
-                        }
+                        .setAccessToken(request.cookies.accessToken)
+                        .setRefreshToken(request.cookies.refreshToken)
+                        .setBearerAuth(request.cookies.accessToken?.string)
                         .eraseToAnyParserPrinter()
-                    
-                    let makeRequest = makeRequest(apiRouter)
-                    
-                    @Dependency(URLRequest.Handler.self) var handleRequest
-                    
-//                    var urlRequest: URLRequest =
-//                    urlRequest.setBearerToken(request.cookies.accessToken?.string)
-//                    urlRequest.setRefreshTokenCookie(request.cookies.refreshToken?.string)
-                    
-                   
+                  
                     do {
-                        try await handleRequest(for: makeRequest(.password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword))))))
+                        try await handleRequest(for: makeRequest(apiRouter)(.password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword))))))
                         await rateLimiter.passwordChangeRequest.recordSuccess(rateLimitKey)
                     } catch {
                         await rateLimiter.passwordChangeRequest.recordFailure(rateLimitKey)

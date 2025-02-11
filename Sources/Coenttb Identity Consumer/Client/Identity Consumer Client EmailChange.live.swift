@@ -23,16 +23,18 @@ extension Identity.Consumer.Client.EmailChange {
     ) -> Self {
         
         @Dependency(RateLimiters.self) var rateLimiter
+        @Dependency(URLRequest.Handler.self) var handleRequest
         
         return .init(
             request: { newEmail in
+                @Dependency(\.request) var request
+                
                 let apiRouter = router
                     .baseURL(provider.baseURL.absoluteString)
+                    .setAccessToken(request?.cookies.accessToken)
+                    .setRefreshToken(request?.cookies.refreshToken)
+                    .setBearerAuth(request?.cookies.accessToken?.string)
                     .eraseToAnyParserPrinter()
-                
-                let makeRequest = makeRequest(apiRouter)
-                
-                @Dependency(URLRequest.Handler.self) var handleRequest
                 
                 guard let newEmail = newEmail?.rawValue else { return }
                 
@@ -47,9 +49,7 @@ extension Identity.Consumer.Client.EmailChange {
                 }
                 
                 do {
-                    try await handleRequest(
-                        for: makeRequest(.emailChange(.request(.init(newEmail: newEmail))))
-                    )
+                    try await handleRequest( for: makeRequest(apiRouter)(.emailChange(.request(.init(newEmail: newEmail)))) )
                     
                     await rateLimiter.emailChangeRequest.recordSuccess(newEmail)
                 } catch {
@@ -59,22 +59,23 @@ extension Identity.Consumer.Client.EmailChange {
                 }
             },
             confirm: { token in
+                @Dependency(\.request) var request
+                
                 let apiRouter = router
                     .baseURL(provider.baseURL.absoluteString)
+                    .setAccessToken(request?.cookies.accessToken)
+                    .setRefreshToken(request?.cookies.refreshToken)
+                    .setBearerAuth(request?.cookies.accessToken?.string)
                     .eraseToAnyParserPrinter()
                 
-                let makeRequest = makeRequest(apiRouter)
                 
-                @Dependency(URLRequest.Handler.self) var handleRequest
                 
                 let rateLimit = await rateLimiter.emailChangeConfirm.checkLimit(token)
                 guard rateLimit.isAllowed else {
                     throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
                 }
                 do {
-                    try await handleRequest(
-                        for: makeRequest(.emailChange(.confirm(.init(token: token))))
-                    )
+                    try await handleRequest(for: makeRequest(apiRouter)(.emailChange(.confirm(.init(token: token)))))
                     await rateLimiter.emailChangeConfirm.recordSuccess(token)
                 } catch {
                     await rateLimiter.emailChangeConfirm.recordFailure(token)

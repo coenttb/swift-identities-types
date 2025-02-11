@@ -169,6 +169,16 @@ extension ParserPrinter where Input == URLRequestData {
      }
     
     @inlinable
+    public func setAccessToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
+        return self.cookie("access_token", token)
+    }
+    
+    @inlinable
+    public func setRefreshToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
+        return self.cookie("refresh_token", token)
+    }
+    
+    @inlinable
     public func cookies(_ cookies: [String: HTTPCookies.Value]) -> BaseURLPrinter<Self> {
         var requestData = URLRequestData()
         requestData.headers["cookie", default: []].append(
@@ -188,3 +198,40 @@ extension ParserPrinter where Input == URLRequestData {
         return self.baseRequestData(requestData)
     }
 }
+
+extension ParserPrinter where Input == URLRequestData {
+    @inlinable
+    public func setBearerAuth(_ token: String?) -> BaseURLPrinter<Self> {
+        transform { urlRequestData in
+            if let token = token {
+                var data = urlRequestData
+                data.headers["Authorization"] = ["Bearer \(token)"][...].map { Substring($0) }[...]
+                return data
+            }
+            return urlRequestData
+        }
+    }
+}
+
+//
+//extension ParserPrinter where Input == URLRequestData {
+//    @inlinable
+//    public static func setAccessToken(_ token: String?) -> BaseURLPrinter<Self> {
+//        self.cookie("access_token", token)
+//    }
+//    
+//    @inlinable
+//    public static func setAccessToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
+//        self.cookie("access_token", token)
+//    }
+//    
+//    @inlinable
+//    public static func setRefreshToken(_ token: String?) -> BaseURLPrinter<Self> {
+//        self.cookie("refresh_token", token)
+//    }
+//    
+//    @inlinable
+//    public static func setRefreshToken(_ token: HTTPCookies?) -> BaseURLPrinter<Self> {
+//        self.cookie("refresh_token", token)
+//    }
+//}
