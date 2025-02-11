@@ -23,6 +23,7 @@ extension Identity.Provider {
         ) async throws {
             do {
                 try await client.authenticate.token.access(token: bearer.token)
+                print("successful access token authentication")
             } catch {
                 
             }

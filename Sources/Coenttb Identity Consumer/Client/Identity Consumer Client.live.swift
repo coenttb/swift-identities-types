@@ -14,33 +14,22 @@ extension Identity.Consumer.Client {
     public static func live(
         provider: Identity.Consumer.Client.Live.Provider,
         router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
-        makeRequest: (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
+        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
     ) -> Self {
-        
-        @Dependency(\.request) var request
-        guard let request else { fatalError() }
-        
-        let apiRouter = router
-            .baseURL(provider.baseURL.absoluteString)
-            .cookie("access_token", request.cookies.accessToken)
-            .cookie("refresh_token", request.cookies.refreshToken)
-            .transform { requestData in
-                if let accessToken = request.cookies.accessToken?.string {
-                    requestData.headers["Authorization"] = ["Bearer \(accessToken)"]
-                }
-                return requestData
-            }
-            .eraseToAnyParserPrinter()
-        
-        let makeRequest = makeRequest(apiRouter)
-        
-        @Dependency(URLRequest.Handler.self) var handleRequest
         
         @Dependency(RateLimiters.self) var rateLimiter
         
         return .init(
             authenticate: .init(
                 credentials: { credentials in
+                    let apiRouter = router
+                        .baseURL(provider.baseURL.absoluteString)
+                        .eraseToAnyParserPrinter()
+                    
+                    let makeRequest = makeRequest(apiRouter)
+                    
+                    @Dependency(URLRequest.Handler.self) var handleRequest
+                    
                     do {
                         print("Starting authentication flow...")
                         let response = try await handleRequest(
@@ -75,6 +64,14 @@ extension Identity.Consumer.Client {
                 },
                 token: .init(
                     access: { token in
+                        let apiRouter = router
+                            .baseURL(provider.baseURL.absoluteString)
+                            .eraseToAnyParserPrinter()
+                        
+                        let makeRequest = makeRequest(apiRouter)
+                        
+                        @Dependency(URLRequest.Handler.self) var handleRequest
+                        
                         let rateLimit = await rateLimiter.tokenAccess.checkLimit(token)
                         guard rateLimit.isAllowed else {
                             throw Abort(.tooManyRequests, headers: [
@@ -114,6 +111,13 @@ extension Identity.Consumer.Client {
                         await rateLimiter.tokenAccess.recordSuccess(token)
                     },
                     refresh: { token in
+                        let apiRouter = router
+                            .baseURL(provider.baseURL.absoluteString)
+                            .eraseToAnyParserPrinter()
+                        
+                        let makeRequest = makeRequest(apiRouter)
+                        
+                        @Dependency(URLRequest.Handler.self) var handleRequest
                         
                         let rateLimit = await rateLimiter.tokenRefresh.checkLimit(token)
                         guard rateLimit.isAllowed else {
@@ -142,6 +146,14 @@ extension Identity.Consumer.Client {
                     }
                 ),
                 apiKey: { apiKey in
+                    let apiRouter = router
+                        .baseURL(provider.baseURL.absoluteString)
+                        .eraseToAnyParserPrinter()
+                    
+                    let makeRequest = makeRequest(apiRouter)
+                    
+                    @Dependency(URLRequest.Handler.self) var handleRequest
+                    
                     let rateLimit = await rateLimiter.apiKey.checkLimit(apiKey)
                     guard rateLimit.isAllowed else {
                         if let nextAttempt = rateLimit.nextAllowedAttempt {
@@ -171,6 +183,14 @@ extension Identity.Consumer.Client {
                 request.auth.logout(JWT.Token.Access.self)
             },
             reauthorize: { password in
+                let apiRouter = router
+                    .baseURL(provider.baseURL.absoluteString)
+                    .eraseToAnyParserPrinter()
+                
+                let makeRequest = makeRequest(apiRouter)
+                
+                @Dependency(URLRequest.Handler.self) var handleRequest
+                
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
                 
@@ -200,6 +220,14 @@ extension Identity.Consumer.Client {
             },
             create: .init(
                 request: { email, password in
+                    let apiRouter = router
+                        .baseURL(provider.baseURL.absoluteString)
+                        .eraseToAnyParserPrinter()
+                    
+                    let makeRequest = makeRequest(apiRouter)
+                    
+                    @Dependency(URLRequest.Handler.self) var handleRequest
+                    
                     let rateLimit = await rateLimiter.createRequest.checkLimit(email.rawValue)
                     guard rateLimit.isAllowed else {
                         throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"])
@@ -214,6 +242,14 @@ extension Identity.Consumer.Client {
                     }
                 },
                 verify: { email, token in
+                    let apiRouter = router
+                        .baseURL(provider.baseURL.absoluteString)
+                        .eraseToAnyParserPrinter()
+                    
+                    let makeRequest = makeRequest(apiRouter)
+                    
+                    @Dependency(URLRequest.Handler.self) var handleRequest
+                    
                     let rateLimit = await rateLimiter.createVerify.checkLimit(token)
                     guard rateLimit.isAllowed else {
                         throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"])
@@ -230,6 +266,14 @@ extension Identity.Consumer.Client {
             ),
             delete: .init(
                 request: { reauthToken in
+                    let apiRouter = router
+                        .baseURL(provider.baseURL.absoluteString)
+                        .eraseToAnyParserPrinter()
+                    
+                    let makeRequest = makeRequest(apiRouter)
+                    
+                    @Dependency(URLRequest.Handler.self) var handleRequest
+                    
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
                     
@@ -249,6 +293,14 @@ extension Identity.Consumer.Client {
                     }
                 },
                 cancel: {
+                    let apiRouter = router
+                        .baseURL(provider.baseURL.absoluteString)
+                        .eraseToAnyParserPrinter()
+                    
+                    let makeRequest = makeRequest(apiRouter)
+                    
+                    @Dependency(URLRequest.Handler.self) var handleRequest
+                    
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
                     
@@ -268,6 +320,14 @@ extension Identity.Consumer.Client {
                     }
                 },
                 confirm: {
+                    let apiRouter = router
+                        .baseURL(provider.baseURL.absoluteString)
+                        .eraseToAnyParserPrinter()
+                    
+                    let makeRequest = makeRequest(apiRouter)
+                    
+                    @Dependency(URLRequest.Handler.self) var handleRequest
+                    
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
                     
@@ -289,6 +349,14 @@ extension Identity.Consumer.Client {
             ),
             emailChange: .init(
                 request: { newEmail in
+                    let apiRouter = router
+                        .baseURL(provider.baseURL.absoluteString)
+                        .eraseToAnyParserPrinter()
+                    
+                    let makeRequest = makeRequest(apiRouter)
+                    
+                    @Dependency(URLRequest.Handler.self) var handleRequest
+                    
                     guard let newEmail = newEmail?.rawValue else { return }
                     let rateLimit = await rateLimiter.emailChangeRequest.checkLimit(newEmail)
                     guard rateLimit.isAllowed else {
@@ -308,6 +376,14 @@ extension Identity.Consumer.Client {
                     }
                 },
                 confirm: { token in
+                    let apiRouter = router
+                        .baseURL(provider.baseURL.absoluteString)
+                        .eraseToAnyParserPrinter()
+                    
+                    let makeRequest = makeRequest(apiRouter)
+                    
+                    @Dependency(URLRequest.Handler.self) var handleRequest
+                    
                     let rateLimit = await rateLimiter.emailChangeConfirm.checkLimit(token)
                     guard rateLimit.isAllowed else {
                         throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"])
@@ -326,6 +402,14 @@ extension Identity.Consumer.Client {
             password: .init(
                 reset: .init(
                     request: { email in
+                        let apiRouter = router
+                            .baseURL(provider.baseURL.absoluteString)
+                            .eraseToAnyParserPrinter()
+                        
+                        let makeRequest = makeRequest(apiRouter)
+                        
+                        @Dependency(URLRequest.Handler.self) var handleRequest
+                        
                         let rateLimit = await rateLimiter.passwordResetRequest.checkLimit(email.rawValue)
                         guard rateLimit.isAllowed else {
                             throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"])
@@ -341,6 +425,14 @@ extension Identity.Consumer.Client {
                         }
                     },
                     confirm: { token, newPassword in
+                        let apiRouter = router
+                            .baseURL(provider.baseURL.absoluteString)
+                            .eraseToAnyParserPrinter()
+                        
+                        let makeRequest = makeRequest(apiRouter)
+                        
+                        @Dependency(URLRequest.Handler.self) var handleRequest
+                        
                         let rateLimit = await rateLimiter.passwordResetConfirm.checkLimit(token)
                         guard rateLimit.isAllowed else {
                             throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"])
@@ -367,10 +459,22 @@ extension Identity.Consumer.Client {
                         guard rateLimit.isAllowed else {
                             throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"])
                         }
+                        
+                        let apiRouter = router
+                            .baseURL(provider.baseURL.absoluteString)
+                            .eraseToAnyParserPrinter()
+                        
+                        let makeRequest = makeRequest(apiRouter)
+                        
+                        @Dependency(URLRequest.Handler.self) var handleRequest
+                        
+                        var urlRequest: URLRequest = try makeRequest(.password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword)))))
+                        urlRequest.setBearerToken(request.cookies.accessToken?.string)
+                        urlRequest.setRefreshTokenCookie(request.cookies.refreshToken?.string)
+                        
+                       
                         do {
-                            try await handleRequest(
-                                for: makeRequest(.password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword)))))
-                            )
+                            try await handleRequest(for: urlRequest)
                             await rateLimiter.passwordChangeRequest.recordSuccess(rateLimitKey)
                         } catch {
                             await rateLimiter.passwordChangeRequest.recordFailure(rateLimitKey)
@@ -439,6 +543,27 @@ extension HTTPCookies {
         }
         set {
             self["refresh_token"] = newValue
+        }
+    }
+}
+
+extension URLRequest {
+    /// Sets or removes the Authorization header with a Bearer token
+    /// - Parameter token: The bearer token to be used for authentication. If nil, removes the Authorization header
+    /// - Returns: A new URLRequest instance with the Authorization header set or removed
+    public mutating func setBearerToken(_ token: String?) {
+        if let token {
+            setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+    }
+    
+    /// Sets the refresh token as a cookie
+    /// - Parameter token: The refresh token to be set as a cookie. If nil, removes the refresh_token cookie
+    public mutating func setRefreshTokenCookie(_ token: String?) {
+        if let token = token {
+            setValue("refresh_token=\(token)", forHTTPHeaderField: "Cookie")
+        } else {
+            setValue(nil, forHTTPHeaderField: "Cookie")
         }
     }
 }

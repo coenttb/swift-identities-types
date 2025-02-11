@@ -21,6 +21,7 @@ extension Identity.Provider {
             if let refreshToken = request.cookies["refresh_token"]?.string {
                 do {
                     let _ = try await client.authenticate.token.refresh(token: refreshToken)
+                    print("successful refresh token")
                 } catch {
                 }
             }
