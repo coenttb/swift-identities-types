@@ -35,38 +35,44 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                 
                 let email: EmailAddress = try .init(credentials.email)
                 
-                guard let identity = try await Database.Identity.query(on: request.db)
-                    .filter(\.$email == email.rawValue)
-                    .first()
-                else {
+//                guard let identity = try await Database.Identity.query(on: request.db)
+//                    .filter(\.$email == email.rawValue)
+//                    .first()
+//                else {
+//                    logger.warning("Login attempt failed: User not found for email: \(email)")
+//                    throw Abort(.unauthorized, reason: "Invalid credentials")
+//                }
+                
+                do {
+                    let identity = try await Database.Identity.get(by: .email(credentials.email), on: request.db)
+                    
+                    guard try identity.verifyPassword(credentials.password) else {
+                        logger.warning("Login attempt failed: Invalid password for email: \(email)")
+                        throw Abort(.unauthorized, reason: "Invalid credentials")
+                    }
+                    
+                    guard identity.emailVerificationStatus == .verified else {
+                        logger.warning("Login attempt failed: Email not verified for: \(email)")
+                        throw Abort(.unauthorized, reason: "Email not verified")
+                    }
+                    
+                    let response = try await identity.generateJWTResponse()
+                    
+                    identity.lastLoginAt = Date()
+                    try await identity.save(on: request.db)
+                    
+                    request.auth.login(identity)
+                    
+                    logger.notice("Login successful for email: \(email)")
+                    
+                    return response
+                    
+                } catch {
                     logger.warning("Login attempt failed: User not found for email: \(email)")
                     throw Abort(.unauthorized, reason: "Invalid credentials")
                 }
                 
-                guard try identity.verifyPassword(credentials.password) else {
-                    logger.warning("Login attempt failed: Invalid password for email: \(email)")
-                    throw Abort(.unauthorized, reason: "Invalid credentials")
-                }
                 
-                guard identity.emailVerificationStatus == .verified else {
-                    logger.warning("Login attempt failed: Email not verified for: \(email)")
-                    throw Abort(.unauthorized, reason: "Email not verified")
-                }
-                
-                
-                let response = try await identity.generateJWTResponse()
-                
-                // HOW TO CORRECT THIS ALSO?
-                request.headers.bearerAuthorization = .init(token: response.accessToken.value)
-                
-                identity.lastLoginAt = Date()
-                try await identity.save(on: request.db)
-                
-                request.auth.login(identity)
-                
-                logger.notice("Login successful for email: \(email)")
-                
-                return response
                 
             },
             token: .init(
