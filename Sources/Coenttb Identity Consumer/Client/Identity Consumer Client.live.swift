@@ -380,6 +380,8 @@ extension Identity.Consumer.Client {
                             try await handleRequest(for: urlRequest)
                             await rateLimiter.passwordChangeRequest.recordSuccess(rateLimitKey)
                         } catch {
+                            print("Password change request failed with error:", error)
+                            print("Request headers:", urlRequest.allHTTPHeaderFields ?? [:])
                             await rateLimiter.passwordChangeRequest.recordFailure(rateLimitKey)
                             throw Abort(.unauthorized)
                         }
