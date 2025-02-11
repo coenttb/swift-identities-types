@@ -22,8 +22,12 @@ extension Identity.Consumer.Client {
         
         let apiRouter = router
             .baseURL(provider.baseURL.absoluteString)
-            .cookie("access_token", request.cookies.accessToken)
-            .cookie("refresh_token", request.cookies.refreshToken)
+            .transform { requestData in
+                if let accessToken = request.cookies.accessToken?.string {
+                    requestData.headers["Authorization"] = ["Bearer \(accessToken)"]
+                }
+                return requestData
+            }
             .eraseToAnyParserPrinter()
         
         let makeRequest = makeRequest(apiRouter)
@@ -460,6 +464,15 @@ extension ParserPrinter where Input == URLRequestData {
                 .map { name, value in "\(name)=\(value.string)" }
                 .joined(separator: "; ")[...]
         )
+        return self.baseRequestData(requestData)
+    }
+}
+
+extension ParserPrinter where Input == URLRequestData {
+    @inlinable
+    public func transform(_ transform: @escaping (inout URLRequestData) -> URLRequestData) -> BaseURLPrinter<Self> {
+        var requestData = URLRequestData()
+        requestData = transform(&requestData)
         return self.baseRequestData(requestData)
     }
 }
