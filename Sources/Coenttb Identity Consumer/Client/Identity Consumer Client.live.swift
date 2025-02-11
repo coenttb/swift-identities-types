@@ -17,13 +17,13 @@ extension Identity.Consumer.Client {
         makeRequest: (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
     ) -> Self {
         
-//        @Dependency(\.request) var request
-//        guard let request else { fatalError() }
+        @Dependency(\.request) var request
+        guard let request else { fatalError() }
         
         let apiRouter = router
             .baseURL(provider.baseURL.absoluteString)
-//            .cookie("acces-token", request.cookies.accessToken)
-//            .cookie("refresh-token", request.cookies.refreshToken)
+            .cookie("access_token", request.cookies.accessToken)
+            .cookie("refresh_token", request.cookies.refreshToken)
             .eraseToAnyParserPrinter()
         
         let makeRequest = makeRequest(apiRouter)
@@ -438,28 +438,28 @@ extension HTTPCookies {
 }
 
 
-//extension ParserPrinter where Input == URLRequestData {
-//    @inlinable
-//    public func cookie(_ name: String, _ value: HTTPCookies.Value) -> BaseURLPrinter<Self> {
-//        var requestData = URLRequestData()
-//        requestData.headers["cookie", default: []].append("\(name)=\(value.string)"[...])
-//        return self.baseRequestData(requestData)
-//    }
-//    
-//    @inlinable
-//     public func cookie(_ name: String, _ value: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
-//       guard let value = value else { return self.baseRequestData(.init()) }
-//       return self.cookie(name, value)
-//     }
-//    
-//    @inlinable
-//    public func cookies(_ cookies: [String: HTTPCookies.Value]) -> BaseURLPrinter<Self> {
-//        var requestData = URLRequestData()
-//        requestData.headers["cookie", default: []].append(
-//            cookies
-//                .map { name, value in "\(name)=\(value.string)" }
-//                .joined(separator: "; ")[...]
-//        )
-//        return self.baseRequestData(requestData)
-//    }
-//}
+extension ParserPrinter where Input == URLRequestData {
+    @inlinable
+    public func cookie(_ name: String, _ value: HTTPCookies.Value) -> BaseURLPrinter<Self> {
+        var requestData = URLRequestData()
+        requestData.headers["cookie", default: []].append("\(name)=\(value.string)"[...])
+        return self.baseRequestData(requestData)
+    }
+    
+    @inlinable
+     public func cookie(_ name: String, _ value: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
+       guard let value = value else { return self.baseRequestData(.init()) }
+       return self.cookie(name, value)
+     }
+    
+    @inlinable
+    public func cookies(_ cookies: [String: HTTPCookies.Value]) -> BaseURLPrinter<Self> {
+        var requestData = URLRequestData()
+        requestData.headers["cookie", default: []].append(
+            cookies
+                .map { name, value in "\(name)=\(value.string)" }
+                .joined(separator: "; ")[...]
+        )
+        return self.baseRequestData(requestData)
+    }
+}
