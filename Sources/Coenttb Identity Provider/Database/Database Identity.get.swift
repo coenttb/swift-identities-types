@@ -44,7 +44,10 @@ extension Database.Identity {
             
         case .auth:
             @Dependency(\.request) var request
-            guard let request else { throw Abort.requestUnavailable }
+            guard let request else {
+                print("Request not available for Identity.get(.auth, ...)")
+                throw Abort.requestUnavailable
+            }
             
             guard let identity = request.auth.get(Database.Identity.self) else {
                 throw Abort(.unauthorized, reason: "Not authenticated")

@@ -100,20 +100,25 @@ extension Identity_Provider.Identity.Provider.Client.Password {
             change: .init(
                 request: { currentPassword, newPassword in
                     try await database.transaction { db in
-                        let identity = try await Database.Identity.get(by: .auth, on: db)
                         
-                        guard try identity.verifyPassword(currentPassword) else {
-                            throw AuthenticationError.invalidCredentials
+                        do {
+                            let identity = try await Database.Identity.get(by: .auth, on: db)
+                            
+                            guard try identity.verifyPassword(currentPassword) else {
+                                throw AuthenticationError.invalidCredentials
+                            }
+                            
+                            try validatePassword(newPassword)
+                            try identity.setPassword(newPassword)
+                            identity.sessionVersion += 1
+                            try await identity.save(on: db)
+                            
+                            try await sendPasswordChangeNotification(identity.emailAddress)
+                            
+                            logger.notice("Password changed successfully for user: \(identity.email)")
+                        } catch {
+                            
                         }
-                        
-                        try validatePassword(newPassword)
-                        try identity.setPassword(newPassword)
-                        identity.sessionVersion += 1
-                        try await identity.save(on: db)
-                        
-                        try await sendPasswordChangeNotification(identity.emailAddress)
-                        
-                        logger.notice("Password changed successfully for user: \(identity.email)")
                     }
                 }
             )
