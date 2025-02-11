@@ -59,7 +59,7 @@ extension HTTPCookies.Value {
         return .jwt(
             token: response.refreshToken.value,
             expiresIn: response.refreshToken.expiresIn,
-            path: "/",
+            path: router.url(for: .api(.authenticate(.token(.refresh(.init(token: "")))))).relativePath,
             domain: domain,
             isSecure: {
 #if DEBUG
