@@ -87,19 +87,29 @@ extension Identity.Consumer.Client.Password {
                     
                     let apiRouter = router
                         .baseURL(provider.baseURL.absoluteString)
+                        .cookie("access_token", request.cookies.accessToken)
+                        .cookie("refresh_token", request.cookies.refreshToken)
+                        .transform{ urlRequestData in
+                            if let accessToken = request.cookies.accessToken?.string {
+                                var data = urlRequestData
+                                data.headers["Authorization"] = ["Bearer \(accessToken)"][...].map { Substring($0) }[...]
+                                return data
+                            }
+                            return urlRequestData
+                        }
                         .eraseToAnyParserPrinter()
                     
                     let makeRequest = makeRequest(apiRouter)
                     
                     @Dependency(URLRequest.Handler.self) var handleRequest
                     
-                    var urlRequest: URLRequest = try makeRequest(.password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword)))))
-                    urlRequest.setBearerToken(request.cookies.accessToken?.string)
-                    urlRequest.setRefreshTokenCookie(request.cookies.refreshToken?.string)
+//                    var urlRequest: URLRequest =
+//                    urlRequest.setBearerToken(request.cookies.accessToken?.string)
+//                    urlRequest.setRefreshTokenCookie(request.cookies.refreshToken?.string)
                     
                    
                     do {
-                        try await handleRequest(for: urlRequest)
+                        try await handleRequest(for: makeRequest(.password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword))))))
                         await rateLimiter.passwordChangeRequest.recordSuccess(rateLimitKey)
                     } catch {
                         await rateLimiter.passwordChangeRequest.recordFailure(rateLimitKey)
