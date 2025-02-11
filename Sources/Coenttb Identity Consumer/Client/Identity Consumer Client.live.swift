@@ -369,19 +369,13 @@ extension Identity.Consumer.Client {
                             throw Abort(.unauthorized, reason: "Missing refresh token")
                         }
                         
-                        
-                        
                         var urlRequest: URLRequest = try makeRequest(.password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword)))))
-                        
                         urlRequest.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-                        urlRequest.setValue("refresh_token=\(refreshToken); access_token=\(accessToken)", forHTTPHeaderField: "Cookie")
                         
                         do {
                             try await handleRequest(for: urlRequest)
                             await rateLimiter.passwordChangeRequest.recordSuccess(rateLimitKey)
                         } catch {
-                            print("Password change request failed with error:", error)
-                            print("Request headers:", urlRequest.allHTTPHeaderFields ?? [:])
                             await rateLimiter.passwordChangeRequest.recordFailure(rateLimitKey)
                             throw Abort(.unauthorized)
                         }
