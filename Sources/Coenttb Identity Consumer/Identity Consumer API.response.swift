@@ -187,6 +187,8 @@ extension Identity.Consumer.API {
                         )
                         return Response.success(true)
                     } catch {
+                        @Dependencies.Dependency(\.logger) var logger
+                        logger.log(.error, "Failed to change password. Error: \(String(describing: error))")
                         throw Abort(.internalServerError, reason: "Failed to request password change")
                     }
                 }
