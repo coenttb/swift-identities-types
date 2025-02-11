@@ -99,17 +99,10 @@ extension Identity_Provider.Identity.Provider.Client.Password {
             ),
             change: .init(
                 request: { currentPassword, newPassword in
-                    
-                    @Dependency(\.request) var request
-                    
-                    if request == nil  {
-                        print("Request is nil")
-                    } else {
-                        print("Request is not nil")
-                    }
+                                        
+                    let identity = try await Database.Identity.get(by: .auth, on: database)
                     
                     try await database.transaction { db in
-                        let identity = try await Database.Identity.get(by: .auth, on: db)
                         
                         guard try identity.verifyPassword(currentPassword) else {
                             throw AuthenticationError.invalidCredentials

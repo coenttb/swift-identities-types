@@ -527,25 +527,7 @@ extension Identity.Consumer.Client {
     }
 }
 
-extension HTTPCookies {
-    public var accessToken: HTTPCookies.Value? {
-        get {
-            self["access_token"]
-        }
-        set {
-            self["access_token"] = newValue
-        }
-    }
-    
-    public var refreshToken: HTTPCookies.Value? {
-        get {
-            self["refresh_token"]
-        }
-        set {
-            self["refresh_token"] = newValue
-        }
-    }
-}
+
 
 extension URLRequest {
     /// Sets or removes the Authorization header with a Bearer token

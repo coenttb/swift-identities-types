@@ -21,7 +21,7 @@ extension Identity.Provider {
         ) async throws -> Response {
             @Dependency(Identity.Provider.Client.self) var client
             
-            if let refreshToken = request.cookies["refresh_token"]?.string {
+            if let refreshToken = request.cookies.refreshToken?.string {
                 do {
                     let _ = try await client.authenticate.token.refresh(token: refreshToken)
                     print("successful refresh token")
