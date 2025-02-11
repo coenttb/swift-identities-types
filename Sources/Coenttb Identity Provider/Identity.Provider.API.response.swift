@@ -165,7 +165,11 @@ extension Identity.Provider.API {
                     
                     return Response.success(true)
                     
-                } catch {
+                }
+                catch let error as Identity.EmailChange.Request.Error {
+                    throw error
+                }
+                catch {
                     @Dependencies.Dependency(\.logger) var logger
                     logger.log(.error, "Failed to request email change. Error: \(String(describing: error))")
                     throw Abort(.internalServerError, reason: "Failed to request email change")
