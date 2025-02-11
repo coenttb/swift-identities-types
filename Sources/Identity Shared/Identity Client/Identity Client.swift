@@ -91,9 +91,9 @@ extension Identity.Client.Password {
 }
 
 extension Identity.Client {
-    @DependencyClient
+    
     public struct EmailChange: @unchecked Sendable {
-        public var request: (_ newEmail: EmailAddress?) async throws -> Void
+        public var request: (_ newEmail: EmailAddress?) async throws(Identity.EmailChange.Request.Error) -> Void
         public var confirm: (_ token: String) async throws -> Void
     }
 }

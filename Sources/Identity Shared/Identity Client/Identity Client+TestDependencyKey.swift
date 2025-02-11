@@ -98,9 +98,10 @@ extension Identity.Client.EmailChange: TestDependencyKey {
     public static var testValue: Self {
         .init(
             request: { newEmail in
-                guard let email = newEmail else {
-                    throw ValidationError.emailRequired
-                }
+//                guard let email = newEmail else {
+//                    throw ValidationError.emailRequired
+//                }
+                
                 
             },
             confirm: { token in
