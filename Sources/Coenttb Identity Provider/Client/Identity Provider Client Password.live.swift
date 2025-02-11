@@ -99,26 +99,30 @@ extension Identity_Provider.Identity.Provider.Client.Password {
             ),
             change: .init(
                 request: { currentPassword, newPassword in
+                    
+                    @Dependency(\.request) var request
+                    
+                    if request == nil  {
+                        print("Request is nil")
+                    } else {
+                        print("Request is not nil")
+                    }
+                    
                     try await database.transaction { db in
+                        let identity = try await Database.Identity.get(by: .auth, on: db)
                         
-                        do {
-                            let identity = try await Database.Identity.get(by: .auth, on: db)
-                            
-                            guard try identity.verifyPassword(currentPassword) else {
-                                throw AuthenticationError.invalidCredentials
-                            }
-                            
-                            try validatePassword(newPassword)
-                            try identity.setPassword(newPassword)
-                            identity.sessionVersion += 1
-                            try await identity.save(on: db)
-                            
-                            try await sendPasswordChangeNotification(identity.emailAddress)
-                            
-                            logger.notice("Password changed successfully for user: \(identity.email)")
-                        } catch {
-                            
+                        guard try identity.verifyPassword(currentPassword) else {
+                            throw AuthenticationError.invalidCredentials
                         }
+                        
+                        try validatePassword(newPassword)
+                        try identity.setPassword(newPassword)
+                        identity.sessionVersion += 1
+                        try await identity.save(on: db)
+                        
+                        try await sendPasswordChangeNotification(identity.emailAddress)
+                        
+                        logger.notice("Password changed successfully for user: \(identity.email)")
                     }
                 }
             )

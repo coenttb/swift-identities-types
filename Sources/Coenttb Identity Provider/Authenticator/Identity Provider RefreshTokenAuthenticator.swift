@@ -15,7 +15,10 @@ extension Identity.Provider {
     public struct RefreshTokenAuthenticator: AsyncMiddleware {
         public init() {}
         
-        public func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
+        public func respond(
+            to request: Request,
+            chainingTo next: AsyncResponder
+        ) async throws -> Response {
             @Dependency(Identity.Provider.Client.self) var client
             
             if let refreshToken = request.cookies["refresh_token"]?.string {
