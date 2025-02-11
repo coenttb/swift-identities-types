@@ -22,6 +22,14 @@ extension Identity.Consumer.Client {
         
         let apiRouter = router
             .baseURL(provider.baseURL.absoluteString)
+            .cookie("access_token", request.cookies.accessToken)
+            .cookie("refresh_token", request.cookies.refreshToken)
+            .transform { requestData in
+                if let accessToken = request.cookies.accessToken?.string {
+                    requestData.headers["Authorization"] = ["Bearer \(accessToken)"]
+                }
+                return requestData
+            }
             .eraseToAnyParserPrinter()
         
         let makeRequest = makeRequest(apiRouter)
@@ -359,21 +367,10 @@ extension Identity.Consumer.Client {
                         guard rateLimit.isAllowed else {
                             throw Abort(.tooManyRequests, headers: ["Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"])
                         }
-                        
-                        guard let accessToken = request.cookies.accessToken?.string else {
-                            throw Abort(.unauthorized, reason: "Missing access token")
-                        }
-                        
-                        
-                        guard let refreshToken = request.cookies.refreshToken?.string else {
-                            throw Abort(.unauthorized, reason: "Missing refresh token")
-                        }
-                        
-                        var urlRequest: URLRequest = try makeRequest(.password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword)))))
-                        urlRequest.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-                        
                         do {
-                            try await handleRequest(for: urlRequest)
+                            try await handleRequest(
+                                for: makeRequest(.password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword)))))
+                            )
                             await rateLimiter.passwordChangeRequest.recordSuccess(rateLimitKey)
                         } catch {
                             await rateLimiter.passwordChangeRequest.recordFailure(rateLimitKey)
