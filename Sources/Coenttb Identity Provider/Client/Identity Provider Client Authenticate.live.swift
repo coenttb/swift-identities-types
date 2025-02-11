@@ -72,7 +72,6 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
             token: .init(
                 access: { token in
                     @Dependency(\.logger) var logger
-                    
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
                     

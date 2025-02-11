@@ -438,28 +438,28 @@ extension HTTPCookies {
 }
 
 
-extension ParserPrinter where Input == URLRequestData {
-    @inlinable
-    public func cookie(_ name: String, _ value: HTTPCookies.Value) -> BaseURLPrinter<Self> {
-        var requestData = URLRequestData()
-        requestData.headers["cookie", default: []].append("\(name)=\(value.string)"[...])
-        return self.baseRequestData(requestData)
-    }
-    
-    @inlinable
-     public func cookie(_ name: String, _ value: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
-       guard let value = value else { return self.baseRequestData(.init()) }
-       return self.cookie(name, value)
-     }
-    
-    @inlinable
-    public func cookies(_ cookies: [String: HTTPCookies.Value]) -> BaseURLPrinter<Self> {
-        var requestData = URLRequestData()
-        requestData.headers["cookie", default: []].append(
-            cookies
-                .map { name, value in "\(name)=\(value.string)" }
-                .joined(separator: "; ")[...]
-        )
-        return self.baseRequestData(requestData)
-    }
-}
+//extension ParserPrinter where Input == URLRequestData {
+//    @inlinable
+//    public func cookie(_ name: String, _ value: HTTPCookies.Value) -> BaseURLPrinter<Self> {
+//        var requestData = URLRequestData()
+//        requestData.headers["cookie", default: []].append("\(name)=\(value.string)"[...])
+//        return self.baseRequestData(requestData)
+//    }
+//    
+//    @inlinable
+//     public func cookie(_ name: String, _ value: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
+//       guard let value = value else { return self.baseRequestData(.init()) }
+//       return self.cookie(name, value)
+//     }
+//    
+//    @inlinable
+//    public func cookies(_ cookies: [String: HTTPCookies.Value]) -> BaseURLPrinter<Self> {
+//        var requestData = URLRequestData()
+//        requestData.headers["cookie", default: []].append(
+//            cookies
+//                .map { name, value in "\(name)=\(value.string)" }
+//                .joined(separator: "; ")[...]
+//        )
+//        return self.baseRequestData(requestData)
+//    }
+//}
