@@ -12,15 +12,20 @@ import JWT
 import Coenttb_Identity_Shared
 
 extension Identity.Provider {
-    public struct RefreshTokenAuthenticator: AsyncBearerAuthenticator {                
+    public struct RefreshTokenAuthenticator: AsyncMiddleware {
         public init() {}
         
-        public func authenticate(
-            bearer: BearerAuthorization,
-            for request: Request
-        ) async throws {
+        public func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
             @Dependency(Identity.Provider.Client.self) var client
-            let _ = try await client.authenticate.token.refresh(token: bearer.token)
+            
+            if let refreshToken = request.cookies["refresh_token"]?.string {
+                do {
+                    let _ = try await client.authenticate.token.refresh(token: refreshToken)
+                } catch {
+                }
+            }
+            
+            return try await next.respond(to: request)
         }
     }
 }
