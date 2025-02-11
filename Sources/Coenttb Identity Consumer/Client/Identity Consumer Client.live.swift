@@ -22,8 +22,8 @@ extension Identity.Consumer.Client {
         
         let apiRouter = router
             .baseURL(provider.baseURL.absoluteString)
-            .cookie("acces-token", request.cookies.accessToken)
-            .cookie("refresh-token", request.cookies.refreshToken)
+//            .cookie("acces-token", request.cookies.accessToken)
+//            .cookie("refresh-token", request.cookies.refreshToken)
             .eraseToAnyParserPrinter()
         
         let makeRequest = makeRequest(apiRouter)
