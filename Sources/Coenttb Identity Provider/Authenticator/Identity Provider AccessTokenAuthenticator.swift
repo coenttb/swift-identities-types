@@ -21,7 +21,11 @@ extension Identity.Provider {
             bearer: BearerAuthorization,
             for request: Request
         ) async throws {
-            try await client.authenticate.token.access(token: bearer.token)
+            do {
+                try await client.authenticate.token.access(token: bearer.token)
+            } catch {
+                
+            }
         }
     }
 }
