@@ -32,10 +32,6 @@ extension Identity.Provider.API.EmailChange {
                 let data = try await client.emailChange.request(newEmail: .init(request.newEmail))
                 
                 return Response.success(true, data: data)
-                
-            }
-            catch let error as Identity.EmailChange.Request.Error {
-                throw error
             }
             catch {
                 @Dependencies.Dependency(\.logger) var logger

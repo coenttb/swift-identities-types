@@ -31,21 +31,26 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
         .init(
             request: { newEmail in
                 do {
-                    guard let newEmail else {
-                        throw Identity.EmailChange.Request.Error.emailIsNil
+                    guard let newEmail
+                    else {
+                        throw ValidationError.invalidInput("Email address cannot be nil")
                     }
+                    
+                    @Dependency(\.request) var request
+                    guard let request else { throw Abort.requestUnavailable }
+                    
+                    guard let token = request.cookies.reauthorizationToken?.string
+                    else { return .requiresReauthentication }
+                    
+                    do {
+                        try await request.jwt.verify(
+                            token,
+                            as: JWT.Token.Reauthorization.self
+                        )
+                    }
+                    catch { return .requiresReauthentication }
                     
                     let identity = try await Database.Identity.get(by: .auth, on: database)
-                    
-                    guard let reauthToken = try await Database.Identity.Token.query(on: database)
-                        .filter(\.$identity.$id == identity.id!)
-                        .filter(\.$type == .reauthenticationToken)
-                        .filter(\.$validUntil > Date())
-                        .with(\.$identity)
-                        .first()
-                    else {
-                        return .requiresReauthentication
-                    }
                     
                     try await database.transaction { db in
                         
@@ -62,28 +67,27 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                             .delete()
                         
                         // Generate and save new token
-                        let token = try identity.generateToken(
+                        let changeToken = try identity.generateToken(
                             type: .emailChange,
                             validUntil: Date().addingTimeInterval(24 * 60 * 60)
                         )
-                        try await token.save(on: db)
+                        try await changeToken.save(on: db)
                         
                         // Create and save email change request
                         let emailChangeRequest = try Database.EmailChangeRequest(
                             identity: identity,
                             newEmail: newEmail.rawValue,
-                            token: token
+                            token: changeToken
                         )
                         
                         // Execute all operations concurrently within transaction
                         try await emailChangeRequest.save(on: db)
-                        try await reauthToken.delete(on: db)
                         
                         // Send notifications after database changes succeed
                         try await sendEmailChangeConfirmation(
                             identity.emailAddress,
                             newEmail,
-                            token.value
+                            changeToken.value
                         )
                         try await sendEmailChangeRequestNotification(
                             identity.emailAddress,
