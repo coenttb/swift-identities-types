@@ -71,10 +71,15 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                         }
                         print("EmailChange Request 9")
                         // Delete any existing email change tokens
-                        try await Database.Identity.Token.query(on: db)
-                            .filter(\.$identity.$id == identity.id!)
-                            .filter(\.$type == .emailChange)
-                            .delete()
+                        do {
+                            try await Database.Identity.Token.query(on: db)
+                                .filter(\.$identity.$id == identity.id!)
+                                .filter(\.$type == .emailChange)
+                                .delete()
+                        } catch {
+                            
+                        }
+                        
                         print("EmailChange Request 10")
                         // Generate and save new token
                         let changeToken = try identity.generateToken(
