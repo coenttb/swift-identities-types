@@ -7,14 +7,16 @@
 
 import Coenttb_Web
 
-public enum Password {}
+extension Identity {
+    public enum Password {}
+}
 
-extension Password {
+extension Identity.Password {
     public enum Reset {}
     public enum Change {}
 }
 
-extension Password.Reset {
+extension Identity.Password.Reset {
     public struct Request: Codable, Hashable, Sendable {
         public let email: String
         
@@ -30,7 +32,7 @@ extension Password.Reset {
     }
 }
  
-extension Identity_Shared.Password.Reset.Request {
+extension Identity.Password.Reset.Request {
     public init(
         email: EmailAddress
     ){
@@ -38,20 +40,20 @@ extension Identity_Shared.Password.Reset.Request {
     }
 }
 
-extension Identity_Shared.Password.Reset.Request {
+extension Identity.Password.Reset.Request {
     public struct Router: ParserPrinter, Sendable {
         
         public init() {}
 
-        public var body: some URLRouting.Router<Identity_Shared.Password.Reset.Request> {
+        public var body: some URLRouting.Router<Identity.Password.Reset.Request> {
             Method.post
             Path.request
-            Body(.form(Identity_Shared.Password.Reset.Request.self, decoder: .default))
+            Body(.form(Identity.Password.Reset.Request.self, decoder: .default))
         }
     }
 }
 
-extension Password.Reset {
+extension Identity.Password.Reset {
     public struct Confirm: Codable, Hashable, Sendable {
         public let token: String
         public let newPassword: String
@@ -71,26 +73,26 @@ extension Password.Reset {
     }
 }
 
-extension Identity_Shared.Password.Reset.Confirm {
+extension Identity.Password.Reset.Confirm {
     public struct Router: ParserPrinter, Sendable {
         
         public init() {}
 
-        public var body: some URLRouting.Router<Identity_Shared.Password.Reset.Confirm> {
+        public var body: some URLRouting.Router<Identity.Password.Reset.Confirm> {
             Method.post
             Path.confirm
-            Body(.form(Identity_Shared.Password.Reset.Confirm.self, decoder: .default))
+            Body(.form(Identity.Password.Reset.Confirm.self, decoder: .default))
         }
     }
 }
 
-extension Identity_Shared.Password.Change {
+extension Identity.Password.Change {
     public typealias Reauthorization = Identity.Reauthorization
 }
 
 
  
-extension Identity_Shared.Password.Change {
+extension Identity.Password.Change {
     public struct Request: Codable, Hashable, Sendable {
         public let currentPassword: String
         public let newPassword: String
@@ -110,15 +112,15 @@ extension Identity_Shared.Password.Change {
     }
 }
 
-extension Identity_Shared.Password.Change.Request {
+extension Identity.Password.Change.Request {
     public struct Router: ParserPrinter, Sendable {
         
         public init() {}
 
-        public var body: some URLRouting.Router<Identity_Shared.Password.Change.Request> {
+        public var body: some URLRouting.Router<Identity.Password.Change.Request> {
             Method.post
             Path.request
-            Body(.form(Identity_Shared.Password.Change.Request.self, decoder: .default))
+            Body(.form(Identity.Password.Change.Request.self, decoder: .default))
         }
     }
 }

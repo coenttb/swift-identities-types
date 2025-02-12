@@ -19,38 +19,10 @@ extension Identity.Consumer.View {
 extension Identity.Consumer.View.Password {
     public enum Reset: Codable, Hashable, Sendable {
         case request
-        case confirm(Identity.Consumer.View.Password.Reset.Confirm)
+        case confirm(Identity.Password.Reset.Confirm)
     }
     
     public enum Change: Codable, Hashable, Sendable {
         case request
-    }
-}
-
-extension Identity.Consumer.View.Password.Change {
-    public enum Request {}
-}
-
-extension Identity.Consumer.View.Password.Reset {
-    public enum Request {}
-}
-
-extension Identity.Consumer.View.Password.Reset {
-    public struct Confirm: Codable, Hashable, Sendable {
-        public let token: String
-        public let newPassword: String
-        
-        public init(
-            token: String = "",
-            newPassword: String = ""
-        ) {
-            self.token = token
-            self.newPassword = newPassword
-        }
-        
-        public enum CodingKeys: String, CodingKey {
-            case token
-            case newPassword
-        }
     }
 }

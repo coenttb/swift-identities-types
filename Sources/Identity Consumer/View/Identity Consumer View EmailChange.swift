@@ -12,27 +12,7 @@ import Identity_Shared
 extension Identity.Consumer.View {
     public enum EmailChange: Codable, Hashable, Sendable {
         case request
-        case confirm(EmailChange.Confirm)
+        case confirm(Identity.EmailChange.Confirm)
         case reauthorization
     }
 }
-
-extension Identity.Consumer.View.EmailChange {
-    
-    public enum Request {}
-    public struct Confirm: Codable, Hashable, Sendable {
-        public let token: String
-        
-        public init(
-            token: String = ""
-        ) {
-            self.token = token
-        }
-        
-        public enum CodingKeys: String, CodingKey {
-            case token
-        }
-    }
-}
-
-

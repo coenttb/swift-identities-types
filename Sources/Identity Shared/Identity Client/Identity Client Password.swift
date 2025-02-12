@@ -31,6 +31,7 @@ extension Identity.Client.Password {
     }
 }
 
+
 extension Identity.Client.Password {
     @DependencyClient
     public struct Change: @unchecked Sendable {

@@ -16,15 +16,15 @@ extension Identity.API {
 
 extension Identity.API.Password {
     public enum Reset: Equatable, Sendable {
-        case request(Identity_Shared.Password.Reset.Request)
-        case confirm(Identity_Shared.Password.Reset.Confirm)
+        case request(Identity.Password.Reset.Request)
+        case confirm(Identity.Password.Reset.Confirm)
     }
 }
 
 extension Identity.API.Password {
     public enum Change: Equatable, Sendable {
-//        case reauthorization(Identity_Shared.Password.Change.Reauthorization)
-        case request(change: Identity_Shared.Password.Change.Request)
+//        case reauthorization(Identity.Password.Change.Reauthorization)
+        case request(change: Identity.Password.Change.Request)
     }
 }
 
@@ -39,11 +39,11 @@ extension Identity.API.Password {
                     Path.reset
                     OneOf {
                         URLRouting.Route(.case(Identity.API.Password.Reset.request)) {
-                            Identity_Shared.Password.Reset.Request.Router()
+                            Identity.Password.Reset.Request.Router()
                         }
                         
                         URLRouting.Route(.case(Identity.API.Password.Reset.confirm)) {
-                            Identity_Shared.Password.Reset.Confirm.Router()
+                            Identity.Password.Reset.Confirm.Router()
                         }
                     }
                 }
@@ -52,7 +52,7 @@ extension Identity.API.Password {
                     Path.change
                     OneOf {
                         URLRouting.Route(.case(Identity.API.Password.Change.request)) {
-                            Identity_Shared.Password.Change.Request.Router()
+                            Identity.Password.Change.Request.Router()
                         }
                     }
                 }

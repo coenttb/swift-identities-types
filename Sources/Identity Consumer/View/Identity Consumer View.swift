@@ -53,7 +53,28 @@ extension Identity.Consumer.View {
                 }
                 
                 URLRouting.Route(.case(Identity.Consumer.View.authenticate)) {
-                    Identity.Consumer.View.Authenticate.Router()
+                    OneOf {
+                        URLRouting.Route(.case(Identity.Consumer.View.Authenticate.credentials)) {
+                            Path.login
+                        }
+
+                        URLRouting.Route(.case(Identity.Consumer.View.Authenticate.multifactor)) {
+                            Path.multifactorAuthentication
+                            OneOf {
+                                URLRouting.Route(.case(Identity.Consumer.View.Authenticate.Multifactor.setup)) {
+                                    Path.setup
+                                }
+            
+                                URLRouting.Route(.case(Identity.Consumer.View.Authenticate.Multifactor.verify)) {
+                                    Path.verify
+                                }
+            
+                                URLRouting.Route(.case(Identity.Consumer.View.Authenticate.Multifactor.manage)) {
+                                    Path.manage
+                                }
+                            }
+                        }
+                    }
                 }
                 
                 URLRouting.Route(.case(Identity.Consumer.View.logout)) {
@@ -72,12 +93,12 @@ extension Identity.Consumer.View {
                                 
                                 URLRouting.Route(.case(Identity.Consumer.View.Password.Reset.confirm)) {
                                     Path.confirm
-                                    Parse(.memberwise(Identity.Consumer.View.Password.Reset.Confirm.init)) {
+                                    Parse(.memberwise(Identity.Password.Reset.Confirm.init)) {
                                         Query {
-                                            Field(Identity.Consumer.View.Password.Reset.Confirm.CodingKeys.token.rawValue, .string)
+                                            Field(Identity.Password.Reset.Confirm.CodingKeys.token.rawValue, .string)
                                         }
                                         Query {
-                                            Field(Identity.Consumer.View.Password.Reset.Confirm.CodingKeys.newPassword.rawValue, .string)
+                                            Field(Identity.Password.Reset.Confirm.CodingKeys.newPassword.rawValue, .string)
                                         }
                                     }
                                 }
@@ -108,16 +129,14 @@ extension Identity.Consumer.View {
                         
                         URLRouting.Route(.case(Identity.Consumer.View.EmailChange.confirm)) {
                             Path.confirm
-                            Parse(.memberwise(Identity.Consumer.View.EmailChange.Confirm.init)) {
+                            Parse(.memberwise(Identity.EmailChange.Confirm.init)) {
                                 Query {
-                                    Field(Identity.Consumer.View.EmailChange.Confirm.CodingKeys.token.rawValue, .string)
+                                    Field(Identity.EmailChange.Confirm.CodingKeys.token.rawValue, .string)
                                 }
                             }
                         }
                     }
                 }
-                
-                
             }
         }
     }

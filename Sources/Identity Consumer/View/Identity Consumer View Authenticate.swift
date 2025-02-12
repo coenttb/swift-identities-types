@@ -17,37 +17,3 @@ extension Identity.Consumer.View {
     }
 }
 
-extension Identity.Consumer.View.Authenticate {
-    public struct Router: ParserPrinter {
-        
-        public init(){}
-        
-        public var body: some URLRouting.Router<Identity.Consumer.View.Authenticate> {
-            OneOf {
-                
-                URLRouting.Route(.case(Identity.Consumer.View.Authenticate.credentials)) {
-                    Path.login
-                }
-
-                URLRouting.Route(.case(Identity.Consumer.View.Authenticate.multifactor)) {
-                    Path.multifactorAuthentication
-                    OneOf {
-                        URLRouting.Route(.case(Identity.Consumer.View.Authenticate.Multifactor.setup)) {
-                            Path.setup
-                        }
-    
-                        URLRouting.Route(.case(Identity.Consumer.View.Authenticate.Multifactor.verify)) {
-                            Path.verify
-                        }
-    
-                        URLRouting.Route(.case(Identity.Consumer.View.Authenticate.Multifactor.manage)) {
-                            Path.manage
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-
