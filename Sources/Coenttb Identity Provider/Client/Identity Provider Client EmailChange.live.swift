@@ -37,16 +37,17 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                     
                     let identity = try await Database.Identity.get(by: .auth, on: database)
                     
+                    guard let reauthToken = try await Database.Identity.Token.query(on: database)
+                        .filter(\.$identity.$id == identity.id!)
+                        .filter(\.$type == .reauthenticationToken)
+                        .filter(\.$validUntil > Date())
+                        .with(\.$identity)
+                        .first()
+                    else {
+                        return .requiresReauthentication
+                    }
+                    
                     try await database.transaction { db in
-                        guard let reauthToken = try await Database.Identity.Token.query(on: db)
-                            .filter(\.$identity.$id == identity.id!)
-                            .filter(\.$type == .reauthenticationToken)
-                            .filter(\.$validUntil > Date())
-                            .with(\.$identity)
-                            .first()
-                        else {
-                            throw Identity.EmailChange.Request.Error.unauthorized
-                        }
                         
                         if try await Database.Identity.query(on: db)
                             .filter(\.$email == newEmail.rawValue)
@@ -88,10 +89,13 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                             identity.emailAddress,
                             newEmail
                         )
-                        
                         logger.notice("Email change requested for user: \(identity.email) to new email: \(newEmail)")
+
                     }
-                } catch {
+                    
+                    return .success
+                }
+                catch {
                     logger.error("Error in requestEmailChange: \(String(describing: error))")
                     throw error
                 }

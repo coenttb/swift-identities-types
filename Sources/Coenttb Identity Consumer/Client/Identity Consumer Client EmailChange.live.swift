@@ -27,6 +27,22 @@ extension Identity.Consumer.Client.EmailChange {
         
         return .init(
             request: { newEmail in
+                                
+                guard let newEmail = newEmail?.rawValue
+                else {
+                    throw Abort(.conflict, reason: "Email address cannot be nil")
+                }
+                
+                let rateLimit = await rateLimiter.emailChangeRequest.checkLimit(newEmail)
+                
+                guard rateLimit.isAllowed
+                else {
+                    guard let nextAttempt = rateLimit.nextAllowedAttempt
+                    else { throw Abort(.tooManyRequests) }
+                    
+                    throw Abort.rateLimit(delay: nextAttempt.timeIntervalSinceNow)
+                }
+                
                 @Dependency(\.request) var request
                 
                 let apiRouter = router
@@ -36,31 +52,27 @@ extension Identity.Consumer.Client.EmailChange {
                     .setBearerAuth(request?.cookies.accessToken?.string)
                     .eraseToAnyParserPrinter()
                 
-                guard let newEmail = newEmail?.rawValue else { return }
-                
-                let rateLimit = await rateLimiter.emailChangeRequest.checkLimit(newEmail)
-                
-                guard rateLimit.isAllowed
-                else {
-                    if let nextAttempt = rateLimit.nextAllowedAttempt {
-                        throw Abort.rateLimit(delay: nextAttempt.timeIntervalSinceNow)
-                    }
-                    throw Abort(.tooManyRequests)
-                }
-                
                 do {
-                    
-                    try await handleRequest( for: makeRequest(apiRouter)(.emailChange(.request(.init(newEmail: newEmail)))) )
-                    
+                    let response = try await handleRequest(
+                        for: makeRequest(apiRouter)(.emailChange(.request(.init(newEmail: newEmail)))),
+                        decodingTo: Identity.Consumer.Client.EmailChange.Request.Result.self
+                    )
                     await rateLimiter.emailChangeRequest.recordSuccess(newEmail)
+                    return response
                 }
                 catch {
                     await rateLimiter.emailChangeRequest.recordFailure(newEmail)
                     
                     throw Abort(.unauthorized)
                 }
+                
             },
             confirm: { token in
+                let rateLimit = await rateLimiter.emailChangeConfirm.checkLimit(token)
+                guard rateLimit.isAllowed else {
+                    throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
+                }
+                
                 @Dependency(\.request) var request
                 
                 let apiRouter = router
@@ -70,17 +82,14 @@ extension Identity.Consumer.Client.EmailChange {
                     .setBearerAuth(request?.cookies.accessToken?.string)
                     .eraseToAnyParserPrinter()
                 
-                
-                
-                let rateLimit = await rateLimiter.emailChangeConfirm.checkLimit(token)
-                guard rateLimit.isAllowed else {
-                    throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
-                }
                 do {
                     try await handleRequest(for: makeRequest(apiRouter)(.emailChange(.confirm(.init(token: token)))))
+                    
                     await rateLimiter.emailChangeConfirm.recordSuccess(token)
-                } catch {
+                }
+                catch {
                     await rateLimiter.emailChangeConfirm.recordFailure(token)
+                    
                     throw Abort(.internalServerError)
                 }
             }

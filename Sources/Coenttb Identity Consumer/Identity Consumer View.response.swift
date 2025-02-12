@@ -123,7 +123,7 @@ extension Identity.Consumer.View {
             switch create {
             case .request:
                 return accountDefaultContainer {
-                    Identity.Create.Request.View(
+                    Identity.Consumer.View.Create.Request(
                         primaryColor: primaryColor,
                         loginHref: loginHref,
                         accountCreateHref: accountCreateHref,
@@ -132,7 +132,7 @@ extension Identity.Consumer.View {
                 }
             case .verify:
                 return accountDefaultContainer {
-                    Identity.Create.Verify.View(
+                    Identity.Consumer.View.Create.Verify(
                         verificationAction: verificationAction,
                         redirectURL: createVerificationSuccessRedirect
                     )
@@ -141,16 +141,22 @@ extension Identity.Consumer.View {
         case .delete:
             fatalError()
             
-        case .login:
-            return accountDefaultContainer {
-                Identity.Authentication.Credentials.View(
-                    primaryColor: primaryColor,
-                    passwordResetHref: passwordResetHref,
-                    accountCreateHref: accountCreateHref,
-                    loginFormAction: loginFormAction,
-                    loginSuccessRedirect: loginSuccessRedirect
-                )
+        case .authenticate(let authenticate):
+            switch authenticate {
+            case .credentials:
+                return accountDefaultContainer {
+                    Identity.Consumer.View.Authenticate.Login(
+                        primaryColor: primaryColor,
+                        passwordResetHref: passwordResetHref,
+                        accountCreateHref: accountCreateHref,
+                        loginFormAction: loginFormAction,
+                        loginSuccessRedirect: loginSuccessRedirect
+                    )
+                }
+            case .multifactor(let multifactor):
+                fatalError()
             }
+            
             
         case .logout:
             try? await client.logout()
@@ -183,7 +189,7 @@ extension Identity.Consumer.View {
                 switch reset {
                 case .request:
                     return accountDefaultContainer {
-                        Identity.Consumer.View.Password.Reset.Request.View(
+                        Identity.Consumer.View.Password.Reset.Request(
                             formActionURL: passwordResetAction,
                             homeHref: homeHref,
                             primaryColor: primaryColor
@@ -192,7 +198,7 @@ extension Identity.Consumer.View {
                     
                 case .confirm(let confirm):
                     return accountDefaultContainer {
-                        Identity.Consumer.View.Password.Reset.Confirm.View(
+                        Identity.Consumer.View.Password.Reset.Confirm(
                             token: confirm.token,
                             passwordResetAction: passwordResetConfirmAction,
                             homeHref: homeHref,
@@ -206,7 +212,7 @@ extension Identity.Consumer.View {
                 switch change {
                 case .request:
                     return accountDefaultContainer {
-                        Identity.Consumer.View.Password.Change.Request.View(
+                        Identity.Consumer.View.Password.Change.Request(
                             formActionURL: passwordChangeRequestAction,
                             redirectOnSuccess: loginHref,
                             primaryColor: primaryColor
@@ -220,19 +226,18 @@ extension Identity.Consumer.View {
             
             switch emailChange {
             case .request:
-                
-//                guard
-//                    let currentUserName = currentUserName()
-//                else {
-//                    return request.redirect(to: loginHref.relativePath)
-//                }
-                
                 do {
-                    try await client.emailChange.request(newEmail: nil)
-                }
-                catch let error as Identity.EmailChange.Request.Error {
-                    switch error {
-                    case .unauthorized:
+                    let result = try await client.emailChange.request(newEmail: nil)
+                    switch result {
+                    case .success:
+                        return accountDefaultContainer {
+                            Identity.Consumer.View.EmailChange.Request(
+                                formActionURL: emailChangeRequestAction,
+                                homeHref: homeHref,
+                                primaryColor: primaryColor
+                            )
+                        }
+                    case .requiresReauthentication:
                         return accountDefaultContainer {
                             Identity.Consumer.View.Reauthorization.View(
                                 currentUserName: "currentUserName",
@@ -242,23 +247,7 @@ extension Identity.Consumer.View {
                                 redirectOnSuccess: emailChangeReauthorizationSuccessRedirect
                             )
                         }
-                    case .emailIsNil:
-                        return accountDefaultContainer {
-                            Identity.Consumer.View.EmailChange.Request.View(
-                                formActionURL: emailChangeRequestAction,
-                                homeHref: homeHref,
-                                primaryColor: primaryColor
-                            )
-                        }
                     }
-                }
-                
-                return accountDefaultContainer {
-                    Identity.Consumer.View.EmailChange.Request.View(
-                        formActionURL: emailChangeRequestAction,
-                        homeHref: homeHref,
-                        primaryColor: primaryColor
-                    )
                 }
                 
             case .confirm(let confirm):
@@ -266,7 +255,7 @@ extension Identity.Consumer.View {
                 try await client.emailChange.confirm(token: confirm.token)
                 
                 return accountDefaultContainer {
-                    Identity.Consumer.View.EmailChange.Confirm.View(
+                    Identity.Consumer.View.EmailChange.Confirm(
                         redirect: emailChangeConfirmSuccessRedirect,
                         primaryColor: primaryColor
                     )
@@ -282,11 +271,7 @@ extension Identity.Consumer.View {
                     )
                 }
             }
-            
-        case .multifactorAuthentication(_):
-            fatalError()
         }
-        
     }
 }
 

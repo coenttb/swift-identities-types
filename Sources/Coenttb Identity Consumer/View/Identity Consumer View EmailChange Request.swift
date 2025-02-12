@@ -9,8 +9,8 @@ import Foundation
 import Coenttb_Web
 import Identity_Consumer
 
-extension Identity.Consumer.View.EmailChange.Request {
-    package struct View: HTML {
+extension Identity.Consumer.View.EmailChange {
+    package struct Request: HTML {
         let formActionURL: URL
         let homeHref: URL
         let primaryColor: HTMLColor
@@ -146,7 +146,7 @@ extension Identity.Consumer.View.EmailChange.Request {
 
                         if (data.success) {
                             const pageModule = document.getElementById("\#(Self.pagemodule_request_email_change_id)");
-                            pageModule.outerHTML = `\#(html: Identity.Consumer.View.EmailChange.Request.View.ReceiptConfirmation(homeHref: self.homeHref, primaryColor: self.primaryColor))`;
+                            pageModule.outerHTML = `\#(html: Identity.Consumer.View.EmailChange.Request.ReceiptConfirmation(homeHref: self.homeHref, primaryColor: self.primaryColor))`;
                         } else {
                             throw new Error(data.reason || '\#(TranslatedString(
                                 dutch: "Verzoek om e-mailadres te wijzigen mislukt",
@@ -169,7 +169,7 @@ extension Identity.Consumer.View.EmailChange.Request {
     }
 }
 
-extension Identity.Consumer.View.EmailChange.Request.View {
+extension Identity.Consumer.View.EmailChange.Request {
     package struct ReceiptConfirmation: HTML {
         let homeHref: URL
         let primaryColor: HTMLColor

@@ -29,10 +29,16 @@ extension Identity.Consumer.View {
             try request.auth.require(type)
             return nil
             
-        case .login:
-            return request.auth.has(type)
-            ? request.redirect(to: loginProtectedRedirect.relativePath)
-            : nil
+        case .authenticate(let authenticate):
+            switch authenticate {
+            case .credentials:
+                return request.auth.has(type)
+                ? request.redirect(to: loginProtectedRedirect.relativePath)
+                : nil
+            case .multifactor(_):
+                try request.auth.require(type)
+                return nil
+            }
             
         case .logout:
 //            try request.auth.require(type)
@@ -51,10 +57,7 @@ extension Identity.Consumer.View {
         case .emailChange:
             try request.auth.require(type)
             return nil
-            
-        case .multifactorAuthentication:
-            try request.auth.require(type)
-            return nil
+
         }
     }
 }

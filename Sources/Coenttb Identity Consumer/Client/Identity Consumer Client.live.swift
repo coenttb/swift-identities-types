@@ -9,7 +9,6 @@ import RateLimiter
 import JWT
 
 
-
 extension Identity.Consumer.Client {
     public static func live(
         provider: Identity.Consumer.Client.Live.Provider,

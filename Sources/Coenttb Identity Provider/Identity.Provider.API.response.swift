@@ -190,9 +190,8 @@ extension Identity.Provider.API {
                 }
             }
         case .multifactorAuthentication(let multifactorAuthentication):
-            guard let mfa = client.multifactorAuthentication else {
-                throw Abort(.notImplemented, reason: "Multi-factor authentication is not supported")
-            }
+            guard let mfa = client.authenticate.multifactor
+            else { throw Abort(.notImplemented, reason: "Multi-factor authentication is not supported") }
             
             switch multifactorAuthentication {
             case .setup(let setup):

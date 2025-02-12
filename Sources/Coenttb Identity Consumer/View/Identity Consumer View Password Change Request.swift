@@ -9,8 +9,8 @@ import Foundation
 import Coenttb_Web
 import Identity_Consumer
 
-extension Identity.Consumer.View.Password.Change.Request {
-    package  struct View: HTML {
+extension Identity.Consumer.View.Password.Change {
+    package struct Request: HTML {
         let formActionURL: URL
         let redirectOnSuccess: URL
         let primaryColor: HTMLColor
@@ -42,11 +42,11 @@ extension Identity.Consumer.View.Password.Change.Request {
                     
                     form {
                         VStack {
-                            Input.default(Identity_Shared.Password.Change.Request.CodingKeys.currentPassword)
+                            Input.default(Identity.Password.Change.Request.CodingKeys.currentPassword)
                                 .type(.password)
                                 .placeholder(TranslatedString(dutch: "Huidig wachtwoord", english: "Current password").description)
                             
-                            Input.default(Identity_Shared.Password.Change.Request.CodingKeys.newPassword)
+                            Input.default(Identity.Password.Change.Request.CodingKeys.newPassword)
                                 .type(.password)
                                 .placeholder(TranslatedString(dutch: "Nieuw wachtwoord", english: "New password").description)
                             
@@ -115,7 +115,7 @@ extension Identity.Consumer.View.Password.Change.Request {
                         const data = await response.json();
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_change_password_id)");
-                            pageModule.outerHTML = `\(html: Identity.Consumer.View.Password.Change.Request.View.Confirmation(redirectOnSuccess: self.redirectOnSuccess, primaryColor: self.primaryColor))`;
+                            pageModule.outerHTML = `\(html: Identity.Consumer.View.Password.Change.Request.Confirmation(redirectOnSuccess: self.redirectOnSuccess, primaryColor: self.primaryColor))`;
                         } else {
                             throw new Error(data.message || '\(TranslatedString(
                                 dutch: "Wachtwoord wijzigen mislukt",
@@ -136,7 +136,7 @@ extension Identity.Consumer.View.Password.Change.Request {
     }
 }
 
-extension Identity.Consumer.View.Password.Change.Request.View {
+extension Identity.Consumer.View.Password.Change.Request {
     package struct Confirmation: HTML {
         package let redirectOnSuccess: URL
         package let primaryColor: HTMLColor

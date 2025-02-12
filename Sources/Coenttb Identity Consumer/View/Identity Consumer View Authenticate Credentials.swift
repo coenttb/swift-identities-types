@@ -9,8 +9,9 @@ import Foundation
 import Coenttb_Web
 import Identity_Consumer
 
-extension Identity.Authentication.Credentials {
-    package struct View: HTML {
+extension Identity.Consumer.View.Authenticate {
+    package typealias Login = Credentials
+    package struct Credentials: HTML {
         let primaryColor: HTMLColor
         let passwordResetHref: URL
         let accountCreateHref: URL

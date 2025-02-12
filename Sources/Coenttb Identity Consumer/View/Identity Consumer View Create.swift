@@ -11,16 +11,16 @@ import Identity_Consumer
 
 extension Identity.Consumer.View.Create {
     package enum View: HTML {
-        case request(Identity.Create.Request.View)
-        case requestReceivedConfirmationPage(Identity.Create.RequestReceivedConfirmationPage)
-        case verify(Identity.Create.Verify.View)
+        case request(Identity.Consumer.View.Create.Request)
+        case requestConfirmReceipt(Identity.Consumer.View.Create.Request.ConfirmReceipt)
+        case verify(Identity.Consumer.View.Create.Verify)
         
         package var body: some HTML {
             switch self {
             case .request(let request):
                 request
-            case .requestReceivedConfirmationPage(let requestReceivedConfirmationPage):
-                requestReceivedConfirmationPage
+            case .requestConfirmReceipt(let requestReceivedConfirmation):
+                requestReceivedConfirmation
             case .verify(let verify):
                 verify
             }
@@ -28,8 +28,8 @@ extension Identity.Consumer.View.Create {
     }
 }
 
-extension Identity.Create.Request {
-    package struct View: HTML {
+extension Identity.Consumer.View.Create {
+    package struct Request: HTML {
         
         let primaryColor: HTMLColor
         let loginHref: URL
@@ -133,7 +133,7 @@ extension Identity.Create.Request {
                         
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_create_identity)");
-                            pageModule.outerHTML = "\(html: Identity.Create.RequestReceivedConfirmationPage(primaryColor: primaryColor, loginHref: loginHref))";
+                            pageModule.outerHTML = "\(html: Identity.Consumer.View.Create.Request.ConfirmReceipt(primaryColor: primaryColor, loginHref: loginHref))";
                         } else {
                             throw new Error(data.message || 'Account creation failed');
                         }
@@ -153,8 +153,8 @@ extension Identity.Create.Request {
     }
 }
 
-extension Identity.Create {
-    package struct RequestReceivedConfirmationPage: HTML {
+extension Identity.Consumer.View.Create.Request {
+    package struct ConfirmReceipt: HTML {
         
         let primaryColor: HTMLColor
         let loginHref: URL
@@ -208,8 +208,8 @@ extension Identity.Create {
     }
 }
 
-extension Identity.Create.Verify {
-    package struct View: HTML {
+extension Identity.Consumer.View.Create {
+    package struct Verify: HTML {
         let verificationAction: URL
         let redirectURL: URL
         
@@ -282,7 +282,7 @@ extension Identity.Create.Verify {
                        
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_verify_id)");
-                            pageModule.outerHTML = "\(html: Identity.Create.VerifyConfirmationPage(redirectURL: redirectURL))";
+                            pageModule.outerHTML = "\(html: Identity.Create.VerifyConfirmation(redirectURL: redirectURL))";
                             setTimeout(() => { window.location.href = '\(redirectURL.absoluteString)'; }, 5000);
 
                         } else {
@@ -307,7 +307,7 @@ extension Identity.Create.Verify {
 }
 
 extension Identity.Create {
-    package struct VerifyConfirmationPage: HTML {
+    package struct VerifyConfirmation: HTML {
         let redirectURL: URL
         
         package init(redirectURL: URL) {

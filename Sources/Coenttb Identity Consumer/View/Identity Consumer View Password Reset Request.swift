@@ -9,8 +9,8 @@ import Foundation
 import Coenttb_Web
 import Identity_Consumer
 
-extension Identity.Consumer.View.Password.Reset.Request {
-    package struct View: HTML {
+extension Identity.Consumer.View.Password.Reset {
+    package struct Request: HTML {
         let formActionURL: URL
         let homeHref: URL
         let primaryColor: HTMLColor
@@ -43,7 +43,7 @@ extension Identity.Consumer.View.Password.Reset.Request {
                     
                     form {
                         VStack {
-                            Input.default(Identity_Shared.Password.Reset.Request.CodingKeys.email)
+                            Input.default(Identity.Password.Reset.Request.CodingKeys.email)
                                 .type(.email)
                                 .placeholder("Email")
                                 .focusOnPageLoad()
@@ -113,7 +113,7 @@ extension Identity.Consumer.View.Password.Reset.Request {
                         const data = await response.json();
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_forgot_password_id)");
-                            pageModule.outerHTML = `\(html: Identity.Consumer.View.Password.Reset.Request.View.Confirmation(homeHref: self.homeHref, primaryColor: self.primaryColor))`;
+                            pageModule.outerHTML = `\(html: Identity.Consumer.View.Password.Reset.Request.ConfirmReceipt(homeHref: self.homeHref, primaryColor: self.primaryColor))`;
                         } else {
                             throw new Error(data.message || '\(TranslatedString(
                                 dutch: "Verzoek om wachtwoord te resetten mislukt",
@@ -135,8 +135,8 @@ extension Identity.Consumer.View.Password.Reset.Request {
 }
 
 
-extension Identity.Consumer.View.Password.Reset.Request.View {
-    struct Confirmation: HTML {
+extension Identity.Consumer.View.Password.Reset.Request {
+    struct ConfirmReceipt: HTML {
         let homeHref: URL
         let primaryColor: HTMLColor
         
@@ -198,8 +198,8 @@ extension Identity.Consumer.View.Password.Reset.Request.View {
     }
 }
 
-extension Identity.Consumer.View.Password.Reset.Confirm {
-    package struct View: HTML {
+extension Identity.Consumer.View.Password.Reset {
+    package struct Confirm: HTML {
         let token: String
         let passwordResetAction: URL
         let homeHref: URL
@@ -239,7 +239,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
                     form {
                         VStack {
                             
-                            Input.default(Identity_Shared.Password.Reset.Confirm.CodingKeys.newPassword)
+                            Input.default(Identity.Password.Reset.Confirm.CodingKeys.newPassword)
                                 .type(.password)
                                 .placeholder(String.password.capitalizingFirstLetter().description)
                                 .focusOnPageLoad()
@@ -294,7 +294,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
                        event.preventDefault();
             
                        const formData = new FormData(form);
-                       const password = formData.get('\(Identity_Shared.Password.Reset.Confirm.CodingKeys.newPassword.rawValue)');
+                       const password = formData.get('\(Identity.Password.Reset.Confirm.CodingKeys.newPassword.rawValue)');
             
                        try {
             
@@ -305,8 +305,8 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
                                    'Accept': 'application/json'
                                },
                                body: new URLSearchParams({
-                                    \(Identity_Shared.Password.Reset.Confirm.CodingKeys.token.rawValue): '\(self.token)',
-                                    \(Identity_Shared.Password.Reset.Confirm.CodingKeys.newPassword.rawValue): password
+                                    \(Identity.Password.Reset.Confirm.CodingKeys.token.rawValue): '\(self.token)',
+                                    \(Identity.Password.Reset.Confirm.CodingKeys.newPassword.rawValue): password
                                }).toString()
                            });
             
@@ -319,7 +319,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
             
                            if (data.success) {
                                const pageModule = document.getElementById("\(Self.passwordResetId)");
-                               pageModule.outerHTML = `\(html: Identity.Consumer.View.Password.Reset.Confirm.View.Confirm(redirect: self.redirect, primaryColor: self.primaryColor))`;
+                               pageModule.outerHTML = `\(html: Identity.Consumer.View.Password.Reset.Confirm.Confirm(redirect: self.redirect, primaryColor: self.primaryColor))`;
                            } else {
                                throw new Error(data.message || '\(TranslatedString(
                                    dutch: "Verzoek om wachtwoord te resetten mislukt",
@@ -343,7 +343,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
     }
 }
 
-extension Identity.Consumer.View.Password.Reset.Confirm.View {
+extension Identity.Consumer.View.Password.Reset.Confirm {
     package struct Confirm: HTML {
         package let redirect: URL
         package let primaryColor: HTMLColor
