@@ -15,6 +15,7 @@ extension Identity.API {
         case credentials(Identity.Authentication.Credentials)
         case token(Identity.API.Authenticate.Token)
         case apiKey(BearerAuth)
+        case multifactor(Identity.API.Authenticate.Multifactor)
     }
 }
 
@@ -55,6 +56,11 @@ extension Identity.API.Authenticate {
                 URLRouting.Route(.case(Identity.API.Authenticate.apiKey)) {
                     Path.apiKey
                     BearerAuth.Router()
+                }
+                
+                URLRouting.Route(.case(Identity.API.Authenticate.multifactor)) {
+                    Path.multifactor
+                    Identity.API.Authenticate.Multifactor.Router()
                 }
             }
         }

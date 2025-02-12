@@ -123,8 +123,8 @@ extension Path<PathBuilder.Component<String>> {
         "disable"
     }
     
-    nonisolated(unsafe) public static let multifactorAuthentication = Path {
-        "multifactor-authentication"
+    nonisolated(unsafe) public static let multifactor = Path {
+        "multifactor"
     }
     
     nonisolated(unsafe) public static let manage = Path {

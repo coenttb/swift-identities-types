@@ -59,7 +59,7 @@ extension Identity.Consumer.View {
                         }
 
                         URLRouting.Route(.case(Identity.Consumer.View.Authenticate.multifactor)) {
-                            Path.multifactorAuthentication
+                            Path.multifactor
                             OneOf {
                                 URLRouting.Route(.case(Identity.Consumer.View.Authenticate.Multifactor.setup)) {
                                     Path.setup
