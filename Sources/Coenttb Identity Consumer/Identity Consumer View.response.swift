@@ -171,9 +171,13 @@ extension Identity.Consumer.View {
             
             var refreshToken = request.cookies.refreshToken
             refreshToken?.expires = .distantPast
+            
+            var reauthorizationToken = request.cookies.reauthorizationToken
+            reauthorizationToken?.expires = .distantPast
              
             response.cookies.accessToken = accessToken
             response.cookies.refreshToken = refreshToken
+            response.cookies.reauthorizationToken = reauthorizationToken
             
             let html = accountDefaultContainer {
                 PageHeader(title: "Hope to see you soon!") {}

@@ -88,7 +88,7 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                         // Create and save email change request
                         let emailChangeRequest = try Database.EmailChangeRequest(
                             identity: identity,
-                            newEmail: newEmail.rawValue,
+                            newEmail: newEmail,
                             token: changeToken
                         )
                         print("EmailChange Request 13")

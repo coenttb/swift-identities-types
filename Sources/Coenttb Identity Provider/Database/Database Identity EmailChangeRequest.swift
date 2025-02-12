@@ -6,6 +6,7 @@ import Foundation
 import Vapor
 import Fluent
 import Vapor
+import EmailAddress
 
 extension Database {
     package final class EmailChangeRequest: Model, @unchecked Sendable {
@@ -34,7 +35,7 @@ extension Database {
         package init(
             id: UUID? = nil,
             identity: Database.Identity,
-            newEmail: String,
+            newEmail: EmailAddress,
             token: Database.Identity.Token
         ) throws {
             guard token.type == .emailChange
@@ -42,7 +43,7 @@ extension Database {
             
             self.id = id
             self.$identity.id = try identity.requireID()
-            self.newEmail = newEmail
+            self.newEmail = newEmail.rawValue
             self.$token.id = try token.requireID()
         }
     }
