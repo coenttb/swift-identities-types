@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import EmailAddress
+import Dependencies
 import DependenciesMacros
 
 // MARK: - Provider Client

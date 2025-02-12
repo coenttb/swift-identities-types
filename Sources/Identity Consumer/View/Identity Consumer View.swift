@@ -14,11 +14,12 @@ extension Identity.Consumer {
     public enum View: Codable, Hashable, Sendable {
         case create(Identity.Consumer.View.Create)
         case delete
-        case login
+        case authenticate(Identity.Consumer.View.Authenticate)
         case logout
-        case password(Identity.Consumer.View.Password)
         case emailChange(Identity.Consumer.View.EmailChange)
-        case multifactorAuthentication(Identity.Consumer.View.MultifactorAuthentication)
+        case password(Identity.Consumer.View.Password)
+        
+        public static let login: Self = .authenticate(.credentials)
     }
 }
 
@@ -51,8 +52,8 @@ extension Identity.Consumer.View {
                     }
                 }
                 
-                URLRouting.Route(.case(Identity.Consumer.View.login)) {
-                    Path.login
+                URLRouting.Route(.case(Identity.Consumer.View.authenticate)) {
+                    Identity.Consumer.View.Authenticate.Router()
                 }
                 
                 URLRouting.Route(.case(Identity.Consumer.View.logout)) {
@@ -116,22 +117,7 @@ extension Identity.Consumer.View {
                     }
                 }
                 
-                URLRouting.Route(.case(Identity.Consumer.View.multifactorAuthentication)) {
-                    Path.multifactorAuthentication
-                    OneOf {
-                        URLRouting.Route(.case(Identity.Consumer.View.MultifactorAuthentication.setup)) {
-                            Path.setup
-                        }
-    
-                        URLRouting.Route(.case(Identity.Consumer.View.MultifactorAuthentication.verify)) {
-                            Path.verify
-                        }
-    
-                        URLRouting.Route(.case(Identity.Consumer.View.MultifactorAuthentication.manage)) {
-                            Path.manage
-                        }
-                    }
-                }
+                
             }
         }
     }

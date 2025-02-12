@@ -16,8 +16,7 @@ extension Identity.Client: TestDependencyKey {
             create: .testValue,
             delete: .testValue,
             emailChange: .testValue,
-            password: .testValue,
-            multifactorAuthentication: .testValue
+            password: .testValue
         )
     }
     
