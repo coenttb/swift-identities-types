@@ -227,7 +227,17 @@ extension Identity.Consumer.View {
             switch emailChange {
             case .request:
                 do {
-                    let result = try await client.emailChange.request(newEmail: nil)
+                    
+                    guard
+                        let accessToken = request.cookies.accessToken?.string
+                    else { fatalError() }
+                    
+                    let email = try await request.jwt.verify(
+                        accessToken,
+                        as: JWT.Token.Access.self
+                    ).email
+                    
+                    let result = try await client.emailChange.request(newEmail: try! .init(email))
                     switch result {
                     case .success:
                         return accountDefaultContainer {
