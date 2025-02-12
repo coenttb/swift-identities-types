@@ -25,7 +25,7 @@ extension Identity.Client.EmailChange {
 extension Identity.Client.EmailChange.Request {
     public enum Result: Codable, Hashable, Sendable {
         case success
-        case allowed
+//        case allowed
         case requiresReauthentication
     }
 }
