@@ -45,7 +45,7 @@ extension Identity.Consumer.API {
                     case .refresh(let refresh):
                         let data = try await client.authenticate.token.refresh(token: refresh.token)
                         
-                        let response = Response.success(true/*, data: data*/)
+                        let response = Response.success(true)
                         response.cookies.refreshToken = .refreshToken(response: data, domain: nil)
                         response.cookies.refreshToken?.sameSite = .strict
                         response.cookies.refreshToken?.isHTTPOnly = true
@@ -56,7 +56,7 @@ extension Identity.Consumer.API {
                 case .credentials(let credentials):
                     do {
                         let data = try await client.authenticate.credentials(credentials: credentials)
-                        let response = Response.success(true/*, data: data*/)
+                        let response = Response.success(true)
                         response.cookies.accessToken = .accessToken(response: data, domain: tokenDomain)
                         response.cookies.refreshToken = .refreshToken(response: data, domain: tokenDomain)
                         return response
@@ -204,7 +204,7 @@ extension Identity.Consumer.API {
         case .reauthorize(let reauthorize):
             do {
                 let data = try await client.reauthorize(password: reauthorize.password)
-                let response = Response.success(true/*, data: data*/)
+                let response = Response.success(true)
                 response.cookies.reauthorizationToken = .init(string: data.value)
                 return response
             } catch {

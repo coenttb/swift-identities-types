@@ -137,12 +137,6 @@ extension Identity.Consumer.View.EmailChange {
 
                         const data = await response.json();
 
-                        if (!response.ok) {
-                            throw new Error(data.reason || '\#(TranslatedString(
-                                dutch: "Verzoek om e-mailadres te wijzigen mislukt",
-                                english: "Email change request failed"
-                            ))');
-                        }
 
                         if (data.success) {
                             const pageModule = document.getElementById("\#(Self.pagemodule_request_email_change_id)");
@@ -168,6 +162,14 @@ extension Identity.Consumer.View.EmailChange {
         }
     }
 }
+
+//
+//                        if (!response.ok) {
+//                            throw new Error(data.reason || '\#(TranslatedString(
+//                                dutch: "Verzoek om e-mailadres te wijzigen mislukt",
+//                                english: "Email change request failed"
+//                            ))');
+//                        }
 
 extension Identity.Consumer.View.EmailChange.Request {
     package struct ReceiptConfirmation: HTML {
