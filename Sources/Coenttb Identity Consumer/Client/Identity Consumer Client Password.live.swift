@@ -73,6 +73,7 @@ extension Identity.Consumer.Client.Password {
                     let rateLimitKey = request.realIP
                     
                     let rateLimit = await rateLimiter.passwordChangeRequest.checkLimit(rateLimitKey)
+                    
                     guard rateLimit.isAllowed else {
                         throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
                     }
