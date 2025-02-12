@@ -43,10 +43,10 @@ extension Identity.Consumer.API {
                         return Response.success(true)
                         
                     case .refresh(let refresh):
-                        let apiResponse = try await client.authenticate.token.refresh(token: refresh.token)
+                        let data = try await client.authenticate.token.refresh(token: refresh.token)
                         
-                        let response = Response.success(true, data: apiResponse)
-                        response.cookies.refreshToken = .refreshToken(response: apiResponse, domain: nil)
+                        let response = Response.success(true, data: data)
+                        response.cookies.refreshToken = .refreshToken(response: data, domain: nil)
                         response.cookies.refreshToken?.sameSite = .strict
                         response.cookies.refreshToken?.isHTTPOnly = true
                         
@@ -55,10 +55,10 @@ extension Identity.Consumer.API {
                     
                 case .credentials(let credentials):
                     do {
-                        let apiResponse = try await client.authenticate.credentials(credentials: credentials)
-                        let response = Response.success(true, data: apiResponse)
-                        response.cookies.accessToken = .accessToken(response: apiResponse, domain: tokenDomain)
-                        response.cookies.refreshToken = .refreshToken(response: apiResponse, domain: tokenDomain)
+                        let data = try await client.authenticate.credentials(credentials: credentials)
+                        let response = Response.success(true, data: data)
+                        response.cookies.accessToken = .accessToken(response: data, domain: tokenDomain)
+                        response.cookies.refreshToken = .refreshToken(response: data, domain: tokenDomain)
                         return response
                     } catch {
                         print("Failed in credentials case with error:", error)
@@ -66,8 +66,11 @@ extension Identity.Consumer.API {
                     }
                     
                 case .apiKey(let apiKey):
-                    let apiResponse = try await client.authenticate.apiKey(apiKey: apiKey.token)
-                    return Response.success(true, data: apiResponse)
+                    let data = try await client.authenticate.apiKey(apiKey: apiKey.token)
+                    return Response.success(true, data: data)
+                    
+                case .multifactor(let multifactor):
+                    fatalError()
                 }
                 
             } catch {
@@ -198,8 +201,8 @@ extension Identity.Consumer.API {
             
         case .reauthorize(let reauthorize):
             do {
-                let apiResponse = try await client.reauthorize(password: reauthorize.password)
-                return Response.success(true, data: apiResponse)
+                let data = try await client.reauthorize(password: reauthorize.password)
+                return Response.success(true, data: data)
             } catch {
                 throw Abort(.internalServerError, reason: "Failed to reauthorize")
             }

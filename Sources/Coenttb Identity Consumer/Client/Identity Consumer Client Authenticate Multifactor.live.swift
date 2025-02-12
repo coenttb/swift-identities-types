@@ -25,13 +25,13 @@ extension Identity.Consumer.Client.Authenticate.Multifactor {
             setup: .init(
                 initialize: { method, identifier in
                     try await handleRequest(
-                        for: makeRequest(.multifactorAuthentication(.setup(.initialize(.init(method: method, identifier: identifier))))),
+                        for: makeRequest(.authenticate(.multifactor(.setup(.initialize(.init(method: method, identifier: identifier)))))),
                         decodingTo: Identity.Authentication.Multifactor.Setup.Response.self
                     )
                 },
                 confirm: { code in
                     try await handleRequest(
-                        for: makeRequest(.multifactorAuthentication(.setup(.confirm(.init(code: code)))))
+                        for: makeRequest(.authenticate(.multifactor(.setup(.confirm(.init(code: code))))))
                     )
                 },
                 resetSecret: { method in
@@ -41,13 +41,13 @@ extension Identity.Consumer.Client.Authenticate.Multifactor {
             verification: .init(
                 createChallenge: { method in
                     try await handleRequest(
-                        for: makeRequest(.multifactorAuthentication(.challenge(.create(.init(method: method))))),
+                        for: makeRequest(.authenticate(.multifactor(.challenge(.create(.init(method: method)))))),
                         decodingTo: Identity.Authentication.Multifactor.Challenge.self
                     )
                 },
                 verify: { challengeId, code in
                     try await handleRequest(
-                        for: makeRequest(.multifactorAuthentication(.verify(.verify(.init(challengeId: challengeId, code: code)))))
+                        for: makeRequest(.authenticate(.multifactor(.verify(.verify(.init(challengeId: challengeId, code: code))))))
                     )
                 },
                 bypass: { string in
@@ -57,13 +57,13 @@ extension Identity.Consumer.Client.Authenticate.Multifactor {
             recovery: .init(
                 generateNewCodes: {
                     try await handleRequest(
-                        for: makeRequest(.multifactorAuthentication(.recovery(.generate))),
+                        for: makeRequest(.authenticate(.multifactor(.recovery(.generate)))),
                         decodingTo: [String].self
                     )
                 },
                 getRemainingCodeCount: {
                     try await handleRequest(
-                        for: makeRequest(.multifactorAuthentication(.recovery(.count))),
+                        for: makeRequest(.authenticate(.multifactor(.recovery(.count)))),
                         decodingTo: Int.self
                     )
                 },
@@ -78,13 +78,13 @@ extension Identity.Consumer.Client.Authenticate.Multifactor {
             ),
             configuration: {
                 try await handleRequest(
-                    for: makeRequest(.multifactorAuthentication(.configuration)),
+                    for: makeRequest(.authenticate(.multifactor(.configuration))),
                     decodingTo: Identity.Authentication.Multifactor.Configuration.self
                 )
             },
             disable: {
                 try await handleRequest(
-                    for: makeRequest(.multifactorAuthentication(.disable))
+                    for: makeRequest(.authenticate(.multifactor(.disable)))
                 )
             }
         )
