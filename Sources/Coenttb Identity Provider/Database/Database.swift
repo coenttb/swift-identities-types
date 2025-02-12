@@ -21,11 +21,16 @@ extension Database {
             self.name = name
         }
         
-        private static let migrations: [any Fluent.Migration] = {
-            var migrations: [any Fluent.Migration] = [
+        private static let migrations: [any Fluent.AsyncMigration] = {
+            var migrations: [any Fluent.AsyncMigration] = [
                 {
                     var migration = Coenttb_Identity_Provider.Database.Identity.Migration.Create()
                     migration.name = "Coenttb_Identity.Database.Identity.Migration.Create"
+                    return migration
+                }(),
+                {
+                    var migration = Coenttb_Identity_Provider.Database.Identity.Deletion.Migration()
+                    migration.name = "Coenttb_Identity.Database.Identity.Deletion.Migration"
                     return migration
                 }(),
                 {
@@ -36,6 +41,11 @@ extension Database {
                 {
                     var migration = Coenttb_Identity_Provider.Database.EmailChangeRequest.Migration()
                     migration.name = "Coenttb_Identity.Database.EmailChangeRequest.Migration.Create"
+                    return migration
+                }(),
+                {
+                    var migration = Coenttb_Identity_Provider.Database.PasswordChangeRequest.Migration()
+                    migration.name = "Coenttb_Identity.Database.PasswordChangeRequest.Migration.Create"
                     return migration
                 }(),
                 {
@@ -50,13 +60,13 @@ extension Database {
         
         public func prepare(on database: Fluent.Database) async throws {
             for migration in Self.migrations {
-                let _ = migration.prepare(on: database)
+                try await migration.prepare(on: database)
             }
         }
         
         public func revert(on database: Fluent.Database) async throws {
             for migration in Self.migrations {
-                let _ = migration.revert(on: database)
+                try await migration.revert(on: database)
             }
         }
     }

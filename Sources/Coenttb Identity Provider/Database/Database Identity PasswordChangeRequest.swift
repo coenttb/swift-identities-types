@@ -8,11 +8,11 @@ import Fluent
 import Vapor
 
 extension Database {
-    public final class PasswordChangeRequest: Model, @unchecked Sendable {
-        public static let schema = "password_change_requests"
+    package final class PasswordChangeRequest: Model, @unchecked Sendable {
+        package static let schema = "password_change_requests"
         
         @ID(key: .id)
-        public var id: UUID?
+        package var id: UUID?
         
         @Parent(key: FieldKeys.identityId)
         package var identity: Database.Identity
@@ -29,7 +29,7 @@ extension Database {
             static let tokenId: FieldKey = "token_id"
         }
         
-        public init() {}
+        package init() {}
         
         package init(
             id: UUID? = nil,
@@ -49,12 +49,12 @@ extension Database {
 }
 
 extension Database.PasswordChangeRequest {
-    public struct Migration: AsyncMigration {
+    package struct Migration: AsyncMigration {
         
-        public var name: String = "Coenttb_Identity.PasswordChangeRequest.Migration.Create"
+        package var name: String = "Coenttb_Identity.PasswordChangeRequest.Migration.Create"
         
-        public init(){}
-        public func prepare(on database: Fluent.Database) async throws {
+        package init(){}
+        package func prepare(on database: Fluent.Database) async throws {
             try await database.schema(Database.PasswordChangeRequest.schema)
                 .id()
                 .field(FieldKeys.identityId, .uuid, .required, .references(Database.Identity.schema, "id", onDelete: .cascade))
@@ -64,7 +64,7 @@ extension Database.PasswordChangeRequest {
                 .create()
         }
         
-        public func revert(on database: Fluent.Database) async throws {
+        package func revert(on database: Fluent.Database) async throws {
             try await database.schema(Database.PasswordChangeRequest.schema).delete()
         }
     }
