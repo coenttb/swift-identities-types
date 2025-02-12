@@ -8,10 +8,7 @@ extension Identity.Client: TestDependencyKey {
             authenticate: .testValue,
             logout: { },
             reauthorize: { _ in
-                return JWT.Response(
-                    accessToken: .init(value: "apikey-access-token", expiresIn: 3600),
-                    refreshToken: .init(value: "apikey-refresh-token", expiresIn: 86400)
-                )
+                return .init(value: "", expiresIn: 0)
             },
             create: .testValue,
             delete: .testValue,
@@ -97,9 +94,9 @@ extension Identity.Client.EmailChange: TestDependencyKey {
     public static var testValue: Self {
         .init(
             request: { newEmail in
-//                guard let email = newEmail else {
-//                    throw ValidationError.emailRequired
-//                }
+                //                guard let email = newEmail else {
+                //                    throw ValidationError.emailRequired
+                //                }
                 
                 return .success
                 
@@ -145,10 +142,10 @@ extension Identity.Client.Authenticate: TestDependencyKey {
     public static var testValue: Self {
         .init(
             credentials: { credentials in
-                JWT.Response(
-                    accessToken: .init(value: "test-access-token", expiresIn: 3600),
-                    refreshToken: .init(value: "test-refresh-token", expiresIn: 86400)
-                )
+                    .init(
+                        accessToken: .init(value: "test-access-token", expiresIn: 3600),
+                        refreshToken: .init(value: "test-refresh-token", expiresIn: 86400)
+                    )
             },
             token: .init(
                 access: { token in
@@ -160,7 +157,7 @@ extension Identity.Client.Authenticate: TestDependencyKey {
                     guard !token.isEmpty else {
                         throw ValidationError.invalidToken
                     }
-                    return JWT.Response(
+                    return .init(
                         accessToken: .init(value: "refreshed-access-token", expiresIn: 3600),
                         refreshToken: .init(value: "refreshed-refresh-token", expiresIn: 86400)
                     )
@@ -170,7 +167,7 @@ extension Identity.Client.Authenticate: TestDependencyKey {
                 guard !apiKey.isEmpty else {
                     throw ValidationError.invalidApiKey
                 }
-                return JWT.Response(
+                return .init(
                     accessToken: .init(value: "apikey-access-token", expiresIn: 3600),
                     refreshToken: .init(value: "apikey-refresh-token", expiresIn: 86400)
                 )
@@ -188,82 +185,82 @@ extension Identity.Client.Authenticate: TestDependencyKey {
 
 
 extension Identity.Client.Authenticate.Multifactor: TestDependencyKey {
-   public static var testValue: Self {
-       .init(
-           setup: .init(
-               initialize: { method, identifier in
-                   guard !identifier.isEmpty else {
-                       throw ValidationError.invalidIdentifier
-                   }
-                   return .init(
-                       secret: "TESTSECRET123",
-                       recoveryCodes: ["RECOVERY1", "RECOVERY2", "RECOVERY3"]
-                   )
-               },
-               confirm: { code in
-                   guard code.count == 6 else {
-                       throw ValidationError.invalidCode
-                   }
-               },
-               resetSecret: { method in
-                   "NEWSECRET123"
-               }
-           ),
-           verification: .init(
-               createChallenge: { method in
-                   .init(
-                       id: "challenge-123",
-                       method: method,
-                       createdAt: .now,
-                       expiresAt: .now.addingTimeInterval(300)
-                   )
-               },
-               verify: { challengeId, code in
-                   guard !challengeId.isEmpty else {
-                       throw ValidationError.invalidChallenge
-                   }
-                   guard code.count == 6 else {
-                       throw ValidationError.invalidCode
-                   }
-               },
-               bypass: { challengeId in
-                   guard !challengeId.isEmpty else {
-                       throw ValidationError.invalidChallenge
-                   }
-               }
-           ),
-           recovery: .init(
-               generateNewCodes: {
-                   ["NEWCODE1", "NEWCODE2", "NEWCODE3"]
-               },
-               getRemainingCodeCount: {
-                   3
-               },
-               getUsedCodes: {
-                   ["USEDCODE1"]
-               }
-           ),
-           administration: .init(
-               forceDisable: {
-                   // No validation needed for force disable
-               }
-           ),
-           configuration: {
-               .init(
-                   methods: [.totp, .sms],
-                   status: .enabled,
-                   lastVerifiedAt: .now
-               )
-           },
-           disable: {
-               // No validation needed for disable
-           }
-       )
-   }
-   
-   enum ValidationError: Error {
-       case invalidIdentifier
-       case invalidCode
-       case invalidChallenge
-   }
+    public static var testValue: Self {
+        .init(
+            setup: .init(
+                initialize: { method, identifier in
+                    guard !identifier.isEmpty else {
+                        throw ValidationError.invalidIdentifier
+                    }
+                    return .init(
+                        secret: "TESTSECRET123",
+                        recoveryCodes: ["RECOVERY1", "RECOVERY2", "RECOVERY3"]
+                    )
+                },
+                confirm: { code in
+                    guard code.count == 6 else {
+                        throw ValidationError.invalidCode
+                    }
+                },
+                resetSecret: { method in
+                    "NEWSECRET123"
+                }
+            ),
+            verification: .init(
+                createChallenge: { method in
+                        .init(
+                            id: "challenge-123",
+                            method: method,
+                            createdAt: .now,
+                            expiresAt: .now.addingTimeInterval(300)
+                        )
+                },
+                verify: { challengeId, code in
+                    guard !challengeId.isEmpty else {
+                        throw ValidationError.invalidChallenge
+                    }
+                    guard code.count == 6 else {
+                        throw ValidationError.invalidCode
+                    }
+                },
+                bypass: { challengeId in
+                    guard !challengeId.isEmpty else {
+                        throw ValidationError.invalidChallenge
+                    }
+                }
+            ),
+            recovery: .init(
+                generateNewCodes: {
+                    ["NEWCODE1", "NEWCODE2", "NEWCODE3"]
+                },
+                getRemainingCodeCount: {
+                    3
+                },
+                getUsedCodes: {
+                    ["USEDCODE1"]
+                }
+            ),
+            administration: .init(
+                forceDisable: {
+                    // No validation needed for force disable
+                }
+            ),
+            configuration: {
+                .init(
+                    methods: [.totp, .sms],
+                    status: .enabled,
+                    lastVerifiedAt: .now
+                )
+            },
+            disable: {
+                // No validation needed for disable
+            }
+        )
+    }
+    
+    enum ValidationError: Error {
+        case invalidIdentifier
+        case invalidCode
+        case invalidChallenge
+    }
 }

@@ -17,14 +17,14 @@ extension Identity.Client {
         @DependencyEndpoint
         public var credentials: (
             _ credentials: Identity.Authentication.Credentials
-        ) async throws -> JWT.Response
+        ) async throws -> Identity.Authentication.Response
         
         public var token: Identity.Client.Authenticate.Token
         
         @DependencyEndpoint
         public var apiKey: (
             _ apiKey: String
-        ) async throws -> JWT.Response
+        ) async throws -> Identity.Authentication.Response
         
         public var multifactor: Identity.Client.Authenticate.Multifactor?
     }
@@ -39,6 +39,6 @@ extension Identity.Client.Authenticate {
         
         public var refresh: (
             _ token: String
-        ) async throws -> JWT.Response
+        ) async throws -> Identity.Authentication.Response
     }
 }

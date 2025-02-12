@@ -52,3 +52,18 @@ extension Identity.Authentication {
         case refresh(BearerAuth)
     }
 }
+
+extension Identity.Authentication {
+    public struct Response: Codable, Hashable, Sendable {
+        public let accessToken: JWT.Token
+        public let refreshToken: JWT.Token
+        
+        public init(
+            accessToken: JWT.Token,
+            refreshToken: JWT.Token
+        ) {
+            self.accessToken = accessToken
+            self.refreshToken = refreshToken
+        }
+    }
+}

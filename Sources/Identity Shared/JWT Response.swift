@@ -8,18 +8,7 @@
 import Foundation
 
 extension JWT {
-    public struct Response: Codable, Hashable, Sendable {
-        public let accessToken: Token
-        public let refreshToken: Token
-        
-        public init(
-            accessToken: Token,
-            refreshToken: Token
-        ) {
-            self.accessToken = accessToken
-            self.refreshToken = refreshToken
-        }
-    }
+    
     
     public struct Token: Codable, Hashable, Sendable {
         public let value: String

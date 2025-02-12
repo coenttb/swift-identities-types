@@ -19,7 +19,7 @@ extension Identity {
         public var logout: () async throws -> Void
         
         @DependencyEndpoint
-        public var reauthorize: (_ password: String) async throws -> JWT.Response
+        public var reauthorize: (_ password: String) async throws -> JWT.Token
         
         public var create: Identity.Client.Create
         
