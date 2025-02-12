@@ -101,6 +101,8 @@ extension Identity.Client.EmailChange: TestDependencyKey {
 //                    throw ValidationError.emailRequired
 //                }
                 
+                return .success
+                
                 
             },
             confirm: { token in
