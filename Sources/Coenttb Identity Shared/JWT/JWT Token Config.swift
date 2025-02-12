@@ -45,6 +45,18 @@ extension DependencyValues {
     }
 }
 
+private enum ReauthorizationTokenConfig: DependencyKey {
+    public static let liveValue: JWT.Token.Config = .forReauthorizationToken(issuer: "default-issuer")
+    public static let testValue: JWT.Token.Config = liveValue
+}
+
+extension DependencyValues {
+    public var reauthorizationTokenConfig: JWT.Token.Config {
+        get { self[ReauthorizationTokenConfig.self] }
+        set { self[ReauthorizationTokenConfig.self] = newValue }
+    }
+}
+
 
 extension JWT.Token.Config {
     public static func forAccessToken(
@@ -66,4 +78,15 @@ extension JWT.Token.Config {
             expiration: expiration
         )
     }
+    
+    public static func forReauthorizationToken(
+        issuer: String,
+        expiration: TimeInterval = Self.refreshTokenLifetime
+    ) -> Self {
+        .init(
+            issuer: issuer,
+            expiration: expiration
+        )
+    }
 }
+

@@ -17,6 +17,7 @@ extension Identity.Consumer.Client {
     ) -> Self {
         
         @Dependency(RateLimiters.self) var rateLimiter
+        @Dependency(URLRequest.Handler.self) var handleRequest
         
         return .init(
             authenticate: .live(
@@ -30,14 +31,6 @@ extension Identity.Consumer.Client {
                 request.auth.logout(JWT.Token.Access.self)
             },
             reauthorize: { password in
-                let apiRouter = router
-                    .baseURL(provider.baseURL.absoluteString)
-                    .eraseToAnyParserPrinter()
-                
-                let makeRequest = makeRequest(apiRouter)
-                
-                @Dependency(URLRequest.Handler.self) var handleRequest
-                
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
                 
@@ -49,11 +42,19 @@ extension Identity.Consumer.Client {
                         "Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"
                     ])
                 }
+                                
+                
+                let apiRouter = router
+                    .setAccessToken(request.cookies.accessToken)
+                    .setBearerAuth(request.cookies.accessToken?.string)
+                    .baseURL(provider.baseURL.absoluteString)
+                    .eraseToAnyParserPrinter()
+                
                 
                 do {
                     let response = try await handleRequest(
-                        for: makeRequest(.reauthorize(.init(password: password))),
-                        decodingTo: JWT.Response.self
+                        for: makeRequest(apiRouter)(.reauthorize(.init(password: password))),
+                        decodingTo: JWT.Token.self
                     )
                     
                     await rateLimiter.reauthorize.recordSuccess(rateLimitKey)

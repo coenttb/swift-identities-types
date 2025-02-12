@@ -53,6 +53,32 @@ extension Identity_Provider.Identity.Provider.Client {
                 guard let request else { throw Abort.requestUnavailable }
                 request.auth.logout(Database.Identity.self)
             },
+            reauthorize: { password in
+                do {
+                    let identity = try await Database.Identity.get(by: .auth, on: database)
+                    
+                    guard try identity.verifyPassword(password) else {
+                        throw AuthenticationError.invalidCredentials
+                    }
+                    
+                    @Dependency(\.request) var request
+                    guard let request else { throw Abort.requestUnavailable }
+                    
+                    @Dependency(\.reauthorizationTokenConfig) var config
+                    
+                    let payload = try JWT.Token.Reauthorization.init(
+                        identity: identity,
+                        includeTokenId: false,
+                        includeNotBefore: true
+                    )
+
+                    return try await .init(value: request.jwt.sign(payload), expiresIn: config.expiration)
+
+                } catch {
+                    logger.error("Error in reauthorize: \(String(describing: error))")
+                    throw error
+                }
+            },
             create: .live(
                 database: database,
                 logger: logger,

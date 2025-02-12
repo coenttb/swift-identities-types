@@ -45,7 +45,7 @@ extension Identity.Consumer.API {
                     case .refresh(let refresh):
                         let data = try await client.authenticate.token.refresh(token: refresh.token)
                         
-                        let response = Response.success(true, data: data)
+                        let response = Response.success(true/*, data: data*/)
                         response.cookies.refreshToken = .refreshToken(response: data, domain: nil)
                         response.cookies.refreshToken?.sameSite = .strict
                         response.cookies.refreshToken?.isHTTPOnly = true
@@ -56,7 +56,7 @@ extension Identity.Consumer.API {
                 case .credentials(let credentials):
                     do {
                         let data = try await client.authenticate.credentials(credentials: credentials)
-                        let response = Response.success(true, data: data)
+                        let response = Response.success(true/*, data: data*/)
                         response.cookies.accessToken = .accessToken(response: data, domain: tokenDomain)
                         response.cookies.refreshToken = .refreshToken(response: data, domain: tokenDomain)
                         return response
@@ -128,11 +128,13 @@ extension Identity.Consumer.API {
             switch emailChange {
             case .request(let request):
                 do {
-                    try await client.emailChange.request(newEmail: try .init(request.newEmail))
-                    return Response.success(true)
-                }
-                catch let error as Identity.EmailChange.Request.Error {
-                    throw error
+                    let data = try await client.emailChange.request(newEmail: try .init(request.newEmail))
+                    switch data {
+                    case .success:
+                        return Response.success(true)
+                    case .requiresReauthentication:
+                        return Response.success(false, message: "Requires reauthorization")
+                    }
                 }
                 catch {
                     throw Abort(.internalServerError, reason: "Failed to request email change")
@@ -202,7 +204,9 @@ extension Identity.Consumer.API {
         case .reauthorize(let reauthorize):
             do {
                 let data = try await client.reauthorize(password: reauthorize.password)
-                return Response.success(true, data: data)
+                let response = Response.success(true/*, data: data*/)
+                response.cookies.reauthorizationToken = .init(string: data.value)
+                return response
             } catch {
                 throw Abort(.internalServerError, reason: "Failed to reauthorize")
             }

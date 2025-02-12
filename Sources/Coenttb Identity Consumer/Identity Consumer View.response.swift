@@ -222,41 +222,35 @@ extension Identity.Consumer.View {
             }
             
         case .emailChange(let emailChange):
-            
-            
             switch emailChange {
             case .request:
                 do {
                     
-                    guard
-                        let accessToken = request.cookies.accessToken?.string
-                    else { fatalError() }
+                    guard let requestToken = request.cookies.reauthorizationToken?.string
+                    else { throw Abort(.internalServerError) }
                     
-                    let email = try await request.jwt.verify(
-                        accessToken,
-                        as: JWT.Token.Access.self
-                    ).email
+                    try await request.jwt.verify(
+                        requestToken,
+                        as: JWT.Token.Reauthorization.self
+                    )
                     
-                    let result = try await client.emailChange.request(newEmail: try! .init(email))
-                    switch result {
-                    case .success:
-                        return accountDefaultContainer {
-                            Identity.Consumer.View.EmailChange.Request(
-                                formActionURL: emailChangeRequestAction,
-                                homeHref: homeHref,
-                                primaryColor: primaryColor
-                            )
-                        }
-                    case .requiresReauthentication:
-                        return accountDefaultContainer {
-                            Identity.Consumer.View.Reauthorization.View(
-                                currentUserName: "currentUserName",
-                                primaryColor: primaryColor,
-                                passwordResetHref: passwordResetHref,
-                                confirmFormAction: emailChangeConfirmFormAction,
-                                redirectOnSuccess: emailChangeReauthorizationSuccessRedirect
-                            )
-                        }
+                    return accountDefaultContainer {
+                        Identity.Consumer.View.EmailChange.Request(
+                            formActionURL: emailChangeRequestAction,
+                            homeHref: homeHref,
+                            primaryColor: primaryColor
+                        )
+                    }
+                    
+                } catch {
+                    return accountDefaultContainer {
+                        Identity.Consumer.View.Reauthorize(
+                            currentUserName: "currentUserName",
+                            primaryColor: primaryColor,
+                            passwordResetHref: passwordResetHref,
+                            confirmFormAction: emailChangeConfirmFormAction,
+                            redirectOnSuccess: emailChangeReauthorizationSuccessRedirect
+                        )
                     }
                 }
                 
@@ -272,7 +266,7 @@ extension Identity.Consumer.View {
                 }
             case .reauthorization:
                 return accountDefaultContainer {
-                    Identity.Consumer.View.Reauthorization.View(
+                    Identity.Consumer.View.Reauthorize(
                         currentUserName: "",
                         primaryColor: primaryColor,
                         passwordResetHref: passwordResetHref,

@@ -38,7 +38,7 @@ extension Identity.Consumer.Client.Authenticate {
                     print("Starting authentication flow...")
                     let response = try await handleRequest(
                         for: makeRequest(.authenticate(.credentials(credentials))),
-                        decodingTo: JWT.Response.self
+                        decodingTo: Identity.Authentication.Response.self
                     )
                     print("Got JWT response from provider")
                     
@@ -133,7 +133,7 @@ extension Identity.Consumer.Client.Authenticate {
                     do {
                         let response = try await handleRequest(
                             for: makeRequest(.authenticate(.token(.refresh(.init(token: token))))),
-                            decodingTo: JWT.Response.self
+                            decodingTo: Identity.Authentication.Response.self
                         )
                         
                         @Dependency(\.request) var request
@@ -169,7 +169,7 @@ extension Identity.Consumer.Client.Authenticate {
                 do {
                     let response = try await handleRequest(
                         for: makeRequest(.authenticate(.apiKey(.init(token: apiKey)))),
-                        decodingTo: JWT.Response.self
+                        decodingTo: Identity.Authentication.Response.self
                     )
                     
                     await rateLimiter.apiKey.recordSuccess(apiKey)

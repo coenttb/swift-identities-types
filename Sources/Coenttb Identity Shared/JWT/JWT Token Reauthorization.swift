@@ -2,24 +2,24 @@ import Dependencies
 import Foundation
 import JWT
 import Vapor
-import EmailAddress
 
 extension JWT.Token {
-    public struct Access: Codable, Sendable {
+    public struct Reauthorization: Codable, Sendable {
         // Required Standard JWT Claims
         public var expiration: ExpirationClaim
         public var issuedAt: IssuedAtClaim
         public var subject: SubjectClaim
         public var issuer: IssuerClaim
         public var audience: AudienceClaim
+        public var tokenId: IDClaim
         
         // Optional Standard Claims
         public var notBefore: NotBeforeClaim?
-        public var tokenId: IDClaim?
         
         // Required Custom Claims
         public var identityId: UUID
-        public var email: EmailAddress
+        public var email: String
+        public var sessionVersion: Int
         
         package init(
             expiration: ExpirationClaim,
@@ -27,22 +27,24 @@ extension JWT.Token {
             subject: SubjectClaim,
             issuer: IssuerClaim,
             audience: AudienceClaim,
+            tokenId: IDClaim,
             notBefore: NotBeforeClaim? = nil,
-            tokenId: IDClaim? = nil,
             identityId: UUID,
-            email: EmailAddress
+            email: String,
+            sessionVersion: Int
         ) {
             self.expiration = expiration
             self.issuedAt = issuedAt
             self.subject = subject
             self.issuer = issuer
             self.audience = audience
-            self.notBefore = notBefore
             self.tokenId = tokenId
+            self.notBefore = notBefore
             self.identityId = identityId
             self.email = email
+            self.sessionVersion = sessionVersion
             
-            self.audience.value.append("access")
+            self.audience.value.append("refresh")
         }
         
         enum CodingKeys: String, CodingKey {
@@ -55,13 +57,29 @@ extension JWT.Token {
             case tokenId = "jti"
             case identityId = "iid"
             case email = "eml"
+            case sessionVersion = "sev"
         }
     }
 }
 
-extension JWT.Token.Access: JWTPayload {
+extension JWT.Token.Reauthorization: JWTPayload {
     public func verify(using algorithm: some JWTKit.JWTAlgorithm) async throws {
         try self.expiration.verifyNotExpired()
         try self.notBefore?.verifyNotBefore()
+        // Verify email is present
+        guard !self.email.isEmpty else {
+            throw JWTError.claimVerificationFailure(
+                failedClaim: self.expiration,
+                reason: "email cannot be empty"
+            )
+        }
+        
+//        // Verify identityId matches between tokens
+//        guard self.identityId == refreshToken.identityId else {
+//            throw JWTError.claimVerificationFailure(
+//                failedClaim: nil,
+//                reason: "identity mismatch between tokens"
+//            )
+//        }
     }
 }

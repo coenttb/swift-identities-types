@@ -36,7 +36,7 @@ extension HTTPCookies.Value {
     }
     
     package static func accessToken(
-        response: JWT.Response,
+        response: Identity.Authentication.Response,
         domain: String?
     )-> Self {
         .jwt(
@@ -54,7 +54,7 @@ extension HTTPCookies.Value {
         )
     }
     
-    package static func refreshToken(response: JWT.Response, domain: String?)-> Self {
+    package static func refreshToken(response: Identity.Authentication.Response, domain: String?)-> Self {
         @Dependency(Identity.Consumer.Route.Router.self) var router
         return .jwt(
             token: response.refreshToken.value,

@@ -26,4 +26,13 @@ extension HTTPCookies {
             self["refresh_token"] = newValue
         }
     }
+    
+    public var reauthorizationToken: HTTPCookies.Value? {
+        get {
+            self["reauthorization_token"]
+        }
+        set {
+            self["reauthorization_token"] = newValue
+        }
+    }
 }

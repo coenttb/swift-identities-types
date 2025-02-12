@@ -100,7 +100,7 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
 //                        
                         let identity = try await Database.Identity.get(by: .id(payload.identityId), on: request.db)
                         
-                        guard identity.email == payload.email else {
+                        guard identity.emailAddress == payload.email else {
                             throw Abort(.unauthorized, reason: "Identity details have changed")
                         }
                         

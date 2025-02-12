@@ -39,7 +39,7 @@ extension Database.Identity {
         
         @Dependency(\.refreshTokenConfig) var config
         
-        let payload = try JWT.Token.Access(
+        let payload = try JWT.Token.Refresh.init(
             identity: self,
             includeTokenId: includeTokenId,
             includeNotBefore: includeNotBefore
@@ -47,8 +47,10 @@ extension Database.Identity {
         return try await request.jwt.sign(payload)
     }
     
+    
+    
     package func generateJWTResponse(
-    ) async throws -> JWT.Response {
+    ) async throws -> Identity.Authentication.Response {
         
         let accessToken = try await self.generateJWTAccess(
             includeTokenId: true,
@@ -76,6 +78,7 @@ extension Database.Identity {
             )
         )
     }
+    
 }
 
 extension JWT.Token.Access {
@@ -97,7 +100,7 @@ extension JWT.Token.Access {
             notBefore: includeNotBefore ? NotBeforeClaim(value: currentTime) : nil,
             tokenId: includeTokenId ? IDClaim(value: uuid().uuidString) : nil,
             identityId: try identity.requireID(),
-            email: identity.email
+            email: identity.emailAddress
         )
     }
 }
@@ -118,6 +121,31 @@ extension JWT.Token.Refresh {
             subject: SubjectClaim(value: try identity.requireID().uuidString),
             issuer: IssuerClaim(value: config.issuer),
             audience: "refresh",
+            tokenId: IDClaim(value: uuid().uuidString),
+            notBefore: includeNotBefore ? NotBeforeClaim(value: currentTime) : nil,
+            identityId: try identity.requireID(),
+            email: identity.email,
+            sessionVersion: identity.sessionVersion
+        )
+    }
+}
+
+extension JWT.Token.Reauthorization {
+    package init(
+        identity: Database.Identity,
+        currentTime: Date = .init(),
+        includeTokenId: Bool = false,
+        includeNotBefore: Bool = false
+    ) throws {
+        @Dependency(\.uuid) var uuid
+        @Dependency(\.refreshTokenConfig) var config
+        
+        self = .init(
+            expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expiration)),
+            issuedAt: IssuedAtClaim(value: currentTime),
+            subject: SubjectClaim(value: try identity.requireID().uuidString),
+            issuer: IssuerClaim(value: config.issuer),
+            audience: "reauthorization",
             tokenId: IDClaim(value: uuid().uuidString),
             notBefore: includeNotBefore ? NotBeforeClaim(value: currentTime) : nil,
             identityId: try identity.requireID(),

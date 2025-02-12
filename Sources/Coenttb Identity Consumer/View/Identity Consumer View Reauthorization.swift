@@ -10,12 +10,10 @@ import Coenttb_Web
 import Identity_Consumer
 import Identity_Shared
 
-extension Identity.Consumer.View {
-    package typealias Reauthorization = Identity.Reauthorization
-}
 
-extension Identity.Consumer.View.Reauthorization {
-    package struct View<CodingKey: RawRepresentable>: HTML where CodingKey.RawValue == String {
+
+extension Identity.Consumer.View {
+    package struct Reauthorize<CodingKey: RawRepresentable>: HTML where CodingKey.RawValue == String {
         let codingKey: CodingKey
         let currentUserName: String
         let primaryColor: HTMLColor
@@ -184,7 +182,7 @@ extension PageModule.Theme {
 #if canImport(SwiftUI)
 import SwiftUI
 
-@MainActor let confirmAccess: some HTML = Identity.Consumer.View.Reauthorization.View(
+@MainActor let confirmAccess: some HTML = Identity.Consumer.View.Reauthorize(
     codingKey: Identity.Create.Request.CodingKeys.password,
     currentUserName: "Coen ten Thije Boonkkamp",
     primaryColor: .red,
