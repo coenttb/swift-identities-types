@@ -16,8 +16,16 @@ extension Identity.API {
         guard let request else { throw Abort.requestUnavailable }
         
         switch api {
-        case .authenticate:
-            return nil
+        case .authenticate(let authenticate):
+            switch authenticate {
+            case .credentials, .token, .apiKey:
+                return nil
+                
+            case .multifactor:
+                try request.auth.require(type)
+                return nil
+            }
+            
         case .create:
             return nil
         case .delete:
@@ -40,9 +48,7 @@ extension Identity.API {
                 try request.auth.require(type)
                 return nil
             }
-        case .multifactorAuthentication:
-            try request.auth.require(type)
-            return nil
+        
         }
     }
 }

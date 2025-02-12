@@ -203,8 +203,6 @@ extension Identity.Consumer.API {
             } catch {
                 throw Abort(.internalServerError, reason: "Failed to reauthorize")
             }
-        case .multifactorAuthentication(_):
-            fatalError()
         }
     }
 }
