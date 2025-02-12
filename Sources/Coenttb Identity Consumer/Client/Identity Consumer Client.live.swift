@@ -179,6 +179,11 @@ extension ParserPrinter where Input == URLRequestData {
     }
     
     @inlinable
+    public func setReauthorizationToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
+        return self.cookie("reauthorization_token", token)
+    }
+    
+    @inlinable
     public func cookies(_ cookies: [String: HTTPCookies.Value]) -> BaseURLPrinter<Self> {
         var requestData = URLRequestData()
         requestData.headers["cookie", default: []].append(

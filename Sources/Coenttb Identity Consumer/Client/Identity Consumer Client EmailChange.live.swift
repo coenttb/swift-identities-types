@@ -49,6 +49,7 @@ extension Identity.Consumer.Client.EmailChange {
                     .baseURL(provider.baseURL.absoluteString)
                     .setAccessToken(request?.cookies.accessToken)
                     .setRefreshToken(request?.cookies.refreshToken)
+                    .setReauthorizationToken(request?.cookies.reauthorizationToken)
                     .setBearerAuth(request?.cookies.accessToken?.string)
                     .eraseToAnyParserPrinter()
                 
