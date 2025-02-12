@@ -11,11 +11,11 @@ import Foundation
 import Vapor
 
 extension Database.Identity {
-    package final class Token: Model, Content, @unchecked Sendable  {
-        package static let schema = "identity_tokens"
+    public final class Token: Model, Content, @unchecked Sendable  {
+        public static let schema = "identity_tokens"
         
         @ID(key: .id)
-        package var id: UUID?
+        public var id: UUID?
         
         @Field(key: FieldKeys.value)
         package var value: String
@@ -74,7 +74,7 @@ extension Database.Identity {
             package static let reauthenticationToken = TokenType("reauthenticationToken")
         }
         
-        package init() {}
+        public init() {}
         
         package init(
             id: UUID? = nil,
@@ -142,13 +142,13 @@ extension Database.Identity {
 }
 
 extension Database.Identity.Token {
-    package struct Migration: AsyncMigration {
+    public struct Migration: AsyncMigration {
         
-        package var name: String = "Coenttb_Identity.Identity.Token.Migration.Create"
+        public var name: String = "Coenttb_Identity.Identity.Token.Migration.Create"
         
-        package init(){}
+        public init(){}
         
-        package func prepare(on database: Fluent.Database) async throws {
+        public func prepare(on database: Fluent.Database) async throws {
             try await database.schema(Database.Identity.Token.schema)
                 .id()
                 .field(FieldKeys.value, .string, .required)
@@ -161,7 +161,7 @@ extension Database.Identity.Token {
                 .create()
         }
         
-        package func revert(on database: Fluent.Database) async throws {
+        public func revert(on database: Fluent.Database) async throws {
             try await database.schema(Database.Identity.Token.schema).delete()
         }
     }

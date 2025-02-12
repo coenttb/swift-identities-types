@@ -16,7 +16,7 @@ extension Database {
         public var name: String
         
         public init(
-            name: String = "Coenttb_Identity_Provider.Database.Migration.Create"
+            name: String = "Coenttb_Identity_Provider.Database.Migration"
         ) {
             self.name = name
         }

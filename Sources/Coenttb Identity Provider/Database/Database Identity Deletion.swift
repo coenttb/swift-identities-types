@@ -4,11 +4,11 @@ import Identity_Provider
 import Fluent
 
 extension Database.Identity {
-    package final class Deletion: Model, @unchecked Sendable {
-        package static let schema = "identity_deletion_state"
+    public final class Deletion: Model, @unchecked Sendable {
+        public static let schema = "identity_deletion_state"
         
         @ID(key: .id)
-        package var id: UUID?
+        public var id: UUID?
         
         @Parent(key: FieldKeys.identityId)
         package var identity: Database.Identity
@@ -26,7 +26,7 @@ extension Database.Identity {
             static let deletionRequestedAt: FieldKey = "deletion_requested_at"
         }
         
-        package init() {}
+        public init() {}
         
         package enum State: String, Codable, Sendable {
             case pending
@@ -44,11 +44,11 @@ extension Database.Identity {
 }
 
 extension Database.Identity.Deletion {
-    package struct Migration: AsyncMigration {
+    public struct Migration: AsyncMigration {
         
-        package var name: String = "Coenttb_Identity_Provider.DeletionState"
+        public var name: String = "Coenttb_Identity_Provider.DeletionState"
         
-        package func prepare(on database: Fluent.Database) async throws {
+        public func prepare(on database: Fluent.Database) async throws {
             try await database.schema(Database.Identity.Deletion.schema)
                 .id()
                 .field(FieldKeys.identityId, .uuid, .required, .references(Database.Identity.schema, "id", onDelete: .cascade))
@@ -58,7 +58,7 @@ extension Database.Identity.Deletion {
                 .create()
         }
         
-        package func revert(on database: Fluent.Database) async throws {
+        public func revert(on database: Fluent.Database) async throws {
             try await database.schema(Database.Identity.Deletion.schema).delete()
         }
     }
