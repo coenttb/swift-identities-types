@@ -95,10 +95,3 @@ extension Identity.EmailChange.Request {
         case emailIsNil
     }
 }
-
-extension Identity.EmailChange {
-    public enum State: Codable, Sendable {
-        case success
-        case requiresReauthorization
-    }
-}

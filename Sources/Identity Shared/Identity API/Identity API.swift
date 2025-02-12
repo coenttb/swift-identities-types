@@ -48,6 +48,7 @@ extension Identity.API {
                 }
                 
                 URLRouting.Route(.case(Identity.API.reauthorize)) {
+                    Method.post
                     Path.reauthorize
                     Body(.form(Identity.API.Reauthorize.self, decoder: .default))
                 }
