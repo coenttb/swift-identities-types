@@ -11,7 +11,6 @@ import Favicon
 import Identity_Consumer
 
 extension Identity.Consumer.Route {
-    
     public static func response(
        route: Identity.Consumer.Route,
        logo: Identity.Consumer.View.Logo,

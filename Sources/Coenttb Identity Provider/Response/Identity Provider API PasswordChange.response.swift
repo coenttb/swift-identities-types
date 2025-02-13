@@ -11,9 +11,8 @@ import Coenttb_Web
 import Identity_Provider
 
 extension Identity.Provider.API.Password {
-    public static func response(
-        password: Identity.Provider.API.Password,
-        logoutRedirectURL: () -> URL
+    package static func response(
+        password: Identity.Provider.API.Password
     ) async throws -> any AsyncResponseEncodable {
         
         @Dependency(Identity.Provider.Client.self) var client

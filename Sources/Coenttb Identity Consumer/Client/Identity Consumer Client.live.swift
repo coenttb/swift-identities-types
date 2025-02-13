@@ -18,7 +18,7 @@ extension Identity.Consumer.Client {
         
         @Dependency(RateLimiters.self) var rateLimiter
         @Dependency(URLRequest.Handler.self) var handleRequest
-        
+
         return .init(
             authenticate: .live(
                 provider: provider,
@@ -33,38 +33,18 @@ extension Identity.Consumer.Client {
             reauthorize: { password in
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
-                
-                let rateLimitKey = request.realIP
-                
-                let rateLimit = await rateLimiter.reauthorize.checkLimit(rateLimitKey)
-                guard rateLimit.isAllowed else {
-                    throw Abort(.tooManyRequests, headers: [
-                        "Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"
-                    ])
-                }
-                                
-                
+     
                 let apiRouter = router
                     .setAccessToken(request.cookies.accessToken)
                     .setBearerAuth(request.cookies.accessToken?.string)
                     .baseURL(provider.baseURL.absoluteString)
                     .eraseToAnyParserPrinter()
                 
+                return try await handleRequest(
+                    for: makeRequest(apiRouter)(.reauthorize(.init(password: password))),
+                    decodingTo: JWT.Token.self
+                )
                 
-                do {
-                    let response = try await handleRequest(
-                        for: makeRequest(apiRouter)(.reauthorize(.init(password: password))),
-                        decodingTo: JWT.Token.self
-                    )
-                    
-                    await rateLimiter.reauthorize.recordSuccess(rateLimitKey)
-                    
-                    return response
-                    
-                } catch {
-                    await rateLimiter.reauthorize.recordFailure(rateLimitKey)
-                    throw Abort(.unauthorized)
-                }
             },
             create: .live(
                 provider: provider,

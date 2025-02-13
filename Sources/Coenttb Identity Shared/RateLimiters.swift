@@ -7,6 +7,18 @@
 
 import Coenttb_Server
 
+extension RateLimiter {
+    package struct Client {
+        package let recordSuccess: () async -> Void
+        package let recordFailure: () async -> Void
+        
+        init(limiter: RateLimiter<String>, key: String) {
+            self.recordSuccess = { await limiter.recordSuccess(key) }
+            self.recordFailure = { await limiter.recordFailure(key) }
+        }
+    }
+}
+
 public struct RateLimiters: Sendable {
     public let credentials = RateLimiter<String>(
         windows: [

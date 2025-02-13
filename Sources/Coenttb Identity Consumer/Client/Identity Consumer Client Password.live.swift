@@ -16,80 +16,48 @@ import RateLimiter
 import JWT
 
 extension Identity.Consumer.Client.Password {
-    public static func live(
+    package static func live(
         provider: Identity.Consumer.Client.Live.Provider,
         router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
         makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
     ) -> Self {
-        
-        @Dependency(RateLimiters.self) var rateLimiter
-        @Dependency(URLRequest.Handler.self) var handleRequest
-        
         return .init(
             reset: .init(
                 request: { email in
-                    let apiRouter = router
-                        .baseURL(provider.baseURL.absoluteString)
-                        .eraseToAnyParserPrinter()
+                    let route: Identity.Consumer.API = .password(.reset(.request(.init(email: email))))
+                    let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
                     
-                    let rateLimit = await rateLimiter.passwordResetRequest.checkLimit(email.rawValue)
-                    
-                    guard rateLimit.isAllowed
-                    else { throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt) }
-                    
+                    @Dependency(URLRequest.Handler.self) var handleRequest
+
                     do {
-                        try await handleRequest(for: makeRequest(apiRouter)(.password(.reset(.request(.init(email: email))))) )
-                        await rateLimiter.passwordResetRequest.recordSuccess(email.rawValue)
+                        try await handleRequest(for: makeRequest(router)(route))
                     } catch {
-                        await rateLimiter.passwordResetRequest.recordFailure(email.rawValue)
                         throw Abort(.unauthorized)
                     }
                 },
                 confirm: { token, newPassword in
+                    let route: Identity.Consumer.API = .password(.reset(.confirm(.init(token: token, newPassword: newPassword))))
+                    let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
                     
-                    let rateLimit = await rateLimiter.passwordResetConfirm.checkLimit(token)
-                    
-                    guard rateLimit.isAllowed
-                    else { throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt) }
-                    
-                    let apiRouter = router
-                        .baseURL(provider.baseURL.absoluteString)
-                        .eraseToAnyParserPrinter()
+                    @Dependency(URLRequest.Handler.self) var handleRequest
                     
                     do {
-                        try await handleRequest(for: makeRequest(apiRouter)(.password(.reset(.confirm(.init(token: token, newPassword: newPassword))))))
-                        await rateLimiter.passwordResetConfirm.recordSuccess(token)
+                        try await handleRequest(for: makeRequest(router)(route))
                     } catch {
-                        await rateLimiter.passwordResetConfirm.recordFailure(token)
                         throw Abort(.internalServerError)
                     }
                 }
             ),
             change: .init(
                 request: { currentPassword, newPassword in
-                    @Dependency(\.request) var request
-                    guard let request else { throw Abort.requestUnavailable }
+                    let route: Identity.Consumer.API = .password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword))))
+                    let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
                     
-                    let rateLimitKey = request.realIP
+                    @Dependency(URLRequest.Handler.self) var handleRequest
                     
-                    let rateLimit = await rateLimiter.passwordChangeRequest.checkLimit(rateLimitKey)
-                    
-                    guard rateLimit.isAllowed else {
-                        throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
-                    }
-                    
-                    let apiRouter = router
-                        .baseURL(provider.baseURL.absoluteString)
-                        .setAccessToken(request.cookies.accessToken)
-                        .setRefreshToken(request.cookies.refreshToken)
-                        .setBearerAuth(request.cookies.accessToken?.string)
-                        .eraseToAnyParserPrinter()
-                  
                     do {
-                        try await handleRequest(for: makeRequest(apiRouter)(.password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword))))))
-                        await rateLimiter.passwordChangeRequest.recordSuccess(rateLimitKey)
+                        try await handleRequest(for: makeRequest(router)(route))
                     } catch {
-                        await rateLimiter.passwordChangeRequest.recordFailure(rateLimitKey)
                         throw Abort(.unauthorized)
                     }
                 }

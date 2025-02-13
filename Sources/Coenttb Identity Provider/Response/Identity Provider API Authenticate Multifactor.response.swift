@@ -11,7 +11,7 @@ import Coenttb_Web
 import Identity_Provider
 
 extension Identity.Provider.API.Authenticate.Multifactor {
-    public static func response(
+    package static func response(
         multifactor: Identity.Provider.API.Authenticate.Multifactor,
         logoutRedirectURL: () -> URL
     ) async throws -> any AsyncResponseEncodable {

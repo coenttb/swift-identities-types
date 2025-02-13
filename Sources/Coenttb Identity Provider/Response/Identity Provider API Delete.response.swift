@@ -11,9 +11,8 @@ import Coenttb_Web
 import Identity_Provider
 
 extension Identity.Provider.API.Delete {
-    public static func response(
-        delete: Identity.Provider.API.Delete,
-        logoutRedirectURL: () -> URL
+    package static func response(
+        delete: Identity.Provider.API.Delete
     ) async throws -> any AsyncResponseEncodable {
         
         @Dependency(Identity.Provider.Client.self) var client

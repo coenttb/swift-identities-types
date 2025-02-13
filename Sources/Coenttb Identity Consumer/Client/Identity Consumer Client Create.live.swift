@@ -16,56 +16,35 @@ import RateLimiter
 import JWT
 
 extension Identity.Consumer.Client.Create {
-    public static func live(
+    package static func live(
         provider: Identity.Consumer.Client.Live.Provider,
         router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
         makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
     ) -> Self {
         
-        @Dependency(RateLimiters.self) var rateLimiter
-        
         return .init(
             request: { email, password in
-                let apiRouter = router
-                    .baseURL(provider.baseURL.absoluteString)
-                    .eraseToAnyParserPrinter()
-                
-                let makeRequest = makeRequest(apiRouter)
+                let route: Identity.Consumer.API = .create(.request(.init(email: email, password: password)))
+                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
                 
                 @Dependency(URLRequest.Handler.self) var handleRequest
                 
-                let rateLimit = await rateLimiter.createRequest.checkLimit(email.rawValue)
-                guard rateLimit.isAllowed else {
-                    throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
-                }
-                
                 do {
-                    try await handleRequest(for: makeRequest(.create(.request(.init(email: email, password: password)))))
-                    await rateLimiter.createRequest.recordSuccess(email.rawValue)
+                    try await handleRequest(for: makeRequest(router)(route))
                 } catch {
-                    await rateLimiter.createRequest.recordFailure(email.rawValue)
                     throw Abort(.internalServerError)
                 }
             },
             verify: { email, token in
-                let apiRouter = router
-                    .baseURL(provider.baseURL.absoluteString)
-                    .eraseToAnyParserPrinter()
-                
-                let makeRequest = makeRequest(apiRouter)
-                
+                let route: Identity.Consumer.API = .create(.verify(.init(email: email, token: token)))
+                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
+
                 @Dependency(URLRequest.Handler.self) var handleRequest
                 
-                let rateLimit = await rateLimiter.createVerify.checkLimit(token)
-                guard rateLimit.isAllowed else {
-                    throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
-                }
-                
                 do {
-                    try await handleRequest(for: makeRequest(.create(.verify(.init(email: email, token: token)))))
-                    await rateLimiter.createVerify.recordSuccess(token)
+                    try await handleRequest(for: makeRequest(router)(route))
+
                 } catch {
-                    await rateLimiter.createVerify.recordFailure(token)
                     throw Abort(.internalServerError)
                 }
             }

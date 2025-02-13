@@ -15,82 +15,42 @@ import Coenttb_Vapor
 import RateLimiter
 import JWT
 
+
 extension Identity.Consumer.Client.EmailChange {
-    public static func live(
+    package static func live(
         provider: Identity.Consumer.Client.Live.Provider,
         router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
         makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
     ) -> Self {
-        
-        @Dependency(RateLimiters.self) var rateLimiter
-        @Dependency(URLRequest.Handler.self) var handleRequest
-        
         return .init(
             request: { newEmail in
-                                
-                guard let newEmail = newEmail?.rawValue
-                else {
+                guard let newEmail = newEmail?.rawValue else {
                     throw Abort(.conflict, reason: "Email address cannot be nil")
                 }
                 
-                let rateLimit = await rateLimiter.emailChangeRequest.checkLimit(newEmail)
-                
-                guard rateLimit.isAllowed
-                else {
-                    guard let nextAttempt = rateLimit.nextAllowedAttempt
-                    else { throw Abort(.tooManyRequests) }
-                    
-                    throw Abort.rateLimit(delay: nextAttempt.timeIntervalSinceNow)
-                }
-                
-                @Dependency(\.request) var request
-                
-                let apiRouter = router
-                    .baseURL(provider.baseURL.absoluteString)
-                    .setAccessToken(request?.cookies.accessToken)
-                    .setRefreshToken(request?.cookies.refreshToken)
-                    .setReauthorizationToken(request?.cookies.reauthorizationToken)
-                    .setBearerAuth(request?.cookies.accessToken?.string)
-                    .eraseToAnyParserPrinter()
+                let route: Identity.Consumer.API = .emailChange(.request(.init(newEmail: newEmail)))
+                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
+
+                @Dependency(URLRequest.Handler.self) var handleRequest
                 
                 do {
-                    let response = try await handleRequest(
-                        for: makeRequest(apiRouter)(.emailChange(.request(.init(newEmail: newEmail)))),
+                    return try await handleRequest(
+                        for: makeRequest(router)(route),
                         decodingTo: Identity.Consumer.Client.EmailChange.Request.Result.self
                     )
-                    await rateLimiter.emailChangeRequest.recordSuccess(newEmail)
-                    return response
-                }
-                catch {
-                    await rateLimiter.emailChangeRequest.recordFailure(newEmail)
-                    
+                } catch {
                     throw Abort(.unauthorized)
                 }
-                
             },
             confirm: { token in
-                let rateLimit = await rateLimiter.emailChangeConfirm.checkLimit(token)
-                guard rateLimit.isAllowed else {
-                    throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
-                }
+                let route: Identity.Consumer.API = .emailChange(.confirm(.init(token: token)))
+                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
                 
-                @Dependency(\.request) var request
-                
-                let apiRouter = router
-                    .baseURL(provider.baseURL.absoluteString)
-                    .setAccessToken(request?.cookies.accessToken)
-                    .setRefreshToken(request?.cookies.refreshToken)
-                    .setBearerAuth(request?.cookies.accessToken?.string)
-                    .eraseToAnyParserPrinter()
-                
+                @Dependency(URLRequest.Handler.self) var handleRequest
+
                 do {
-                    try await handleRequest(for: makeRequest(apiRouter)(.emailChange(.confirm(.init(token: token)))))
-                    
-                    await rateLimiter.emailChangeConfirm.recordSuccess(token)
-                }
-                catch {
-                    await rateLimiter.emailChangeConfirm.recordFailure(token)
-                    
+                    try await handleRequest(for: makeRequest(router)(route))
+                } catch {
                     throw Abort(.internalServerError)
                 }
             }

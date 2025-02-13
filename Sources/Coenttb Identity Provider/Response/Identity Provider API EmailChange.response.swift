@@ -11,9 +11,8 @@ import Coenttb_Web
 import Identity_Provider
 
 extension Identity.Provider.API.EmailChange {
-    public static func response(
-        emailChange: Identity.Provider.API.EmailChange,
-        logoutRedirectURL: () -> URL
+    package static func response(
+        emailChange: Identity.Provider.API.EmailChange
     ) async throws -> any AsyncResponseEncodable {
         
         @Dependency(Identity.Provider.Client.self) var client
