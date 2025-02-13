@@ -1,23 +1,22 @@
+import Coenttb_Identity_Shared
 import Dependencies
 @preconcurrency import Fluent
 import Foundation
-@preconcurrency import Vapor
 import JWT
-import Coenttb_Identity_Shared
 import RateLimiter
+@preconcurrency import Vapor
 
 extension Identity.Provider {
     public struct ApiKeyAuthenticator: AsyncBearerAuthenticator {
-        
-        
+
         let issuer: String
-        
+
         public init(
             issuer: String = ._coenttbIssuer
         ) {
             self.issuer = issuer
         }
-        
+
         public func authenticate(bearer: BearerAuthorization, for request: Request) async throws {
             do {
                 guard let apiKey = try await Database.ApiKey.query(on: request.db)
@@ -26,18 +25,18 @@ extension Identity.Provider {
                     .with(\.$identity)
                     .first()
                 else { return }
-                
+
                 guard Date() < apiKey.validUntil else {
                     apiKey.isActive = false
                     try await apiKey.save(on: request.db)
                     return
                 }
-                
+
                 @Dependency(RateLimiters.self) var rateLimiter
-                
+
                 guard let keyId = apiKey.id?.uuidString else { return }
                 let rateLimit = await rateLimiter.apiKey.checkLimit(keyId)
-                
+
                 guard rateLimit.isAllowed else {
                     if let nextAllowed = rateLimit.nextAllowedAttempt {
                         request.headers.replaceOrAdd(
@@ -55,14 +54,14 @@ extension Identity.Provider {
                     )
                     throw Abort(.tooManyRequests)
                 }
-                
+
                 let response = try await apiKey.identity.generateJWTResponse()
-                
+
                 request.headers.bearerAuthorization = .init(token: response.accessToken.value)
-                
+
                 apiKey.lastUsedAt = Date()
                 try await apiKey.save(on: request.db)
-                
+
                 request.headers.replaceOrAdd(
                     name: "X-RateLimit-Limit",
                     value: "\(apiKey.rateLimit)"
@@ -71,12 +70,12 @@ extension Identity.Provider {
                     name: "X-RateLimit-Remaining",
                     value: "\(rateLimit.remainingAttempts)"
                 )
-                
+
                 request.auth.login(apiKey.identity)
-                
+
                 await rateLimiter.apiKey.recordSuccess(keyId)
             } catch {
-                
+
             }
         }
     }

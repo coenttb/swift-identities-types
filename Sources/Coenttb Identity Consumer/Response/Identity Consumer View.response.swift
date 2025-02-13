@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 16/10/2024.
 //
 
-import Coenttb_Web
 import Coenttb_Vapor
+import Coenttb_Web
 import Favicon
 import Identity_Consumer
 
@@ -80,11 +80,11 @@ extension Identity.Consumer.View {
             return router.url(for: .api(.reauthorize(.init())))
         }()
     ) async throws -> any AsyncResponseEncodable {
-        
+
         @Dependency(Identity.Consumer.Client.self) var client
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
-        
+
         do {
             if let response = try Identity.Consumer.View.protect(
                 view: view,
@@ -97,8 +97,7 @@ extension Identity.Consumer.View {
         } catch {
             throw Abort(.unauthorized)
         }
-        
-        
+
         func accountDefaultContainer<Content: HTML>(
             @HTMLBuilder _ content: @escaping () -> Content
         ) -> Identity.Consumer.HTMLDocument<_HTMLTuple<HTMLInlineStyle<Identity.Consumer.View.Logo>, Content>> {
@@ -116,12 +115,12 @@ extension Identity.Consumer.View {
                 body: {
                     logo
                         .margin(top: .medium)
-                    
+
                     content()
                 }
             )
         }
-        
+
         switch view {
         case let .create(create):
             switch create {
@@ -144,7 +143,7 @@ extension Identity.Consumer.View {
             }
         case .delete:
             fatalError()
-            
+
         case .authenticate(let authenticate):
             switch authenticate {
             case .credentials:
@@ -160,37 +159,36 @@ extension Identity.Consumer.View {
             case .multifactor(let multifactor):
                 fatalError()
             }
-            
-            
+
         case .logout:
             try? await client.logout()
-            
+
             let response = Response.success(true)
             var accessToken = request.cookies.accessToken
             accessToken?.expires = .distantPast
-            
+
             var refreshToken = request.cookies.refreshToken
             refreshToken?.expires = .distantPast
-            
+
             var reauthorizationToken = request.cookies.reauthorizationToken
             reauthorizationToken?.expires = .distantPast
-             
+
             response.cookies.accessToken = accessToken
             response.cookies.refreshToken = refreshToken
             response.cookies.reauthorizationToken = reauthorizationToken
-            
+
             let html = accountDefaultContainer {
                 PageHeader(title: "Hope to see you soon!") {}
             }
-            
+
             response.headers.contentType = .html
-            
+
             let bytes: ContiguousArray<UInt8> = html.render()
-            
+
             response.body = .init(data: Data(bytes))
 
             return response
-            
+
         case let .password(password):
             switch password {
             case .reset(let reset):
@@ -203,7 +201,7 @@ extension Identity.Consumer.View {
                             primaryColor: primaryColor
                         )
                     }
-                    
+
                 case .confirm(let confirm):
                     return accountDefaultContainer {
                         Identity.Consumer.View.Password.Reset.Confirm(
@@ -215,7 +213,7 @@ extension Identity.Consumer.View {
                         )
                     }
                 }
-                
+
             case .change(let change):
                 switch change {
                 case .request:
@@ -228,20 +226,20 @@ extension Identity.Consumer.View {
                     }
                 }
             }
-            
+
         case .emailChange(let emailChange):
             switch emailChange {
             case .request:
                 do {
-                    
+
                     guard let requestToken = request.cookies.reauthorizationToken?.string
                     else { throw Abort(.internalServerError) }
-                    
+
                     try await request.jwt.verify(
                         requestToken,
                         as: JWT.Token.Reauthorization.self
                     )
-                    
+
                     return accountDefaultContainer {
                         Identity.Consumer.View.EmailChange.Request(
                             formActionURL: emailChangeRequestAction,
@@ -249,7 +247,7 @@ extension Identity.Consumer.View {
                             primaryColor: primaryColor
                         )
                     }
-                    
+
                 } catch {
                     return accountDefaultContainer {
                         Identity.Consumer.View.Reauthorize(
@@ -261,11 +259,11 @@ extension Identity.Consumer.View {
                         )
                     }
                 }
-                
+
             case .confirm(let confirm):
-                
+
                 try await client.emailChange.confirm(token: confirm.token)
-                
+
                 return accountDefaultContainer {
                     Identity.Consumer.View.EmailChange.Confirm(
                         redirect: emailChangeConfirmSuccessRedirect,
@@ -286,5 +284,3 @@ extension Identity.Consumer.View {
         }
     }
 }
-
-

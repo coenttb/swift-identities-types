@@ -5,11 +5,11 @@
 //  Created by Coen ten Thije Boonkkamp on 31/01/2025.
 //
 
+import Coenttb_Identity_Shared
 import Dependencies
 @preconcurrency import Fluent
 import Foundation
 @preconcurrency import Vapor
-import Coenttb_Identity_Shared
 
 extension Database.MultifactorAuthentication {
     package final class Challenge: Model, Content, @unchecked Sendable {
@@ -65,12 +65,11 @@ extension Database.MultifactorAuthentication {
     }
 }
 
-
 extension Database.MultifactorAuthentication.Challenge {
     package enum Migration {
         package struct Create: AsyncMigration {
             package var name: String = "Identity_Provider.MultifactorAuthentication.Challenge.Migration.Create"
-            
+
             package init() {}
 
             package func prepare(on database: Fluent.Database) async throws {

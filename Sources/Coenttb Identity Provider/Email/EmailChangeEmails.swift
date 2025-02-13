@@ -5,9 +5,9 @@
 //  Created by Coen ten Thije Boonkkamp on 10/10/2024.
 //
 
+import Coenttb_Web
 import Identity_Provider
 import Mailgun
-import Coenttb_Web
 import Messages
 
 extension Email {
@@ -49,8 +49,6 @@ extension Email {
     }
 }
 
-
-
 extension Email.Change {
     public enum Request {
         case notification(Email.Change.Request.Notification)
@@ -58,14 +56,14 @@ extension Email.Change {
 }
 
 extension Email.Change {
-    public enum Confirmation: Sendable  {
+    public enum Confirmation: Sendable {
         case request(Email.Change.Confirmation.Request)
         case notification(Email.Change.Confirmation.Notification)
     }
 }
 
 extension Email.Change.Confirmation {
-    public struct Request: Sendable  {
+    public struct Request: Sendable {
         public let verificationURL: URL
         public let currentEmail: EmailAddress
         public let newEmail: EmailAddress
@@ -86,7 +84,7 @@ extension Email.Change.Confirmation {
 }
 
 extension Email.Change.Request {
-    public struct Notification: Sendable  {
+    public struct Notification: Sendable {
         public let currentEmail: EmailAddress
         public let newEmail: EmailAddress
         public let userName: String?
@@ -104,11 +102,11 @@ extension Email.Change.Request {
 }
 
 extension Email.Change.Confirmation {
-    public enum Notification: Sendable  {
+    public enum Notification: Sendable {
         case currentEmail(CurrentEmail)
         case newEmail(NewEmail)
         
-        public struct Payload: Sendable  {
+        public struct Payload: Sendable {
             public let currentEmail: EmailAddress
             public let newEmail: EmailAddress
             public let userName: String?
@@ -128,6 +126,7 @@ extension Email.Change.Confirmation {
         public typealias NewEmail = Payload
     }
 }
+
 
 extension Email {
     public init(
@@ -194,7 +193,7 @@ extension Email {
         self = .init(
             from: business.fromEmail,
             to: [
-//                emailChangeRequestNotification.userName.map { name in "\(name) <\(emailChangeRequestNotification.currentEmail.rawValue)>" } ?? "\(emailChangeRequestNotification.currentEmail.rawValue)"
+                //                emailChangeRequestNotification.userName.map { name in "\(name) <\(emailChangeRequestNotification.currentEmail.rawValue)>" } ?? "\(emailChangeRequestNotification.currentEmail.rawValue)"
                 emailChangeRequestNotification.currentEmail
             ],
             subject: "\(business.name) | \(subjectAdd)",
@@ -285,7 +284,7 @@ extension Email {
         self = .init(
             from: business.fromEmail,
             to: [
-//                emailChangeConfirmationRequest.userName.map { name in "\(name) <\(emailChangeConfirmationRequest.newEmail.rawValue)>" } ?? "\(emailChangeConfirmationRequest.newEmail.rawValue)"
+                //                emailChangeConfirmationRequest.userName.map { name in "\(name) <\(emailChangeConfirmationRequest.newEmail.rawValue)>" } ?? "\(emailChangeConfirmationRequest.newEmail.rawValue)"
                 emailChangeConfirmationRequest.newEmail
             ],
             subject: "\(business.name) | \(subjectAdd)",
@@ -294,7 +293,6 @@ extension Email {
         )
     }
 }
-
 
 extension Email {
     public init(
@@ -363,7 +361,7 @@ extension Email {
             self = .init(
                 from: business.fromEmail,
                 to: [
-//                    notification.userName.map { name in "\(name) <\(notification.currentEmail.rawValue)>" } ?? "\(notification.currentEmail.rawValue)"
+                    //                    notification.userName.map { name in "\(name) <\(notification.currentEmail.rawValue)>" } ?? "\(notification.currentEmail.rawValue)"
                     notification.currentEmail
                 ],
                 subject: "\(business.name) | \(subjectAdd)",
@@ -432,7 +430,7 @@ extension Email {
             self = .init(
                 from: business.fromEmail,
                 to: [
-//                    notification.userName.map { name in "\(name) <\(notification.newEmail.rawValue)>" } ?? "\(notification.newEmail.rawValue)"
+                    //                    notification.userName.map { name in "\(name) <\(notification.newEmail.rawValue)>" } ?? "\(notification.newEmail.rawValue)"
                     notification.newEmail
                 ],
                 subject: "\(business.name) | \(subjectAdd)",

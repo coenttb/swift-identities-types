@@ -5,9 +5,9 @@
 //  Created by Coen ten Thije Boonkkamp on 10/09/2024.
 //
 
-import Foundation
 import Coenttb_Vapor
 import Coenttb_Web
+import Foundation
 import Identity_Provider
 
 extension Identity.Provider.API.Authenticate {
@@ -15,39 +15,29 @@ extension Identity.Provider.API.Authenticate {
         authenticate: Identity.Provider.API.Authenticate,
         logoutRedirectURL: () -> URL
     ) async throws -> any AsyncResponseEncodable {
-        
+
         @Dependency(Identity.Provider.Client.self) var client
 
-        do {
-            if let response = try Identity.API.protect(api: .authenticate(authenticate), with: Database.Identity.self) {
-                return response
-            }
-        } catch {
-            throw Abort(.unauthorized)
-        }
-        
         switch authenticate {
         case .credentials(let credentials):
             let data = try await client.authenticate.credentials(credentials)
             return Response.success(true, data: data)
-            
+
         case .token(let token):
             switch token {
             case .access(let access):
-                try await client.authenticate.token.access(access.token)
+                try await client.authenticate.token.access(access)
                 return Response.success(true)
-                
+
             case .refresh(let refresh):
-                let data = try await client.authenticate.token.refresh(refresh.token)
+                let data = try await client.authenticate.token.refresh(refresh)
                 return Response.success(true, data: data)
             }
         case .apiKey(let apiKey):
-            let data = try await client.authenticate.apiKey(apiKey: apiKey.token)
+            let data = try await client.authenticate.apiKey(apiKey)
             return Response.success(true, data: data)
-            
+
         case .multifactor(let multifactor):
-            
-            
             return try await Identity.Provider.API.Authenticate.Multifactor.response(
                 multifactor: multifactor,
                 logoutRedirectURL: logoutRedirectURL

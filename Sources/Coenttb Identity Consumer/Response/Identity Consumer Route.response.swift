@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 16/10/2024.
 //
 
-import Coenttb_Web
 import Coenttb_Vapor
+import Coenttb_Web
 import Favicon
 import Identity_Consumer
 
@@ -77,9 +77,9 @@ extension Identity.Consumer.Route {
        emailChangeReauthorizationSuccessRedirect: URL,
        emailChangeConfirmSuccessRedirect: URL
     ) async throws -> any AsyncResponseEncodable {
-        
+
         @Dependency(Identity.Consumer.Client.self) var client
-        
+
         do {
             if let response = try Identity.Consumer.Route.protect(
                 route: route,
@@ -92,14 +92,14 @@ extension Identity.Consumer.Route {
         } catch {
             throw Abort(.unauthorized)
         }
-        
+
         switch route {
         case .api(let api):
             return try await Identity.Consumer.API.response(
                 api: api,
                 tokenDomain: tokenDomain
             )
-            
+
         case .view(let view):
             return try await Identity.Consumer.View.response(
                 view: view,
@@ -124,4 +124,3 @@ extension Identity.Consumer.Route {
         }
     }
 }
-

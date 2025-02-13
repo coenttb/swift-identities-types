@@ -21,13 +21,13 @@ extension Abort {
         let delay = nextAllowedAttempt.map {
             max(1, Int($0.timeIntervalSinceNow))
         } ?? Int(defaultDelay)
-        
+
         return Abort(
             .tooManyRequests,
             headers: ["Retry-After": "\(delay)"]
         )
     }
-    
+
     /// Creates a rate limit error response with Retry-After header using a time interval
     /// - Parameter delay: The time interval until the next allowed attempt
     /// - Returns: An Abort error with 429 status and Retry-After header

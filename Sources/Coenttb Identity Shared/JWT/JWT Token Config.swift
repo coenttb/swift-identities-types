@@ -7,10 +7,10 @@ extension JWT.Token {
     public struct Config: Codable, Hashable, Sendable {
         public static let accessTokenLifetime: TimeInterval = 60 * 15     // 15 minutes
         public static let refreshTokenLifetime: TimeInterval = 60 * 60 * 24 * 7  // 7 days
-        
+
         public let issuer: String
         public let expiration: TimeInterval
-        
+
         private init(
             issuer: String,
             expiration: TimeInterval
@@ -57,7 +57,6 @@ extension DependencyValues {
     }
 }
 
-
 extension JWT.Token.Config {
     public static func forAccessToken(
         issuer: String,
@@ -68,7 +67,7 @@ extension JWT.Token.Config {
             expiration: expiration
         )
     }
-    
+
     public static func forRefreshToken(
         issuer: String,
         expiration: TimeInterval = Self.refreshTokenLifetime
@@ -78,7 +77,7 @@ extension JWT.Token.Config {
             expiration: expiration
         )
     }
-    
+
     public static func forReauthorizationToken(
         issuer: String,
         expiration: TimeInterval = Self.refreshTokenLifetime
@@ -89,4 +88,3 @@ extension JWT.Token.Config {
         )
     }
 }
-

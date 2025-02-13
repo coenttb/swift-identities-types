@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 20/09/2024.
 //
 
-import Foundation
 import Coenttb_Web
+import Foundation
 import Identity_Consumer
 
 extension Identity.Consumer.View.Authenticate.Multifactor {
@@ -16,4 +16,3 @@ extension Identity.Consumer.View.Authenticate.Multifactor {
         }
     }
 }
-

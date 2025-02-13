@@ -5,15 +5,15 @@
 //  Created by Coen ten Thije Boonkkamp on 17/10/2024.
 //
 
-import Foundation
 import Coenttb_Web
+import Foundation
 import Identity_Consumer
 
 extension Identity.Consumer.View.EmailChange {
     package struct Confirm: HTML {
         let redirect: URL
         let primaryColor: HTMLColor
-        
+
         package init(
             redirect: URL,
             primaryColor: HTMLColor
@@ -21,9 +21,9 @@ extension Identity.Consumer.View.EmailChange {
             self.redirect = redirect
             self.primaryColor = primaryColor
         }
-        
+
         private static var confirmationId: String { "email-change-confirmation-id" }
-        
+
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
@@ -37,7 +37,7 @@ extension Identity.Consumer.View.EmailChange {
                     .textAlign(.center)
                     .color(.primary)
                     .margin(bottom: .medium)
-                    
+
                     Paragraph {
                         TranslatedString(
                             dutch: "Je wordt nu doorgestuurd naar je account pagina.",
@@ -48,7 +48,7 @@ extension Identity.Consumer.View.EmailChange {
                     .textAlign(.center)
                     .color(.secondary)
                     .margin(bottom: .large)
-                    
+
                     Link(
                         TranslatedString(
                             dutch: "Klik hier als je niet automatisch wordt doorgestuurd",
@@ -76,7 +76,7 @@ extension Identity.Consumer.View.EmailChange {
                 .textAlign(.center)
             }
             .id(Self.confirmationId)
-            
+
             script {"""
                 document.addEventListener('DOMContentLoaded', function() {
                     setTimeout(function() {

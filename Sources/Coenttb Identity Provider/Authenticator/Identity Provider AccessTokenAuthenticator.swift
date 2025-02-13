@@ -5,18 +5,17 @@
 //  Created by Coen ten Thije Boonkkamp on 06/02/2025.
 //
 
-
-import Dependencies
-@preconcurrency import Vapor
-import JWT
 import Coenttb_Identity_Shared
+import Dependencies
+import JWT
+@preconcurrency import Vapor
 
 extension Identity.Provider {
-    public struct AccessTokenAuthenticator: AsyncBearerAuthenticator {                
+    public struct AccessTokenAuthenticator: AsyncBearerAuthenticator {
         public init() {}
-        
+
         @Dependency(Identity.Provider.Client.self) var client
-        
+
         public func authenticate(
             bearer: BearerAuthorization,
             for request: Request
@@ -25,7 +24,7 @@ extension Identity.Provider {
                 try await client.authenticate.token.access(token: bearer.token)
                 print("successful access token authentication")
             } catch {
-                
+
             }
         }
     }

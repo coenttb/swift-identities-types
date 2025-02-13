@@ -79,7 +79,7 @@
       "location" : "https://github.com/coenttb/coenttb-web",
       "state" : {
         "branch" : "main",
-        "revision" : "d441b6ad580145c9c6165188d0ea7a19ed69533e"
+        "revision" : "f496cf30630322a72ea04ba8b531c976f56c6ed5"
       }
     },
     {
@@ -430,7 +430,7 @@
       "location" : "https://github.com/coenttb/swift-identity",
       "state" : {
         "branch" : "main",
-        "revision" : "2745be9b439028e2726746c18bdb8dc08c8fdcc1"
+        "revision" : "5dae0010d24fa7064938a16e38c7ee1288ff7a55"
       }
     },
     {
@@ -618,8 +618,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/vapor.git",
       "state" : {
-        "revision" : "4f2dcf7d3b47d0af25137ee586405bdffb584045",
-        "version" : "4.113.1"
+        "revision" : "a425e32f9b9d19c0ecab952cb4484c1c15e2536f",
+        "version" : "4.113.2"
       }
     },
     {

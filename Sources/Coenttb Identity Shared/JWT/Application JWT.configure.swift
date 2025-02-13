@@ -21,18 +21,18 @@ extension Application.JWT {
             )
             await application.jwt.keys.add(eddsa: privateKey)
         }
-        
+
         let publicKey = try EdDSA.PublicKey(
             x: publicKey,
             curve: .ed25519
         )
         await application.jwt.keys.add(eddsa: publicKey)
-        
+
 #if DEBUG
         if privateKey == nil {
             let key = try EdDSA.PrivateKey(curve: .ed25519)
             await application.jwt.keys.add(eddsa: key)
-            
+
             print("Development JWT Keys - DO NOT USE IN PRODUCTION")
             print("Private Key (d):", String(describing: key))
             print("Public Key (x):", String(describing: key))

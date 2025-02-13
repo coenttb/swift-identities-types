@@ -9,34 +9,34 @@ extension Database {
 
         @ID(key: .id)
         package var id: UUID?
-        
+
         @Field(key: FieldKeys.name)
         package var name: String
-        
+
         @Field(key: FieldKeys.key)
         package var key: String
-        
+
         @Field(key: FieldKeys.scopes)
         package var scopes: [String]
-        
+
         @Parent(key: FieldKeys.identityId)
         package var identity: Identity
-        
+
         @Field(key: FieldKeys.isActive)
         package var isActive: Bool
-        
+
         @Field(key: FieldKeys.rateLimit)
         package var rateLimit: Int
-        
+
         @Field(key: FieldKeys.validUntil)
         package var validUntil: Date
-        
+
         @Timestamp(key: FieldKeys.createdAt, on: .create)
         package var createdAt: Date?
-        
+
         @OptionalField(key: FieldKeys.lastUsedAt)
         package var lastUsedAt: Date?
-        
+
         package enum FieldKeys {
             static let name: FieldKey = "name"
             static let key: FieldKey = "key"
@@ -50,7 +50,7 @@ extension Database {
         }
 
         package init() {}
-        
+
         package init(
             id: UUID? = nil,
             name: String,
@@ -68,13 +68,13 @@ extension Database {
             self.rateLimit = rateLimit
             self.validUntil = validUntil
         }
-        
+
         private static func generateKey() -> String {
            @Dependency(\.envVars.appEnv) var appEnv
            @Dependency(\.uuid) var uuid
-           
+
            let prefix = "pk_"
-           
+
            if appEnv == .development {
                let generatedUuid = uuid()
                print("Generated UUID: \(generatedUuid)")
@@ -87,13 +87,12 @@ extension Database {
     }
 }
 
-
 extension Database.ApiKey {
     package enum Migration {
         package struct Create: AsyncMigration {
-            
+
             package var name: String = "Identity_Provider.ApiKey.Migration.Create"
-            
+
             package func prepare(on database: Fluent.Database) async throws {
                 try await database.schema(Database.ApiKey.schema)
                     .id()
@@ -113,8 +112,8 @@ extension Database.ApiKey {
             package func revert(on database: Fluent.Database) async throws {
                 try await database.schema(Database.ApiKey.schema).delete()
             }
-            
-            package init(){}
+
+            package init() {}
         }
     }
 }

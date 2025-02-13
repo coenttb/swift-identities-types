@@ -5,12 +5,10 @@
 //  Created by Coen ten Thije Boonkkamp on 20/09/2024.
 //
 
-import Foundation
 import Coenttb_Web
+import Foundation
 import Identity_Consumer
 import Identity_Shared
-
-
 
 extension Identity.Consumer.View {
     package struct Reauthorize<CodingKey: RawRepresentable>: HTML where CodingKey.RawValue == String {
@@ -36,9 +34,9 @@ extension Identity.Consumer.View {
             self.confirmFormAction = confirmFormAction
             self.redirectOnSuccess = redirectOnSuccess
         }
-        
+
         package var body: some HTML {
-                
+
                 PageModule(theme: .confirmAccess) {
                     VStack {
                         HTMLGroup {
@@ -51,20 +49,20 @@ extension Identity.Consumer.View {
                               )
                             **\(currentUserName)**.
                             """ }
-                        
+
                             form {
                                 VStack {
                                     Input.default(self.codingKey)
                                         .type(.password)
                                         .placeholder(String.password.capitalizingFirstLetter().description)
-                                    
-                                    Link(href: passwordResetHref.relativePath)    {
+
+                                    Link(href: passwordResetHref.relativePath) {
                                         String.forgot_password.capitalizingFirstLetter().questionmark
                                     }
                                     .linkColor(primaryColor)
                                     .fontSize(.secondary)
                                     .display(.inlineBlock)
-                                    
+
                                     VStack {
                                         Button(
                                             tag: button,
@@ -76,7 +74,7 @@ extension Identity.Consumer.View {
                                         .type(.submit)
                                         .width(100.percent)
                                         .justifyContent(.center)
-                                        
+
     //                                    div {
     //                                        HTMLMarkdown {"""
     //                                        **Tip:** You are entering sudo mode. After you've performed a sudo-protected action, you'll only be asked to re-authenticate again after a few hours of inactivity.
@@ -105,53 +103,51 @@ extension Identity.Consumer.View {
                         .maxWidth(20.rem)
                         .maxWidth(24.rem, media: .mobile)
                         .margin(horizontal: .auto)
-                        
-                        
+
                     }
                     .width(100.percent)
-                    
-                    
+
                 } title: {
                     Header(3) {
                         String.confirm_access.capitalizingFirstLetter()
                     }
                 }
-                
+
                 script {"""
                    document.addEventListener('DOMContentLoaded', function() {
-                       const form = document.getElementById("form-confirm-access"); 
-                       const formContainer = form;  
-                
+                       const form = document.getElementById("form-confirm-access");
+                       const formContainer = form;
+
                        form.addEventListener('submit', async function(event) {
-                           event.preventDefault();  
+                           event.preventDefault();
                            const formData = new FormData(form);
-                           const password = formData.get('\(Identity.Authentication.Credentials.CodingKeys.password.rawValue)'); 
-                
+                           const password = formData.get('\(Identity.Authentication.Credentials.CodingKeys.password.rawValue)');
+
                            try {
-                               
+
                                const response = await fetch(form.action, {
-                                   method: form.method, 
+                                   method: form.method,
                                    headers: {
-                                       'Content-Type': 'application/x-www-form-urlencoded',  
-                                       'Accept': 'application/json'  
+                                       'Content-Type': 'application/x-www-form-urlencoded',
+                                       'Accept': 'application/json'
                                    },
                                    body: new URLSearchParams({
                                         \(Identity.Authentication.Credentials.CodingKeys.password.rawValue): password
-                                   }).toString()  
+                                   }).toString()
                                });
-                
+
                                if (!response.ok) {
                                    throw new Error('Network response was not ok');
                                }
-                
+
                                const data = await response.json();
-                
+
                                if (data.success) {
-                                   window.location.href = "\(redirectOnSuccess.relativePath)";  
+                                   window.location.href = "\(redirectOnSuccess.relativePath)";
                                } else {
                                    throw new Error(data.message || 'Confirmation failed');
                                }
-                
+
                            } catch (error) {
                                console.error('Error:', error);
                                const messageDiv = document.createElement('div');
@@ -159,19 +155,15 @@ extension Identity.Consumer.View {
                                messageDiv.style.color = 'red';
                                messageDiv.style.textAlign = 'center';
                                messageDiv.style.marginTop = '10px';
-                               formContainer.appendChild(messageDiv);  
+                               formContainer.appendChild(messageDiv);
                            }
                        });
                    });
                 """}
-            
+
         }
     }
 }
-
-
-
-
 
 extension PageModule.Theme {
     static var confirmAccess: Self {

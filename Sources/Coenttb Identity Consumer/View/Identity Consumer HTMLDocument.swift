@@ -24,7 +24,7 @@ extension Identity.Consumer {
         let termsOfUse: URL
         let privacyStatement: URL
         let _body: Body
-        
+
         package init(
             view: Identity.Consumer.View,
             title: @escaping (Identity.Consumer.View) -> String,
@@ -50,9 +50,9 @@ extension Identity.Consumer {
             self.privacyStatement = privacyStatement
             self._body = body()
         }
-        
+
         @Dependency(\.languages) var languages
-        
+
         package var head: some HTML {
             CoenttbWebHTMLDocumentHeader(
                 title: title(view),
@@ -67,26 +67,21 @@ extension Identity.Consumer {
                 favicons: { favicons }
             )
         }
-        
+
         @Dependencies.Dependency(\.language) var language
-        
+
         package var body: some HTML {
             HTMLGroup {
                 _body
-                
+
                 IdentityFooter(
                     termsOfUse: self.termsOfUse,
                     privacyStatement: self.privacyStatement
                 )
-                
+
             }
             .dependency(\.language, language)
             .linkColor(self.primaryColor)
         }
     }
 }
-
-
-
-
-

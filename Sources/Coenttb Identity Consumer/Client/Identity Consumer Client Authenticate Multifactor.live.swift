@@ -5,11 +5,11 @@
 //  Created by Coen ten Thije Boonkkamp on 31/01/2025.
 //
 
-import Foundation
-import DependenciesMacros
-import Coenttb_Web
-import Identity_Consumer
 import Coenttb_Identity_Shared
+import Coenttb_Web
+import DependenciesMacros
+import Foundation
+import Identity_Consumer
 
 extension Identity.Consumer.Client.Authenticate.Multifactor {
     package static func live(
@@ -17,9 +17,9 @@ extension Identity.Consumer.Client.Authenticate.Multifactor {
         makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ api: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
     ) -> Self {
         let apiRouter = Identity.Consumer.API.Router().baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
-        
+
         @Dependency(URLRequest.Handler.self) var handleRequest
-        
+
         return .init(
             setup: .init(
                 initialize: { method, identifier in
@@ -33,7 +33,7 @@ extension Identity.Consumer.Client.Authenticate.Multifactor {
                         for: makeRequest(apiRouter)(.authenticate(.multifactor(.setup(.confirm(.init(code: code))))))
                     )
                 },
-                resetSecret: { method in
+                resetSecret: { _ in
                     fatalError()
                 }
             ),
@@ -49,7 +49,7 @@ extension Identity.Consumer.Client.Authenticate.Multifactor {
                         for: makeRequest(apiRouter)(.authenticate(.multifactor(.verify(.verify(.init(challengeId: challengeId, code: code))))))
                     )
                 },
-                bypass: { string in
+                bypass: { _ in
                     fatalError()
                 }
             ),

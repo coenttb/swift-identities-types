@@ -1,13 +1,12 @@
+import Coenttb_Identity_Shared
+import Coenttb_Vapor
 import Coenttb_Web
-import Identity_Shared
 import Dependencies
 import EmailAddress
 import Identity_Consumer
-import Coenttb_Identity_Shared
-import Coenttb_Vapor
-import RateLimiter
+import Identity_Shared
 import JWT
-
+import RateLimiter
 
 extension Identity.Consumer.Client {
     public static func live(
@@ -15,7 +14,7 @@ extension Identity.Consumer.Client {
         router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
         makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
     ) -> Self {
-        
+
         @Dependency(RateLimiters.self) var rateLimiter
         @Dependency(URLRequest.Handler.self) var handleRequest
 
@@ -33,18 +32,18 @@ extension Identity.Consumer.Client {
             reauthorize: { password in
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
-     
+
                 let apiRouter = router
                     .setAccessToken(request.cookies.accessToken)
                     .setBearerAuth(request.cookies.accessToken?.string)
                     .baseURL(provider.baseURL.absoluteString)
                     .eraseToAnyParserPrinter()
-                
+
                 return try await handleRequest(
                     for: makeRequest(apiRouter)(.reauthorize(.init(password: password))),
                     decodingTo: JWT.Token.self
                 )
-                
+
             },
             create: .live(
                 provider: provider,
@@ -75,7 +74,7 @@ extension Identity.Consumer.Client {
         public struct Provider {
             public let baseURL: URL
             public let domain: String?
-            
+
             public init(baseURL: URL, domain: String?) {
                 self.baseURL = baseURL
                 self.domain = domain
@@ -85,7 +84,7 @@ extension Identity.Consumer.Client {
 }
 
 extension Identity.Consumer.Client.Live {
-    public static var makeRequest: (AnyParserPrinter<URLRequestData, Identity.Consumer.API>)->(_ route: Identity.Consumer.API) throws -> URLRequest {
+    public static var makeRequest: (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest {
         {
             apiRouter in
             { route in
@@ -102,15 +101,12 @@ extension Identity.Consumer.Client.Live {
     }
 }
 
-
 extension Identity.Consumer.Client {
     public enum Error: Swift.Error {
         case requestError
         case printError
     }
 }
-
-
 
 extension URLRequest {
     /// Sets or removes the Authorization header with a Bearer token
@@ -121,7 +117,7 @@ extension URLRequest {
             setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
     }
-    
+
     /// Sets the refresh token as a cookie
     /// - Parameter token: The refresh token to be set as a cookie. If nil, removes the refresh_token cookie
     public mutating func setRefreshTokenCookie(_ token: String?) {
@@ -133,7 +129,6 @@ extension URLRequest {
     }
 }
 
-
 extension ParserPrinter where Input == URLRequestData {
     @inlinable
     public func cookie(_ name: String, _ value: HTTPCookies.Value) -> BaseURLPrinter<Self> {
@@ -141,28 +136,28 @@ extension ParserPrinter where Input == URLRequestData {
         requestData.headers["cookie", default: []].append("\(name)=\(value.string)"[...])
         return self.baseRequestData(requestData)
     }
-    
+
     @inlinable
      public func cookie(_ name: String, _ value: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
        guard let value = value else { return self.baseRequestData(.init()) }
        return self.cookie(name, value)
      }
-    
+
     @inlinable
     public func setAccessToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
         return self.cookie("access_token", token)
     }
-    
+
     @inlinable
     public func setRefreshToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
         return self.cookie("refresh_token", token)
     }
-    
+
     @inlinable
     public func setReauthorizationToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
         return self.cookie("reauthorization_token", token)
     }
-    
+
     @inlinable
     public func cookies(_ cookies: [String: HTTPCookies.Value]) -> BaseURLPrinter<Self> {
         var requestData = URLRequestData()
@@ -199,7 +194,7 @@ extension ParserPrinter where Input == URLRequestData {
 }
 
 //
-//extension ParserPrinter where Input == URLRequestData {
+// extension ParserPrinter where Input == URLRequestData {
 //    @inlinable
 //    public static func setAccessToken(_ token: String?) -> BaseURLPrinter<Self> {
 //        self.cookie("access_token", token)
@@ -219,4 +214,4 @@ extension ParserPrinter where Input == URLRequestData {
 //    public static func setRefreshToken(_ token: HTTPCookies?) -> BaseURLPrinter<Self> {
 //        self.cookie("refresh_token", token)
 //    }
-//}
+// }

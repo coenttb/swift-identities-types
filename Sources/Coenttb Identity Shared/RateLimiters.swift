@@ -11,7 +11,7 @@ extension RateLimiter {
     package struct Client {
         package let recordSuccess: () async -> Void
         package let recordFailure: () async -> Void
-        
+
         init(limiter: RateLimiter<String>, key: String) {
             self.recordSuccess = { await limiter.recordSuccess(key) }
             self.recordFailure = { await limiter.recordFailure(key) }
@@ -32,7 +32,7 @@ public struct RateLimiters: Sendable {
             }
         }
     )
-    
+
     public let tokenAccess = RateLimiter<String>(
         windows: [
             .minutes(1, maxAttempts: 60),
@@ -45,7 +45,7 @@ public struct RateLimiters: Sendable {
             }
         }
     )
-    
+
     public let tokenRefresh = RateLimiter<String>(
         windows: [
             .minutes(1, maxAttempts: 10),

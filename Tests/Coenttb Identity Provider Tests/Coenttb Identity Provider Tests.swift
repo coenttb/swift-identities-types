@@ -1,11 +1,11 @@
 //  Coenttb_Identity_Provider_Fluent Tests.swift
 
-import Foundation
-import Coenttb_Web
 import Coenttb_Identity_Provider
+import Coenttb_Web
 import DependenciesTestSupport
-import Testing
+import Foundation
 import Mailgun
+import Testing
 
 @Suite(
     "Coenttb_Identity_Provider_Fluent Creation Tests"
@@ -13,7 +13,7 @@ import Mailgun
 )
 struct EmailTests {
     // MARK: - Account Creation Tests
-    
+
     @Test("Creating email with html should render")
     func test1() async throws {
         let email = Email.requestEmailVerification(
@@ -24,9 +24,8 @@ struct EmailTests {
             to: (try! .init("test@test.com")),
             primaryColor: .red
         )
-        
+
         print(email.html)
-        
-        
+
     }
 }

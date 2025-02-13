@@ -1,12 +1,12 @@
 //// Coenttb_Identity_Provider_Fluent Tests extensions.swift
 //
-//import Foundation
-//import Coenttb_Web
-//import Coenttb_Vapor
-//import Identity_Provider_Fluent
-//import FluentSQLiteDriver
+// import Foundation
+// import Coenttb_Web
+// import Coenttb_Vapor
+// import Identity_Provider_Fluent
+// import FluentSQLiteDriver
 //
-//enum ApplicationKey: TestDependencyKey {
+// enum ApplicationKey: TestDependencyKey {
 //    static var testValue: Application {
 //        let app = Application(.testing)
 //        
@@ -21,16 +21,16 @@
 //            
 //        return app
 //    }
-//}
+// }
 //
-//extension DependencyValues {
+// extension DependencyValues {
 //    var application: Application {
 //        get { self[ApplicationKey.self] }
 //        set { self[ApplicationKey.self] = newValue }
 //    }
-//}
+// }
 //
-//private enum RequestKey: DependencyKey {
+// private enum RequestKey: DependencyKey {
 //    static var testValue: Request {
 //        @Dependency(\.application) var app
 //        let req = Request(application: app, on: app.eventLoopGroup.next())
@@ -40,16 +40,16 @@
 //    }
 //    
 //    static let liveValue = testValue
-//}
+// }
 //
-//extension DependencyValues {
+// extension DependencyValues {
 //    var request: Request {
 //        get { self[RequestKey.self] }
 //        set { self[RequestKey.self] = newValue }
 //    }
-//}
+// }
 //
-//extension Coenttb_Identity.Client<TestUser> {
+// extension Coenttb_Identity.Client<TestUser> {
 //    static func makeTest(
 //        currentUserId: UUID? = nil,
 //        currentUserEmail: EmailAddress? = nil
@@ -101,4 +101,4 @@
 //    static var liveTest: Self {
 //        makeTest()
 //    }
-//}
+// }

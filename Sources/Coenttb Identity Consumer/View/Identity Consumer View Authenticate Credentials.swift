@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 20/09/2024.
 //
 
-import Foundation
 import Coenttb_Web
+import Foundation
 import Identity_Consumer
 
 extension Identity.Consumer.View.Authenticate {
@@ -17,7 +17,7 @@ extension Identity.Consumer.View.Authenticate {
         let accountCreateHref: URL
         let loginFormAction: URL
         let loginSuccessRedirect: URL
-        
+
         package init(
             primaryColor: HTMLColor,
             passwordResetHref: URL,
@@ -31,9 +31,9 @@ extension Identity.Consumer.View.Authenticate {
             self.loginFormAction = loginFormAction
             self.loginSuccessRedirect = loginSuccessRedirect
         }
-        
+
         private static let form_id: String = "login-form-id"
-        
+
         static func handleError(container: String, message: String) -> String {
             #"""
             console.error('Error:', error);
@@ -42,12 +42,12 @@ extension Identity.Consumer.View.Authenticate {
             messageDiv.style.color = 'red';
             messageDiv.style.textAlign = 'center';
             messageDiv.style.marginTop = '10px';
-            \#(container).appendChild(messageDiv);  
+            \#(container).appendChild(messageDiv);
             """#
         }
-        
+
         package var body: some HTML {
-            
+
             PageModule(theme: .login) {
                 form {
                     VStack {
@@ -55,18 +55,18 @@ extension Identity.Consumer.View.Authenticate {
                             .type(.email)
                             .placeholder(String.email.capitalizingFirstLetter().description)
                             .focusOnPageLoad()
-                        
+
                         Input.default(Identity.Authentication.Credentials.CodingKeys.password)
                             .type(.password)
                             .placeholder(String.password.capitalizingFirstLetter().description)
-                        
+
                         Link(href: passwordResetHref.relativePath) {
                             String.forgot_password.capitalizingFirstLetter().questionmark
                         }
                         .linkColor(primaryColor)
                         .fontSize(.secondary)
                         .display(.inlineBlock)
-                        
+
                         VStack {
                             Button(
                                 tag: button,
@@ -78,7 +78,7 @@ extension Identity.Consumer.View.Authenticate {
                             .type(.submit)
                             .width(100.percent)
                             .justifyContent(.center)
-                            
+
                             div {
                                 HTMLText("\(String.dont_have_an_account.capitalizingFirstLetter().questionmark) ")
                                 Link(href: accountCreateHref.relativePath) {
@@ -107,44 +107,44 @@ extension Identity.Consumer.View.Authenticate {
                     String.welcome_back.capitalizingFirstLetter()
                 }
             }
-            
+
             script {#"""
             document.addEventListener('DOMContentLoaded', function() {
-                const form = document.getElementById("\#(Self.form_id)");   
-            
+                const form = document.getElementById("\#(Self.form_id)");
+
                 form.addEventListener('submit', async function(event) {
-                    event.preventDefault();  
-            
+                    event.preventDefault();
+
                     const formData = new FormData(form);
-                    const email = formData.get('\#(Identity.Authentication.Credentials.CodingKeys.email.rawValue)');      
-                    const password = formData.get('\#(Identity.Authentication.Credentials.CodingKeys.password.rawValue)'); 
-                
+                    const email = formData.get('\#(Identity.Authentication.Credentials.CodingKeys.email.rawValue)');
+                    const password = formData.get('\#(Identity.Authentication.Credentials.CodingKeys.password.rawValue)');
+
                     try {
                         const response = await fetch(form.action, {
-                            method: form.method, 
+                            method: form.method,
                             headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',  
-                                'Accept': 'application/json'  
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'Accept': 'application/json'
                             },
                             body: new URLSearchParams({
-                                 \#(Identity.Authentication.Credentials.CodingKeys.email.rawValue): email,      
+                                 \#(Identity.Authentication.Credentials.CodingKeys.email.rawValue): email,
                                  \#(Identity.Authentication.Credentials.CodingKeys.password.rawValue): password
-                            }).toString()  
+                            }).toString()
                         });
-                
+
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
-                
+
                         const data = await response.json();
-                
-                        
+
+
                         if (data.success) {
-                            window.location.href = "\#(loginSuccessRedirect.absoluteString)";  
+                            window.location.href = "\#(loginSuccessRedirect.absoluteString)";
                         } else {
                             throw new Error(data.message || 'Login failed');
                         }
-                
+
                     } catch (error) {
                         console.error('Error:', error);
                         const messageDiv = document.createElement('div');
@@ -152,17 +152,15 @@ extension Identity.Consumer.View.Authenticate {
                         messageDiv.style.color = 'red';
                         messageDiv.style.textAlign = 'center';
                         messageDiv.style.marginTop = '10px';
-                        form.appendChild(messageDiv);  
+                        form.appendChild(messageDiv);
                     }
                 });
             });
             """#}
-            
+
         }
     }
 }
-
-
 
 extension PageModule.Theme {
     static var login: Self {

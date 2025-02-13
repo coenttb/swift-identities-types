@@ -5,17 +5,17 @@
 ////  Created by Coen ten Thije Boonkkamp on 22/12/2024.
 ////
 //
-//import Foundation
-//import Coenttb_Web
-//import Identity_Provider_Fluent
+// import Foundation
+// import Coenttb_Web
+// import Identity_Provider_Fluent
 //
 //// Test Models
-//struct TestUser: Codable, Equatable {
+// struct TestUser: Codable, Equatable {
 //    let id: UUID
 //    let email: String
-//}
+// }
 //
-//final class TestDatabaseUser: Model, @unchecked Sendable {
+// final class TestDatabaseUser: Model, @unchecked Sendable {
 //    static let schema = "test_users"
 //    
 //    @ID(key: .id)
@@ -25,9 +25,9 @@
 //    var identity: Identity
 //    
 //    init() { }
-//}
+// }
 //
-//extension TestDatabaseUser {
+// extension TestDatabaseUser {
 //    struct Migration: AsyncMigration {
 //        func prepare(on database: Database) async throws {
 //            try await database.schema(TestDatabaseUser.schema)
@@ -41,4 +41,4 @@
 //            try await database.schema(TestDatabaseUser.schema).delete()
 //        }
 //    }
-//}
+// }

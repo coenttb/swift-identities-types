@@ -5,34 +5,26 @@
 //  Created by Coen ten Thije Boonkkamp on 10/09/2024.
 //
 
-import Foundation
 import Coenttb_Vapor
 import Coenttb_Web
+import Foundation
 import Identity_Provider
 
 extension Identity.Provider.API.Delete {
     package static func response(
         delete: Identity.Provider.API.Delete
     ) async throws -> any AsyncResponseEncodable {
-        
+
         @Dependency(Identity.Provider.Client.self) var client
-        
-        do {
-            if let response = try Identity.API.protect(api: .delete(delete), with: Database.Identity.self) {
-                return response
-            }
-        } catch {
-            throw Abort(.unauthorized)
-        }
-        
+
         switch delete {
         case .request(let request):
             if request.reauthToken.isEmpty {
                 throw Abort(.unauthorized, reason: "Invalid token")
             }
-            
+
             do {
-                try await client.delete.request(reauthToken: request.reauthToken)
+                try await client.delete.request(request)
                 return Response.success(true)
             } catch {
                 throw Abort(.internalServerError, reason: "Failed to delete")

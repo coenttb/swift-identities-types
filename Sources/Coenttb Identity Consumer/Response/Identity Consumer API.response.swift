@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 16/10/2024.
 //
 
-import Coenttb_Web
 import Coenttb_Vapor
+import Coenttb_Web
 import Favicon
 import Identity_Consumer
 
@@ -15,11 +15,11 @@ extension Identity.Consumer.API {
         api: Identity.Consumer.API,
         tokenDomain: String?
     ) async throws -> any AsyncResponseEncodable {
-        
+
         @Dependency(Identity.Consumer.Client.self) var client
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
-        
+
         do {
             if let response = try Identity.Consumer.API.protect(
                 api: api,
@@ -30,7 +30,7 @@ extension Identity.Consumer.API {
         } catch {
             throw Abort(.unauthorized)
         }
-        
+
         let rateLimitClient = try await Identity.API.rateLimit(api: api)
 
         switch api {
@@ -43,7 +43,7 @@ extension Identity.Consumer.API {
                 await rateLimitClient.recordFailure()
                 throw error
             }
-            
+
         case .create(let create):
             do {
                 let response = try await Identity.Consumer.API.Create.response(create: create)
@@ -62,7 +62,7 @@ extension Identity.Consumer.API {
                 await rateLimitClient.recordFailure()
                 throw error
             }
-            
+
         case .emailChange(let emailChange):
             do {
                 let response = try await Identity.Consumer.API.EmailChange.response(emailChange: emailChange)
@@ -72,26 +72,26 @@ extension Identity.Consumer.API {
                 await rateLimitClient.recordFailure()
                 throw error
             }
-            
+
         case .logout:
             do {
                 let rateLimitClient = try await Identity.API.rateLimit(api: api)
-                
+
                 try await client.logout()
-                
+
                 let response = Response.success(true)
-                
+
                 var accessToken = request.cookies.accessToken
                 accessToken?.expires = .distantPast
-                
+
                 var refreshToken = request.cookies.refreshToken
                 refreshToken?.expires = .distantPast
-                 
+
                 response.cookies.accessToken = accessToken
                 response.cookies.refreshToken = refreshToken
-                
+
                 await rateLimitClient.recordSuccess()
-                
+
                 return response
             } catch {
                 if let rateLimitClient = try? await Identity.API.rateLimit(api: api) {
@@ -100,30 +100,29 @@ extension Identity.Consumer.API {
                 throw Abort(.internalServerError, reason: "Failed to logout")
             }
 
-            
         case .password(let password):
             do {
                 let response = try await Identity.Consumer.API.Password.response(password: password)
-                
+
                 await rateLimitClient.recordSuccess()
-                
+
                 return response
             } catch {
                 await rateLimitClient.recordFailure()
                 throw error
             }
-            
+
         case .reauthorize(let reauthorize):
             do {
                 let rateLimitClient = try await Identity.API.rateLimit(api: api)
-                
+
                 let data = try await client.reauthorize(password: reauthorize.password)
-                
+
                 let response = Response.success(true)
                 response.cookies.reauthorizationToken = .init(string: data.value)
-                
+
                 await rateLimitClient.recordSuccess()
-                
+
                 return response
             } catch {
                 if let rateLimitClient = try? await Identity.API.rateLimit(api: api) {
@@ -134,4 +133,3 @@ extension Identity.Consumer.API {
         }
     }
 }
-

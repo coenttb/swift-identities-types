@@ -7,5 +7,5 @@
 
 import Foundation
 extension Database {
-    package enum MultifactorAuthentication {}    
+    package enum MultifactorAuthentication {}
 }

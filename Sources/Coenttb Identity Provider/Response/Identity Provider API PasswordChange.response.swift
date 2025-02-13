@@ -5,32 +5,24 @@
 //  Created by Coen ten Thije Boonkkamp on 10/09/2024.
 //
 
-import Foundation
 import Coenttb_Vapor
 import Coenttb_Web
+import Foundation
 import Identity_Provider
 
 extension Identity.Provider.API.Password {
     package static func response(
         password: Identity.Provider.API.Password
     ) async throws -> any AsyncResponseEncodable {
-        
+
         @Dependency(Identity.Provider.Client.self) var client
-        
-        do {
-            if let response = try Identity.API.protect(api: .password(password), with: Database.Identity.self) {
-                return response
-            }
-        } catch {
-            throw Abort(.unauthorized)
-        }
-        
+
         switch password {
         case .reset(let reset):
             switch reset {
             case let .request(request):
                 do {
-                    try await client.password.reset.request(email: .init(request.email))
+                    try await client.password.reset.request(request)
                     return Response.success(true)
                 } catch {
                     @Dependencies.Dependency(\.logger) var logger
@@ -39,11 +31,8 @@ extension Identity.Provider.API.Password {
                 }
             case let .confirm(confirm):
                 do {
-                    try await client.password.reset.confirm(
-                        newPassword: confirm.newPassword,
-                        token: confirm.token
-                    )
-                    
+                    try await client.password.reset.confirm(confirm)
+
                     return Response.success(true)
                 } catch {
                     @Dependencies.Dependency(\.logger) var logger
@@ -55,10 +44,7 @@ extension Identity.Provider.API.Password {
             switch change {
             case let .request(change: request):
                 do {
-                    try await client.password.change.request(
-                        currentPassword: request.currentPassword,
-                        newPassword: request.newPassword
-                    )
+                    try await client.password.change.request(request)
                     return Response.success(true)
                 } catch {
                     @Dependencies.Dependency(\.logger) var logger

@@ -5,9 +5,9 @@
 //  Created by Coen ten Thije Boonkkamp on 10/09/2024.
 //
 
-import Foundation
 import Coenttb_Vapor
 import Coenttb_Web
+import Foundation
 import Identity_Provider
 
 extension Identity.Provider.API {
@@ -17,27 +17,19 @@ extension Identity.Provider.API {
     ) async throws -> any AsyncResponseEncodable {
         @Dependency(Identity.Provider.Client.self) var client
 
-        do {
-            if let response = try Identity.API.protect(api: api, with: Database.Identity.self) {
-                return response
-            }
-        } catch {
-            throw Abort(.unauthorized)
-        }
-        
         let rateLimitClient = try await Identity.API.rateLimit(api: api)
-        
+
         switch api {
         case .authenticate(let authenticate):
             do {
-                let response =  try await Identity.Provider.API.Authenticate.response(authenticate: authenticate, logoutRedirectURL: logoutRedirectURL)
+                let response = try await Identity.Provider.API.Authenticate.response(authenticate: authenticate, logoutRedirectURL: logoutRedirectURL)
                 await rateLimitClient.recordSuccess()
                 return response
             } catch {
                 await rateLimitClient.recordFailure()
                 throw error
             }
-            
+
         case .create(let create):
             do {
                 let response = try await Identity.Provider.API.Create.response(create: create)
@@ -57,14 +49,14 @@ extension Identity.Provider.API {
                 await rateLimitClient.recordFailure()
                 throw error
             }
-            
+
         case .logout:
             try await client.logout()
             @Dependency(\.request) var request
             guard let request else { throw Abort.requestUnavailable }
-            
+
             return request.redirect(to: logoutRedirectURL().absoluteString)
-            
+
         case let .password(password):
             do {
                 let response = try await Identity.Provider.API.Password.response(password: password)
@@ -74,7 +66,7 @@ extension Identity.Provider.API {
                 await rateLimitClient.recordFailure()
                 throw error
             }
-            
+
         case let .emailChange(emailChange):
             do {
                 let response = try await Identity.Provider.API.EmailChange.response(emailChange: emailChange)
@@ -84,7 +76,7 @@ extension Identity.Provider.API {
                 await rateLimitClient.recordFailure()
                 throw error
             }
-            
+
         case .reauthorize(let reauthorize):
             let data = try await client.reauthorize(password: reauthorize.password)
             return Response.success(true, data: data)

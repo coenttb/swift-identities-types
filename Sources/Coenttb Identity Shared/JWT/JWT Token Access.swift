@@ -1,8 +1,8 @@
 import Dependencies
+import EmailAddress
 import Foundation
 import JWT
 import Vapor
-import EmailAddress
 
 extension JWT.Token {
     public struct Access: Codable, Sendable {
@@ -12,15 +12,15 @@ extension JWT.Token {
         public var subject: SubjectClaim
         public var issuer: IssuerClaim
         public var audience: AudienceClaim
-        
+
         // Optional Standard Claims
         public var notBefore: NotBeforeClaim?
         public var tokenId: IDClaim?
-        
+
         // Required Custom Claims
         public var identityId: UUID
         public var email: EmailAddress
-        
+
         package init(
             expiration: ExpirationClaim,
             issuedAt: IssuedAtClaim,
@@ -41,10 +41,10 @@ extension JWT.Token {
             self.tokenId = tokenId
             self.identityId = identityId
             self.email = email
-            
+
             self.audience.value.append("access")
         }
-        
+
         enum CodingKeys: String, CodingKey {
             case expiration = "exp"
             case issuedAt = "iat"

@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 11/02/2025.
 //
 
-import Foundation
 import Coenttb_Vapor
+import Foundation
 
 extension HTTPCookies {
     public var accessToken: HTTPCookies.Value? {
@@ -17,7 +17,7 @@ extension HTTPCookies {
             self["access_token"] = newValue
         }
     }
-    
+
     public var refreshToken: HTTPCookies.Value? {
         get {
             self["refresh_token"]
@@ -26,7 +26,7 @@ extension HTTPCookies {
             self["refresh_token"] = newValue
         }
     }
-    
+
     public var reauthorizationToken: HTTPCookies.Value? {
         get {
             self["reauthorization_token"]

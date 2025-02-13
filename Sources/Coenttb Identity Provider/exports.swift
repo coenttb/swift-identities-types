@@ -5,6 +5,6 @@
 //  Created by Coen ten Thije Boonkkamp on 21/12/2024.
 //
 
+@_exported import Coenttb_Identity_Shared
 import Foundation
 @_exported import Identity_Provider
-@_exported import Coenttb_Identity_Shared

@@ -5,22 +5,22 @@
 //  Created by Coen ten Thije Boonkkamp on 05/02/2025.
 //
 
-import Foundation
 import Fluent
+import Foundation
 
 public enum Database {}
 
 extension Database {
     public struct Migration: AsyncMigration {
-        
+
         public var name: String
-        
+
         public init(
             name: String = "Coenttb_Identity_Provider.Database.Migration"
         ) {
             self.name = name
         }
-        
+
         private static let migrations: [any Fluent.AsyncMigration] = {
             var migrations: [any Fluent.AsyncMigration] = [
                 {
@@ -54,16 +54,16 @@ extension Database {
                     return migration
                 }()
             ]
-            
+
             return migrations
         }()
-        
+
         public func prepare(on database: Fluent.Database) async throws {
             for migration in Self.migrations {
                 try await migration.prepare(on: database)
             }
         }
-        
+
         public func revert(on database: Fluent.Database) async throws {
             for migration in Self.migrations.reversed() {
                 try await migration.revert(on: database)

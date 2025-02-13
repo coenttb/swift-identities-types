@@ -5,13 +5,13 @@
 //  Created by Coen ten Thije Boonkkamp on 01/02/2025.
 //
 
-import Foundation
-import Coenttb_Web
 import Coenttb_Server
-import Fluent
 import Coenttb_Vapor
-import Identity_Provider
+import Coenttb_Web
+import Fluent
 import FluentKit
+import Foundation
+import Identity_Provider
 
 extension Database.Identity {
     #if DEBUG

@@ -12,78 +12,67 @@
 //  Created by Coen ten Thije Boonkkamp on 12/09/2024.
 //
 
-import Coenttb_Web
 import Coenttb_Server
-import Fluent
 import Coenttb_Vapor
-@preconcurrency import Mailgun
-import Identity_Provider
+import Coenttb_Web
+import Fluent
 import FluentKit
+import Identity_Provider
 import JWT
+@preconcurrency import Mailgun
 
 extension Identity_Provider.Identity.Provider.Client.Authenticate {
     package static func live(
         database: Fluent.Database,
         logger: Logger,
         issuer: String
-    ) -> Self  {
+    ) -> Self {
         .init(
-            credentials: { credentials in
-                
+            credentials: { username, password in
+
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
-                
-                let email: EmailAddress = try .init(credentials.email)
-                
-//                guard let identity = try await Database.Identity.query(on: request.db)
-//                    .filter(\.$email == email.rawValue)
-//                    .first()
-//                else {
-//                    logger.warning("Login attempt failed: User not found for email: \(email)")
-//                    throw Abort(.unauthorized, reason: "Invalid credentials")
-//                }
-                
+
+                let email: EmailAddress = try .init(username)
+
                 do {
-                    let identity = try await Database.Identity.get(by: .email(credentials.email), on: request.db)
-                    
-                    guard try identity.verifyPassword(credentials.password) else {
+                    let identity = try await Database.Identity.get(by: .email(email), on: request.db)
+
+                    guard try identity.verifyPassword(password) else {
                         logger.warning("Login attempt failed: Invalid password for email: \(email)")
                         throw Abort(.unauthorized, reason: "Invalid credentials")
                     }
-                    
+
                     guard identity.emailVerificationStatus == .verified else {
                         logger.warning("Login attempt failed: Email not verified for: \(email)")
                         throw Abort(.unauthorized, reason: "Email not verified")
                     }
-                    
+
                     let response = try await identity.generateJWTResponse()
-                    
+
                     identity.lastLoginAt = Date()
                     try await identity.save(on: request.db)
-                    
+
                     request.auth.login(identity)
-                    
+
                     logger.notice("Login successful for email: \(email)")
-                    
+
                     return response
-                    
+
                 } catch {
                     logger.warning("Login attempt failed: User not found for email: \(email)")
                     throw Abort(.unauthorized, reason: "Invalid credentials")
                 }
-                
-                
-                
             },
             token: .init(
-                access: { token in
+                access: { _ in
                     @Dependency(\.logger) var logger
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
-                    
+
                     do {
                         let payload = try await request.jwt.verify(as: JWT.Token.Access.self)
-                        
+
 //                        guard payload.audience.value.contains("access") else {
 //                            throw JWTError.claimVerificationFailure(
 //                                failedClaim: payload.audience,
@@ -99,19 +88,18 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
 //                        }
 //                        
                         let identity = try await Database.Identity.get(by: .id(payload.identityId), on: request.db)
-                        
+
                         guard identity.emailAddress == payload.email else {
                             throw Abort(.unauthorized, reason: "Identity details have changed")
                         }
-                        
+
                         identity.lastLoginAt = Date()
                         try await identity.save(on: request.db)
-                        
+
                         request.auth.login(identity)
-                        
+
                         logger.notice("Access token verification successful for identity: \(identity.id?.uuidString ?? "unknown")")
-                        
-                        
+
                     } catch let error as JWTError {
                         logger.warning("Access token verification failed: \(error.localizedDescription)")
                         throw Abort(.unauthorized, reason: "Invalid access token")
@@ -120,43 +108,43 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                         throw Abort(.internalServerError)
                     }
                 },
-                refresh: { token in
+                refresh: { _ in
                     @Dependency(\.logger) var logger
-                    
+
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
-                    
+
                     do {
                         let payload = try await request.jwt.verify(as: JWT.Token.Refresh.self)
-                        
+
                         guard payload.audience.value.contains("refresh") else {
                             throw JWTError.claimVerificationFailure(
                                 failedClaim: payload.audience,
                                 reason: "Invalid audience for refresh token"
                             )
                         }
-                        
+
                         guard payload.issuer.value == issuer else {
                             throw JWTError.claimVerificationFailure(
                                 failedClaim: payload.issuer,
                                 reason: "Invalid issuer"
                             )
                         }
-                        
+
                         let identity = try await Database.Identity.get(by: .id(payload.identityId), on: request.db)
-                                                   
+
                         guard identity.sessionVersion == payload.sessionVersion else {
                             throw Abort(.unauthorized, reason: "Token has been revoked")
                         }
-                        
+
                         logger.notice("Refresh token verification successful for identity: \(identity.id?.uuidString ?? "unknown")")
-                        
+
                         let response = try await identity.generateJWTResponse()
-                        
+
                         request.auth.login(identity)
-                        
+
                         return response
-                        
+
                     } catch let error as JWTError {
                         logger.warning("Refresh token verification failed: \(error.localizedDescription)")
                         throw Abort(.unauthorized, reason: "Invalid refresh token")
@@ -170,9 +158,9 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                 @Dependency(\.request) var request
                 @Dependency(\.logger) var logger
                 guard let request else { throw Abort.requestUnavailable }
-                
+
                 do {
-                    
+
                     guard let apiKey = try await Database.ApiKey.query(on: request.db)
                         .filter(\.$key == apiKey)
                         .with(\.$identity)
@@ -180,20 +168,20 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                             logger.warning("API key authentication failed: No identity found for API key \(apiKey)")
                             throw Abort(.unauthorized, reason: "Invalid API key")
                     }
-                    
+
                     let identity = apiKey.identity
-                    
+
                     let response = try await identity.generateJWTResponse()
-                    
+
                     request.headers.bearerAuthorization = .init(token: response.accessToken.value)
-                    
+
                     identity.lastLoginAt = Date()
                     try await identity.save(on: request.db)
-                    
+
                     request.auth.login(identity)
-                    
+
                     logger.notice("API key authentication successful for identity: \(identity.id?.uuidString ?? "unknown")")
-                    
+
                     return response
                 } catch {
                     logger.error("Unexpected error during api key verification: \(error.localizedDescription)")

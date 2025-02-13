@@ -5,13 +5,12 @@
 //  Created by Coen ten Thije Boonkkamp on 06/02/2025.
 //
 
-
-import Dependencies
-@preconcurrency import Vapor
-import JWT
 import Coenttb_Identity_Shared
+import Dependencies
+import JWT
+@preconcurrency import Vapor
 
-//extension Identity.Provider {
+// extension Identity.Provider {
 //    public struct RefreshTokenAuthenticator: AsyncMiddleware {
 //        public init() {}
 //        
@@ -32,4 +31,4 @@ import Coenttb_Identity_Shared
 //            return try await next.respond(to: request)
 //        }
 //    }
-//}
+// }

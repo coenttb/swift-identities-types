@@ -11,30 +11,30 @@ import Foundation
 import Vapor
 
 extension Database.Identity {
-    package final class Token: Model, Content, @unchecked Sendable  {
+    package final class Token: Model, Content, @unchecked Sendable {
         package static let schema = "identity_tokens"
-        
+
         @ID(key: .id)
         package var id: UUID?
-        
+
         @Field(key: FieldKeys.value)
         package var value: String
-        
+
         @Field(key: FieldKeys.validUntil)
         package var validUntil: Date
-        
+
         @Parent(key: FieldKeys.identityId)
         package var identity: Database.Identity
-        
+
         @Enum(key: FieldKeys.type)
         package var type: Database.Identity.Token.TokenType
-        
+
         @Timestamp(key: FieldKeys.createdAt, on: .create)
         package var createdAt: Date?
-        
+
         @OptionalField(key: FieldKeys.lastUsedAt)
         package var lastUsedAt: Date?
-        
+
         package enum FieldKeys {
             package static let value: FieldKey = "value"
             package static let validUntil: FieldKey = "valid_until"
@@ -43,18 +43,18 @@ extension Database.Identity {
             package static let createdAt: FieldKey = "created_at"
             package static let lastUsedAt: FieldKey = "last_used_at"
         }
-        
+
         package struct TokenType: Codable, Equatable, RawRepresentable, Sendable {
             package let rawValue: String
-            
+
             package init(rawValue: String) {
                 self.rawValue = rawValue
             }
-            
+
             package init(_ rawValue: String) {
                 self.rawValue = rawValue
             }
-            
+
             package static let emailVerification = TokenType("emailVerification")
             package static let passwordReset = TokenType("passwordReset")
             package static let accountActivation = TokenType("accountActivation")
@@ -73,9 +73,9 @@ extension Database.Identity {
             package static let temporaryAccess = TokenType("temporaryAccess")
             package static let reauthenticationToken = TokenType("reauthenticationToken")
         }
-        
+
         package init() {}
-        
+
         package init(
             id: UUID? = nil,
             identity: Database.Identity,
@@ -88,7 +88,7 @@ extension Database.Identity {
             self.value = Database.Identity.Token.generateSecureToken()
             self.validUntil = validUntil ?? Date().addingTimeInterval(3600) // Default 1 hour validity
         }
-        
+
         private static func generateSecureToken() -> String {
             SymmetricKey(size: .bits256)
                 .withUnsafeBytes { Data($0) }
@@ -97,11 +97,7 @@ extension Database.Identity {
     }
 }
 
-
-
-
-
-//extension Database.Identity.Token: ModelTokenAuthenticatable {
+// extension Database.Identity.Token: ModelTokenAuthenticatable {
 //    package static var valueKey: KeyPath<Database.Identity.Token, Field<String>> {
 //        \Database.Identity.Token.$value
 //    }
@@ -113,20 +109,20 @@ extension Database.Identity {
 //    package var isValid: Bool {
 //        Date() < self.validUntil
 //    }
-//}
+// }
 
 extension Database.Identity.Token {
     package func rotateIfNecessary(on db: Fluent.Database) async throws -> Database.Identity.Token {
         guard self.type == .apiAccess || self.type == .refreshToken else {
             return self
         }
-        
+
         let rotationInterval: TimeInterval = 7 * 24 * 3600 // 7 days
         if Date().timeIntervalSince(self.createdAt ?? Date()) > rotationInterval {
             try await self.delete(on: db)
             return try self.identity.generateToken(type: self.type, validUntil: Date().addingTimeInterval(30 * 24 * 3600)) // 30 days
         }
-        
+
         return self
     }
 }
@@ -143,11 +139,11 @@ extension Database.Identity {
 
 extension Database.Identity.Token {
     package struct Migration: AsyncMigration {
-        
+
         package var name: String = "Coenttb_Identity.Identity.Token.Migration.Create"
-        
-        package init(){}
-        
+
+        package init() {}
+
         package func prepare(on database: Fluent.Database) async throws {
             try await database.schema(Database.Identity.Token.schema)
                 .id()
@@ -160,7 +156,7 @@ extension Database.Identity.Token {
                 .unique(on: FieldKeys.value)
                 .create()
         }
-        
+
         package func revert(on database: Fluent.Database) async throws {
             try await database.schema(Database.Identity.Token.schema).delete()
         }

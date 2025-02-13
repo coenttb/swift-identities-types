@@ -14,18 +14,18 @@ extension Identity.API {
     ) throws -> (any AsyncResponseEncodable)? {
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
-        
+
         switch api {
         case .authenticate(let authenticate):
             switch authenticate {
             case .credentials, .token, .apiKey:
                 return nil
-                
+
             case .multifactor:
                 try request.auth.require(type)
                 return nil
             }
-            
+
         case .create:
             return nil
         case .delete:
@@ -48,7 +48,7 @@ extension Identity.API {
                 try request.auth.require(type)
                 return nil
             }
-        
+
         }
     }
 }

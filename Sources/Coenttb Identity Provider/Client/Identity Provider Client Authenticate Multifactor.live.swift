@@ -1,10 +1,10 @@
 // Client.MultifactorAuthentication.live.swift
-import Foundation
-import Fluent
-import Vapor
 import Crypto
-import Identity_Provider
 import EmailAddress
+import Fluent
+import Foundation
+import Identity_Provider
+import Vapor
 
 extension Identity.Provider.Client.Authenticate.Multifactor {
     package static func live(
@@ -355,12 +355,12 @@ private func generateRecoveryCodes(for userId: UUID, on database: Fluent.Databas
         .filter(\.$identity.$id == userId)
         .filter(\.$used == false)
         .delete()
-    
+
     // Generate new codes
     let codes = try (0..<10).map { _ in
         try Database.MultifactorAuthentication.generateSecureRecoveryCode()
     }
-    
+
     // Save hashed codes
     for code in codes {
         let recoveryCode = Database.MultifactorAuthentication.RecoveryCode()
@@ -369,7 +369,7 @@ private func generateRecoveryCodes(for userId: UUID, on database: Fluent.Databas
         recoveryCode.used = false
         try await recoveryCode.save(on: database)
     }
-    
+
     return codes
 }
 
@@ -379,22 +379,22 @@ extension Database.MultifactorAuthentication {
         guard min < max else {
             throw SecureRandomError.invalidRange
         }
-        
+
         let range = UInt64(max - min + 1)
         var random = SystemRandomNumberGenerator()
-        
+
         // Generate random number using uniform distribution to avoid modulo bias
         let secureRandom = random.next(upperBound: range)
         return Int(secureRandom) + min
     }
-    
+
     // Generate a secure verification code
     static func generateSecureVerificationCode() throws -> String {
         // Generate 6 random digits (100000-999999)
         let secureNumber = try secureRandomNumber(min: 100000, max: 999999)
         return String(secureNumber)
     }
-    
+
     // Generate a secure recovery code segment
     static func generateSecureRecoveryCode() throws -> String {
         // Generate 5 random digits for each recovery code

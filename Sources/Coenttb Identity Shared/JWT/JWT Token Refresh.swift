@@ -12,15 +12,15 @@ extension JWT.Token {
         public var issuer: IssuerClaim
         public var audience: AudienceClaim
         public var tokenId: IDClaim
-        
+
         // Optional Standard Claims
         public var notBefore: NotBeforeClaim?
-        
+
         // Required Custom Claims
         public var identityId: UUID
         public var email: String
         public var sessionVersion: Int
-        
+
         package init(
             expiration: ExpirationClaim,
             issuedAt: IssuedAtClaim,
@@ -43,10 +43,10 @@ extension JWT.Token {
             self.identityId = identityId
             self.email = email
             self.sessionVersion = sessionVersion
-            
+
             self.audience.value.append("refresh")
         }
-        
+
         enum CodingKeys: String, CodingKey {
             case expiration = "exp"
             case issuedAt = "iat"
@@ -73,7 +73,7 @@ extension JWT.Token.Refresh: JWTPayload {
                 reason: "email cannot be empty"
             )
         }
-        
+
 //        // Verify identityId matches between tokens
 //        guard self.identityId == refreshToken.identityId else {
 //            throw JWTError.claimVerificationFailure(

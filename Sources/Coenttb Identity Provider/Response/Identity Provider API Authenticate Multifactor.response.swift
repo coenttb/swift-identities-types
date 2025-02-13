@@ -5,9 +5,9 @@
 //  Created by Coen ten Thije Boonkkamp on 10/09/2024.
 //
 
-import Foundation
 import Coenttb_Vapor
 import Coenttb_Web
+import Foundation
 import Identity_Provider
 
 extension Identity.Provider.API.Authenticate.Multifactor {
@@ -15,20 +15,12 @@ extension Identity.Provider.API.Authenticate.Multifactor {
         multifactor: Identity.Provider.API.Authenticate.Multifactor,
         logoutRedirectURL: () -> URL
     ) async throws -> any AsyncResponseEncodable {
-        
+
         @Dependency(Identity.Provider.Client.self) var client
-        
-        do {
-            if let response = try Identity.API.protect(api: .authenticate(.multifactor(multifactor)), with: Database.Identity.self) {
-                return response
-            }
-        } catch {
-            throw Abort(.unauthorized)
-        }
-        
+
         guard let mfa = client.authenticate.multifactor
         else { throw Abort(.notImplemented, reason: "Multi-factor authentication is not supported") }
-        
+
         switch multifactor {
         case .setup(let setup):
             switch setup {
@@ -36,11 +28,10 @@ extension Identity.Provider.API.Authenticate.Multifactor {
                 do {
                     let data = try await mfa.setup.initialize(request.method, request.identifier)
                     return Response.success(true, data: data)
-                }
-                catch {
+                } catch {
                     throw Abort(.internalServerError, reason: "Failed to initialize MFA setup")
                 }
-                
+
             case .confirm(let confirm):
                 do {
                     try await mfa.setup.confirm(confirm.code)
@@ -49,7 +40,7 @@ extension Identity.Provider.API.Authenticate.Multifactor {
                     throw Abort(.internalServerError, reason: "Failed to confirm MFA setup")
                 }
             }
-            
+
         case .challenge(let challenge):
             switch challenge {
             case .create(let request):
@@ -60,7 +51,7 @@ extension Identity.Provider.API.Authenticate.Multifactor {
                     throw Abort(.internalServerError, reason: "Failed to create MFA challenge")
                 }
             }
-            
+
         case .verify(let verify):
             switch verify {
             case .verify(let verification):
@@ -71,7 +62,7 @@ extension Identity.Provider.API.Authenticate.Multifactor {
                     throw Abort(.internalServerError, reason: "Failed to verify MFA code")
                 }
             }
-            
+
         case .recovery(let recovery):
             switch recovery {
             case .generate:
@@ -81,7 +72,7 @@ extension Identity.Provider.API.Authenticate.Multifactor {
                 } catch {
                     throw Abort(.internalServerError, reason: "Failed to generate recovery codes")
                 }
-                
+
             case .count:
                 do {
                     let count = try await mfa.recovery.getRemainingCodeCount()
@@ -90,7 +81,7 @@ extension Identity.Provider.API.Authenticate.Multifactor {
                     throw Abort(.internalServerError, reason: "Failed to get remaining recovery code count")
                 }
             }
-            
+
         case .configuration:
             do {
                 let config = try await mfa.configuration()
@@ -98,7 +89,7 @@ extension Identity.Provider.API.Authenticate.Multifactor {
             } catch {
                 throw Abort(.internalServerError, reason: "Failed to get MFA configuration")
             }
-            
+
         case .disable:
             do {
                 try await mfa.disable()
@@ -107,7 +98,6 @@ extension Identity.Provider.API.Authenticate.Multifactor {
                 throw Abort(.internalServerError, reason: "Failed to disable MFA")
             }
         }
-        
+
     }
 }
-

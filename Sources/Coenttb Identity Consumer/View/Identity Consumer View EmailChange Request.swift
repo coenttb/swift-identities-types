@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 10/10/2024.
 //
 
-import Foundation
 import Coenttb_Web
+import Foundation
 import Identity_Consumer
 
 extension Identity.Consumer.View.EmailChange {
@@ -14,7 +14,7 @@ extension Identity.Consumer.View.EmailChange {
         let formActionURL: URL
         let homeHref: URL
         let primaryColor: HTMLColor
-        
+
         package init(
             formActionURL: URL,
             homeHref: URL,
@@ -24,10 +24,10 @@ extension Identity.Consumer.View.EmailChange {
             self.homeHref = homeHref
             self.primaryColor = primaryColor
         }
-        
+
         private static var pagemodule_request_email_change_id: String { "pagemodule_request_email_change_id" }
         private static var form_id: String { "form-request-email-change" }
-        
+
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
@@ -40,14 +40,14 @@ extension Identity.Consumer.View.EmailChange {
                     .fontSize(.secondary)
                     .textAlign(.center)
                     .color(.secondary)
-                    
+
                     form {
                         VStack {
                             Input.default(Identity.EmailChange.Request.CodingKeys.newEmail)
                                 .type(.email)
                                 .placeholder("New Email")
                                 .focusOnPageLoad()
-                            
+
                             Button(
                                 tag: button,
                                 background: self.primaryColor
@@ -61,7 +61,7 @@ extension Identity.Consumer.View.EmailChange {
                             .type(.submit)
                             .width(100.percent)
                             .justifyContent(.center)
-                            
+
                             Link(
                                 TranslatedString(
                                     dutch: "Terug naar home",
@@ -94,9 +94,7 @@ extension Identity.Consumer.View.EmailChange {
                 .textAlign(.center)
             }
             .id(Self.pagemodule_request_email_change_id)
-            
-            
-            
+
             script {#"""
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.getElementById('\#(Self.form_id)');
@@ -175,7 +173,7 @@ extension Identity.Consumer.View.EmailChange.Request {
     package struct ReceiptConfirmation: HTML {
         let homeHref: URL
         let primaryColor: HTMLColor
-        
+
         package init(
             homeHref: URL,
             primaryColor: HTMLColor
@@ -183,7 +181,7 @@ extension Identity.Consumer.View.EmailChange.Request {
             self.homeHref = homeHref
             self.primaryColor = primaryColor
         }
-        
+
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
@@ -195,7 +193,7 @@ extension Identity.Consumer.View.EmailChange.Request {
                     }
                     .textAlign(.center)
                     .margin(bottom: 1.rem)
-                    
+
                     Paragraph {
                         TranslatedString(
                             dutch: "Volg de instructies in de e-mails om de wijziging te voltooien.",
@@ -204,7 +202,7 @@ extension Identity.Consumer.View.EmailChange.Request {
                     }
                     .textAlign(.center)
                     .margin(bottom: 2.rem)
-                    
+
                     Link(
                         TranslatedString(
                             dutch: "Terug naar home",
@@ -233,4 +231,3 @@ extension Identity.Consumer.View.EmailChange.Request {
         }
     }
 }
-

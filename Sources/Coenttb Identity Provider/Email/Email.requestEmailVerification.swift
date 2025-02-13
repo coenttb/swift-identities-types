@@ -19,7 +19,7 @@ extension Email {
         to user: EmailAddress,
         primaryColor: HTMLColor
     ) -> Self {
-        
+
         let html = TableEmailDocument(
             preheader: TranslatedString(
                 dutch: "Verifiëer je emailadres voor \(businessName)",
@@ -35,7 +35,7 @@ extension Email {
                                 english: "Verify your email address"
                             )
                         }
-                        
+
                         Paragraph {
                             TranslatedString(
                                 dutch: "Om de setup van je \(businessName) account te voltooien, bevestig alsjeblieft dat dit je e-mailadres is.",
@@ -44,7 +44,7 @@ extension Email {
                         }
                         .padding(bottom: .extraSmall)
                         .fontSize(.body)
-                        
+
                         Button(
                             tag: a,
                             background: primaryColor
@@ -57,22 +57,21 @@ extension Email {
                         .color(.primary.reverse())
                         .href(verificationUrl.absoluteString)
                         .padding(bottom: Length.medium)
-                        
-                        
+
                         Paragraph(.small) {
-                            
+
                             TranslatedString(
                                 dutch: "Om veiligheidsredenen verloopt deze verificatielink binnen 24 uur. ",
                                 english: "This verification link will expire in 24 hours for security reasons. "
                             )
-                            
+
                             TranslatedString(
                                 dutch: "Als je deze aanvraag niet hebt gedaan, kun je deze e-mail negeren.",
                                 english: "If you did not make this request, please disregard this email."
                             )
-                            
+
                             br()
-                            
+
                             TranslatedString(
                                 dutch: "Voor hulp, neem contact op met ons op via \(supportEmail).",
                                 english: "For help, contact us at \(supportEmail)."
@@ -86,17 +85,17 @@ extension Email {
             }
         }
             .backgroundColor(.primary.reverse())
-            
+
         let subjectAdd = TranslatedString(
             dutch: "Verifieer je e-mailadres",
             english: "Verify your email address"
         )
-        
+
         let bytes: ContiguousArray<UInt8> = html.render()
         let string: String = String(decoding: bytes, as: UTF8.self)
-        
+
         print(string)
-        
+
         return .init(
             from: from,
             to: [ user ],

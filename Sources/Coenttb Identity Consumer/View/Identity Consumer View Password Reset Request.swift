@@ -5,8 +5,8 @@
 //  PasswordResetd by Coen ten Thije Boonkkamp on 20/09/2024.
 //
 
-import Foundation
 import Coenttb_Web
+import Foundation
 import Identity_Consumer
 
 extension Identity.Consumer.View.Password.Reset {
@@ -14,7 +14,7 @@ extension Identity.Consumer.View.Password.Reset {
         let formActionURL: URL
         let homeHref: URL
         let primaryColor: HTMLColor
-        
+
         package init(
             formActionURL: URL,
             homeHref: URL,
@@ -24,12 +24,12 @@ extension Identity.Consumer.View.Password.Reset {
             self.homeHref = homeHref
             self.primaryColor = primaryColor
         }
-        
+
         private static var pagemodule_forgot_password_id: String { "pagemodule_forgot_password_id" }
-        
+
         package var body: some HTML {
             PageModule(theme: .login) {
-                
+
                 VStack {
                     Paragraph {
                         TranslatedString(
@@ -40,14 +40,14 @@ extension Identity.Consumer.View.Password.Reset {
                     .fontSize(.secondary)
                     .textAlign(.center)
                     .color(.secondary)
-                    
+
                     form {
                         VStack {
                             Input.default(Identity.Password.Reset.Request.CodingKeys.email)
                                 .type(.email)
                                 .placeholder("Email")
                                 .focusOnPageLoad()
-                            
+
                             Button(
                                 tag: button,
                                 background: self.primaryColor
@@ -61,7 +61,7 @@ extension Identity.Consumer.View.Password.Reset {
                             .type(.submit)
                             .width(100.percent)
                             .justifyContent(.center)
-                            
+
                             Link(
                                 TranslatedString(
                                     dutch: "Terug naar home",
@@ -94,7 +94,7 @@ extension Identity.Consumer.View.Password.Reset {
                 .textAlign(.center)
             }
             .id(Self.pagemodule_forgot_password_id)
-            
+
             script {"""
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.getElementById('form-forgot-password');
@@ -134,12 +134,11 @@ extension Identity.Consumer.View.Password.Reset {
     }
 }
 
-
 extension Identity.Consumer.View.Password.Reset.Request {
     struct ConfirmReceipt: HTML {
         let homeHref: URL
         let primaryColor: HTMLColor
-        
+
         init(
             homeHref: URL,
             primaryColor: HTMLColor
@@ -147,7 +146,7 @@ extension Identity.Consumer.View.Password.Reset.Request {
             self.homeHref = homeHref
             self.primaryColor = primaryColor
         }
-        
+
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
@@ -159,7 +158,7 @@ extension Identity.Consumer.View.Password.Reset.Request {
                     }
                     .textAlign(.center)
                     .margin(bottom: 1.rem)
-                    
+
                     Paragraph {
                         TranslatedString(
                             dutch: "Als u de e-mail niet binnen enkele minuten ontvangt, controleer dan uw spam-folder.",
@@ -168,7 +167,7 @@ extension Identity.Consumer.View.Password.Reset.Request {
                     }
                     .textAlign(.center)
                     .margin(bottom: 2.rem)
-                    
+
                     Link(
                         TranslatedString(
                             dutch: "Terug naar home",
@@ -205,7 +204,7 @@ extension Identity.Consumer.View.Password.Reset {
         let homeHref: URL
         let redirect: URL
         let primaryColor: HTMLColor
-        
+
         package init(
             token: String,
             passwordResetAction: URL,
@@ -219,12 +218,12 @@ extension Identity.Consumer.View.Password.Reset {
             self.redirect = redirect
             self.primaryColor = primaryColor
         }
-        
-        private static var passwordResetId:String { "password-reset-id" }
-        
+
+        private static var passwordResetId: String { "password-reset-id" }
+
         package var body: some HTML {
             PageModule(theme: .login) {
-                
+
                 VStack {
                     Paragraph {
                         TranslatedString(
@@ -235,15 +234,15 @@ extension Identity.Consumer.View.Password.Reset {
                     .fontSize(.secondary)
                     .textAlign(.center)
                     .color(.secondary)
-                    
+
                     form {
                         VStack {
-                            
+
                             Input.default(Identity.Password.Reset.Confirm.CodingKeys.newPassword)
                                 .type(.password)
                                 .placeholder(String.password.capitalizingFirstLetter().description)
                                 .focusOnPageLoad()
-                            
+
                             Button(
                                 tag: button,
                                 background: self.primaryColor
@@ -254,7 +253,7 @@ extension Identity.Consumer.View.Password.Reset {
                             .type(.submit)
                             .width(100.percent)
                             .justifyContent(.center)
-                            
+
                             Link(
                                 TranslatedString(
                                     dutch: "Terug naar de homepagina",
@@ -284,20 +283,20 @@ extension Identity.Consumer.View.Password.Reset {
                 .textAlign(.center)
             }
             .id(Self.passwordResetId)
-            
+
             script {"""
                document.addEventListener('DOMContentLoaded', function() {
                    const form = document.getElementById("form-password-reset");
                    const formContainer = form;
-            
+
                    form.addEventListener('submit', async function(event) {
                        event.preventDefault();
-            
+
                        const formData = new FormData(form);
                        const password = formData.get('\(Identity.Password.Reset.Confirm.CodingKeys.newPassword.rawValue)');
-            
+
                        try {
-            
+
                            const response = await fetch(form.action, {
                                method: form.method,
                                headers: {
@@ -309,14 +308,14 @@ extension Identity.Consumer.View.Password.Reset {
                                     \(Identity.Password.Reset.Confirm.CodingKeys.newPassword.rawValue): password
                                }).toString()
                            });
-            
+
                            if (!response.ok) {
                                throw new Error('Network response was not ok');
                            }
-            
+
                            const data = await response.json();
-            
-            
+
+
                            if (data.success) {
                                const pageModule = document.getElementById("\(Self.passwordResetId)");
                                pageModule.outerHTML = `\(html: Identity.Consumer.View.Password.Reset.Confirm.Confirm(redirect: self.redirect, primaryColor: self.primaryColor))`;
@@ -326,7 +325,7 @@ extension Identity.Consumer.View.Password.Reset {
                                    english: "Password reset request failed"
                                ))');
                            }
-            
+
                        } catch (error) {
                            console.error('Error:', error);
                            const messageDiv = document.createElement('div');
@@ -347,14 +346,14 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
     package struct Confirm: HTML {
         package let redirect: URL
         package let primaryColor: HTMLColor
-        
+
         package init(redirect: URL, primaryColor: HTMLColor) {
             self.redirect = redirect
             self.primaryColor = primaryColor
         }
-        
+
         private static var confirmationId: String { "password-reset-confirmation-id" }
-        
+
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
@@ -368,7 +367,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
                     .textAlign(.center)
                     .color(.primary)
                     .margin(bottom: .medium)
-                    
+
                     Paragraph {
                         TranslatedString(
                             dutch: "Je wordt nu doorgestuurd naar de inlogpagina.",
@@ -379,7 +378,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
                     .textAlign(.center)
                     .color(.secondary)
                     .margin(bottom: .large)
-                    
+
                     Link(
                         TranslatedString(
                             dutch: "Klik hier als je niet automatisch wordt doorgestuurd",
@@ -407,7 +406,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
                 .textAlign(.center)
             }
             .id(Self.confirmationId)
-            
+
             script {"""
                 document.addEventListener('DOMContentLoaded', function() {
                     setTimeout(function() {

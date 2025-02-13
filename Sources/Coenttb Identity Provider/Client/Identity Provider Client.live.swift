@@ -12,14 +12,14 @@
 //  Created by Coen ten Thije Boonkkamp on 12/09/2024.
 //
 
-import Coenttb_Web
 import Coenttb_Server
-import Fluent
 import Coenttb_Vapor
-@preconcurrency import Mailgun
-import Identity_Provider
+import Coenttb_Web
+import Fluent
 import FluentKit
+import Identity_Provider
 import JWT
+@preconcurrency import Mailgun
 
 extension Identity_Provider.Identity.Provider.Client {
     public static func live<DatabaseUser: Fluent.Model & Sendable>(
@@ -41,7 +41,7 @@ extension Identity_Provider.Identity.Provider.Client {
         //            generateTOTPSecret: @Sendable () -> String
         //        )?
     ) -> Self {
-        
+
         return Identity.Provider.Client(
             authenticate: .live(
                 database: database,
@@ -56,17 +56,17 @@ extension Identity_Provider.Identity.Provider.Client {
             reauthorize: { password in
                 do {
                     let identity = try await Database.Identity.get(by: .auth, on: database)
-                    
+
                     guard try identity.verifyPassword(password) else {
                         throw AuthenticationError.invalidCredentials
                     }
-                    
+
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
-                    
+
                     @Dependency(\.reauthorizationTokenConfig) var config
-                    
-                    let payload = try JWT.Token.Reauthorization.init(
+
+                    let payload = try JWT.Token.Reauthorization(
                         identity: identity,
                         includeTokenId: false,
                         includeNotBefore: true
@@ -134,31 +134,31 @@ private struct PasswordValidation {
         guard password.count >= 8 else {
             return .tooShort
         }
-        
+
         // Check for at least one uppercase letter
         guard password.contains(where: { $0.isUppercase }) else {
             return .missingUppercase
         }
-        
+
         // Check for at least one lowercase letter
         guard password.contains(where: { $0.isLowercase }) else {
             return .missingLowercase
         }
-        
+
         // Check for at least one number
         guard password.contains(where: { $0.isNumber }) else {
             return .missingNumber
         }
-        
+
         // Check for at least one special character
         let specialCharacters = CharacterSet(charactersIn: "!@#$%^&*()_+-=[]{}|;:,.<>?")
         guard password.rangeOfCharacter(from: specialCharacters) != nil else {
             return .missingSpecialCharacter
         }
-        
+
         return nil
     }
-    
+
     enum ValidationError: String, Error {
         case tooShort = "Password must be at least 8 characters long"
         case missingUppercase = "Password must contain at least one uppercase letter"
@@ -179,4 +179,3 @@ enum AuthError: Error {
     case expiredKey
     case rateLimitExceeded
 }
-

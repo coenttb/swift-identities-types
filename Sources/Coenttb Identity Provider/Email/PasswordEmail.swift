@@ -5,9 +5,9 @@
 //  Created by Coen ten Thije Boonkkamp on 17/10/2024.
 //
 
+import Coenttb_Web
 import Identity_Provider
 import Mailgun
-import Coenttb_Web
 
 public enum PasswordEmail {
     case reset(PasswordEmail.Reset)
@@ -19,7 +19,7 @@ extension PasswordEmail {
         case request(PasswordEmail.Reset.Request)
         case confirmation(PasswordEmail.Reset.Confirmation)
     }
-    
+
     public enum Change {
         case notification(PasswordEmail.Change.Notification)
     }
@@ -30,18 +30,18 @@ extension PasswordEmail.Reset {
         public let resetUrl: URL
         public let userName: String?
         public let userEmail: EmailAddress
-        
+
         public init(resetUrl: URL, userName: String?, userEmail: EmailAddress) {
             self.resetUrl = resetUrl
             self.userName = userName
             self.userEmail = userEmail
         }
     }
-    
+
     public struct Confirmation: Sendable {
         public let userName: String?
         public let userEmail: EmailAddress
-        
+
         public init(userName: String?, userEmail: EmailAddress) {
             self.userName = userName
             self.userEmail = userEmail
@@ -53,7 +53,7 @@ extension PasswordEmail.Change {
     public struct Notification: Sendable {
         public let userName: String?
         public let userEmail: EmailAddress
-        
+
         public init(userName: String?, userEmail: EmailAddress) {
             self.userName = userName
             self.userEmail = userEmail
@@ -112,7 +112,7 @@ extension Email {
                                 english: "Reset your password"
                             )
                         }
-                        
+
                         Paragraph {
                             TranslatedString(
                                 dutch: "We hebben een verzoek ontvangen om het wachtwoord voor je \(business.name) account te resetten. Klik op de onderstaande knop om je wachtwoord te wijzigen.",
@@ -121,7 +121,7 @@ extension Email {
                         }
                         .padding(bottom: .extraSmall)
                         .fontSize(.body)
-                        
+
                         Button(
                             tag: a,
                             background: business.primaryColor
@@ -134,20 +134,20 @@ extension Email {
                         .color(.primary.reverse())
                         .href(passwordResetRequest.resetUrl.absoluteString)
                         .padding(bottom: Length.medium)
-                        
+
                         Paragraph(.small) {
                             TranslatedString(
                                 dutch: "Om veiligheidsredenen verloopt deze link binnen 1 uur. ",
                                 english: "This link will expire in 1 hour for security reasons. "
                             )
-                            
+
                             TranslatedString(
                                 dutch: "Als je geen wachtwoordreset hebt aangevraagd, kun je deze e-mail negeren.",
                                 english: "If you didn't request a password reset, you can ignore this email."
                             )
-                            
+
                             br()
-                            
+
                             TranslatedString(
                                 dutch: "Voor hulp, neem contact op met ons op via \(business.supportEmail).",
                                 english: "For help, contact us at \(business.supportEmail)."
@@ -169,7 +169,7 @@ extension Email {
             dutch: "Reset je wachtwoord",
             english: "Reset your password"
         )
-        
+
         self.init(
             from: business.fromEmail,
             to: [
@@ -200,7 +200,7 @@ extension Email {
                                 english: "Password Successfully Reset"
                             )
                         }
-                        
+
                         Paragraph {
                             TranslatedString(
                                 dutch: "We bevestigen dat je wachtwoord voor je \(business.name) account succesvol is gereset.",
@@ -209,7 +209,7 @@ extension Email {
                         }
                         .padding(bottom: .extraSmall)
                         .fontSize(.body)
-                        
+
                         Paragraph {
                             TranslatedString(
                                 dutch: "Je kunt nu inloggen met je nieuwe wachtwoord.",
@@ -218,7 +218,7 @@ extension Email {
                         }
                         .padding(bottom: .extraSmall)
                         .fontSize(.body)
-                        
+
                         Paragraph(.small) {
                             TranslatedString(
                                 dutch: "Als je deze wijziging niet hebt aangevraagd, neem dan onmiddellijk contact op met ons via \(business.supportEmail) om je account te beveiligen.",
@@ -241,7 +241,7 @@ extension Email {
             dutch: "Wachtwoord succesvol gereset",
             english: "Password Successfully Reset"
         )
-        
+
         self.init(
             from: business.fromEmail,
             to: [
@@ -272,7 +272,7 @@ extension Email {
                                 english: "Password Changed"
                             )
                         }
-                        
+
                         Paragraph {
                             TranslatedString(
                                 dutch: "We willen je informeren dat het wachtwoord voor je \(business.name) account zojuist is gewijzigd.",
@@ -281,7 +281,7 @@ extension Email {
                         }
                         .padding(bottom: .extraSmall)
                         .fontSize(.body)
-                        
+
                         Paragraph {
                             TranslatedString(
                                 dutch: "Als je deze wijziging hebt aangevraagd, kun je deze e-mail als bevestiging beschouwen.",
@@ -290,7 +290,7 @@ extension Email {
                         }
                         .padding(bottom: .extraSmall)
                         .fontSize(.body)
-                        
+
                         Paragraph(.small) {
                             TranslatedString(
                                 dutch: "Als je deze wijziging niet hebt aangevraagd, neem dan onmiddellijk contact op met ons via \(business.supportEmail) om je account te beveiligen.",
@@ -305,15 +305,15 @@ extension Email {
             }
         }
         .backgroundColor(.primary.reverse())
-        
+
         let bytes: ContiguousArray<UInt8> = html.render()
         let string: String = String(decoding: bytes, as: UTF8.self)
-        
+
         let subjectAdd = TranslatedString(
             dutch: "Belangrijk: Je wachtwoord is gewijzigd",
             english: "Important: Your password has been changed"
         )
-        
+
         self.init(
             from: business.fromEmail,
             to: [

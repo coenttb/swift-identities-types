@@ -58,7 +58,7 @@ let package = Package(
                 .coenttbWeb,
                 .dependenciesMacros,
                 .vaporJWT,
-                .coenttbVapor,
+                .coenttbVapor
             ]
         ),
         .target(
@@ -69,7 +69,7 @@ let package = Package(
                 .dependenciesMacros,
                 .coenttbIdentityShared,
                 .coenttbVapor,
-                .vaporJWT,
+                .vaporJWT
             ]
         ),
         .target(
@@ -81,7 +81,7 @@ let package = Package(
                 .coenttbVapor,
                 .coenttbFluent,
                 .coenttbIdentityShared,
-                .mailgun,
+                .mailgun
 
             ]
         ),
@@ -92,7 +92,7 @@ let package = Package(
                 .dependenciesTestSupport,
                 .fluentSqlLite
             ]
-        ),
+        )
     ],
     swiftLanguageModes: [.v6]
 )

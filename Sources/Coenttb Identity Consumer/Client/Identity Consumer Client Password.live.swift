@@ -5,15 +5,15 @@
 //  Created by Coen ten Thije Boonkkamp on 11/02/2025.
 //
 
+import Coenttb_Identity_Shared
+import Coenttb_Vapor
 import Coenttb_Web
-import Identity_Shared
 import Dependencies
 import EmailAddress
 import Identity_Consumer
-import Coenttb_Identity_Shared
-import Coenttb_Vapor
-import RateLimiter
+import Identity_Shared
 import JWT
+import RateLimiter
 
 extension Identity.Consumer.Client.Password {
     package static func live(
@@ -26,7 +26,7 @@ extension Identity.Consumer.Client.Password {
                 request: { email in
                     let route: Identity.Consumer.API = .password(.reset(.request(.init(email: email))))
                     let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
-                    
+
                     @Dependency(URLRequest.Handler.self) var handleRequest
 
                     do {
@@ -38,9 +38,9 @@ extension Identity.Consumer.Client.Password {
                 confirm: { token, newPassword in
                     let route: Identity.Consumer.API = .password(.reset(.confirm(.init(token: token, newPassword: newPassword))))
                     let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
-                    
+
                     @Dependency(URLRequest.Handler.self) var handleRequest
-                    
+
                     do {
                         try await handleRequest(for: makeRequest(router)(route))
                     } catch {
@@ -52,9 +52,9 @@ extension Identity.Consumer.Client.Password {
                 request: { currentPassword, newPassword in
                     let route: Identity.Consumer.API = .password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword))))
                     let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
-                    
+
                     @Dependency(URLRequest.Handler.self) var handleRequest
-                    
+
                     do {
                         try await handleRequest(for: makeRequest(router)(route))
                     } catch {

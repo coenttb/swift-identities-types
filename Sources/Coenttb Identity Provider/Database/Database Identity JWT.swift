@@ -5,12 +5,12 @@
 //  Created by Coen ten Thije Boonkkamp on 05/02/2025.
 //
 
+import Coenttb_Identity_Shared
+import Coenttb_Vapor
 import Dependencies
 @preconcurrency import Fluent
 import Foundation
-import Coenttb_Vapor
 import JWT
-import Coenttb_Identity_Shared
 
 extension Database.Identity {
     package func generateJWTAccess(
@@ -19,7 +19,7 @@ extension Database.Identity {
     ) async throws -> String {
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
-        
+
         @Dependency(\.accessTokenConfig) var config
 
         let payload = try JWT.Token.Access(
@@ -29,42 +29,40 @@ extension Database.Identity {
         )
         return try await request.jwt.sign(payload)
     }
-    
+
     package func generateJWTRefresh(
         includeTokenId: Bool = false,
         includeNotBefore: Bool = false
     ) async throws -> String {
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
-        
+
         @Dependency(\.refreshTokenConfig) var config
-        
-        let payload = try JWT.Token.Refresh.init(
+
+        let payload = try JWT.Token.Refresh(
             identity: self,
             includeTokenId: includeTokenId,
             includeNotBefore: includeNotBefore
         )
         return try await request.jwt.sign(payload)
     }
-    
-    
-    
+
     package func generateJWTResponse(
     ) async throws -> Identity.Authentication.Response {
-        
+
         let accessToken = try await self.generateJWTAccess(
             includeTokenId: true,
             includeNotBefore: true
         )
-        
+
         let refreshToken = try await self.generateJWTRefresh(
             includeTokenId: true,
             includeNotBefore: false
         )
-        
+
         @Dependency(\.accessTokenConfig) var accessTokenConfig
         @Dependency(\.refreshTokenConfig) var refreshTokenConfig
-        
+
         return .init(
             accessToken: .init(
                 value: accessToken,
@@ -78,7 +76,7 @@ extension Database.Identity {
             )
         )
     }
-    
+
 }
 
 extension JWT.Token.Access {
@@ -90,7 +88,7 @@ extension JWT.Token.Access {
     ) throws {
         @Dependency(\.uuid) var uuid
         @Dependency(\.accessTokenConfig) var config
-        
+
         self = .init(
             expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expiration)),
             issuedAt: IssuedAtClaim(value: currentTime),
@@ -114,7 +112,7 @@ extension JWT.Token.Refresh {
     ) throws {
         @Dependency(\.uuid) var uuid
         @Dependency(\.refreshTokenConfig) var config
-        
+
         self = .init(
             expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expiration)),
             issuedAt: IssuedAtClaim(value: currentTime),
@@ -139,7 +137,7 @@ extension JWT.Token.Reauthorization {
     ) throws {
         @Dependency(\.uuid) var uuid
         @Dependency(\.refreshTokenConfig) var config
-        
+
         self = .init(
             expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expiration)),
             issuedAt: IssuedAtClaim(value: currentTime),
