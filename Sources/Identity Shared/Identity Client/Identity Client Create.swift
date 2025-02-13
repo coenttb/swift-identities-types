@@ -20,3 +20,15 @@ extension Identity.Client {
         public var verify: (_ email: EmailAddress, _ token: String) async throws -> Void
     }
 }
+
+extension Identity.Client.Create {
+    public func request(_ request: Identity.Create.Request) async throws {
+        try await self.request(email: try .init(request.email), password: request.password)
+    }
+}
+
+extension Identity.Client.Create {
+    public func verify(_ verify: Identity.Create.Verify) async throws {
+        try await self.verify(email: try .init(verify.email), token: verify.token)
+    }
+}

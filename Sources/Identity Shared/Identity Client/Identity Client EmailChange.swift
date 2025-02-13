@@ -29,3 +29,15 @@ extension Identity.Client.EmailChange.Request {
         case requiresReauthentication
     }
 }
+
+extension Identity.Client.EmailChange {
+    public func request(_ request: Identity.EmailChange.Request) async throws -> Identity.Client.EmailChange.Request.Result {
+        return try await self.request(newEmail: try .init(request.newEmail))
+    }
+}
+
+extension Identity.Client.EmailChange {
+    public func confirm(_ confirm: Identity.EmailChange.Confirm) async throws {
+        try await self.confirm(token: confirm.token)
+    }
+}

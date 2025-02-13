@@ -23,3 +23,9 @@ extension Identity.Client {
         public var confirm: (/*_ userId: User.ID*/) async throws -> Void
     }
 }
+
+extension Identity.Client.Delete {
+    public func request(_ request: Identity.Delete.Request) async throws {
+        try await self.request(reauthToken: request.reauthToken)
+    }
+}

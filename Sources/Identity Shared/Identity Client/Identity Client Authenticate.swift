@@ -43,3 +43,29 @@ extension Identity.Client.Authenticate {
         ) async throws -> Identity.Authentication.Response
     }
 }
+
+import BearerAuth
+extension Identity.Client.Authenticate {
+    public func credentials(_ credentials: Identity.Authentication.Credentials) async throws -> Identity.Authentication.Response {
+        try await self.credentials(username: credentials.email, password: credentials.password)
+    }
+}
+
+extension Identity.Client.Authenticate.Token {
+    public func access(_ access: BearerAuth) async throws {
+        try await self.access(access.token)
+    }
+}
+
+extension Identity.Client.Authenticate.Token {
+    public func refresh(_ refresh: BearerAuth) async throws -> Identity.Authentication.Response {
+        return try await self.refresh(refresh.token)
+    }
+}
+
+
+extension Identity.Client.Authenticate {
+    public func apiKey(_ apiKey: BearerAuth) async throws -> Identity.Authentication.Response {
+        return try await self.apiKey(apiKey.token)
+    }
+}

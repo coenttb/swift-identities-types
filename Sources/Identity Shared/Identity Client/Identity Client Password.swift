@@ -38,3 +38,24 @@ extension Identity.Client.Password {
         public var request: (_ currentPassword: String, _ newPassword: String) async throws -> Void
     }
 }
+
+extension Identity.Client.Password.Reset {
+    public func request(_ request: Identity.Password.Reset.Request) async throws {
+        try await self.request(email: try .init(request.email))
+    }
+}
+
+extension Identity.Client.Password.Reset {
+    public func confirm(_ confirm: Identity.Password.Reset.Confirm) async throws {
+        try await self.confirm(newPassword: confirm.newPassword, token: confirm.token)
+    }
+}
+
+extension Identity.Client.Password.Change {
+    public func request(_ request: Identity.Password.Change.Request) async throws {
+        try await self.request(
+            currentPassword: request.currentPassword,
+            newPassword: request.newPassword
+        )
+    }
+}
