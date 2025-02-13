@@ -17,12 +17,16 @@ extension Identity.Consumer {
         @Dependency(Identity.Consumer.Client.self) var client
 
         public func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
-            if let token = request.cookies.refreshToken?.string {
-                try await withDependencies {
-                    $0.request = request
-                } operation: {
-                    try await client.authenticate.token.refresh(token: token)
+            do {
+                if let token = request.cookies.refreshToken?.string {
+                    try await withDependencies {
+                        $0.request = request
+                    } operation: {
+                        try await client.authenticate.token.refresh(token: token)
+                    }
                 }
+            } catch {
+                
             }
             return try await next.respond(to: request)
         }

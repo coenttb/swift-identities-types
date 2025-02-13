@@ -11,19 +11,24 @@ import Identity_Consumer
 import JWT
 
 extension Identity.Consumer {
-   public struct AccessTokenAuthenticator: AsyncMiddleware {
-       public init() {}
-
-       @Dependency(Identity.Consumer.Client.self) var client
-
-       public func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
-           if let token = request.cookies.accessToken?.string {
-               try await withDependencies {
-                   $0.request = request
-               } operation: {
-                   try await client.authenticate.token.access(token: token)           }
-               }
-           return try await next.respond(to: request)
-       }
-   }
+    public struct AccessTokenAuthenticator: AsyncMiddleware {
+        public init() {}
+        
+        @Dependency(Identity.Consumer.Client.self) var client
+        
+        public func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
+            do {
+                if let token = request.cookies.accessToken?.string {
+                    try await withDependencies {
+                        $0.request = request
+                    } operation: {
+                        try await client.authenticate.token.access(token: token)
+                    }
+                }
+            } catch {
+                
+            }
+            return try await next.respond(to: request)
+        }
+    }
 }
