@@ -36,7 +36,7 @@ extension Identity.Client.Authenticate {
     public struct Token: @unchecked Sendable {
         public var access: (
             _ token: String
-        ) async throws -> Void
+        ) async throws -> JWT.Token?
 
         public var refresh: (
             _ token: String
@@ -52,7 +52,7 @@ extension Identity.Client.Authenticate {
 }
 
 extension Identity.Client.Authenticate.Token {
-    public func access(_ access: BearerAuth) async throws {
+    public func access(_ access: BearerAuth) async throws -> JWT.Token? {
         try await self.access(access.token)
     }
 }

@@ -149,6 +149,7 @@ extension Identity.Client.Authenticate: TestDependencyKey {
                     guard !token.isEmpty else {
                         throw ValidationError.invalidToken
                     }
+                    return nil
                 },
                 refresh: { token in
                     guard !token.isEmpty else {
