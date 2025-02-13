@@ -167,6 +167,8 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                         await fireAndForget {
                             try await onEmailChangeSuccess(oldEmail, newEmail)
                         }
+                        
+                        return try await Identity.Authentication.Response(emailChangeRequest.identity)
                     }
                 } catch {
                     logger.error("Error in confirmEmailChange: \(String(describing: error))")

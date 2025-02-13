@@ -33,10 +33,25 @@ extension Database.Identity {
         
         return try await request.jwt.sign(payload)
     }
+    
+    package func generateJWTAccess() async throws -> JWT.Token {
+        @Dependency(\.accessTokenConfig) var accessTokenConfig
+        return try await .init(
+            value: self.generateJWTAccess(),
+            type: "Bearer",
+            expiresIn: accessTokenConfig.expiration
+        )
+    }
+    
+    package func generateJWTRefresh() async throws -> JWT.Token {
+        @Dependency(\.refreshTokenConfig) var refreshTokenConfig
+        return try await .init(
+            value: self.generateJWTAccess(),
+            type: "Bearer",
+            expiresIn: refreshTokenConfig.expiration
+        )
+    }
 
-//    package func generateJWTResponse() async throws -> Identity.Authentication.Response {
-//        try await .init(self)
-//    }
 }
 
 extension Identity.Authentication.Response {
@@ -46,16 +61,8 @@ extension Identity.Authentication.Response {
         @Dependency(\.refreshTokenConfig) var refreshTokenConfig
 
         self = try await .init(
-            accessToken: .init(
-                value: identity.generateJWTAccess(),
-                type: "Bearer",
-                expiresIn: accessTokenConfig.expiration
-            ),
-            refreshToken: .init(
-                value: identity.generateJWTRefresh(),
-                type: "Cookie",
-                expiresIn: refreshTokenConfig.expiration
-            )
+            accessToken: identity.generateJWTAccess(),
+            refreshToken: identity.generateJWTRefresh()
         )
     }
 }
@@ -93,7 +100,6 @@ extension JWT.Token.Refresh {
             expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expiration)),
             issuedAt: IssuedAtClaim(value: currentTime),
             identityId: try identity.requireID(),
-            email: identity.emailAddress,
             tokenId: .init(uuid()),
             sessionVersion: identity.sessionVersion
         )

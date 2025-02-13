@@ -16,8 +16,9 @@ extension Identity.Consumer.Client {
     ) -> Self {
 
         @Dependency(RateLimiters.self) var rateLimiter
-        @Dependency(URLRequest.Handler.self) var handleRequest
+        
 
+        
         return .init(
             authenticate: .live(
                 provider: provider,
@@ -30,20 +31,14 @@ extension Identity.Consumer.Client {
                 request.auth.logout(JWT.Token.Access.self)
             },
             reauthorize: { password in
-                @Dependency(\.request) var request
-                guard let request else { throw Abort.requestUnavailable }
-
-                let apiRouter = router
-                    .setAccessToken(request.cookies.accessToken)
-                    .setBearerAuth(request.cookies.accessToken?.string)
-                    .baseURL(provider.baseURL.absoluteString)
-                    .eraseToAnyParserPrinter()
+                @Dependency(URLRequest.Handler.self) var handleRequest
 
                 return try await handleRequest(
-                    for: makeRequest(apiRouter)(.reauthorize(.init(password: password))),
+                    baseRouter: router,
+                    baseURL: provider.baseURL,
+                    route: .reauthorize(.init(password: password)),
                     decodingTo: JWT.Token.self
                 )
-
             },
             create: .live(
                 provider: provider,
@@ -68,6 +63,8 @@ extension Identity.Consumer.Client {
         )
     }
 }
+
+
 
 extension Identity.Consumer.Client {
     public enum Live {

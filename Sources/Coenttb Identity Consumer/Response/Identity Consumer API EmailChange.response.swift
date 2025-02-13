@@ -33,8 +33,8 @@ extension Identity.Consumer.API.EmailChange {
 
         case .confirm(let confirm):
             do {
-                try await client.emailChange.confirm(confirm)
-                return Response.success(true)
+                let tokens = try await client.emailChange.confirm(confirm)
+                return Response.success(true).with(tokens, domain: nil)
             } catch {
                 throw Abort(.internalServerError, reason: "Failed to confirm email change")
             }

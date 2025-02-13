@@ -23,18 +23,27 @@ extension Identity.Consumer.API.Authenticate {
             case .token(let token):
                 switch token {
                 case .access(let access):
-                    try await client.authenticate.token.access(token: access.token)
-                    return Response.success(true)
+                    do {
+                        try await client.authenticate.token.access(token: access.token)
+                        return Response.success(true)
+                    } catch {
+                        @Dependency(\.request) var request
+                        guard let request else { throw Abort.requestUnavailable }
+                        guard let refreshToken = request.cookies.refreshToken?.string else {
+                            throw Abort(.unauthorized)
+                        }
+                        
+                        do {
+                            let tokens = try await client.authenticate.token.refresh(token: refreshToken)
+                            return Response.success(true).with(tokens, domain: nil)
+                        } catch {
+                            throw Abort(.unauthorized)
+                        }
+                    }
 
                 case .refresh(let refresh):
-                    let data = try await client.authenticate.token.refresh(token: refresh.token)
-
-                    let response = Response.success(true)
-                    response.cookies.refreshToken = .refreshToken(response: data, domain: nil)
-                    response.cookies.refreshToken?.sameSite = .strict
-                    response.cookies.refreshToken?.isHTTPOnly = true
-
-                    return response
+                    let tokens = try await client.authenticate.token.refresh(token: refresh.token)
+                    return Response.success(true).with(tokens, domain: nil)
                 }
 
             case .credentials(let credentials):
@@ -60,6 +69,5 @@ extension Identity.Consumer.API.Authenticate {
         } catch {
             throw Abort(.internalServerError, reason: "Failed to authenticate account")
         }
-
     }
 }

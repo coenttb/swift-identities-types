@@ -57,44 +57,28 @@ extension Identity.Consumer.Client.Authenticate {
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
 
-                    do {
-                        let currentToken = try await request.jwt.verify(token, as: JWT.Token.Access.self)
-                        
-                        // Check if token expires in the next 5 minutes
-                        let expirationBuffer = TimeInterval(300) // 5 minutes
-                        if Date().addingTimeInterval(expirationBuffer) >= currentToken.expiration.value {
-                            // Token will expire soon or has expired, try to refresh
-                            guard let refreshToken = request.cookies.refreshToken?.string else {
-                                throw Abort(.unauthorized)
-                            }
-                            let newTokenResponse = try await client.authenticate.token.refresh(token: refreshToken)
-                            
-                            let newAccessToken = try await request.jwt.verify(
-                                newTokenResponse.accessToken.value,
+                    let currentToken = try await request.jwt.verify(token, as: JWT.Token.Access.self)
+                    
+                    // Check if token has more than 5 minutes left
+                    let expirationBuffer = TimeInterval(300)
+                    
+                    guard Date().addingTimeInterval(expirationBuffer) < currentToken.expiration.value
+                    else {
+                        guard let refreshToken = request.cookies.refreshToken?.string
+                        else { throw Abort(.unauthorized) }
+                                                                    
+                        try await request.auth.login(
+                            request.jwt.verify(
+                                client.authenticate.token.refresh(token: refreshToken)
+                                    .accessToken.value,
                                 as: JWT.Token.Access.self
                             )
-                            request.auth.login(newAccessToken)
-                            
-                            request.headers.bearerAuthorization = .init(token: newTokenResponse.accessToken.value)
-                            request.cookies.accessToken = .accessToken(response: newTokenResponse, domain: provider.domain)
-                            request.cookies.refreshToken = .refreshToken(response: newTokenResponse, domain: provider.domain)
-                            return
-                        }
+                        )
                         
-                        request.auth.login(currentToken)
-                    } catch {
-                        // Handle verification failure - could be expired or invalid token
-                        guard let refreshToken = request.cookies.refreshToken?.string else {
-                            throw Abort(.unauthorized)
-                        }
-                        // Try refresh as a recovery mechanism
-                        do {
-                            let newTokenResponse = try await client.authenticate.token.refresh(token: refreshToken)
-                            // ... same refresh handling as above
-                        } catch {
-                            throw Abort(.unauthorized)
-                        }
+                        return
                     }
+                    
+                    request.auth.login(currentToken)
                 },
                 refresh: { token in
                     let route: Identity.Consumer.API = .authenticate(.token(.refresh(.init(token: token))))
@@ -110,10 +94,16 @@ extension Identity.Consumer.Client.Authenticate {
 
                         @Dependency(\.request) var request
                         guard let request else { throw Abort.requestUnavailable }
-
-                        request.cookies.accessToken = .accessToken(response: response, domain: provider.domain)
-
+                        
+                        let newAccessToken = try await request.jwt.verify(
+                            response.accessToken.value,
+                            as: JWT.Token.Access.self
+                        )
+                        
+                        request.auth.login(newAccessToken)
+                        
                         return response
+                        
                     } catch {
                         throw Abort(.unauthorized)
                     }

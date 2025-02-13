@@ -262,7 +262,7 @@ extension Identity.Consumer.View {
 
             case .confirm(let confirm):
 
-                try await client.emailChange.confirm(token: confirm.token)
+                let _ = try await client.emailChange.confirm(token: confirm.token)
 
                 return accountDefaultContainer {
                     Identity.Consumer.View.EmailChange.Confirm(

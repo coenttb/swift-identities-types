@@ -35,7 +35,7 @@ extension Identity.Consumer.Client.EmailChange {
                 do {
                     return try await handleRequest(
                         for: makeRequest(router)(route),
-                        decodingTo: Identity.Consumer.Client.EmailChange.Request.Result.self
+                        decodingTo: Identity.EmailChange.Request.Result.self
                     )
                 } catch {
                     throw Abort(.unauthorized)
@@ -48,7 +48,11 @@ extension Identity.Consumer.Client.EmailChange {
                 @Dependency(URLRequest.Handler.self) var handleRequest
 
                 do {
-                    try await handleRequest(for: makeRequest(router)(route))
+                    return try await handleRequest(
+                        for: makeRequest(router)(route),
+                        decodingTo: Identity.EmailChange.Confirm.Response.self
+                    )
+                    
                 } catch {
                     throw Abort(.internalServerError)
                 }

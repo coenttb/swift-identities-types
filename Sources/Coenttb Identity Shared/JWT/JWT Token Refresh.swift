@@ -15,21 +15,10 @@ extension JWT.Token {
         
         public var identityId: UUID {
             get {
-                UUID(uuidString: subject.value.components(separatedBy: ":")[0])!
+                UUID(uuidString: subject.value)!
             }
             set {
-                let email = subject.value.components(separatedBy: ":")[1]
-                subject.value = "\(newValue.uuidString):\(email)"
-            }
-        }
-        
-        public var email: EmailAddress {
-            get {
-                EmailAddress(rawValue: subject.value.components(separatedBy: ":")[1])!
-            }
-            set {
-                let id = subject.value.components(separatedBy: ":")[0]
-                subject.value = "\(id):\(newValue)"
+                subject.value = "\(newValue.uuidString)"
             }
         }
         
@@ -37,13 +26,12 @@ extension JWT.Token {
             expiration: ExpirationClaim,
             issuedAt: IssuedAtClaim,
             identityId: UUID,
-            email: EmailAddress,
             tokenId: IDClaim,
             sessionVersion: Int
         ) {
             self.expiration = expiration
             self.issuedAt = issuedAt
-            self.subject = SubjectClaim(value: "\(identityId.uuidString):\(email)")
+            self.subject = SubjectClaim(value: "\(identityId.uuidString)")
             self.tokenId = tokenId
             self.sessionVersion = sessionVersion
         }
