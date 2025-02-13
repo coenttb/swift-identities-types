@@ -5,15 +5,17 @@
 //  Created by Coen ten Thije Boonkkamp on 05/02/2025.
 //
 
-import Fluent
+import Coenttb_Fluent
 import Foundation
+import Logging
+import PostgresNIO
 
 public enum Database {}
 
 extension Database {
     public struct Migration: AsyncMigration {
-
         public var name: String
+        private let logger = Logger(label: "Database.Migration")
 
         public init(
             name: String = "Coenttb_Identity_Provider.Database.Migration"
@@ -52,17 +54,45 @@ extension Database {
 
             return migrations
         }()
-
+        
         public func prepare(on database: Fluent.Database) async throws {
             for migration in Self.migrations {
-                try await migration.prepare(on: database)
+                do {
+                    try await migration.prepare(on: database)
+                } catch {
+                    logger.error("Failed to prepare migration \(migration.name): \(error)")
+                    throw error
+                }
             }
         }
-
+        
         public func revert(on database: Fluent.Database) async throws {
+            var errors: [Error] = []
+            
             for migration in Self.migrations.reversed() {
-                try await migration.revert(on: database)
+                do {
+                    try await migration.revert(on: database)
+                } catch let error as PSQLError where error.isTableNotFoundError {
+                    // Table doesn't exist error - log and continue
+                    logger.warning("Table doesn't exist during reversion of \(migration.name): \(error)")
+                    continue
+                } catch {
+                    logger.error("Failed to revert migration \(migration.name): \(error)")
+                    errors.append(error)
+                }
+            }
+            
+            if !errors.isEmpty {
+                throw MigrationError.multipleMigrationsFailed(errors)
             }
         }
     }
 }
+
+// Define custom error type for multiple migration failures
+extension Database {
+    enum MigrationError: Error {
+        case multipleMigrationsFailed([Error])
+    }
+}
+

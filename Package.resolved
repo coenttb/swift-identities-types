@@ -43,7 +43,7 @@
       "location" : "https://github.com/coenttb/coenttb-mailgun",
       "state" : {
         "branch" : "main",
-        "revision" : "d6d03138e32b42c7f1d062fc6378648343c19288"
+        "revision" : "75de83fca4b3a77a5584934a79c98eb536c58991"
       }
     },
     {
@@ -61,7 +61,7 @@
       "location" : "https://github.com/coenttb/coenttb-server-vapor",
       "state" : {
         "branch" : "main",
-        "revision" : "e4b64d0d74e341dddbdf4534b0bf65439aa1b19e"
+        "revision" : "f03a85de7e583b446884d4fef072767cb8cca061"
       }
     },
     {
@@ -601,7 +601,7 @@
       "location" : "https://github.com/coenttb/swift-web",
       "state" : {
         "branch" : "main",
-        "revision" : "d1cef74828261e0848153580d57e1745f9c37ce6"
+        "revision" : "9a7731bedde70b0ea10ff0a4dc5c750c858c3fb6"
       }
     },
     {
