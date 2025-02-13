@@ -32,35 +32,27 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
             request: { newEmail in
                 do {
 
-                    print("EmailChange Request 1")
                     guard let newEmail
                     else {
-                        print("EmailChange Request 2")
                         throw ValidationError.invalidInput("Email address cannot be nil")
                     }
-                    print("EmailChange Request 3")
 
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
-                    print("EmailChange Request 4")
                     guard let token = request.cookies.reauthorizationToken?.string
                     else {
-                        print("EmailChange Request 5")
                         return .requiresReauthentication
                     }
-                    print("EmailChange Request 6")
                     do {
                         try await request.jwt.verify(
                             token,
                             as: JWT.Token.Reauthorization.self
                         )
                     } catch {
-                        print("EmailChange Request 7")
                         return .requiresReauthentication
                     }
 
                     let identity = try await Database.Identity.get(by: .auth, on: database)
-                    print("EmailChange Request 8")
                     try await database.transaction { db in
 
                         if try await Database.Identity.query(on: db)
@@ -68,7 +60,6 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                             .first() != nil {
                             throw ValidationError.invalidInput("Email address is already in use")
                         }
-                        print("EmailChange Request 9")
                         // Delete any existing email change tokens
                         do {
                             try await Database.Identity.Token.query(on: db)
@@ -79,40 +70,42 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
 
                         }
 
-                        print("EmailChange Request 10")
                         // Generate and save new token
                         let changeToken = try identity.generateToken(
                             type: .emailChange,
                             validUntil: Date().addingTimeInterval(24 * 60 * 60)
                         )
 
-                        print("EmailChange Request 11")
                         try await changeToken.save(on: db)
-                        print("EmailChange Request 12")
                         // Create and save email change request
                         let emailChangeRequest = try Database.EmailChangeRequest(
                             identity: identity,
                             newEmail: newEmail,
                             token: changeToken
                         )
-                        print("EmailChange Request 13")
-                        // Execute all operations concurrently within transaction
+                        
                         try await emailChangeRequest.save(on: db)
-                        print("EmailChange Request 14")
-                        // Send notifications after database changes succeed
-                        try await sendEmailChangeConfirmation(
-                            identity.emailAddress,
-                            newEmail,
-                            changeToken.value
-                        )
-                        print("EmailChange Request 15")
-                        try await sendEmailChangeRequestNotification(
-                            identity.emailAddress,
-                            newEmail
-                        )
-                        print("EmailChange Request 16")
-                        logger.notice("Email change requested for user: \(identity.email) to new email: \(newEmail)")
-
+                        
+                        @Dependency(\.fireAndForget) var fireAndForget
+                        
+                        await fireAndForget {
+                            try await sendEmailChangeConfirmation(
+                                identity.emailAddress,
+                                newEmail,
+                                changeToken.value
+                            )
+                            
+                            logger.notice("Emailchange confirmation-request for user: \(identity.email) to new email: \(newEmail)")
+                        }
+                        
+                        await fireAndForget {
+                            try await sendEmailChangeRequestNotification(
+                                identity.emailAddress,
+                                newEmail
+                            )
+                            
+                            logger.notice("Emailchange notification for user: \(identity.email) to email: \(identity.emailAddress)")
+                        }
                     }
 
                     return .success
@@ -169,9 +162,11 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
 
                         logger.notice("Email change completed successfully from \(oldEmail) to \(newEmail)")
 
-                        // Trigger post-change callback after database changes succeed
-                        try await onEmailChangeSuccess(oldEmail, newEmail)
-
+                        @Dependency(\.fireAndForget) var fireAndForget
+                        
+                        await fireAndForget {
+                            try await onEmailChangeSuccess(oldEmail, newEmail)
+                        }
                     }
                 } catch {
                     logger.error("Error in confirmEmailChange: \(String(describing: error))")
