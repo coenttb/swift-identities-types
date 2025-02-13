@@ -16,8 +16,6 @@ extension Identity.Consumer.API.EmailChange {
     ) async throws -> any AsyncResponseEncodable {
 
         @Dependency(Identity.Consumer.Client.self) var client
-        @Dependency(\.request) var request
-        guard let request else { throw Abort.requestUnavailable }
 
         switch emailChange {
         case .request(let request):

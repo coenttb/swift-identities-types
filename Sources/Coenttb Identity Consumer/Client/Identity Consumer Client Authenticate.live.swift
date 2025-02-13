@@ -22,8 +22,8 @@ extension Identity.Consumer.Client.Authenticate {
         makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
     ) -> Self {
         return .init(
-            credentials: { credentials in
-                let route: Identity.Consumer.API = .authenticate(.credentials(credentials))
+            credentials: { username, password in
+                let route: Identity.Consumer.API = .authenticate(.credentials(.init(email: username, password: password)))
                 let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
 
                 @Dependency(URLRequest.Handler.self) var handleRequest

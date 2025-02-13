@@ -17,8 +17,6 @@ extension Identity.Consumer.API.Authenticate {
     ) async throws -> any AsyncResponseEncodable {
 
         @Dependency(Identity.Consumer.Client.self) var client
-        @Dependency(\.request) var request
-        guard let request else { throw Abort.requestUnavailable }
 
         do {
             switch authenticate {
@@ -41,7 +39,7 @@ extension Identity.Consumer.API.Authenticate {
 
             case .credentials(let credentials):
                 do {
-                    let data = try await client.authenticate.credentials(credentials: credentials)
+                    let data = try await client.authenticate.credentials(credentials)
                     let response = Response.success(true)
                     response.cookies.accessToken = .accessToken(response: data, domain: tokenDomain)
                     response.cookies.refreshToken = .refreshToken(response: data, domain: tokenDomain)
@@ -55,7 +53,7 @@ extension Identity.Consumer.API.Authenticate {
                 let data = try await client.authenticate.apiKey(apiKey: apiKey.token)
                 return Response.success(true, data: data)
 
-            case .multifactor(let multifactor):
+            case .multifactor(_):
                 fatalError()
             }
 

@@ -16,8 +16,6 @@ extension Identity.Consumer.API.Delete {
     ) async throws -> any AsyncResponseEncodable {
 
         @Dependency(Identity.Consumer.Client.self) var client
-        @Dependency(\.request) var request
-        guard let request else { throw Abort.requestUnavailable }
 
         switch delete {
         case .request(let request):
