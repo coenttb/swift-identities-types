@@ -14,7 +14,7 @@ extension Identity.Client {
     @DependencyClient
     public struct EmailChange: @unchecked Sendable {
         public var request: (_ newEmail: EmailAddress?) async throws -> Identity.Client.EmailChange.Request.Result
-        public var confirm: (_ token: String) async throws -> JWT.Token
+        public var confirm: (_ token: String) async throws -> Identity.Authentication.Response
     }
 }
 
@@ -37,7 +37,7 @@ extension Identity.Client.EmailChange {
 }
 
 extension Identity.Client.EmailChange {
-    public func confirm(_ confirm: Identity.EmailChange.Confirm) async throws -> JWT.Token {
+    public func confirm(_ confirm: Identity.EmailChange.Confirm) async throws -> Identity.Authentication.Response {
         return try await self.confirm(token: confirm.token)
     }
 }
