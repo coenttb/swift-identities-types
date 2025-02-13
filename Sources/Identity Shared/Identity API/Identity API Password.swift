@@ -30,9 +30,9 @@ extension Identity.API.Password {
 
 extension Identity.API.Password {
     public struct Router: ParserPrinter, Sendable {
-        
-        public init(){}
-        
+
+        public init() {}
+
         public var body: some URLRouting.Router<Identity.API.Password> {
             OneOf {
                 URLRouting.Route(.case(Identity.API.Password.reset)) {
@@ -41,13 +41,13 @@ extension Identity.API.Password {
                         URLRouting.Route(.case(Identity.API.Password.Reset.request)) {
                             Identity.Password.Reset.Request.Router()
                         }
-                        
+
                         URLRouting.Route(.case(Identity.API.Password.Reset.confirm)) {
                             Identity.Password.Reset.Confirm.Router()
                         }
                     }
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.Password.change)) {
                     Path.change
                     OneOf {
@@ -60,4 +60,3 @@ extension Identity.API.Password {
         }
     }
 }
-

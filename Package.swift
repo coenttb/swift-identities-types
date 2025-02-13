@@ -31,12 +31,12 @@ let package = Package(
     products: [
         .library(name: .identityProvider, targets: [.identityProvider]),
         .library(name: .identityConsumer, targets: [.identityConsumer]),
-        .library(name: .identityShared, targets: [.identityShared]),
+        .library(name: .identityShared, targets: [.identityShared])
     ],
     dependencies: [
         .package(url: "https://github.com/coenttb/coenttb-web", branch: "main"),
         .package(url: "https://github.com/coenttb/coenttb-authentication", branch: "main"),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3")
     ],
     targets: [
         .target(
@@ -44,7 +44,7 @@ let package = Package(
             dependencies: [
                 .coenttbWeb,
                 .dependenciesMacros,
-                .coenttbAuthentication,
+                .coenttbAuthentication
             ]
         ),
         .testTarget(
@@ -59,7 +59,7 @@ let package = Package(
             dependencies: [
                 .coenttbWeb,
                 .dependenciesMacros,
-                .identityShared,
+                .identityShared
             ]
         ),
         .testTarget(
@@ -75,7 +75,7 @@ let package = Package(
             dependencies: [
                 .identityShared,
                 .coenttbWeb,
-                .dependenciesMacros,
+                .dependenciesMacros
             ]
         ),
         .testTarget(
@@ -85,7 +85,7 @@ let package = Package(
                 .identityProvider,
                 .dependenciesTestSupport
             ]
-        ),
+        )
     ],
     swiftLanguageModes: [.v6]
 )

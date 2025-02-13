@@ -13,7 +13,7 @@ extension Identity.Authentication.Multifactor {
         public let method: Method
         public let createdAt: Date
         public let expiresAt: Date
-        
+
         public init(
             id: String = "",
             method: Method,

@@ -8,13 +8,12 @@
 import Foundation
 
 extension JWT {
-    
-    
+
     public struct Token: Codable, Hashable, Sendable {
         public let value: String
         public let type: String
         public let expiresIn: TimeInterval
-        
+
         public init(
             value: String,
             type: String = "Bearer",
@@ -24,7 +23,7 @@ extension JWT {
             self.type = type
             self.expiresIn = expiresIn
         }
-        
+
         public enum CodingKeys: String, CodingKey {
             case value = "token"
             case type

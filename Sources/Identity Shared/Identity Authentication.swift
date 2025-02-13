@@ -5,10 +5,10 @@
 //  Created by Coen ten Thije Boonkkamp on 28/01/2025.
 //
 
+import BearerAuth
+import Coenttb_Authentication
 import Coenttb_Web
 import EmailAddress
-import Coenttb_Authentication
-import BearerAuth
 
 extension Identity {
     public enum Authentication: Equatable, Sendable {
@@ -19,19 +19,19 @@ extension Identity {
 
 extension Identity.Authentication {
     public struct Credentials: Codable, Hashable, Sendable {
-        public let email: String
+        public let username: String
         public let password: String
-    
+
         public init(
-            email: String = "",
+            username: String = "",
             password: String = ""
         ) {
-            self.email = email
+            self.username = username
             self.password = password
         }
-    
+
         public enum CodingKeys: String, CodingKey {
-            case email
+            case username
             case password
         }
     }
@@ -41,8 +41,8 @@ extension Identity.Authentication.Credentials {
     public init(
         email: EmailAddress,
         password: String
-    ){
-        self = .init(email: email.rawValue, password: password)
+    ) {
+        self = .init(username: email.rawValue, password: password)
     }
 }
 
@@ -57,7 +57,7 @@ extension Identity.Authentication {
     public struct Response: Codable, Hashable, Sendable {
         public let accessToken: JWT.Token
         public let refreshToken: JWT.Token
-        
+
         public init(
             accessToken: JWT.Token,
             refreshToken: JWT.Token

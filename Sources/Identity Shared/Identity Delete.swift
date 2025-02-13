@@ -11,12 +11,11 @@ extension Identity {
     public enum Delete {}
 }
 
-
 extension Identity.Delete {
     public struct Request: Codable, Hashable, Sendable {
 //        public let userId: String
         public let reauthToken: String
-        
+
         public init(
 //            userId: String = "",
             reauthToken: String = ""
@@ -24,7 +23,7 @@ extension Identity.Delete {
 //            self.userId = userId
             self.reauthToken = reauthToken
         }
-        
+
         public enum CodingKeys: String, CodingKey {
 //            case userId
             case reauthToken
@@ -34,7 +33,7 @@ extension Identity.Delete {
 
 extension Identity.Delete.Request {
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
 
         public var body: some URLRouting.Router<Identity.Delete.Request> {
@@ -45,7 +44,7 @@ extension Identity.Delete.Request {
 }
 
 //
-//extension IdentityDelete {
+// extension IdentityDelete {
 //    public struct Cancel: Codable, Hashable, Sendable {
 //        public let userId: String
 //        
@@ -55,9 +54,9 @@ extension Identity.Delete.Request {
 //            self.userId = userId
 //        }
 //    }
-//}
+// }
 
-//extension Identity.Delete.Cancel {
+// extension Identity.Delete.Cancel {
 //    public struct Router: ParserPrinter, Sendable {
 //        
 //        public init() {}
@@ -67,9 +66,9 @@ extension Identity.Delete.Request {
 //            Body(.form(Identity.Delete.Cancel.self, decoder: .default))
 //        }
 //    }
-//}
+// }
 //
-//extension IdentityDelete {
+// extension IdentityDelete {
 //    public struct Confirm: Codable, Hashable, Sendable {
 //        public let userId: String
 //        
@@ -79,9 +78,9 @@ extension Identity.Delete.Request {
 //            self.userId = userId
 //        }
 //    }
-//}
+// }
 //
-//extension Identity.Delete.Confirm {
+// extension Identity.Delete.Confirm {
 //    public struct Router: ParserPrinter, Sendable {
 //        
 //        public init() {}
@@ -91,7 +90,7 @@ extension Identity.Delete.Request {
 //            Body(.form(Identity.Delete.Confirm.self, decoder: .default))
 //        }
 //    }
-//}
+// }
 
 extension UrlFormDecoder {
     fileprivate static var `default`: UrlFormDecoder {

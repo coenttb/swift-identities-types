@@ -18,7 +18,7 @@ extension Identity.Authentication.Multifactor.Audit {
         public let method: Identity.Authentication.Multifactor.Method?
         public let timestamp: Date
         public let metadata: [String: String]
-        
+
         public init(
             userId: String,
             eventType: `Type`,

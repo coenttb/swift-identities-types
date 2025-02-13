@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 extension Identity.Authentication.Multifactor {
     public enum Method: String, Codable, Hashable, Sendable, CaseIterable {
         case totp = "TOTP"

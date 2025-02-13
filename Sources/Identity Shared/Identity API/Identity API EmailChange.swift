@@ -14,18 +14,17 @@ extension Identity.API {
     }
 }
 
-
 extension Identity.API.EmailChange {
     public struct Router: ParserPrinter, Sendable {
-        
-        public init(){}
-        
+
+        public init() {}
+
         public var body: some URLRouting.Router<Identity.API.EmailChange> {
             OneOf {
                 URLRouting.Route(.case(Identity.API.EmailChange.request)) {
                     Identity.EmailChange.Request.Router()
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.EmailChange.confirm)) {
                     Identity.EmailChange.Confirm.Router()
                 }

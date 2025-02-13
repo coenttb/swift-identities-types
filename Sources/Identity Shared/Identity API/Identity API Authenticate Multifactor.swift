@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 31/01/2025.
 //
 
-import Foundation
 import Coenttb_Web
+import Foundation
 
 extension Identity.API.Authenticate {
     public enum Multifactor: Equatable, Sendable {
@@ -29,7 +29,7 @@ extension Identity.API.Authenticate.Multifactor {
 extension Identity.API.Authenticate.Multifactor.Setup {
     public struct Confirm: Codable, Hashable, Sendable {
         public let code: String
-        
+
         public init(code: String = "") {
             self.code = code
         }
@@ -45,7 +45,7 @@ extension Identity.API.Authenticate.Multifactor {
 extension Identity.API.Authenticate.Multifactor.Challenge {
     public struct Create: Codable, Hashable, Sendable {
         public let method: Identity.Authentication.Multifactor.Method
-        
+
         public init(method: Identity.Authentication.Multifactor.Method) {
             self.method = method
         }
@@ -68,7 +68,7 @@ extension Identity.API.Authenticate.Multifactor {
 extension Identity.API.Authenticate.Multifactor {
     public struct Router: ParserPrinter, Sendable {
         public init() {}
-        
+
         public var body: some URLRouting.Router<Identity.API.Authenticate.Multifactor> {
             OneOf {
                 URLRouting.Route(.case(Identity.API.Authenticate.Multifactor.setup)) {
@@ -79,7 +79,7 @@ extension Identity.API.Authenticate.Multifactor {
                             Method.post
                             Body(.form(Identity.Authentication.Multifactor.Setup.Request.self, decoder: .default))
                         }
-                        
+
                         URLRouting.Route(.case(Identity.API.Authenticate.Multifactor.Setup.confirm)) {
                             Path.confirm
                             Method.post
@@ -87,7 +87,7 @@ extension Identity.API.Authenticate.Multifactor {
                         }
                     }
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.Authenticate.Multifactor.challenge)) {
                     Path.challenge
                     URLRouting.Route(.case(Identity.API.Authenticate.Multifactor.Challenge.create)) {
@@ -95,7 +95,7 @@ extension Identity.API.Authenticate.Multifactor {
                         Body(.form(Identity.API.Authenticate.Multifactor.Challenge.Create.self, decoder: .default))
                     }
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.Authenticate.Multifactor.verify)) {
                     Path.verify
                     URLRouting.Route(.case(Identity.API.Authenticate.Multifactor.Verify.verify)) {
@@ -103,7 +103,7 @@ extension Identity.API.Authenticate.Multifactor {
                         Body(.form(Identity.Authentication.Multifactor.Verification.self, decoder: .default))
                     }
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.Authenticate.Multifactor.recovery)) {
                     Path.recovery
                     OneOf {
@@ -111,19 +111,19 @@ extension Identity.API.Authenticate.Multifactor {
                             Path.generate
                             Method.post
                         }
-                        
+
                         URLRouting.Route(.case(Identity.API.Authenticate.Multifactor.Recovery.count)) {
                             Path.count
                             Method.get
                         }
                     }
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.Authenticate.Multifactor.configuration)) {
                     Path.configuration
                     Method.get
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.Authenticate.Multifactor.disable)) {
                     Path.disable
                     Method.post

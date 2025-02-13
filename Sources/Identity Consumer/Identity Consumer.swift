@@ -11,5 +11,3 @@ import Identity_Shared
 extension Identity_Shared.Identity {
     public struct Consumer {}
 }
-
-

@@ -12,7 +12,7 @@ extension Identity.Authentication.Multifactor {
         public let methods: Set<Method>
         public let status: Status
         public let lastVerifiedAt: Date?
-        
+
         public init(
             methods: Set<Method> = [],
             status: Status = .disabled,

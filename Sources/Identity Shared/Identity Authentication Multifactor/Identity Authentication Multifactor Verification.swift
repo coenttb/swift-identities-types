@@ -11,7 +11,7 @@ extension Identity.Authentication.Multifactor {
     public struct Verification: Codable, Hashable, Sendable {
         public let challengeId: String
         public let code: String
-        
+
         public init(
             challengeId: String = "",
             code: String = ""

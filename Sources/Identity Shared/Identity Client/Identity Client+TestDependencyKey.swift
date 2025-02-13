@@ -1,6 +1,6 @@
-import Foundation
 import Dependencies
 import EmailAddress
+import Foundation
 
 extension Identity.Client: TestDependencyKey {
     public static var testValue: Identity.Client {
@@ -16,7 +16,7 @@ extension Identity.Client: TestDependencyKey {
             password: .testValue
         )
     }
-    
+
     enum ValidationError: Error {
         case invalidCredentials
     }
@@ -43,7 +43,7 @@ extension Identity.Client.Create: TestDependencyKey {
             }
         )
     }
-    
+
     enum ValidationError: Error {
         case invalidEmail
         case weakPassword
@@ -81,7 +81,7 @@ extension Identity.Client.Password: TestDependencyKey {
             )
         )
     }
-    
+
     enum ValidationError: Error {
         case invalidEmail
         case weakPassword
@@ -93,14 +93,13 @@ extension Identity.Client.Password: TestDependencyKey {
 extension Identity.Client.EmailChange: TestDependencyKey {
     public static var testValue: Self {
         .init(
-            request: { newEmail in
+            request: { _ in
                 //                guard let email = newEmail else {
                 //                    throw ValidationError.emailRequired
                 //                }
-                
+
                 return .success
-                
-                
+
             },
             confirm: { token in
                 guard !token.isEmpty else {
@@ -109,7 +108,7 @@ extension Identity.Client.EmailChange: TestDependencyKey {
             }
         )
     }
-    
+
     enum ValidationError: Error {
         case emailRequired
         case invalidEmail
@@ -131,7 +130,7 @@ extension Identity.Client.Delete: TestDependencyKey {
             }
         )
     }
-    
+
     enum ValidationError: Error {
         case missingToken
         case invalidUserId
@@ -141,7 +140,7 @@ extension Identity.Client.Delete: TestDependencyKey {
 extension Identity.Client.Authenticate: TestDependencyKey {
     public static var testValue: Self {
         .init(
-            credentials: { username, password in
+            credentials: { _, _ in
                     .init(
                         accessToken: .init(value: "test-access-token", expiresIn: 3600),
                         refreshToken: .init(value: "test-refresh-token", expiresIn: 86400)
@@ -174,7 +173,7 @@ extension Identity.Client.Authenticate: TestDependencyKey {
             }
         )
     }
-    
+
     enum ValidationError: Error {
         case invalidEmail
         case invalidPassword
@@ -183,12 +182,11 @@ extension Identity.Client.Authenticate: TestDependencyKey {
     }
 }
 
-
 extension Identity.Client.Authenticate.Multifactor: TestDependencyKey {
     public static var testValue: Self {
         .init(
             setup: .init(
-                initialize: { method, identifier in
+                initialize: { _, identifier in
                     guard !identifier.isEmpty else {
                         throw ValidationError.invalidIdentifier
                     }
@@ -202,7 +200,7 @@ extension Identity.Client.Authenticate.Multifactor: TestDependencyKey {
                         throw ValidationError.invalidCode
                     }
                 },
-                resetSecret: { method in
+                resetSecret: { _ in
                     "NEWSECRET123"
                 }
             ),
@@ -257,7 +255,7 @@ extension Identity.Client.Authenticate.Multifactor: TestDependencyKey {
             }
         )
     }
-    
+
     enum ValidationError: Error {
         case invalidIdentifier
         case invalidCode

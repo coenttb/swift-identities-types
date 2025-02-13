@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 07/10/2024.
 //
 
-import Coenttb_Web
 import CasePaths
+import Coenttb_Web
 import Identity_Shared
 
 extension Identity.Consumer {
@@ -18,26 +18,26 @@ extension Identity.Consumer {
         case logout
         case emailChange(Identity.Consumer.View.EmailChange)
         case password(Identity.Consumer.View.Password)
-        
+
         public static let login: Self = .authenticate(.credentials)
     }
 }
 
 extension Identity.Consumer.View {
     public struct Router: ParserPrinter {
-        
-        public init(){}
-        
+
+        public init() {}
+
         public var body: some URLRouting.Router<Identity.Consumer.View> {
             OneOf {
-                
+
                 URLRouting.Route(.case(Identity.Consumer.View.create)) {
                     Path.create
                     OneOf {
                         URLRouting.Route(.case(Identity.Consumer.View.Create.request)) {
                             Path.request
                         }
-                        
+
                         URLRouting.Route(.case(Identity.Consumer.View.Create.verify)) {
                             Path.emailVerification
                             Parse(.memberwise(Identity.Create.Verify.init)) {
@@ -51,7 +51,7 @@ extension Identity.Consumer.View {
                         }
                     }
                 }
-                
+
                 URLRouting.Route(.case(Identity.Consumer.View.authenticate)) {
                     OneOf {
                         URLRouting.Route(.case(Identity.Consumer.View.Authenticate.credentials)) {
@@ -64,11 +64,11 @@ extension Identity.Consumer.View {
                                 URLRouting.Route(.case(Identity.Consumer.View.Authenticate.Multifactor.setup)) {
                                     Path.setup
                                 }
-            
+
                                 URLRouting.Route(.case(Identity.Consumer.View.Authenticate.Multifactor.verify)) {
                                     Path.verify
                                 }
-            
+
                                 URLRouting.Route(.case(Identity.Consumer.View.Authenticate.Multifactor.manage)) {
                                     Path.manage
                                 }
@@ -76,11 +76,11 @@ extension Identity.Consumer.View {
                         }
                     }
                 }
-                
+
                 URLRouting.Route(.case(Identity.Consumer.View.logout)) {
                     Path.logout
                 }
-                
+
                 URLRouting.Route(.case(Identity.Consumer.View.password)) {
                     Path.password
                     OneOf {
@@ -90,7 +90,7 @@ extension Identity.Consumer.View {
                                 URLRouting.Route(.case(Identity.Consumer.View.Password.Reset.request)) {
                                     Path.request
                                 }
-                                
+
                                 URLRouting.Route(.case(Identity.Consumer.View.Password.Reset.confirm)) {
                                     Path.confirm
                                     Parse(.memberwise(Identity.Password.Reset.Confirm.init)) {
@@ -104,7 +104,7 @@ extension Identity.Consumer.View {
                                 }
                             }
                         }
-                        
+
                         URLRouting.Route(.case(Identity.Consumer.View.Password.change)) {
                             Path.change
                             OneOf {
@@ -115,18 +115,18 @@ extension Identity.Consumer.View {
                         }
                     }
                 }
-                
+
                 URLRouting.Route(.case(Identity.Consumer.View.emailChange)) {
                     Path.emailChange
                     OneOf {
                         URLRouting.Route(.case(Identity.Consumer.View.EmailChange.reauthorization)) {
                             Path.reauthorization
                         }
-                        
+
                         URLRouting.Route(.case(Identity.Consumer.View.EmailChange.request)) {
                             Path.request
                         }
-                        
+
                         URLRouting.Route(.case(Identity.Consumer.View.EmailChange.confirm)) {
                             Path.confirm
                             Parse(.memberwise(Identity.EmailChange.Confirm.init)) {
@@ -141,5 +141,3 @@ extension Identity.Consumer.View {
         }
     }
 }
-
-

@@ -16,9 +16,9 @@ extension Identity.API {
 
 extension Identity.API.Create {
     public struct Router: ParserPrinter, Sendable {
-        
-        public init(){}
-        
+
+        public init() {}
+
         public var body: some URLRouting.Router<Identity.API.Create> {
             OneOf {
                 URLRouting.Route(.case(Identity.API.Create.request)) {

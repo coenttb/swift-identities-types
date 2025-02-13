@@ -11,13 +11,11 @@ extension Identity {
     public enum Create {}
 }
 
-
-
 extension Identity.Create {
     public struct Request: Codable, Hashable, Sendable {
         public let email: String
         public let password: String
-        
+
         public init(
             email: String = "",
             password: String = ""
@@ -25,7 +23,7 @@ extension Identity.Create {
             self.email = email
             self.password = password
         }
-        
+
         public enum CodingKeys: String, CodingKey {
             case email
             case password
@@ -37,7 +35,7 @@ extension Identity.Create.Request {
     public init(
         email: EmailAddress,
         password: String
-    ){
+    ) {
         self.email = email.rawValue
         self.password = password
     }
@@ -45,7 +43,7 @@ extension Identity.Create.Request {
 
 extension Identity.Create.Request {
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
 
         public var body: some URLRouting.Router<Identity.Create.Request> {
@@ -60,7 +58,7 @@ extension Identity.Create {
     public struct Verify: Codable, Hashable, Sendable {
         public let token: String
         public let email: String
-        
+
         public init(
             token: String = "",
             email: String = ""
@@ -68,7 +66,7 @@ extension Identity.Create {
             self.token = token
             self.email = email
         }
-        
+
         public enum CodingKeys: String, CodingKey {
             case token
             case email
@@ -80,7 +78,7 @@ extension Identity.Create.Verify {
     public init(
         email: EmailAddress,
         token: String
-    ){
+    ) {
         self.email = email.rawValue
         self.token = token
     }
@@ -88,7 +86,7 @@ extension Identity.Create.Verify {
 
 extension Identity.Create.Verify {
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
 
         public var body: some URLRouting.Router<Identity.Create.Verify> {

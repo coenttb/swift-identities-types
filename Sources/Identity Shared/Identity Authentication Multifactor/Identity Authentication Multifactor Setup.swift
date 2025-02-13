@@ -11,12 +11,11 @@ extension Identity.Authentication.Multifactor {
     public enum Setup {}
 }
 
-
 extension Identity.Authentication.Multifactor.Setup {
     public struct Request: Codable, Hashable, Sendable {
         public let method: Identity.Authentication.Multifactor.Method
         public let identifier: String
-        
+
         public init(
             method: Identity.Authentication.Multifactor.Method,
             identifier: String = ""
@@ -31,7 +30,7 @@ extension Identity.Authentication.Multifactor.Setup {
     public struct Response: Codable, Hashable, Sendable {
         public let secret: String
         public let recoveryCodes: [String]
-        
+
         public init(
             secret: String = "",
             recoveryCodes: [String] = []

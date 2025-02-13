@@ -19,30 +19,30 @@ extension Identity.Password {
 extension Identity.Password.Reset {
     public struct Request: Codable, Hashable, Sendable {
         public let email: String
-        
+
         public init(
             email: String = ""
         ) {
             self.email = email
         }
-        
+
         public enum CodingKeys: String, CodingKey {
             case email
         }
     }
 }
- 
+
 extension Identity.Password.Reset.Request {
     public init(
         email: EmailAddress
-    ){
+    ) {
         self.email = email.rawValue
     }
 }
 
 extension Identity.Password.Reset.Request {
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
 
         public var body: some URLRouting.Router<Identity.Password.Reset.Request> {
@@ -57,7 +57,7 @@ extension Identity.Password.Reset {
     public struct Confirm: Codable, Hashable, Sendable {
         public let token: String
         public let newPassword: String
-        
+
         public init(
             token: String = "",
             newPassword: String = ""
@@ -65,7 +65,7 @@ extension Identity.Password.Reset {
             self.token = token
             self.newPassword = newPassword
         }
-        
+
         public enum CodingKeys: String, CodingKey {
             case token
             case newPassword
@@ -75,7 +75,7 @@ extension Identity.Password.Reset {
 
 extension Identity.Password.Reset.Confirm {
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
 
         public var body: some URLRouting.Router<Identity.Password.Reset.Confirm> {
@@ -90,13 +90,11 @@ extension Identity.Password.Change {
     public typealias Reauthorization = Identity.Reauthorization
 }
 
-
- 
 extension Identity.Password.Change {
     public struct Request: Codable, Hashable, Sendable {
         public let currentPassword: String
         public let newPassword: String
-        
+
         public init(
             currentPassword: String = "",
             newPassword: String = ""
@@ -104,7 +102,7 @@ extension Identity.Password.Change {
             self.currentPassword = currentPassword
             self.newPassword = newPassword
         }
-        
+
         public enum CodingKeys: String, CodingKey {
             case currentPassword
             case newPassword
@@ -114,7 +112,7 @@ extension Identity.Password.Change {
 
 extension Identity.Password.Change.Request {
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
 
         public var body: some URLRouting.Router<Identity.Password.Change.Request> {

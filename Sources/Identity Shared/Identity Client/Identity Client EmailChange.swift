@@ -5,10 +5,10 @@
 //  Created by Coen ten Thije Boonkkamp on 12/02/2025.
 //
 
-import Foundation
-import EmailAddress
 import Dependencies
 import DependenciesMacros
+import EmailAddress
+import Foundation
 
 extension Identity.Client {
     @DependencyClient

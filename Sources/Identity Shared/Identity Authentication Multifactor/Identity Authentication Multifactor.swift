@@ -11,6 +11,3 @@ import Foundation
 extension Identity.Authentication {
     public enum Multifactor {}
 }
-
-
-

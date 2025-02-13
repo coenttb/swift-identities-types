@@ -14,17 +14,17 @@ extension Identity {
 extension Identity.EmailChange {
     public typealias Reauthorization = Identity.Reauthorization
 }
- 
+
 extension Identity.EmailChange {
     public struct Request: Codable, Hashable, Sendable {
         public let newEmail: String
-        
+
         public init(
             newEmail: String = ""
         ) {
             self.newEmail = newEmail
         }
-        
+
         public enum CodingKeys: String, CodingKey {
             case newEmail
         }
@@ -34,14 +34,14 @@ extension Identity.EmailChange {
 extension Identity.EmailChange.Request {
     public init(
         newEmail: EmailAddress
-    ){
+    ) {
         self.newEmail = newEmail.rawValue
     }
 }
- 
+
 extension Identity.EmailChange.Request {
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
 
         public var body: some URLRouting.Router<Identity.EmailChange.Request> {
@@ -55,13 +55,13 @@ extension Identity.EmailChange.Request {
 extension Identity.EmailChange {
     public struct Confirm: Codable, Hashable, Sendable {
         public let token: String
-        
+
         public init(
             token: String = ""
         ) {
             self.token = token
         }
-        
+
         public enum CodingKeys: String, CodingKey {
             case token
         }
@@ -70,7 +70,7 @@ extension Identity.EmailChange {
 
 extension Identity.EmailChange.Confirm {
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
 
         public var body: some URLRouting.Router<Identity.EmailChange.Confirm> {

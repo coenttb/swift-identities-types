@@ -5,17 +5,17 @@
 //  Created by Coen ten Thije Boonkkamp on 12/02/2025.
 //
 
-import Foundation
-import EmailAddress
 import Dependencies
 import DependenciesMacros
+import EmailAddress
+import Foundation
 
 extension Identity.Client {
     @DependencyClient
     public struct Password: @unchecked Sendable {
         public var reset: Password.Reset
         public var change: Password.Change
-        
+
         public init(reset: Password.Reset, change: Password.Change) {
             self.reset = reset
             self.change = change
@@ -30,7 +30,6 @@ extension Identity.Client.Password {
         public var confirm: (_ newPassword: String, _ token: String) async throws -> Void
     }
 }
-
 
 extension Identity.Client.Password {
     @DependencyClient

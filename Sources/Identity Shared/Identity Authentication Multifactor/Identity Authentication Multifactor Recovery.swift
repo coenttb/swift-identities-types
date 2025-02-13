@@ -16,7 +16,7 @@ extension Identity.Authentication.Multifactor.Recovery {
     public struct Codes: Codable, Hashable, Sendable {
         public let codes: [String]
         public let usedCodes: Set<String>
-        
+
         public init(
             codes: [String] = [],
             usedCodes: Set<String> = []
@@ -24,7 +24,7 @@ extension Identity.Authentication.Multifactor.Recovery {
             self.codes = codes
             self.usedCodes = usedCodes
         }
-        
+
         public var remainingCodes: Int {
             codes.count - usedCodes.count
         }

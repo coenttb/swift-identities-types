@@ -5,9 +5,9 @@
 //  Created by Coen ten Thije Boonkkamp on 07/02/2025.
 //
 
-import Foundation
 import BearerAuth
 import Coenttb_Web
+import Foundation
 import URLRouting
 
 extension Identity.API {
@@ -28,7 +28,7 @@ extension Identity.API.Authenticate {
 
 extension Identity.API.Authenticate {
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
 
         public var body: some URLRouting.Router<Identity.API.Authenticate> {
@@ -37,7 +37,7 @@ extension Identity.API.Authenticate {
                     Method.post
                     Body(.form(Identity.Authentication.Credentials.self, decoder: .default))
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.Authenticate.token)) {
                     Method.post
                     OneOf {
@@ -45,19 +45,19 @@ extension Identity.API.Authenticate {
                             Path.access
                             BearerAuth.Router()
                         }
-                        
+
                         URLRouting.Route(.case(Identity.API.Authenticate.Token.refresh)) {
                             Path.refresh
                             BearerAuth.Router()
                         }
                     }
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.Authenticate.apiKey)) {
                     Path.apiKey
                     BearerAuth.Router()
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.Authenticate.multifactor)) {
                     Path.multifactor
                     Identity.API.Authenticate.Multifactor.Router()
