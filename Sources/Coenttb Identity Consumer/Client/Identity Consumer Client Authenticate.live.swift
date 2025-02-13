@@ -23,7 +23,7 @@ extension Identity.Consumer.Client.Authenticate {
     ) -> Self {
         return .init(
             credentials: { username, password in
-                let route: Identity.Consumer.API = .authenticate(.credentials(.init(email: username, password: password)))
+                let route: Identity.Consumer.API = .authenticate(.credentials(.init(username: username, password: password)))
                 let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
 
                 @Dependency(URLRequest.Handler.self) var handleRequest

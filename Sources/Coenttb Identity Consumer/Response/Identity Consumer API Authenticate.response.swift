@@ -53,7 +53,7 @@ extension Identity.Consumer.API.Authenticate {
                 let data = try await client.authenticate.apiKey(apiKey: apiKey.token)
                 return Response.success(true, data: data)
 
-            case .multifactor(_):
+            case .multifactor:
                 fatalError()
             }
 

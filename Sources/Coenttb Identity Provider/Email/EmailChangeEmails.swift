@@ -29,7 +29,7 @@ extension Email {
                     emailChangeConfirmationNotification: notification
                 )
             }
-            
+
         case .request(let request):
             switch request {
             case .notification(let notification):
@@ -68,7 +68,7 @@ extension Email.Change.Confirmation {
         public let currentEmail: EmailAddress
         public let newEmail: EmailAddress
         public let userName: String?
-        
+
         public init(
             verificationURL: URL,
             currentEmail: EmailAddress,
@@ -88,7 +88,7 @@ extension Email.Change.Request {
         public let currentEmail: EmailAddress
         public let newEmail: EmailAddress
         public let userName: String?
-        
+
         public init(
             currentEmail: EmailAddress,
             newEmail: EmailAddress,
@@ -105,12 +105,12 @@ extension Email.Change.Confirmation {
     public enum Notification: Sendable {
         case currentEmail(CurrentEmail)
         case newEmail(NewEmail)
-        
+
         public struct Payload: Sendable {
             public let currentEmail: EmailAddress
             public let newEmail: EmailAddress
             public let userName: String?
-            
+
             public init(
                 currentEmail: EmailAddress,
                 newEmail: EmailAddress,
@@ -121,12 +121,11 @@ extension Email.Change.Confirmation {
                 self.userName = userName
             }
         }
-        
+
         public typealias CurrentEmail = Payload
         public typealias NewEmail = Payload
     }
 }
-
 
 extension Email {
     public init(
@@ -148,7 +147,7 @@ extension Email {
                                 english: "Email Change Request Received"
                             )
                         }
-                        
+
                         Paragraph {
                             TranslatedString(
                                 dutch: "We hebben een verzoek ontvangen om het e-mailadres voor je \(business.name) account te wijzigen van \(emailChangeRequestNotification.currentEmail) naar \(emailChangeRequestNotification.newEmail).",
@@ -157,7 +156,7 @@ extension Email {
                         }
                         .padding(bottom: .extraSmall)
                         .fontSize(.body)
-                        
+
                         Paragraph {
                             TranslatedString(
                                 dutch: "Als je dit verzoek hebt gedaan, hoef je verder niets te doen. De wijziging wordt binnenkort doorgevoerd.",
@@ -166,7 +165,7 @@ extension Email {
                         }
                         .padding(bottom: .extraSmall)
                         .fontSize(.body)
-                        
+
                         Paragraph(.small) {
                             TranslatedString(
                                 dutch: "Als je dit verzoek niet hebt gedaan, neem dan onmiddellijk contact op met ons via \(business.supportEmail) om je account te beveiligen.",
@@ -181,15 +180,15 @@ extension Email {
             }
         }
             .backgroundColor(.primary.reverse())
-        
+
         let bytes: ContiguousArray<UInt8> = html.render()
         let string: String = String(decoding: bytes, as: UTF8.self)
-        
+
         let subjectAdd = TranslatedString(
             dutch: "Belangrijk: Verzoek tot e-mailwijziging ontvangen",
             english: "Important: Email Change Request Received"
         )
-        
+
         self = .init(
             from: business.fromEmail,
             to: [
@@ -223,7 +222,7 @@ extension Email {
                                 english: "Verify your new email address"
                             )
                         }
-                        
+
                         Paragraph {
                             TranslatedString(
                                 dutch: "We hebben een verzoek ontvangen om het e-mailadres voor je \(business.name) account te wijzigen. Klik op de onderstaande knop om je nieuwe e-mailadres te verifiëren.",
@@ -232,7 +231,7 @@ extension Email {
                         }
                         .padding(bottom: .extraSmall)
                         .fontSize(.body)
-                        
+
                         Button(
                             tag: a,
                             background: business.primaryColor
@@ -245,20 +244,20 @@ extension Email {
                         .color(.primary.reverse())
                         .href(emailChangeConfirmationRequest.verificationURL.absoluteString)
                         .padding(bottom: Length.medium)
-                        
+
                         Paragraph(.small) {
                             TranslatedString(
                                 dutch: "Deze link verloopt binnen 1 uur om veiligheidsredenen.",
                                 english: "This link will expire in 1 hour for security reasons."
                             )
-                            
+
                             TranslatedString(
                                 dutch: "Als je geen wijziging van je e-mailadres hebt aangevraagd, kun je deze e-mail negeren.",
                                 english: "If you didn't request an email address change, you can ignore this email."
                             )
-                            
+
                             br()
-                            
+
                             TranslatedString(
                                 dutch: "Voor hulp, neem contact op met ons via \(business.supportEmail).",
                                 english: "For help, contact us at \(business.supportEmail)."
@@ -272,15 +271,15 @@ extension Email {
             }
         }
             .backgroundColor(.primary.reverse())
-        
+
         let bytes: ContiguousArray<UInt8> = html.render()
         let string: String = String(decoding: bytes, as: UTF8.self)
-        
+
         let subjectAdd = TranslatedString(
             dutch: "Verifieer je e-mailadres",
             english: "Verify your email address"
         )
-        
+
         self = .init(
             from: business.fromEmail,
             to: [
@@ -316,7 +315,7 @@ extension Email {
                                     english: "Your email address has been changed"
                                 )
                             }
-                            
+
                             Paragraph {
                                 TranslatedString(
                                     dutch: "We willen je informeren dat het e-mailadres voor je \(business.name) account is gewijzigd van \(notification.currentEmail.rawValue) naar \(notification.newEmail.rawValue).",
@@ -325,7 +324,7 @@ extension Email {
                             }
                             .padding(bottom: .extraSmall)
                             .fontSize(.body)
-                            
+
                             Paragraph {
                                 TranslatedString(
                                     dutch: "Als je deze wijziging hebt aangevraagd, kun je deze e-mail als bevestiging beschouwen. Je kunt nu inloggen met je nieuwe e-mailadres.",
@@ -334,7 +333,7 @@ extension Email {
                             }
                             .padding(bottom: .extraSmall)
                             .fontSize(.body)
-                            
+
                             Paragraph(.small) {
                                 TranslatedString(
                                     dutch: "Als je deze wijziging niet hebt aangevraagd, neem dan onmiddellijk contact op met ons via \(business.supportEmail) om je account te beveiligen.",
@@ -349,15 +348,15 @@ extension Email {
                 }
             }
                 .backgroundColor(.primary.reverse())
-            
+
             let bytes: ContiguousArray<UInt8> = html.render()
             let string: String = String(decoding: bytes, as: UTF8.self)
-            
+
             let subjectAdd = TranslatedString(
                 dutch: "Belangrijk: Je e-mailadres is gewijzigd",
                 english: "Important: Your email address has been changed"
             )
-            
+
             self = .init(
                 from: business.fromEmail,
                 to: [
@@ -368,7 +367,7 @@ extension Email {
                 html: string,
                 text: nil
             )
-            
+
         case .newEmail(let notification):
             let html = TableEmailDocument(
                 preheader: TranslatedString(
@@ -385,7 +384,7 @@ extension Email {
                                     english: "Your new email address is confirmed"
                                 )
                             }
-                            
+
                             Paragraph {
                                 TranslatedString(
                                     dutch: "Welkom! We bevestigen dat dit e-mailadres (\(notification.newEmail.rawValue)) nu is gekoppeld aan je \(business.name) account. Je vorige e-mailadres was \(notification.currentEmail.rawValue).",
@@ -394,7 +393,7 @@ extension Email {
                             }
                             .padding(bottom: .extraSmall)
                             .fontSize(.body)
-                            
+
                             Paragraph {
                                 TranslatedString(
                                     dutch: "Je kunt nu inloggen op je account met dit nieuwe e-mailadres. Al je accountgegevens en voorkeuren blijven ongewijzigd.",
@@ -403,7 +402,7 @@ extension Email {
                             }
                             .padding(bottom: .extraSmall)
                             .fontSize(.body)
-                            
+
                             Paragraph(.small) {
                                 TranslatedString(
                                     dutch: "Als je deze wijziging niet hebt aangevraagd of als je vragen hebt, neem dan contact op met ons via \(business.supportEmail).",
@@ -418,15 +417,15 @@ extension Email {
                 }
             }
                 .backgroundColor(.primary.reverse())
-            
+
             let bytes: ContiguousArray<UInt8> = html.render()
             let string: String = String(decoding: bytes, as: UTF8.self)
-            
+
             let subjectAdd = TranslatedString(
                 dutch: "Je nieuwe e-mailadres is bevestigd",
                 english: "Your new email address is confirmed"
             )
-            
+
             self = .init(
                 from: business.fromEmail,
                 to: [

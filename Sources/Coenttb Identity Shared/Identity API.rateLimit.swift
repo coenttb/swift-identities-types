@@ -20,13 +20,13 @@ extension Identity.API {
         case .authenticate(let authenticate):
             switch authenticate {
             case .credentials(let credentials):
-                let rateLimit = await rateLimiter.credentials.checkLimit(credentials.email)
+                let rateLimit = await rateLimiter.credentials.checkLimit(credentials.username)
                 guard rateLimit.isAllowed else {
                     throw Abort(.tooManyRequests, headers: [
                         "Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"
                     ])
                 }
-                return .init(limiter: rateLimiter.credentials, key: credentials.email)
+                return .init(limiter: rateLimiter.credentials, key: credentials.username)
 
             case .token(let token):
                 switch token {

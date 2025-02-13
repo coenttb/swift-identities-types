@@ -156,7 +156,7 @@ extension Identity.Consumer.View {
                         loginSuccessRedirect: loginSuccessRedirect
                     )
                 }
-            case .multifactor(_):
+            case .multifactor:
                 fatalError()
             }
 

@@ -51,7 +51,7 @@ extension Identity.Consumer.View.Authenticate {
             PageModule(theme: .login) {
                 form {
                     VStack {
-                        Input.default(Identity.Authentication.Credentials.CodingKeys.email)
+                        Input.default(Identity.Authentication.Credentials.CodingKeys.username)
                             .type(.email)
                             .placeholder(String.email.capitalizingFirstLetter().description)
                             .focusOnPageLoad()
@@ -116,7 +116,7 @@ extension Identity.Consumer.View.Authenticate {
                     event.preventDefault();
 
                     const formData = new FormData(form);
-                    const email = formData.get('\#(Identity.Authentication.Credentials.CodingKeys.email.rawValue)');
+                    const email = formData.get('\#(Identity.Authentication.Credentials.CodingKeys.username.rawValue)');
                     const password = formData.get('\#(Identity.Authentication.Credentials.CodingKeys.password.rawValue)');
 
                     try {
@@ -127,7 +127,7 @@ extension Identity.Consumer.View.Authenticate {
                                 'Accept': 'application/json'
                             },
                             body: new URLSearchParams({
-                                 \#(Identity.Authentication.Credentials.CodingKeys.email.rawValue): email,
+                                 \#(Identity.Authentication.Credentials.CodingKeys.username.rawValue): email,
                                  \#(Identity.Authentication.Credentials.CodingKeys.password.rawValue): password
                             }).toString()
                         });
