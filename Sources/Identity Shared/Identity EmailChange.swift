@@ -95,3 +95,14 @@ extension Identity.EmailChange.Request {
         case emailIsNil
     }
 }
+
+extension Identity.Client.EmailChange {
+    public enum Request { }
+}
+
+extension Identity.EmailChange.Request {
+    public enum Result: Codable, Hashable, Sendable {
+        case success
+        case requiresReauthentication
+    }
+}
