@@ -24,7 +24,6 @@ extension Identity.Consumer.API.Router {
         case .authenticate(let authenticate):
             switch authenticate {
             case .credentials:
-                // No additional preparation needed for credentials
                 break
 
             case .token:
@@ -35,7 +34,6 @@ extension Identity.Consumer.API.Router {
                     .eraseToAnyParserPrinter()
 
             case .apiKey:
-                // No additional preparation needed for API key
                 break
 
             case .multifactor:
@@ -57,7 +55,6 @@ extension Identity.Consumer.API.Router {
         case .password(let password):
             switch password {
             case .reset:
-                // No additional preparation needed for reset
                 break
 
             case .change:

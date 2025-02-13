@@ -10,10 +10,3 @@ import Foundation
 import Vapor
 
 extension JWT.Token.Access: Authenticatable {}
-
-extension JWT.Token.Access: SessionAuthenticatable {
-    public var sessionID: String {
-        self.tokenId!.value.description
-    }
-
-}
