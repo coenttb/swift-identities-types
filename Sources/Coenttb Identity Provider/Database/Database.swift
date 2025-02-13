@@ -44,11 +44,6 @@ extension Database {
                     return migration
                 }(),
                 {
-                    var migration = Coenttb_Identity_Provider.Database.PasswordChangeRequest.Migration()
-                    migration.name = "Coenttb_Identity.Database.PasswordChangeRequest.Migration.Create"
-                    return migration
-                }(),
-                {
                     var migration = Coenttb_Identity_Provider.Database.ApiKey.Migration.Create()
                     migration.name = "Coenttb_Identity.Database.ApiKey.Migration.Create"
                     return migration

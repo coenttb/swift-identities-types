@@ -14,90 +14,66 @@ import JWT
 
 extension Database.Identity {
     package func generateJWTAccess(
-        includeTokenId: Bool = false,
-        includeNotBefore: Bool = false
     ) async throws -> String {
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
 
         @Dependency(\.accessTokenConfig) var config
 
-        let payload = try JWT.Token.Access(
-            identity: self,
-            includeTokenId: includeTokenId,
-            includeNotBefore: includeNotBefore
-        )
+        let payload = try JWT.Token.Access(identity: self)
+        
         return try await request.jwt.sign(payload)
     }
 
-    package func generateJWTRefresh(
-        includeTokenId: Bool = false,
-        includeNotBefore: Bool = false
-    ) async throws -> String {
+    package func generateJWTRefresh() async throws -> String {
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
 
-        @Dependency(\.refreshTokenConfig) var config
-
-        let payload = try JWT.Token.Refresh(
-            identity: self,
-            includeTokenId: includeTokenId,
-            includeNotBefore: includeNotBefore
-        )
+        let payload = try JWT.Token.Refresh(identity: self)
+        
         return try await request.jwt.sign(payload)
     }
 
-    package func generateJWTResponse(
-    ) async throws -> Identity.Authentication.Response {
+//    package func generateJWTResponse() async throws -> Identity.Authentication.Response {
+//        try await .init(self)
+//    }
+}
 
-        let accessToken = try await self.generateJWTAccess(
-            includeTokenId: true,
-            includeNotBefore: true
-        )
-
-        let refreshToken = try await self.generateJWTRefresh(
-            includeTokenId: true,
-            includeNotBefore: false
-        )
+extension Identity.Authentication.Response {
+    public init(_ identity: Database.Identity) async throws {
 
         @Dependency(\.accessTokenConfig) var accessTokenConfig
         @Dependency(\.refreshTokenConfig) var refreshTokenConfig
 
-        return .init(
+        self = try await .init(
             accessToken: .init(
-                value: accessToken,
+                value: identity.generateJWTAccess(),
                 type: "Bearer",
                 expiresIn: accessTokenConfig.expiration
             ),
             refreshToken: .init(
-                value: refreshToken,
-                type: "Bearer",
+                value: identity.generateJWTRefresh(),
+                type: "Cookie",
                 expiresIn: refreshTokenConfig.expiration
             )
         )
     }
-
 }
 
 extension JWT.Token.Access {
     package init(
-        identity: Database.Identity,
-        currentTime: Date = .init(),
-        includeTokenId: Bool = false,
-        includeNotBefore: Bool = false
+        identity: Database.Identity
     ) throws {
         @Dependency(\.uuid) var uuid
         @Dependency(\.accessTokenConfig) var config
+        @Dependency(\.date) var date
 
-        self = .init(
+        let currentTime = date()
+        
+        self = try .init(
             expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expiration)),
             issuedAt: IssuedAtClaim(value: currentTime),
-            subject: SubjectClaim(value: try identity.requireID().uuidString),
-            issuer: IssuerClaim(value: config.issuer),
-            audience: "access",
-            notBefore: includeNotBefore ? NotBeforeClaim(value: currentTime) : nil,
-            tokenId: includeTokenId ? IDClaim(value: uuid().uuidString) : nil,
-            identityId: try identity.requireID(),
+            identityId: identity.requireID(),
             email: identity.emailAddress
         )
     }
@@ -105,26 +81,28 @@ extension JWT.Token.Access {
 
 extension JWT.Token.Refresh {
     package init(
-        identity: Database.Identity,
-        currentTime: Date = .init(),
-        includeTokenId: Bool = false,
-        includeNotBefore: Bool = false
+        identity: Database.Identity
     ) throws {
         @Dependency(\.uuid) var uuid
         @Dependency(\.refreshTokenConfig) var config
+        @Dependency(\.date) var date
 
+        let currentTime = date()
+        
         self = .init(
             expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expiration)),
             issuedAt: IssuedAtClaim(value: currentTime),
-            subject: SubjectClaim(value: try identity.requireID().uuidString),
-            issuer: IssuerClaim(value: config.issuer),
-            audience: "refresh",
-            tokenId: IDClaim(value: uuid().uuidString),
-            notBefore: includeNotBefore ? NotBeforeClaim(value: currentTime) : nil,
             identityId: try identity.requireID(),
-            email: identity.email,
+            email: identity.emailAddress,
+            tokenId: .init(uuid()),
             sessionVersion: identity.sessionVersion
         )
+    }
+}
+
+extension IDClaim {
+    public init(_ uuid: UUID){
+        self = .init(value: uuid.uuidString)
     }
 }
 

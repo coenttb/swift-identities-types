@@ -54,8 +54,10 @@ extension Identity.Provider {
                     )
                     throw Abort(.tooManyRequests)
                 }
+                
+                let identity = apiKey.identity
 
-                let response = try await apiKey.identity.generateJWTResponse()
+                let response: Identity.Authentication.Response = try await .init(identity)
 
                 request.headers.bearerAuthorization = .init(token: response.accessToken.value)
 
@@ -71,7 +73,7 @@ extension Identity.Provider {
                     value: "\(rateLimit.remainingAttempts)"
                 )
 
-                request.auth.login(apiKey.identity)
+                request.auth.login(identity)
 
                 await rateLimiter.apiKey.recordSuccess(keyId)
             } catch {

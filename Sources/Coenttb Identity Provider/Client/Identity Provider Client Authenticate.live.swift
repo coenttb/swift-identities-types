@@ -48,7 +48,7 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                         throw Abort(.unauthorized, reason: "Email not verified")
                     }
 
-                    let response = try await identity.generateJWTResponse()
+                    let response: Identity.Authentication.Response = try await .init(identity)
 
                     identity.lastLoginAt = Date()
                     try await identity.save(on: request.db)
@@ -65,28 +65,17 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                 }
             },
             token: .init(
-                access: { _ in
+                access: { token in
                     @Dependency(\.logger) var logger
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
 
                     do {
-                        let payload = try await request.jwt.verify(as: JWT.Token.Access.self)
+                        let payload = try await request.jwt.verify(
+                            token,
+                            as: JWT.Token.Access.self
+                        )
 
-//                        guard payload.audience.value.contains("access") else {
-//                            throw JWTError.claimVerificationFailure(
-//                                failedClaim: payload.audience,
-//                                reason: "Invalid audience for access token"
-//                            )
-//                        }
-//                        
-//                        guard payload.issuer.value == issuer else {
-//                            throw JWTError.claimVerificationFailure(
-//                                failedClaim: payload.issuer,
-//                                reason: "Invalid issuer"
-//                            )
-//                        }
-//                        
                         let identity = try await Database.Identity.get(by: .id(payload.identityId), on: request.db)
 
                         guard identity.emailAddress == payload.email else {
@@ -108,47 +97,37 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                         throw Abort(.internalServerError)
                     }
                 },
-                refresh: { _ in
+                refresh: { token in
                     @Dependency(\.logger) var logger
 
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
 
                     do {
-                        let payload = try await request.jwt.verify(as: JWT.Token.Refresh.self)
-
-                        guard payload.audience.value.contains("refresh") else {
-                            throw JWTError.claimVerificationFailure(
-                                failedClaim: payload.audience,
-                                reason: "Invalid audience for refresh token"
-                            )
-                        }
-
-                        guard payload.issuer.value == issuer else {
-                            throw JWTError.claimVerificationFailure(
-                                failedClaim: payload.issuer,
-                                reason: "Invalid issuer"
-                            )
-                        }
+                        let payload = try await request.jwt.verify(
+                            token,
+                            as: JWT.Token.Refresh.self
+                        )
 
                         let identity = try await Database.Identity.get(by: .id(payload.identityId), on: request.db)
 
-                        guard identity.sessionVersion == payload.sessionVersion else {
-                            throw Abort(.unauthorized, reason: "Token has been revoked")
-                        }
+                        guard identity.sessionVersion == payload.sessionVersion
+                        else { throw Abort(.unauthorized, reason: "Token has been revoked") }
 
                         logger.notice("Refresh token verification successful for identity: \(identity.id?.uuidString ?? "unknown")")
 
-                        let response = try await identity.generateJWTResponse()
+                        let response: Identity.Authentication.Response = try await .init(identity)
 
                         request.auth.login(identity)
 
                         return response
 
-                    } catch let error as JWTError {
+                    }
+                    catch let error as JWTError {
                         logger.warning("Refresh token verification failed: \(error.localizedDescription)")
                         throw Abort(.unauthorized, reason: "Invalid refresh token")
-                    } catch {
+                    }
+                    catch {
                         logger.error("Unexpected error during refresh token verification: \(error.localizedDescription)")
                         throw Abort(.internalServerError)
                     }
@@ -171,7 +150,7 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
 
                     let identity = apiKey.identity
 
-                    let response = try await identity.generateJWTResponse()
+                    let response: Identity.Authentication.Response = try await .init(identity)
 
                     request.headers.bearerAuthorization = .init(token: response.accessToken.value)
 

@@ -10,51 +10,46 @@ extension JWT.Token {
         public var expiration: ExpirationClaim
         public var issuedAt: IssuedAtClaim
         public var subject: SubjectClaim
-        public var issuer: IssuerClaim
-        public var audience: AudienceClaim
-
-        // Optional Standard Claims
         public var notBefore: NotBeforeClaim?
-        public var tokenId: IDClaim?
-
-        // Required Custom Claims
-        public var identityId: UUID
-        public var email: EmailAddress
-
+        
+        public var identityId: UUID {
+            get {
+                UUID(uuidString: subject.value.components(separatedBy: ":")[0])!
+            }
+            set {
+                let email = subject.value.components(separatedBy: ":")[1]
+                subject.value = "\(newValue.uuidString):\(email)"
+            }
+        }
+        
+        public var email: EmailAddress {
+            get {
+                EmailAddress(rawValue: subject.value.components(separatedBy: ":")[1])!
+            }
+            set {
+                let id = subject.value.components(separatedBy: ":")[0]
+                subject.value = "\(id):\(newValue.rawValue)"
+            }
+        }
+        
         package init(
             expiration: ExpirationClaim,
             issuedAt: IssuedAtClaim,
-            subject: SubjectClaim,
-            issuer: IssuerClaim,
-            audience: AudienceClaim,
-            notBefore: NotBeforeClaim? = nil,
-            tokenId: IDClaim? = nil,
             identityId: UUID,
-            email: EmailAddress
+            email: EmailAddress,
+            notBefore: NotBeforeClaim? = nil
         ) {
             self.expiration = expiration
             self.issuedAt = issuedAt
-            self.subject = subject
-            self.issuer = issuer
-            self.audience = audience
+            self.subject = SubjectClaim(value: "\(identityId.uuidString):\(email.rawValue)")
             self.notBefore = notBefore
-            self.tokenId = tokenId
-            self.identityId = identityId
-            self.email = email
-
-            self.audience.value.append("access")
         }
-
+        
         enum CodingKeys: String, CodingKey {
             case expiration = "exp"
             case issuedAt = "iat"
             case subject = "sub"
-            case issuer = "iss"
-            case audience = "aud"
             case notBefore = "nbf"
-            case tokenId = "jti"
-            case identityId = "iid"
-            case email = "eml"
         }
     }
 }
@@ -62,6 +57,5 @@ extension JWT.Token {
 extension JWT.Token.Access: JWTPayload {
     public func verify(using algorithm: some JWTKit.JWTAlgorithm) async throws {
         try self.expiration.verifyNotExpired()
-        try self.notBefore?.verifyNotBefore()
     }
 }
