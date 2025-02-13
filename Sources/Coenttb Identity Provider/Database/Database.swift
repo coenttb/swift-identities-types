@@ -65,7 +65,7 @@ extension Database {
         }
         
         public func revert(on database: Fluent.Database) async throws {
-            for migration in Self.migrations {
+            for migration in Self.migrations.reversed() {
                 try await migration.revert(on: database)
             }
         }
