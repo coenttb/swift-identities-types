@@ -102,9 +102,7 @@ extension Identity.Client.EmailChange: TestDependencyKey {
 
             },
             confirm: { token in
-                guard !token.isEmpty else {
-                    throw ValidationError.invalidToken
-                }
+                return .init(value: "test", expiresIn: 100)
             }
         )
     }
