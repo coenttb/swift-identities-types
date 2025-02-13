@@ -106,3 +106,7 @@ extension Identity.EmailChange.Request {
         case requiresReauthentication
     }
 }
+
+extension Identity.EmailChange.Confirm {
+    public typealias Response = Identity.Authentication.Response
+}
