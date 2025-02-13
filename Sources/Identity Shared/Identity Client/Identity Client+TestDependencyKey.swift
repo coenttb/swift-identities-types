@@ -141,7 +141,7 @@ extension Identity.Client.Delete: TestDependencyKey {
 extension Identity.Client.Authenticate: TestDependencyKey {
     public static var testValue: Self {
         .init(
-            credentials: { credentials in
+            credentials: { username, password in
                     .init(
                         accessToken: .init(value: "test-access-token", expiresIn: 3600),
                         refreshToken: .init(value: "test-refresh-token", expiresIn: 86400)

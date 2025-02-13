@@ -16,7 +16,8 @@ extension Identity.Client {
         
         @DependencyEndpoint
         public var credentials: (
-            _ credentials: Identity.Authentication.Credentials
+            _ username: String,
+            _ password: String
         ) async throws -> Identity.Authentication.Response
         
         public var token: Identity.Client.Authenticate.Token
