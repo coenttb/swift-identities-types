@@ -20,15 +20,18 @@ extension Identity.Provider {
         ) async throws -> Response {
             @Dependency(Identity.Provider.Client.self) var client
 
-            if let refreshToken = request.cookies.refreshToken?.string {
-                do {
-                    _ = try await client.authenticate.token.refresh(token: refreshToken)
-                    print("successful refresh token")
-                } catch {
+            return try await withDependencies {
+                $0.request = request
+            } operation: {
+                if let refreshToken = request.cookies.refreshToken?.string {
+                    do {
+                        _ = try await client.authenticate.token.refresh(token: refreshToken)
+                        print("successful refresh token")
+                    } catch {
+                    }
                 }
+                return try await next.respond(to: request)
             }
-
-            return try await next.respond(to: request)
         }
     }
 }

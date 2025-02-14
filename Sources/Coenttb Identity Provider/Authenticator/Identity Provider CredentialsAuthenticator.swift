@@ -23,7 +23,12 @@ extension Identity.Provider {
             basic: BasicAuthorization,
             for request: Request
         ) async throws {
-            _ = try await client.authenticate.credentials(username: basic.username, password: basic.password)
+            try await withDependencies {
+                $0.request = request
+            } operation: {
+                _ = try await client.authenticate.credentials(username: basic.username, password: basic.password)
+            }
+
         }
     }
 }

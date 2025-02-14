@@ -21,8 +21,13 @@ extension Identity.Provider {
             for request: Request
         ) async throws {
             do {
-                try await client.authenticate.token.access(token: bearer.token)
-                print("successful access token authentication")
+                try await withDependencies {
+                    $0.request = request
+                } operation: {
+                    try await client.authenticate.token.access(token: bearer.token)
+                    print("successful access token authentication")
+                }
+
             } catch {
 
             }
