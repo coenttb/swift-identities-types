@@ -68,7 +68,7 @@ extension HTTPCookies.Configuration: DependencyKey {
 
 extension HTTPCookies.Configuration {
     public static let localDevelopment: HTTPCookies.Configuration = .init(
-        domain: "localhost",
+        domain: nil,
         isSecure: false,
         isHTTPOnly: true,
         sameSitePolicy: .lax
