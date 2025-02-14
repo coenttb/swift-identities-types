@@ -128,26 +128,3 @@ extension ParserPrinter where Input == URLRequestData {
         }
     }
 }
-
-//
-// extension ParserPrinter where Input == URLRequestData {
-//    @inlinable
-//    public static func setAccessToken(_ token: String?) -> BaseURLPrinter<Self> {
-//        self.cookie("access_token", token)
-//    }
-//    
-//    @inlinable
-//    public static func setAccessToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
-//        self.cookie("access_token", token)
-//    }
-//    
-//    @inlinable
-//    public static func setRefreshToken(_ token: String?) -> BaseURLPrinter<Self> {
-//        self.cookie("refresh_token", token)
-//    }
-//    
-//    @inlinable
-//    public static func setRefreshToken(_ token: HTTPCookies?) -> BaseURLPrinter<Self> {
-//        self.cookie("refresh_token", token)
-//    }
-// }

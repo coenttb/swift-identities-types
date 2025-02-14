@@ -65,7 +65,7 @@ extension JWT.Token {
 extension JWT.Token.Reauthorization: JWTPayload {
     public func verify(using algorithm: some JWTKit.JWTAlgorithm) async throws {
         try self.expiration.verifyNotExpired()
-        try self.notBefore?.verifyNotBefore()
+//        try self.notBefore?.verifyNotBefore()
         // Verify email is present
         guard !self.email.isEmpty else {
             throw JWTError.claimVerificationFailure(
