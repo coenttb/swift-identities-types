@@ -117,7 +117,7 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
             confirm: { token in
                 do {
                     return try await database.transaction { db in
-                        // Re-fetch all entities within transaction for consistency
+
                         guard let token = try await Database.Identity.Token.query(on: db)
                             .filter(\.$value == token)
                             .filter(\.$type == .emailChange)
@@ -141,7 +141,6 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
 
                         let newEmail = try EmailAddress(emailChangeRequest.newEmail)
 
-                        // Check again for email uniqueness within transaction
                         if try await Database.Identity.query(on: db)
                             .filter(\.$email == newEmail.rawValue)
                             .filter(\.$id != emailChangeRequest.identity.id!)
@@ -170,7 +169,8 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                         
                         return try await Identity.Authentication.Response(emailChangeRequest.identity)
                     }
-                } catch {
+                }
+                catch {
                     logger.error("Error in confirmEmailChange: \(String(describing: error))")
                     throw error
                 }

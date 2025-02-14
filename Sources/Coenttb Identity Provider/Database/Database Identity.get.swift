@@ -20,7 +20,7 @@ extension Database.Identity {
             case email(String)
             case auth
 
-            static func email(_ email: EmailAddress) -> Self {
+            public static func email(_ email: EmailAddress) -> Self {
                 .email(email.rawValue)
             }
         }
