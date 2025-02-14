@@ -31,12 +31,12 @@ extension Identity.Provider.API.EmailChange {
 
         case .confirm(let confirm):
             do {
-                try await client.emailChange.confirm(confirm)
+                let data = try await client.emailChange.confirm(confirm)
 
                 @Dependencies.Dependency(\.logger) var logger
                 logger.log(.info, "Email change confirmed for new email")
 
-                return Response.success(true)
+                return Response.success(true, data: data)
             } catch {
                 @Dependencies.Dependency(\.logger) var logger
                 logger.log(.error, "Failed to confirm email change. Error: \(String(describing: error))")
