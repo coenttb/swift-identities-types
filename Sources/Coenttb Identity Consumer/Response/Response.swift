@@ -22,35 +22,10 @@ extension Vapor.Response {
     }
 }
 
-//
-//extension [ReferenceWritableKeyPath<Response, HTTPCookies.Value?>] {
-//    package static let identity: Self = [
-//        \.cookies.accessToken,
-//         \.cookies.refreshToken,
-//         \.cookies.reauthorizationToken
-//    ]
-//}
-
 extension [WritableKeyPath<HTTPCookies, HTTPCookies.Value?>] {
     package static let identity: Self = [
         \.accessToken,
          \.refreshToken,
          \.reauthorizationToken
     ]
-}
-
-extension Vapor.Response {
-    public func expire(
-        cookies: [WritableKeyPath<HTTPCookies, HTTPCookies.Value?>]
-    ) {
-        @Dependency(\.request) var request
-        guard let request else { return }
-        
-        cookies.forEach { cookiePath in
-            if var cookie = request.cookies[keyPath: cookiePath] {
-                cookie.expires = .distantPast
-                self.cookies[keyPath: cookiePath] = cookie
-            }
-        }
-    }
 }
