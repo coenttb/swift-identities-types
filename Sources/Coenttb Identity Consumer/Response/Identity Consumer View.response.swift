@@ -82,8 +82,7 @@ extension Identity.Consumer.View {
     ) async throws -> any AsyncResponseEncodable {
 
         @Dependency(Identity.Consumer.Client.self) var client
-        @Dependency(\.request) var request
-        guard let request else { throw Abort.requestUnavailable }
+        
 
         do {
             if let response = try Identity.Consumer.View.protect(
@@ -220,7 +219,9 @@ extension Identity.Consumer.View {
             switch emailChange {
             case .request:
                 do {
-
+                    @Dependency(\.request) var request
+                    guard let request else { throw Abort.requestUnavailable }
+                    
                     guard let requestToken = request.cookies.reauthorizationToken?.string
                     else { throw Abort(.internalServerError) }
 
