@@ -162,8 +162,9 @@ extension Identity.Consumer.View {
         case .logout:
             try? await client.logout()
 
-            let response = try Response.success(true)
-                .expiring(cookies: .identity)
+            let response = Response.success(true)
+            
+            response.expire(cookies: .identity)
 
             let html = accountDefaultContainer {
                 PageHeader(title: "Hope to see you soon!") {}

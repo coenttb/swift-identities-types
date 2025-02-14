@@ -22,43 +22,11 @@ extension Vapor.Response {
     }
 }
 
-extension Vapor.Response {
-    public func expiring(
-        cookies: [HTTPCookies.Value?]
-    ) -> Vapor.Response {
-        let cookieValues = cookies.compactMap { $0 }
-        
-        cookieValues.forEach { cookie in
-            if let name = cookie.string.split(separator: "=").first {
-                // Create a new expired cookie preserving original attributes
-                let expiredCookie = HTTPCookies.Value(
-                    string: "",
-                    expires: .distantPast,
-                    domain: cookie.domain,
-                    path: cookie.path,
-                    isSecure: cookie.isSecure,
-                    isHTTPOnly: cookie.isHTTPOnly,
-                    sameSite: cookie.sameSite
-                )
-                self.cookies[String(name)] = expiredCookie
-            }
-        }
-               
-        return self
-    }
-}
 
-extension [HTTPCookies.Value?] {
-    static var identity: [HTTPCookies.Value?]  {
-        get throws {
-            @Dependency(\.request) var request
-            guard let request else { throw Abort.requestUnavailable }
-            
-            return [
-                request.cookies.accessToken,
-                request.cookies.refreshToken,
-                request.cookies.reauthorizationToken,
-            ]
-        }
-    }
+extension [WritableKeyPath<HTTPCookies, HTTPCookies.Value?>] {
+    package static let identity: Self = [
+        \.accessToken,
+        \.refreshToken,
+        \.reauthorizationToken
+    ]
 }

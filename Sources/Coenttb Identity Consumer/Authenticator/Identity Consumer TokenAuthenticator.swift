@@ -17,7 +17,7 @@ extension Identity.Consumer {
         @Dependency(Identity.Consumer.Client.self) var client
         
         public func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
-            return try await withDependencies {
+            return await withDependencies {
                 $0.request = request
             } operation: {
                 do {
@@ -34,8 +34,9 @@ extension Identity.Consumer {
                     return response
                 }
                 catch {
-                    return try Response(status: .unauthorized)
-                        .expiring(cookies: .identity)
+                    let response = Response(status: .unauthorized)
+                    response.expire(cookies: .identity)
+                    return response
                 }
             }
         }

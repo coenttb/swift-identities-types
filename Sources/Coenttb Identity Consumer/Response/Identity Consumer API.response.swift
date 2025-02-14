@@ -76,9 +76,9 @@ extension Identity.Consumer.API {
 
                 try await client.logout()
 
-                let response = try Response
-                    .success(true)
-                    .expiring(cookies: .identity)
+                let response = Response.success(true)
+                
+                response.expire(cookies: .identity)
 
                 await rateLimitClient.recordSuccess()
 
