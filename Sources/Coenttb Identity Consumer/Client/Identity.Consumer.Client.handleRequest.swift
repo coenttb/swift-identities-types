@@ -61,12 +61,14 @@ extension Identity.Consumer.Client {
         
         @Dependency(\.identityProviderApiRouter) var router
         
-        let preparedRouter = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-        
         do {
-            let data = try preparedRouter.print(route)
-            guard let request = URLRequest(data: data)
+            guard let request = try URLRequest(
+                data: router
+                    .configureAuthentication(for: route)
+                    .print(route)
+            )
             else { throw Identity.Consumer.Client.Error.requestError }
+            
             return request
         } catch {
             throw Identity.Consumer.Client.Error.printError

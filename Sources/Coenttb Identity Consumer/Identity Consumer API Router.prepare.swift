@@ -10,7 +10,7 @@ import Coenttb_Web
 import Identity_Consumer
 
 extension Identity.Consumer.API.Router {
-    package static func prepare(
+    package static func configureAuthentication(
         baseRouter: some URLRouting.Router<Identity.Consumer.API>,
         route: Identity.Consumer.API
     ) throws -> AnyParserPrinter<URLRequestData, Identity.Consumer.API> {
@@ -74,5 +74,11 @@ extension Identity.Consumer.API.Router {
         }
 
         return router.eraseToAnyParserPrinter()
+    }
+}
+
+extension AnyParserPrinter<URLRequestData, Identity.API> {
+    package func configureAuthentication(for route: Identity.API) throws -> Self {
+        try Identity.Consumer.API.Router.configureAuthentication(baseRouter: self, route: route)
     }
 }
