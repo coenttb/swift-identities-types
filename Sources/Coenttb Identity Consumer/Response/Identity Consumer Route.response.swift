@@ -15,7 +15,6 @@ extension Identity.Consumer.Route {
        route: Identity.Consumer.Route,
        logo: Identity.Consumer.View.Logo,
        canonicalHref: URL?,
-       tokenDomain: String?,
        favicons: Favicons,
        hreflang: @escaping (Identity.Consumer.View, Language) -> URL,
        termsOfUse: URL,
@@ -96,8 +95,7 @@ extension Identity.Consumer.Route {
         switch route {
         case .api(let api):
             return try await Identity.Consumer.API.response(
-                api: api,
-                tokenDomain: tokenDomain
+                api: api
             )
 
         case .view(let view):

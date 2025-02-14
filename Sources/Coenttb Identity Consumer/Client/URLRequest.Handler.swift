@@ -11,9 +11,8 @@ import Coenttb_Web
 extension URLRequest.Handler {
     public func callAsFunction<ResponseType: Decodable>(
         baseRouter: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
-        baseURL: URL,
         route: Identity.Consumer.API,
-        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest,
+        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.makeRequest,
         decodingTo type: ResponseType.Type,
         fileID: StaticString = #fileID,
         filePath: StaticString = #filePath,
@@ -22,7 +21,6 @@ extension URLRequest.Handler {
     ) async throws -> ResponseType {
         let router = try Identity.Consumer.API.Router.prepare(
             baseRouter: baseRouter,
-            baseURL: baseURL,
             route: route
         )
         let request = try makeRequest(router)(route)
@@ -41,9 +39,8 @@ extension URLRequest.Handler {
 extension URLRequest.Handler {
     public func callAsFunction(
         baseRouter: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
-        baseURL: URL,
         route: Identity.Consumer.API,
-        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest,
+        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.makeRequest,
         fileID: StaticString = #fileID,
         filePath: StaticString = #filePath,
         line: UInt = #line,
@@ -51,7 +48,6 @@ extension URLRequest.Handler {
     ) async throws {
         let router = try Identity.Consumer.API.Router.prepare(
             baseRouter: baseRouter,
-            baseURL: baseURL,
             route: route
         )
         let request = try makeRequest(router)(route)

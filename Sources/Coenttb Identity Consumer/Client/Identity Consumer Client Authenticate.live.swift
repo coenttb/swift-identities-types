@@ -17,16 +17,17 @@ import RateLimiter
 
 extension Identity.Consumer.Client.Authenticate {
     package static func live(
-        provider: Identity.Consumer.Client.Live.Provider,
         router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
-        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
+        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.makeRequest
     ) -> Self {
         return .init(
             credentials: { username, password in
+                
                 let route: Identity.Consumer.API = .authenticate(.credentials(.init(username: username, password: password)))
-                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
+                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
 
                 @Dependency(URLRequest.Handler.self) var handleRequest
+                
 
                 do {
                     let response = try await handleRequest(
@@ -53,36 +54,17 @@ extension Identity.Consumer.Client.Authenticate {
             },
             token: .init(
                 access: { token in
-                    @Dependency(Identity.Consumer.Client.self) var client
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
 
                     let currentToken = try await request.jwt.verify(token, as: JWT.Token.Access.self)
-                    
-                    // Check if token has more than 5 minutes left
-                    let expirationBuffer = TimeInterval(300)
-                    
-                    guard Date().addingTimeInterval(expirationBuffer) < currentToken.expiration.value
-                    else {
-                        guard let refreshToken = request.cookies.refreshToken?.string
-                        else { throw Abort(.unauthorized) }
-                                                                    
-                        try await request.auth.login(
-                            request.jwt.verify(
-                                client.authenticate.token.refresh(token: refreshToken)
-                                    .accessToken.value,
-                                as: JWT.Token.Access.self
-                            )
-                        )
-                        
-                        return
-                    }
-                    
                     request.auth.login(currentToken)
                 },
                 refresh: { token in
+                    
                     let route: Identity.Consumer.API = .authenticate(.token(.refresh(.init(token: token))))
-                    let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
+                    
+                    let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
 
                     @Dependency(URLRequest.Handler.self) var handleRequest
 
@@ -110,8 +92,10 @@ extension Identity.Consumer.Client.Authenticate {
                 }
             ),
             apiKey: { apiKey in
+                
                 let route: Identity.Consumer.API = .authenticate(.apiKey(.init(token: apiKey)))
-                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
+                
+                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
 
                 @Dependency(URLRequest.Handler.self) var handleRequest
 
@@ -125,5 +109,48 @@ extension Identity.Consumer.Client.Authenticate {
                 }
             }
         )
+    }
+}
+
+extension Identity.Client {
+    public func login(
+        request: Request,
+        accessToken: String?,
+        refreshToken: (Vapor.Request) -> String?,
+        expirationBuffer: TimeInterval = 300
+    ) async throws -> Identity.Authentication.Response? {
+        
+        @Dependency(\.date) var date
+        
+        guard let accessToken = accessToken
+        else {
+            guard let refreshToken = request.cookies.refreshToken?.string
+            else { return nil }
+            
+            return try await authenticate.token.refresh(token: refreshToken)
+        }
+
+        do {
+            try await authenticate.token.access(token: accessToken)
+            
+            guard let currentToken = request.auth.get(JWT.Token.Access.self)
+            else { throw Abort(.unauthorized) }
+            
+            guard date().addingTimeInterval(expirationBuffer) < currentToken.expiration.value
+            else {
+                guard let refreshToken = refreshToken(request)
+                else { throw Abort(.unauthorized) }
+                
+                return try await authenticate.token.refresh(token: refreshToken)
+            }
+            
+            return nil
+        } catch {
+            // Access token invalid, try refresh
+            guard let refreshToken = request.cookies.refreshToken?.string else {
+                return nil
+            }
+            return try await authenticate.token.refresh(token: refreshToken)
+        }
     }
 }

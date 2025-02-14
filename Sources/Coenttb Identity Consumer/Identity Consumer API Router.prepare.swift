@@ -11,14 +11,14 @@ import Identity_Consumer
 
 extension Identity.Consumer.API.Router {
     package static func prepare(
-        baseRouter: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
-        baseURL: URL,
+        baseRouter: some URLRouting.Router<Identity.Consumer.API>,
         route: Identity.Consumer.API
     ) throws -> AnyParserPrinter<URLRequestData, Identity.Consumer.API> {
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
 
-        var router = baseRouter.baseURL(baseURL.absoluteString).eraseToAnyParserPrinter()
+        @Dependency(Identity.Consumer.Client.Provider.self) var provider
+        var router = baseRouter.baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
 
         switch route {
         case .authenticate(let authenticate):

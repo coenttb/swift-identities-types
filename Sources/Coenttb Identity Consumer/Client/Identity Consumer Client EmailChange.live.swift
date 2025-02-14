@@ -17,10 +17,11 @@ import RateLimiter
 
 extension Identity.Consumer.Client.EmailChange {
     package static func live(
-        provider: Identity.Consumer.Client.Live.Provider,
         router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
-        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
+        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.makeRequest
     ) -> Self {
+        
+        
         return .init(
             request: { newEmail in
                 guard let newEmail = newEmail?.rawValue else {
@@ -28,7 +29,7 @@ extension Identity.Consumer.Client.EmailChange {
                 }
 
                 let route: Identity.Consumer.API = .emailChange(.request(.init(newEmail: newEmail)))
-                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
+                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
 
                 @Dependency(URLRequest.Handler.self) var handleRequest
 
@@ -43,7 +44,7 @@ extension Identity.Consumer.Client.EmailChange {
             },
             confirm: { token in
                 let route: Identity.Consumer.API = .emailChange(.confirm(.init(token: token)))
-                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, baseURL: provider.baseURL, route: route)
+                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
 
                 @Dependency(URLRequest.Handler.self) var handleRequest
 

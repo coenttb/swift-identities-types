@@ -12,8 +12,7 @@ import Identity_Consumer
 
 extension Identity.Consumer.API {
     public static func response(
-        api: Identity.Consumer.API,
-        tokenDomain: String?
+        api: Identity.Consumer.API
     ) async throws -> any AsyncResponseEncodable {
 
         @Dependency(Identity.Consumer.Client.self) var client
@@ -36,7 +35,7 @@ extension Identity.Consumer.API {
         switch api {
         case .authenticate(let authenticate):
             do {
-                let response = try await Identity.Consumer.API.Authenticate.response(authenticate: authenticate, tokenDomain: tokenDomain)
+                let response = try await Identity.Consumer.API.Authenticate.response(authenticate: authenticate)
                 await rateLimitClient.recordSuccess()
                 return response
             } catch {
@@ -79,16 +78,9 @@ extension Identity.Consumer.API {
 
                 try await client.logout()
 
-                let response = Response.success(true)
-
-                var accessToken = request.cookies.accessToken
-                accessToken?.expires = .distantPast
-
-                var refreshToken = request.cookies.refreshToken
-                refreshToken?.expires = .distantPast
-
-                response.cookies.accessToken = accessToken
-                response.cookies.refreshToken = refreshToken
+                let response = try Response
+                    .success(true)
+                    .expiring(cookies: .identity)
 
                 await rateLimitClient.recordSuccess()
 

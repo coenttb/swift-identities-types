@@ -13,8 +13,8 @@ import Identity_Consumer
 
 extension Identity.Consumer.Client.Authenticate.Multifactor {
     package static func live(
-        provider: Identity.Consumer.Client.Live.Provider,
-        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ api: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
+        provider: Identity.Consumer.Client.Provider,
+        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ api: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.makeRequest
     ) -> Self {
         let apiRouter = Identity.Consumer.API.Router().baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
 

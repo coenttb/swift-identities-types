@@ -10,18 +10,14 @@ import RateLimiter
 
 extension Identity.Consumer.Client {
     public static func live(
-        provider: Identity.Consumer.Client.Live.Provider,
         router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
-        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.Live.makeRequest
+        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.makeRequest
     ) -> Self {
 
         @Dependency(RateLimiters.self) var rateLimiter
         
-
-        
         return .init(
             authenticate: .live(
-                provider: provider,
                 router: router,
                 makeRequest: makeRequest
             ),
@@ -35,28 +31,23 @@ extension Identity.Consumer.Client {
 
                 return try await handleRequest(
                     baseRouter: router,
-                    baseURL: provider.baseURL,
                     route: .reauthorize(.init(password: password)),
                     decodingTo: JWT.Token.self
                 )
             },
             create: .live(
-                provider: provider,
                 router: router,
                 makeRequest: makeRequest
             ),
             delete: .live(
-                provider: provider,
                 router: router,
                 makeRequest: makeRequest
             ),
             emailChange: .live(
-                provider: provider,
                 router: router,
                 makeRequest: makeRequest
             ),
             password: .live(
-                provider: provider,
                 router: router,
                 makeRequest: makeRequest
             )
@@ -66,25 +57,13 @@ extension Identity.Consumer.Client {
 
 
 
+
 extension Identity.Consumer.Client {
-    public enum Live {
-        public struct Provider {
-            public let baseURL: URL
-            public let domain: String?
-
-            public init(baseURL: URL, domain: String?) {
-                self.baseURL = baseURL
-                self.domain = domain
-            }
-        }
-    }
-}
-
-extension Identity.Consumer.Client.Live {
     public static var makeRequest: (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest {
         {
-            apiRouter in
-            { route in
+            _ in
+            @Dependency(\.identityProviderApiRouter) var apiRouter
+            return { route in
                 do {
                     let data = try apiRouter.print(route)
                     guard let request = URLRequest(data: data)
