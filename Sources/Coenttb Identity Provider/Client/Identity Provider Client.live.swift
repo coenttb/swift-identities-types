@@ -61,9 +61,6 @@ extension Identity_Provider.Identity.Provider.Client {
                         throw AuthenticationError.invalidCredentials
                     }
 
-                    @Dependency(\.request) var request
-                    guard let request else { throw Abort.requestUnavailable }
-
                     @Dependency(\.reauthorizationTokenConfig) var config
 
                     let payload = try JWT.Token.Reauthorization(
@@ -71,8 +68,10 @@ extension Identity_Provider.Identity.Provider.Client {
                         includeTokenId: false,
                         includeNotBefore: true
                     )
+                    
+                    @Dependency(\.application) var application
 
-                    return try await .init(value: request.jwt.sign(payload), expiresIn: config.expiration)
+                    return try await .init(value: application.jwt.keys.sign(payload), expiresIn: config.expiration)
 
                 } catch {
                     logger.error("Error in reauthorize: \(String(describing: error))")

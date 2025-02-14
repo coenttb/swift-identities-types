@@ -15,23 +15,20 @@ import JWT
 extension Database.Identity {
     package func generateJWTAccess(
     ) async throws -> String {
-        @Dependency(\.request) var request
-        guard let request else { throw Abort.requestUnavailable }
-
+        @Dependency(\.application) var application
         @Dependency(\.accessTokenConfig) var config
 
         let payload = try JWT.Token.Access(identity: self)
         
-        return try await request.jwt.sign(payload)
+        return try await application.jwt.keys.sign(payload)
     }
 
     package func generateJWTRefresh() async throws -> String {
-        @Dependency(\.request) var request
-        guard let request else { throw Abort.requestUnavailable }
+        @Dependency(\.application) var application
 
         let payload = try JWT.Token.Refresh(identity: self)
         
-        return try await request.jwt.sign(payload)
+        return try await application.jwt.keys.sign(payload)
     }
     
     package func generateJWTAccess() async throws -> JWT.Token {
