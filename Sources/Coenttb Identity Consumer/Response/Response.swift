@@ -22,12 +22,20 @@ extension Vapor.Response {
     }
 }
 
+//
+//extension [ReferenceWritableKeyPath<Response, HTTPCookies.Value?>] {
+//    package static let identity: Self = [
+//        \.cookies.accessToken,
+//         \.cookies.refreshToken,
+//         \.cookies.reauthorizationToken
+//    ]
+//}
 
-extension [ReferenceWritableKeyPath<Response, HTTPCookies.Value?>] {
+extension [WritableKeyPath<HTTPCookies, HTTPCookies.Value?>] {
     package static let identity: Self = [
-        \.cookies.accessToken,
-         \.cookies.refreshToken,
-         \.cookies.reauthorizationToken
+        \.accessToken,
+         \.refreshToken,
+         \.reauthorizationToken
     ]
 }
 
@@ -39,11 +47,7 @@ extension Vapor.Response {
         guard let request else { return }
         
         cookies.forEach { cookiePath in
-            // Get the existing cookie from the request
-            var existingCookie = request.cookies[keyPath: cookiePath]
-            
-            // If the cookie exists, expire it while preserving its other attributes
-            if var cookie = existingCookie {
+            if var cookie = request.cookies[keyPath: cookiePath] {
                 cookie.expires = .distantPast
                 self.cookies[keyPath: cookiePath] = cookie
             }
