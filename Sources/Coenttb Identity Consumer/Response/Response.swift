@@ -30,7 +30,17 @@ extension Vapor.Response {
         
         cookieValues.forEach { cookie in
             if let name = cookie.string.split(separator: "=").first {
-                self.cookies[String(name)]?.expires = .distantPast
+                // Create a new expired cookie preserving original attributes
+                let expiredCookie = HTTPCookies.Value(
+                    string: "",
+                    expires: .distantPast,
+                    domain: cookie.domain,
+                    path: cookie.path,
+                    isSecure: cookie.isSecure,
+                    isHTTPOnly: cookie.isHTTPOnly,
+                    sameSite: cookie.sameSite
+                )
+                self.cookies[String(name)] = expiredCookie
             }
         }
                

@@ -86,11 +86,18 @@ let package = Package(
             ]
         ),
         .testTarget(
+            name: .coenttbIdentityConsumer.tests,
+            dependencies: [
+                .coenttbIdentityConsumer,
+                .dependenciesTestSupport,
+            ]
+        ),
+        .testTarget(
             name: .coenttbIdentityProvider.tests,
             dependencies: [
                 .coenttbIdentityProvider,
                 .dependenciesTestSupport,
-                .fluentSqlLite
+                .fluentSqlLite,
             ]
         )
     ],
