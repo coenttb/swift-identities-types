@@ -116,7 +116,7 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
             },
             confirm: { token in
                 do {
-                    
+                    print("EmailChange 1")
                     let (response, oldEmail, newEmail) = try await database.transaction { db in
                         guard let token = try await Database.Identity.Token.query(on: db)
                             .filter(\.$value == token)
@@ -125,6 +125,7 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                             .first() else {
                             throw ValidationError.invalidToken
                         }
+                        print("EmailChange 2")
                         
                         guard let emailChangeRequest = try await Database.EmailChangeRequest.query(on: db)
                             .filter(\.$token.$id == token.id!)
@@ -132,14 +133,18 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                             .first() else {
                             throw Abort(.notFound, reason: "Email change request not found")
                         }
+                        print("EmailChange 3")
                         
                         guard token.validUntil > Date() else {
                             try await token.delete(on: db)
                             try await emailChangeRequest.delete(on: db)
                             throw Abort(.gone, reason: "Email change token has expired")
                         }
+                        print("EmailChange 4")
                         
                         let newEmail = try EmailAddress(emailChangeRequest.newEmail)
+                        
+                        print("EmailChange 5")
                         
                         if try await Database.Identity.query(on: db)
                             .filter(\.$email == newEmail.rawValue)
@@ -148,20 +153,40 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                             throw ValidationError.invalidInput("Email address is already in use")
                         }
                         
+                        print("EmailChange 6")
+                        
                         let oldEmail = emailChangeRequest.identity.emailAddress
                         
                         emailChangeRequest.identity.emailAddress = newEmail
                         emailChangeRequest.identity.sessionVersion += 1
                         
+                        print("EmailChange 7")
+                        
                         try await emailChangeRequest.identity.save(on: db)
+                        
+                        print("EmailChange 8")
+                        
                         try await token.delete(on: db)
+                        
+                        print("EmailChange 9")
+                        
                         try await emailChangeRequest.delete(on: db)
+                        
+                        print("EmailChange 10")
                         
                         logger.notice("Email change completed successfully from \(oldEmail) to \(newEmail)")
                         
                         try await emailChangeRequest.identity.save(on: db)
+                        
+                        print("EmailChange 11")
+                        
                         try await token.delete(on: db)
+                        
+                        print("EmailChange 12")
+                        
                         try await emailChangeRequest.delete(on: db)
+                        
+                        print("EmailChange 13")
                         
                         logger.notice("Email change completed successfully from \(oldEmail) to \(newEmail)")
                         
@@ -172,19 +197,26 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                         )
                     }
                     
+                    print("EmailChange 14")
+                    
                     @Dependency(\.fireAndForget) var fireAndForget
                     await fireAndForget {
                         do {
                             try await onEmailChangeSuccess(oldEmail, newEmail)
+                            print("EmailChange 15")
                         }
                         catch {
+                            print("EmailChange 16")
                             logger.error("Failed to execute post-email change operations: \(error)")
                         }
                     }
                     
+                    print("EmailChange 17")
+                    
                     return response
                 }
                 catch {
+                    print("EmailChange 18")
                     logger.error("Error in confirmEmailChange: \(String(describing: error))")
                     throw error
                 }
