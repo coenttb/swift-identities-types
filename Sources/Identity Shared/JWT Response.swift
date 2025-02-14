@@ -11,13 +11,13 @@ extension JWT {
 
     public struct Token: Codable, Hashable, Sendable {
         public let value: String
-        public let type: String
-        public let expiresIn: TimeInterval
+        public let type: String?
+        public let expiresIn: TimeInterval?
 
         public init(
             value: String,
-            type: String = "Bearer",
-            expiresIn: TimeInterval
+            type: String? = "Bearer",
+            expiresIn: TimeInterval?
         ) {
             self.value = value
             self.type = type
