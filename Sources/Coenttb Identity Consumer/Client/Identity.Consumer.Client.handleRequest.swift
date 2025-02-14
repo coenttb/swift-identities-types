@@ -51,13 +51,13 @@ extension Identity.Consumer.Client {
 }
 
 extension Identity.Consumer.Client {
-    public func makeRequest(_ route: Identity.Consumer.API) throws -> URLRequest {
+    package func makeRequest(_ route: Identity.Consumer.API) throws -> URLRequest {
         try Identity.Consumer.Client.makeRequest(route)
     }
 }
 
 extension Identity.Consumer.Client {
-    public static func makeRequest(_ route: Identity.Consumer.API) throws -> URLRequest {
+    package static func makeRequest(_ route: Identity.Consumer.API) throws -> URLRequest {
         
         @Dependency(\.identityProviderApiRouter) var router
         

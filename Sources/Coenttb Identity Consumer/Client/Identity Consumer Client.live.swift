@@ -37,8 +37,6 @@ extension Identity.Consumer.Client {
     }
 }
 
-
-
 extension Identity.Consumer.Client {
     public enum Error: Swift.Error {
         case requestError

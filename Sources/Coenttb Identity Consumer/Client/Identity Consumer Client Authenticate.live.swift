@@ -23,11 +23,12 @@ extension Identity.Consumer.Client.Authenticate {
         return .init(
             credentials: { username, password in
                 do {
+                    print("Credentials 1")
                     let response = try await client.handleRequest(
                         for: .authenticate(.credentials(.init(username: username, password: password))),
                         decodingTo: Identity.Authentication.Response.self
                     )
-
+                    print("Credentials 2")
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
 
@@ -35,8 +36,10 @@ extension Identity.Consumer.Client.Authenticate {
                         response.accessToken.value,
                         as: JWT.Token.Access.self
                     )
+                    print("Credentials 3")
                     request.auth.login(accessToken)
 
+                    print("Credentials 4")
                     return response
                 }
                 catch {
