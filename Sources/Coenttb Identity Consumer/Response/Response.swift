@@ -28,8 +28,10 @@ extension Vapor.Response {
     ) -> Vapor.Response {
         let cookieValues = cookies.compactMap { $0 }
         
-        cookieValues.forEach { cookie in            
-            self.cookies[cookie.string] = .expired
+        cookieValues.forEach { cookie in
+            if let name = cookie.string.split(separator: "=").first {
+                self.cookies[String(name)]?.expires = .distantPast
+            }
         }
                
         return self
