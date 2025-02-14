@@ -17,34 +17,25 @@ import RateLimiter
 
 extension Identity.Consumer.Client.Create {
     package static func live(
-        router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
-        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.makeRequest
+        
     ) -> Self {
+        
+        @Dependency(Identity.Consumer.Client.self) var client
         
         return .init(
             request: { email, password in
-                
-                let route: Identity.Consumer.API = .create(.request(.init(email: email, password: password)))
-                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-
-                @Dependency(URLRequest.Handler.self) var handleRequest
-
                 do {
-                    try await handleRequest(for: makeRequest(router)(route))
-                } catch {
+                    try await client.handleRequest(for: .create(.request(.init(email: email, password: password))))
+                }
+                catch {
                     throw Abort(.internalServerError)
                 }
             },
             verify: { email, token in
-                let route: Identity.Consumer.API = .create(.verify(.init(email: email, token: token)))
-                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-
-                @Dependency(URLRequest.Handler.self) var handleRequest
-
                 do {
-                    try await handleRequest(for: makeRequest(router)(route))
-
-                } catch {
+                    try await client.handleRequest(for: .create(.verify(.init(email: email, token: token))))
+                }
+                catch {
                     throw Abort(.internalServerError)
                 }
             }

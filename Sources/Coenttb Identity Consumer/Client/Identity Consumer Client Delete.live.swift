@@ -17,43 +17,27 @@ import RateLimiter
 
 extension Identity.Consumer.Client.Delete {
     package static func live(
-        router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
-        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.makeRequest
-    ) -> Self {
         
+    ) -> Self {
+        @Dependency(Identity.Consumer.Client.self) var client
         return .init(
             request: { reauthToken in
-                let route: Identity.Consumer.API = .delete(.request(.init(reauthToken: reauthToken)))
-                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-
-                @Dependency(URLRequest.Handler.self) var handleRequest
-
                 do {
-                    try await handleRequest(for: makeRequest(router)(route))
+                    try await client.handleRequest(for: .delete(.request(.init(reauthToken: reauthToken))))
                 } catch {
                     throw Abort(.unauthorized)
                 }
             },
             cancel: {
-                let route: Identity.Consumer.API = .delete(.cancel)
-                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-
-                @Dependency(URLRequest.Handler.self) var handleRequest
-
                 do {
-                    try await handleRequest(for: makeRequest(router)(route))
+                    try await client.handleRequest(for: .delete(.cancel))
                 } catch {
                     throw Abort(.unauthorized)
                 }
             },
             confirm: {
-                let route: Identity.Consumer.API = .delete(.confirm)
-                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-
-                @Dependency(URLRequest.Handler.self) var handleRequest
-
                 do {
-                    try await handleRequest(for: makeRequest(router)(route))
+                    try await client.handleRequest(for: .delete(.confirm))
                 } catch {
                     throw Abort(.unauthorized)
                 }

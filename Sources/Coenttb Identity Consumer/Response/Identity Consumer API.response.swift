@@ -16,8 +16,6 @@ extension Identity.Consumer.API {
     ) async throws -> any AsyncResponseEncodable {
 
         @Dependency(Identity.Consumer.Client.self) var client
-        @Dependency(\.request) var request
-        guard let request else { throw Abort.requestUnavailable }
 
         do {
             if let response = try Identity.Consumer.API.protect(

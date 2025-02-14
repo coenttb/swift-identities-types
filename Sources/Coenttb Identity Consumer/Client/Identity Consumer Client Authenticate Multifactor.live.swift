@@ -13,24 +13,22 @@ import Identity_Consumer
 
 extension Identity.Consumer.Client.Authenticate.Multifactor {
     package static func live(
-        provider: Identity.Consumer.Client.Provider,
-        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ api: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.makeRequest
+        
     ) -> Self {
-        let apiRouter = Identity.Consumer.API.Router().baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
 
-        @Dependency(URLRequest.Handler.self) var handleRequest
-
+        @Dependency(Identity.Consumer.Client.self) var client
+                
         return .init(
             setup: .init(
                 initialize: { method, identifier in
-                    try await handleRequest(
-                        for: makeRequest(apiRouter)(.authenticate(.multifactor(.setup(.initialize(.init(method: method, identifier: identifier)))))),
+                    try await client.handleRequest(
+                        for: .authenticate(.multifactor(.setup(.initialize(.init(method: method, identifier: identifier))))),
                         decodingTo: Identity.Authentication.Multifactor.Setup.Response.self
                     )
                 },
                 confirm: { code in
-                    try await handleRequest(
-                        for: makeRequest(apiRouter)(.authenticate(.multifactor(.setup(.confirm(.init(code: code))))))
+                    try await client.handleRequest(
+                        for: .authenticate(.multifactor(.setup(.confirm(.init(code: code)))))
                     )
                 },
                 resetSecret: { _ in
@@ -39,14 +37,14 @@ extension Identity.Consumer.Client.Authenticate.Multifactor {
             ),
             verification: .init(
                 createChallenge: { method in
-                    try await handleRequest(
-                        for: makeRequest(apiRouter)(.authenticate(.multifactor(.challenge(.create(.init(method: method)))))),
+                    try await client.handleRequest(
+                        for: .authenticate(.multifactor(.challenge(.create(.init(method: method))))),
                         decodingTo: Identity.Authentication.Multifactor.Challenge.self
                     )
                 },
                 verify: { challengeId, code in
-                    try await handleRequest(
-                        for: makeRequest(apiRouter)(.authenticate(.multifactor(.verify(.verify(.init(challengeId: challengeId, code: code))))))
+                    try await client.handleRequest(
+                        for: .authenticate(.multifactor(.verify(.verify(.init(challengeId: challengeId, code: code)))))
                     )
                 },
                 bypass: { _ in
@@ -55,14 +53,14 @@ extension Identity.Consumer.Client.Authenticate.Multifactor {
             ),
             recovery: .init(
                 generateNewCodes: {
-                    try await handleRequest(
-                        for: makeRequest(apiRouter)(.authenticate(.multifactor(.recovery(.generate)))),
+                    try await client.handleRequest(
+                        for: .authenticate(.multifactor(.recovery(.generate))),
                         decodingTo: [String].self
                     )
                 },
                 getRemainingCodeCount: {
-                    try await handleRequest(
-                        for: makeRequest(apiRouter)(.authenticate(.multifactor(.recovery(.count)))),
+                    try await client.handleRequest(
+                        for: .authenticate(.multifactor(.recovery(.count))),
                         decodingTo: Int.self
                     )
                 },
@@ -76,14 +74,14 @@ extension Identity.Consumer.Client.Authenticate.Multifactor {
                 }
             ),
             configuration: {
-                try await handleRequest(
-                    for: makeRequest(apiRouter)(.authenticate(.multifactor(.configuration))),
+                try await client.handleRequest(
+                    for: .authenticate(.multifactor(.configuration)),
                     decodingTo: Identity.Authentication.Multifactor.Configuration.self
                 )
             },
             disable: {
-                try await handleRequest(
-                    for: makeRequest(apiRouter)(.authenticate(.multifactor(.disable)))
+                try await client.handleRequest(
+                    for: .authenticate(.multifactor(.disable))
                 )
             }
         )

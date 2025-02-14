@@ -100,13 +100,12 @@ extension HTTPCookies.Value {
     
     package static func refreshToken(
         token: JWT.Token
-        //        router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>
     ) -> Self {
         @Dependency(\.cookieConfiguration) var config
+        @Dependency(\.identityProviderApiRouter) var identityProviderApiRouter
         
         return withDependencies {
-            //            $0.cookieConfiguration.path = router.url(for: .api(.authenticate(.token(.refresh(.init(token: token.value)))))).relativePath
-            $0.cookieConfiguration.path = "/"
+            $0.cookieConfiguration.path = identityProviderApiRouter.url(for: .authenticate(.token(.refresh(.init(token: token.value))))).relativePath
         } operation: {
             return .init(
                 token: token.value

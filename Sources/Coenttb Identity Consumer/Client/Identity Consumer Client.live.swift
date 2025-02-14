@@ -10,72 +10,34 @@ import RateLimiter
 
 extension Identity.Consumer.Client {
     public static func live(
-        router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
-        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.makeRequest
+        
     ) -> Self {
 
         @Dependency(RateLimiters.self) var rateLimiter
+        @Dependency(Identity.Consumer.Client.self) var client
         
         return .init(
-            authenticate: .live(
-                router: router,
-                makeRequest: makeRequest
-            ),
+            authenticate: .live(),
             logout: {
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
                 request.auth.logout(JWT.Token.Access.self)
             },
             reauthorize: { password in
-                @Dependency(URLRequest.Handler.self) var handleRequest
-
-                return try await handleRequest(
-                    baseRouter: router,
-                    route: .reauthorize(.init(password: password)),
+                try await client.handleRequest(
+                    for: .reauthorize(.init(password: password)),
                     decodingTo: JWT.Token.self
                 )
             },
-            create: .live(
-                router: router,
-                makeRequest: makeRequest
-            ),
-            delete: .live(
-                router: router,
-                makeRequest: makeRequest
-            ),
-            emailChange: .live(
-                router: router,
-                makeRequest: makeRequest
-            ),
-            password: .live(
-                router: router,
-                makeRequest: makeRequest
-            )
+            create: .live(),
+            delete: .live(),
+            emailChange: .live(),
+            password: .live()
         )
     }
 }
 
 
-
-
-extension Identity.Consumer.Client {
-    public static var makeRequest: (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest {
-        {
-            _ in
-            @Dependency(\.identityProviderApiRouter) var apiRouter
-            return { route in
-                do {
-                    let data = try apiRouter.print(route)
-                    guard let request = URLRequest(data: data)
-                    else { throw Identity.Consumer.Client.Error.requestError }
-                    return request
-                } catch {
-                    throw Identity.Consumer.Client.Error.printError
-                }
-            }
-        }
-    }
-}
 
 extension Identity.Consumer.Client {
     public enum Error: Swift.Error {

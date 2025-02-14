@@ -17,10 +17,9 @@ import RateLimiter
 
 extension Identity.Consumer.Client.EmailChange {
     package static func live(
-        router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
-        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.makeRequest
-    ) -> Self {
         
+    ) -> Self {
+        @Dependency(Identity.Consumer.Client.self) var client
         
         return .init(
             request: { newEmail in
@@ -28,14 +27,9 @@ extension Identity.Consumer.Client.EmailChange {
                     throw Abort(.conflict, reason: "Email address cannot be nil")
                 }
 
-                let route: Identity.Consumer.API = .emailChange(.request(.init(newEmail: newEmail)))
-                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-
-                @Dependency(URLRequest.Handler.self) var handleRequest
-
                 do {
-                    return try await handleRequest(
-                        for: makeRequest(router)(route),
+                    return try await client.handleRequest(
+                        for: .emailChange(.request(.init(newEmail: newEmail))),
                         decodingTo: Identity.EmailChange.Request.Result.self
                     )
                 } catch {
@@ -43,14 +37,9 @@ extension Identity.Consumer.Client.EmailChange {
                 }
             },
             confirm: { token in
-                let route: Identity.Consumer.API = .emailChange(.confirm(.init(token: token)))
-                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-
-                @Dependency(URLRequest.Handler.self) var handleRequest
-
                 do {
-                    return try await handleRequest(
-                        for: makeRequest(router)(route),
+                    return try await client.handleRequest(
+                        for: .emailChange(.confirm(.init(token: token))),
                         decodingTo: Identity.EmailChange.Confirm.Response.self
                     )
                     

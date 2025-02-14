@@ -17,21 +17,14 @@ import RateLimiter
 
 extension Identity.Consumer.Client.Authenticate {
     package static func live(
-        router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
-        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.makeRequest
     ) -> Self {
+        @Dependency(Identity.Consumer.Client.self) var client
+        
         return .init(
             credentials: { username, password in
-                
-                let route: Identity.Consumer.API = .authenticate(.credentials(.init(username: username, password: password)))
-                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-
-                @Dependency(URLRequest.Handler.self) var handleRequest
-                
-
                 do {
-                    let response = try await handleRequest(
-                        for: makeRequest(router)(route),
+                    let response = try await client.handleRequest(
+                        for: .authenticate(.credentials(.init(username: username, password: password))),
                         decodingTo: Identity.Authentication.Response.self
                     )
 
@@ -45,7 +38,8 @@ extension Identity.Consumer.Client.Authenticate {
                     request.auth.login(accessToken)
 
                     return response
-                } catch {
+                }
+                catch {
                     if let jwtError = error as? JWTError {
                         print("JWT specific error:", jwtError)
                     }
@@ -61,16 +55,9 @@ extension Identity.Consumer.Client.Authenticate {
                     request.auth.login(currentToken)
                 },
                 refresh: { token in
-                    
-                    let route: Identity.Consumer.API = .authenticate(.token(.refresh(.init(token: token))))
-                    
-                    let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-
-                    @Dependency(URLRequest.Handler.self) var handleRequest
-
                     do {
-                        let response = try await handleRequest(
-                            for: makeRequest(router)(route),
+                        let response = try await client.handleRequest(
+                            for: .authenticate(.token(.refresh(.init(token: token)))),
                             decodingTo: Identity.Authentication.Response.self
                         )
 
@@ -93,15 +80,9 @@ extension Identity.Consumer.Client.Authenticate {
             ),
             apiKey: { apiKey in
                 
-                let route: Identity.Consumer.API = .authenticate(.apiKey(.init(token: apiKey)))
-                
-                let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-
-                @Dependency(URLRequest.Handler.self) var handleRequest
-
                 do {
-                    return try await handleRequest(
-                        for: makeRequest(router)(route),
+                    return try await client.handleRequest(
+                        for: .authenticate(.apiKey(.init(token: apiKey))),
                         decodingTo: Identity.Authentication.Response.self
                     )
                 } catch {

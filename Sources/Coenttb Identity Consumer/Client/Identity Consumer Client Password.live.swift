@@ -17,32 +17,23 @@ import RateLimiter
 
 extension Identity.Consumer.Client.Password {
     package static func live(
-        router: AnyParserPrinter<URLRequestData, Identity.Consumer.API>,
-        makeRequest: @escaping (AnyParserPrinter<URLRequestData, Identity.Consumer.API>) -> (_ route: Identity.Consumer.API) throws -> URLRequest = Identity.Consumer.Client.makeRequest
+        
     ) -> Self {
+        
+        @Dependency(Identity.Consumer.Client.self) var client
         
         return .init(
             reset: .init(
                 request: { email in
-                    let route: Identity.Consumer.API = .password(.reset(.request(.init(email: email))))
-                    let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-
-                    @Dependency(URLRequest.Handler.self) var handleRequest
-
                     do {
-                        try await handleRequest(for: makeRequest(router)(route))
+                        try await client.handleRequest(for: .password(.reset(.request(.init(email: email)))))
                     } catch {
                         throw Abort(.unauthorized)
                     }
                 },
                 confirm: { token, newPassword in
-                    let route: Identity.Consumer.API = .password(.reset(.confirm(.init(token: token, newPassword: newPassword))))
-                    let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-
-                    @Dependency(URLRequest.Handler.self) var handleRequest
-
                     do {
-                        try await handleRequest(for: makeRequest(router)(route))
+                        try await client.handleRequest(for: .password(.reset(.confirm(.init(token: token, newPassword: newPassword)))))
                     } catch {
                         throw Abort(.internalServerError)
                     }
@@ -50,13 +41,8 @@ extension Identity.Consumer.Client.Password {
             ),
             change: .init(
                 request: { currentPassword, newPassword in
-                    let route: Identity.Consumer.API = .password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword))))
-                    let router = try Identity.Consumer.API.Router.prepare(baseRouter: router, route: route)
-
-                    @Dependency(URLRequest.Handler.self) var handleRequest
-
                     do {
-                        try await handleRequest(for: makeRequest(router)(route))
+                        try await client.handleRequest(for: .password(.change(.request(change: .init(currentPassword: currentPassword, newPassword: newPassword)))))
                     } catch {
                         throw Abort(.unauthorized)
                     }
