@@ -62,8 +62,17 @@ extension HTTPCookies.Value {
 }
 
 extension HTTPCookies.Configuration: DependencyKey {
-    static public let liveValue: HTTPCookies.Configuration = .init(domain: nil)
-    static public let testValue: HTTPCookies.Configuration = liveValue
+    public static let liveValue: HTTPCookies.Configuration = .init(domain: nil)
+    public static let testValue: HTTPCookies.Configuration = liveValue
+}
+
+extension HTTPCookies.Configuration {
+    public static let localDevelopment: HTTPCookies.Configuration = .init(
+        domain: "localhost",
+        isSecure: false,
+        isHTTPOnly: true,
+        sameSitePolicy: .lax
+    )
 }
 
 extension DependencyValues {
@@ -74,29 +83,29 @@ extension DependencyValues {
 }
 
 extension HTTPCookies.Value {
-
+    
     package static func accessToken(
         token: JWT.Token
     ) -> Self {
         @Dependency(\.cookieConfiguration) var config
         
         return withDependencies {
-            $0.cookieConfiguration.sameSitePolicy = .strict
+            $0.cookieConfiguration.sameSitePolicy = .lax
         } operation: {
             return HTTPCookies.Value(
                 token: token.value
             )
         }
     }
-
+    
     package static func refreshToken(
         token: JWT.Token
-//        router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>
+        //        router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>
     ) -> Self {
         @Dependency(\.cookieConfiguration) var config
-
+        
         return withDependencies {
-//            $0.cookieConfiguration.path = router.url(for: .api(.authenticate(.token(.refresh(.init(token: token.value)))))).relativePath
+            //            $0.cookieConfiguration.path = router.url(for: .api(.authenticate(.token(.refresh(.init(token: token.value)))))).relativePath
             $0.cookieConfiguration.path = "/"
         } operation: {
             return .init(
