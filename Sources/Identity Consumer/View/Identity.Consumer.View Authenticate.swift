@@ -13,6 +13,5 @@ extension Identity.Consumer.View {
     @CasePathable
     public enum Authenticate: Codable, Hashable, Sendable {
         case credentials
-        case multifactor(Identity.Consumer.View.Authenticate.Multifactor)
     }
 }

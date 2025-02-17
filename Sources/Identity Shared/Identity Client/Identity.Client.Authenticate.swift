@@ -26,8 +26,6 @@ extension Identity.Client {
         public var apiKey: (
             _ apiKey: String
         ) async throws -> Identity.Authentication.Response
-
-        public var multifactor: Identity.Client.Authenticate.Multifactor?
     }
 }
 

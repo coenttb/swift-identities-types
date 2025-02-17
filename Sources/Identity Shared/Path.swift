@@ -66,6 +66,9 @@ extension Path<PathBuilder.Component<String>> {
     nonisolated(unsafe) public static let login = Path {
         "login"
     }
+    nonisolated(unsafe) public static let credentials = Path {
+        "credentials"
+    }
     nonisolated(unsafe) public static let currentUser = Path {
         "current-user"
     }

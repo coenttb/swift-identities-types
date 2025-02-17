@@ -55,23 +55,9 @@ extension Identity.Consumer.View {
                 URLRouting.Route(.case(Identity.Consumer.View.authenticate)) {
                     OneOf {
                         URLRouting.Route(.case(Identity.Consumer.View.Authenticate.credentials)) {
-                            Path.login
-                        }
-
-                        URLRouting.Route(.case(Identity.Consumer.View.Authenticate.multifactor)) {
-                            Path.multifactor
                             OneOf {
-                                URLRouting.Route(.case(Identity.Consumer.View.Authenticate.Multifactor.setup)) {
-                                    Path.setup
-                                }
-
-                                URLRouting.Route(.case(Identity.Consumer.View.Authenticate.Multifactor.verify)) {
-                                    Path.verify
-                                }
-
-                                URLRouting.Route(.case(Identity.Consumer.View.Authenticate.Multifactor.manage)) {
-                                    Path.manage
-                                }
+                                Path.credentials
+                                Path.login
                             }
                         }
                     }
