@@ -46,13 +46,17 @@ extension Identity.Provider.Configuration {
             self.cookies = cookies
             self.router = router.baseURL(baseURL.absoluteString).eraseToAnyParserPrinter()
             self.client = client
+            
+            if self.cookies.refreshToken.path == nil {
+                self.cookies.refreshToken.path = self.router.url(for: .authenticate(.token(.refresh(.init(token: "--------------------"))))).absoluteString
+            }
         }
     }
 }
 
 extension Identity.CookiesConfiguration {
     static public let live: Identity.CookiesConfiguration = {
-        
+//        @Dependency(\.identity.provider.router) var router
         
         return .init(
             accessToken: .init(
@@ -67,10 +71,7 @@ extension Identity.CookiesConfiguration {
                 expires: 60 * 60 * 24 * 30,
                 maxAge: 60 * 60 * 24 * 30,
                 domain: nil,
-                path: {
-                    @Dependency(\.identity.provider.router) var router
-                    return router.url(for: .authenticate(.token(.refresh(.init(token: "--------------------"))))).absoluteString
-                }(),
+                path: nil,
                 isSecure: true,
                 isHTTPOnly: true,
                 sameSitePolicy: .lax
@@ -109,37 +110,3 @@ extension Identity.Provider.Configuration.Provider: TestDependencyKey {
     )
 }
 
-
-
-//import Vapor
-//extension HTTPCookies.Value {
-//
-//    package static func accessToken(
-//        token: JWT.Token
-//    ) -> Self {
-//        @Dependency(\.identity.provider.cookies.accessToken) var config
-//
-//        return withDependencies {
-//            $0.identity.provider.cookies.accessToken.sameSitePolicy = .lax
-//        } operation: {
-//            return HTTPCookies.Value(
-//                token: token.value
-//            )
-//        }
-//    }
-//
-//    package static func refreshToken(
-//        token: JWT.Token
-//    ) -> Self {
-//        @Dependency(\.identity.provider.cookies.refreshToken) var config
-//        @Dependency(\.identity.provider.router) var identityProviderRouter
-//
-//        return withDependencies {
-//            $0.identity.provider.cookies.refreshToken.path = identityProviderRouter.url(for: .authenticate(.token(.refresh(.init(token: token.value))))).relativePath
-//        } operation: {
-//            return .init(
-//                token: token.value
-//            )
-//        }
-//    }
-//}

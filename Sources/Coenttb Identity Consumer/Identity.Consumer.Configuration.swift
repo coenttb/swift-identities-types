@@ -69,6 +69,10 @@ extension Identity.Consumer.Configuration {
             self.cookies = cookies
             self.router = router.baseURL(baseURL.absoluteString).eraseToAnyParserPrinter()
             self.client = client
+            
+            if self.cookies.refreshToken.path == nil {
+                self.cookies.refreshToken.path = self.router.url(for: .api(.authenticate(.token(.refresh(.init(token: "--------------------")))))).absoluteString
+            }
         }
     }
 }
@@ -101,11 +105,11 @@ extension Identity.Consumer.Configuration.Provider: TestDependencyKey {
 
 extension Identity.CookiesConfiguration {
     public static let live: Identity.CookiesConfiguration = {
-        
+//        @Dependency(\.identity.consumer.router) var router
         
         return .init(
             accessToken: .init(
-                expires: 60 * 15,
+                expires: 60 * 15, // 15 minutes
                 maxAge: 60 * 15,
                 domain: nil,
                 isSecure: true,
@@ -116,10 +120,7 @@ extension Identity.CookiesConfiguration {
                 expires: 60 * 60 * 24 * 30, // 30 days
                 maxAge: 60 * 60 * 24 * 30,
                 domain: nil,
-                path: {
-                    @Dependency(\.identity.consumer.router) var router
-                    return router.url(for: .api(.authenticate(.token(.refresh(.init(token: "--------------------")))))).absoluteString
-                }(),
+//                path: router.url(for: .api(.authenticate(.token(.refresh(.init(token: "--------------------")))))).absoluteString,
                 isSecure: true,
                 isHTTPOnly: true,
                 sameSitePolicy: .lax
