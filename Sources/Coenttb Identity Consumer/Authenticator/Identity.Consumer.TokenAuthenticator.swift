@@ -21,7 +21,7 @@ extension Identity.Consumer {
                 $0.request = request
             } operation: {
                 do {
-                    guard let tokens = try await client.login(
+                    guard let identityAuthenticationResponse = try await client.login(
                         request: request,
                         accessToken: request.cookies.accessToken?.string,
                         refreshToken: \.cookies.accessToken?.string
@@ -29,9 +29,10 @@ extension Identity.Consumer {
                     else { return try await next.respond(to: request) }
 
                     let response = try await next.respond(to: request)
-                    response.cookies.accessToken = .init(token: tokens.accessToken.value)
-                    response.cookies.refreshToken = .init(token: tokens.refreshToken.value)
+                    
                     return response
+                        .withTokens(for: identityAuthenticationResponse)
+                    
                 }
                 catch {
                     let response = Response(status: .unauthorized)
@@ -42,3 +43,5 @@ extension Identity.Consumer {
         }
     }
 }
+
+

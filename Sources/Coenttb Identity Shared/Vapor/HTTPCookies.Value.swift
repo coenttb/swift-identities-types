@@ -9,28 +9,28 @@ import Coenttb_Vapor
 
 extension HTTPCookies.Value {
     public init(
-        token: String
+        token: String,
+        configuration: HTTPCookies.Configuration
     ){
         self = .init(string: token)
     }
     
     public init(
-        string: String
+        string: String,
+        configuration: HTTPCookies.Configuration
     ){
-        fatalError()
-//        @Dependency(\.cookieConfiguration) var config
-//        @Dependency(\.date) var date
-//        
-//        self = .init(
-//            string: string,
-//            expires: config.expires.map{ date().addingTimeInterval($0) },
-//            maxAge: config.maxAge,
-//            domain: config.domain,
-//            path: config.path,
-//            isSecure: config.isSecure,
-//            isHTTPOnly: config.isHTTPOnly,
-//            sameSite: config.sameSitePolicy
-//        )
+        @Dependency(\.date) var date
+        
+        self = .init(
+            string: string,
+            expires: date().addingTimeInterval(configuration.expires),
+            maxAge: configuration.maxAge,
+            domain: configuration.domain,
+            path: configuration.path,
+            isSecure: configuration.isSecure,
+            isHTTPOnly: configuration.isHTTPOnly,
+            sameSite: configuration.sameSitePolicy
+        )
     }
 }
 

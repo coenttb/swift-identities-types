@@ -25,27 +25,32 @@ extension Identity.Consumer.API.Authenticate {
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
                     
-                    if let tokens = try await client.login(
+                    if let identityAuthenticationResponse = try await client.login(
                         request: request,
                         accessToken: access.token,
                         refreshToken: \.cookies.refreshToken?.string
                     ) {
-                        return Response.success(true).with(tokens, domain: nil)
+                        return Response.success(true)
+                            .withTokens(for: identityAuthenticationResponse)
                     }
                     return Response.success(true)
                     
                 case .refresh(let refresh):
-                    let tokens = try await client.authenticate.token.refresh(token: refresh.token)
-                    return Response.success(true).with(tokens, domain: nil)
+                    let identityAuthenticationResponse = try await client.authenticate.token.refresh(token: refresh.token)
+                    
+                    return Response.success(true)
+                        .withTokens(for: identityAuthenticationResponse)
                 }
 
             case .credentials(let credentials):
                 do {
-                    let data = try await client.authenticate.credentials(credentials)
+                    let identityAuthenticationResponse = try await client.authenticate.credentials(credentials)
+                    @Dependency(\.identity.consumer.cookies.accessToken) var accessTokenConfiguration
+                    @Dependency(\.identity.consumer.cookies.refreshToken) var refreshTokenConfiguration
+                    
                     let response = Response.success(true)
-                    response.cookies.accessToken = .init(token: data.accessToken.value)
-                    response.cookies.refreshToken = .init(token: data.refreshToken.value)
                     return response
+                        .withTokens(for: identityAuthenticationResponse)
                 } catch {
                     print("Failed in credentials case with error:", error)
                     throw Abort(.internalServerError, reason: "Failed to authenticate account: \(error)")

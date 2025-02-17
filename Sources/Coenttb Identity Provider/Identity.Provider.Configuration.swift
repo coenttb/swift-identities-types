@@ -103,35 +103,35 @@ extension Identity.Provider.Configuration.Provider: TestDependencyKey {
 
 
 
-import Vapor
-extension HTTPCookies.Value {
-    
-    package static func accessToken(
-        token: JWT.Token
-    ) -> Self {
-        @Dependency(\.identity.provider.cookies.accessToken) var config
-
-        return withDependencies {
-            $0.identity.provider.cookies.accessToken.sameSitePolicy = .lax
-        } operation: {
-            return HTTPCookies.Value(
-                token: token.value
-            )
-        }
-    }
-    
-    package static func refreshToken(
-        token: JWT.Token
-    ) -> Self {
-        @Dependency(\.identity.provider.cookies.refreshToken) var config
-        @Dependency(\.identity.provider.router) var identityProviderRouter
-
-        return withDependencies {
-            $0.identity.provider.cookies.refreshToken.path = identityProviderRouter.url(for: .authenticate(.token(.refresh(.init(token: token.value))))).relativePath
-        } operation: {
-            return .init(
-                token: token.value
-            )
-        }
-    }
-}
+//import Vapor
+//extension HTTPCookies.Value {
+//    
+//    package static func accessToken(
+//        token: JWT.Token
+//    ) -> Self {
+//        @Dependency(\.identity.provider.cookies.accessToken) var config
+//
+//        return withDependencies {
+//            $0.identity.provider.cookies.accessToken.sameSitePolicy = .lax
+//        } operation: {
+//            return HTTPCookies.Value(
+//                token: token.value
+//            )
+//        }
+//    }
+//    
+//    package static func refreshToken(
+//        token: JWT.Token
+//    ) -> Self {
+//        @Dependency(\.identity.provider.cookies.refreshToken) var config
+//        @Dependency(\.identity.provider.router) var identityProviderRouter
+//
+//        return withDependencies {
+//            $0.identity.provider.cookies.refreshToken.path = identityProviderRouter.url(for: .authenticate(.token(.refresh(.init(token: token.value))))).relativePath
+//        } operation: {
+//            return .init(
+//                token: token.value
+//            )
+//        }
+//    }
+//}
