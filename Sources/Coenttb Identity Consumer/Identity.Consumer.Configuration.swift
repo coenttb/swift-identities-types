@@ -101,7 +101,7 @@ extension Identity.Consumer.Configuration.Provider: TestDependencyKey {
 
 extension Identity.CookiesConfiguration {
     public static let live: Identity.CookiesConfiguration = {
-        @Dependency(\.identity.consumer.router) var router
+        
         
         return .init(
             accessToken: .init(
@@ -116,7 +116,10 @@ extension Identity.CookiesConfiguration {
                 expires: 60 * 60 * 24 * 30, // 30 days
                 maxAge: 60 * 60 * 24 * 30,
                 domain: nil,
-                path: router.url(for: .api(.authenticate(.token(.refresh(.init(token: "--------------------")))))).absoluteString,
+                path: {
+                    @Dependency(\.identity.consumer.router) var router
+                    return router.url(for: .api(.authenticate(.token(.refresh(.init(token: "--------------------")))))).absoluteString
+                }(),
                 isSecure: true,
                 isHTTPOnly: true,
                 sameSitePolicy: .lax

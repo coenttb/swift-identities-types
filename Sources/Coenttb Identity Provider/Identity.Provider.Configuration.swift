@@ -52,7 +52,7 @@ extension Identity.Provider.Configuration {
 
 extension Identity.CookiesConfiguration {
     static public let live: Identity.CookiesConfiguration = {
-        @Dependency(\.identity.provider.router) var router
+        
         
         return .init(
             accessToken: .init(
@@ -67,7 +67,10 @@ extension Identity.CookiesConfiguration {
                 expires: 60 * 60 * 24 * 30,
                 maxAge: 60 * 60 * 24 * 30,
                 domain: nil,
-                path: router.url(for: .authenticate(.token(.refresh(.init(token: "--------------------"))))).absoluteString,
+                path: {
+                    @Dependency(\.identity.provider.router) var router
+                    return router.url(for: .authenticate(.token(.refresh(.init(token: "--------------------"))))).absoluteString
+                }(),
                 isSecure: true,
                 isHTTPOnly: true,
                 sameSitePolicy: .lax
