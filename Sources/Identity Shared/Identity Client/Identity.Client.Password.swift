@@ -26,7 +26,7 @@ extension Identity.Client {
 extension Identity.Client.Password {
     @DependencyClient
     public struct Reset: @unchecked Sendable {
-        public var request: (_ email: EmailAddress) async throws -> Void
+        public var request: (_ email: String) async throws -> Void
         public var confirm: (_ newPassword: String, _ token: String) async throws -> Void
     }
 }
@@ -40,7 +40,7 @@ extension Identity.Client.Password {
 
 extension Identity.Client.Password.Reset {
     public func request(_ request: Identity.Password.Reset.Request) async throws {
-        try await self.request(email: try .init(request.email))
+        try await self.request(email: request.email)
     }
 }
 

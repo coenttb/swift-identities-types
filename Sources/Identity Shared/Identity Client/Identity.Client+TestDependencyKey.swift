@@ -26,7 +26,7 @@ extension Identity.Client.Create: TestDependencyKey {
     public static var testValue: Self {
         .init(
             request: { email, password in
-                guard email.rawValue.contains("@") else {
+                guard email.contains("@") else {
                     throw ValidationError.invalidEmail
                 }
                 guard password.count >= 8 else {
@@ -37,9 +37,7 @@ extension Identity.Client.Create: TestDependencyKey {
                 guard !token.isEmpty else {
                     throw ValidationError.invalidToken
                 }
-                guard email.rawValue.contains("@") else {
-                    throw ValidationError.invalidEmail
-                }
+                _ = try EmailAddress(email)
             }
         )
     }
@@ -56,9 +54,7 @@ extension Identity.Client.Password: TestDependencyKey {
         .init(
             reset: .init(
                 request: { email in
-                    guard email.rawValue.contains("@") else {
-                        throw ValidationError.invalidEmail
-                    }
+                    _ = try EmailAddress(email)
                 },
                 confirm: { token, newPassword in
                     guard !token.isEmpty else {
