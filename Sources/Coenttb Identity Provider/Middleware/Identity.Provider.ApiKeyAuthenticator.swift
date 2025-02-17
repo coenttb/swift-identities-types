@@ -9,12 +9,10 @@ import RateLimiter
 extension Identity.Provider {
     public struct ApiKeyAuthenticator: AsyncBearerAuthenticator {
 
-        let issuer: String
-
         public init(
-            issuer: String = ._coenttbIssuer
+            
         ) {
-            self.issuer = issuer
+            
         }
 
         public func authenticate(

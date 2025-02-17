@@ -2,7 +2,7 @@
 //  File.swift
 //  coenttb-identity
 //
-//  Created by Assistant on 13/02/2025.
+//  Created by Coen ten Thije Boonkkamp on 13/02/2025.
 //
 
 import Coenttb_Vapor
