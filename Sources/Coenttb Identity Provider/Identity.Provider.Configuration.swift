@@ -47,9 +47,7 @@ extension Identity.Provider.Configuration {
             self.router = router.baseURL(baseURL.absoluteString).eraseToAnyParserPrinter()
             self.client = client
             
-            if self.cookies.refreshToken.path == nil {
-                self.cookies.refreshToken.path = self.router.url(for: .authenticate(.token(.refresh(.init(token: "--------------------"))))).absoluteString
-            }
+            self.cookies.refreshToken.path = self.router.url(for: .authenticate(.token(.refresh(.init(token: "--------------------"))))).absoluteString
         }
     }
 }

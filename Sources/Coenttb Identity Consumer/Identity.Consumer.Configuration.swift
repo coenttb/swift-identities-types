@@ -70,9 +70,7 @@ extension Identity.Consumer.Configuration {
             self.router = router.baseURL(baseURL.absoluteString).eraseToAnyParserPrinter()
             self.client = client
             
-            if self.cookies.refreshToken.path == nil {
-                self.cookies.refreshToken.path = self.router.url(for: .api(.authenticate(.token(.refresh(.init(token: "--------------------")))))).absoluteString
-            }
+            self.cookies.refreshToken.path = self.router.url(for: .api(.authenticate(.token(.refresh(.init(token: "--------------------")))))).absoluteString
         }
     }
 }
