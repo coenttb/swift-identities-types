@@ -14,8 +14,8 @@ import URLRouting
 
 extension Identity.Consumer {
     public struct Configuration:  Sendable {
-        public let provider: Identity.Consumer.Configuration.Provider
-        public let consumer: Identity.Consumer.Configuration.Consumer
+        public var provider: Identity.Consumer.Configuration.Provider
+        public var consumer: Identity.Consumer.Configuration.Consumer
     }
 }
 
@@ -44,10 +44,10 @@ extension Identity.Consumer.Configuration.Consumer: TestDependencyKey {
 
 extension Identity.Consumer.Configuration {
     public struct Consumer: Sendable {
-        public let baseURL: URL
-        public let domain: String?
-        public let router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>
-        public let cookies: Identity.CookiesConfiguration
+        public var baseURL: URL
+        public var domain: String?
+        public var router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>
+        public var cookies: Identity.CookiesConfiguration
         
         public init(
             baseURL: URL,
@@ -65,9 +65,9 @@ extension Identity.Consumer.Configuration {
 
 extension Identity.Consumer.Configuration {
     public struct Provider: Sendable {
-        public let baseURL: URL
-        public let domain: String?
-        public let router: AnyParserPrinter<URLRequestData, Identity.API>
+        public var baseURL: URL
+        public var domain: String?
+        public var router: AnyParserPrinter<URLRequestData, Identity.API>
         
         public init(
             baseURL: URL,
