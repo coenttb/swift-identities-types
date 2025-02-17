@@ -91,7 +91,6 @@ extension Identity.Consumer.Configuration {
     }
 }
 
-
 extension Identity.Consumer.Configuration.Provider: TestDependencyKey {
     public static let testValue: Self = .init(
         baseURL: .init(string: "")!,
@@ -101,31 +100,36 @@ extension Identity.Consumer.Configuration.Provider: TestDependencyKey {
 }
 
 extension Identity.CookiesConfiguration {
-    public static let live: Self = .init(
-        accessToken: .init(
-            expires: 60 * 15, // 15 minutes
-            maxAge: 60 * 15,
-            domain: nil,      // Will use the consumer's domain
-            isSecure: true,
-            isHTTPOnly: true,
-            sameSitePolicy: .strict  // Can be strict since it's same-origin with the consumer website
-        ),
-        refreshToken: .init(
-            expires: 60 * 60 * 24 * 30, // 30 days
-            maxAge: 60 * 60 * 24 * 30,
-            domain: nil,
-            isSecure: true,
-            isHTTPOnly: true,
-            sameSitePolicy: .lax    // Lax for refresh flows
-        ),
-        reauthorizationToken: .init(
-            expires: 60 * 5,  // 5 minutes
-            maxAge: 60 * 5,
-            domain: nil,
-            isSecure: true,
-            isHTTPOnly: true,
-            sameSitePolicy: .strict  // Can be strict for consumer site
+    public static let live: Identity.CookiesConfiguration = {
+        @Dependency(\.identity.consumer.router) var router
+        
+        return .init(
+            accessToken: .init(
+                expires: 60 * 15,
+                maxAge: 60 * 15,
+                domain: nil,
+                isSecure: true,
+                isHTTPOnly: true,
+                sameSitePolicy: .strict
+            ),
+            refreshToken: .init(
+                expires: 60 * 60 * 24 * 30, // 30 days
+                maxAge: 60 * 60 * 24 * 30,
+                domain: nil,
+                path: router.url(for: .api(.authenticate(.token(.refresh(.init(token: "--------------------")))))).absoluteString,
+                isSecure: true,
+                isHTTPOnly: true,
+                sameSitePolicy: .lax
+            ),
+            reauthorizationToken: .init(
+                expires: 60 * 5,
+                maxAge: 60 * 5,
+                domain: nil,
+                isSecure: true,
+                isHTTPOnly: true,
+                sameSitePolicy: .strict
+            )
         )
-    )
+    }()
 }
 

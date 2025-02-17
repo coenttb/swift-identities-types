@@ -12,7 +12,7 @@ extension HTTPCookies {
         public var expires: TimeInterval
         public var maxAge: Int?
         public var domain: String?
-        public var path: String = "/"
+        public var path: String?
         public var isSecure: Bool
         public var isHTTPOnly: Bool
         public var sameSitePolicy: HTTPCookies.SameSitePolicy
@@ -21,6 +21,7 @@ extension HTTPCookies {
             expires: TimeInterval,
             maxAge: Int? = nil,
             domain: String? = nil,
+            path: String? = "/",
             isSecure: Bool = true,
             isHTTPOnly: Bool = true,
             sameSitePolicy: HTTPCookies.SameSitePolicy = .lax
@@ -28,9 +29,14 @@ extension HTTPCookies {
             self.expires = expires
             self.maxAge = maxAge
             self.domain = domain
+            self.path = path
             self.isSecure = isSecure
             self.isHTTPOnly = isHTTPOnly
             self.sameSitePolicy = sameSitePolicy
+            
+            if path == nil || path?.isEmpty == true {
+                self.path = "/"
+            }
         }
     }
 }
