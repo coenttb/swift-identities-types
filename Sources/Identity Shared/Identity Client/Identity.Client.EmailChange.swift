@@ -13,7 +13,7 @@ import Foundation
 extension Identity.Client {
     @DependencyClient
     public struct EmailChange: @unchecked Sendable {
-        public var request: (_ newEmail: String?) async throws -> Identity.EmailChange.Request.Result
+        public var request: (_ newEmail: String) async throws -> Identity.EmailChange.Request.Result
         public var confirm: (_ token: String) async throws -> Identity.EmailChange.Confirm.Response
     }
 }
