@@ -34,18 +34,12 @@ extension Identity_Provider.Identity.Provider.Client {
         onEmailChangeSuccess: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress) async throws -> Void,
         sendDeletionRequestNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
         sendDeletionConfirmationNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void
-        //        multifactorAuthentication: (
-        //            sendSMSCode: @Sendable (String, String) async throws -> Void,
-        //            sendEmailCode: @Sendable (EmailAddress, String) async throws -> Void,
-        //            generateTOTPSecret: @Sendable () -> String
-        //        )?
     ) -> Self {
 
         @Dependency(\.logger) var logger
         
         return Identity.Provider.Client(
             authenticate: .live(
-                database: database,
                 issuer: issuer
             ),
             logout: {
