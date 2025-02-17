@@ -19,6 +19,7 @@ import Fluent
 import FluentKit
 import Identity_Provider
 import JWT
+import Dependencies
 @preconcurrency import Mailgun
 
 extension Identity_Provider.Identity.Provider.Client {
@@ -55,7 +56,7 @@ extension Identity_Provider.Identity.Provider.Client {
                         throw AuthenticationError.invalidCredentials
                     }
 
-                    @Dependency(\.reauthorizationTokenConfig) var config
+                    @Dependency(\.identity.cookies.reauthorizationToken) var config
 
                     let payload = try JWT.Token.Reauthorization(
                         identity: identity,

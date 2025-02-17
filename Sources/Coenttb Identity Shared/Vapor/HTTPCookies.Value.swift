@@ -82,34 +82,37 @@ extension DependencyValues {
     }
 }
 
+
 extension HTTPCookies.Value {
     
     package static func accessToken(
         token: JWT.Token
     ) -> Self {
-        @Dependency(\.cookieConfiguration) var config
-        
-        return withDependencies {
-            $0.cookieConfiguration.sameSitePolicy = .lax
-        } operation: {
-            return HTTPCookies.Value(
-                token: token.value
-            )
-        }
+        fatalError()
+//        @Dependency(\.cookieConfiguration) var config
+//        
+//        return withDependencies {
+//            $0.cookieConfiguration.sameSitePolicy = .lax
+//        } operation: {
+//            return HTTPCookies.Value(
+//                token: token.value
+//            )
+//        }
     }
     
     package static func refreshToken(
         token: JWT.Token
     ) -> Self {
-        @Dependency(\.cookieConfiguration) var config
-        @Dependency(\.identityProviderApiRouter) var identityProviderApiRouter
-        
-        return withDependencies {
-            $0.cookieConfiguration.path = identityProviderApiRouter.url(for: .authenticate(.token(.refresh(.init(token: token.value))))).relativePath
-        } operation: {
-            return .init(
-                token: token.value
-            )
-        }
+        fatalError()
+//        @Dependency(\.cookieConfiguration) var config
+//        @Dependency(\.identityProviderRouter) var identityProviderRouter
+//        
+//        return withDependencies {
+//            $0.cookieConfiguration.path = identityProviderRouter.url(for: .authenticate(.token(.refresh(.init(token: token.value))))).relativePath
+//        } operation: {
+//            return .init(
+//                token: token.value
+//            )
+//        }
     }
 }

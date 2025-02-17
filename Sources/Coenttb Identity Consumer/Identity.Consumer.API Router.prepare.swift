@@ -17,9 +17,8 @@ extension Identity.Consumer.API.Router {
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
 
-        @Dependency(Identity.Provider.Configuration.self) var provider
-        var router = baseRouter.baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
-
+        @Dependency(\.identity.provider.router) var router
+        
         switch route {
         case .authenticate(let authenticate):
             switch authenticate {
@@ -27,7 +26,7 @@ extension Identity.Consumer.API.Router {
                 break
 
             case .token:
-                router = router
+                return router
                     .setAccessToken(request.cookies.accessToken)
                     .setRefreshToken(request.cookies.refreshToken)
                     .setBearerAuth(request.cookies.accessToken?.string)
@@ -39,7 +38,7 @@ extension Identity.Consumer.API.Router {
             }
 
         case .emailChange:
-            router = router
+            return router
                 .setAccessToken(request.cookies.accessToken)
                 .setRefreshToken(request.cookies.refreshToken)
                 .setReauthorizationToken(request.cookies.reauthorizationToken)
@@ -52,7 +51,7 @@ extension Identity.Consumer.API.Router {
                 break
 
             case .change:
-                router = router
+                return router
                     .setAccessToken(request.cookies.accessToken)
                     .setRefreshToken(request.cookies.refreshToken)
                     .setBearerAuth(request.cookies.accessToken?.string)
@@ -60,7 +59,7 @@ extension Identity.Consumer.API.Router {
             }
 
         case .create, .delete, .logout, .reauthorize:
-            router = router
+            return router
                 .setAccessToken(request.cookies.accessToken)
                 .setRefreshToken(request.cookies.refreshToken)
                 .setBearerAuth(request.cookies.accessToken?.string)

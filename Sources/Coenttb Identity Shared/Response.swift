@@ -6,7 +6,6 @@
 //
 
 import Coenttb_Vapor
-import Identity_Consumer
 
 extension Vapor.Response {
     public func with(

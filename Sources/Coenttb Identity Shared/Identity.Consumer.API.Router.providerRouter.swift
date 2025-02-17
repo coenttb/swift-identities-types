@@ -12,15 +12,16 @@ import Identity_Provider
 
 private enum IdentityProviderAPIRouterKey: DependencyKey {
     static let liveValue: AnyParserPrinter<URLRequestData, Identity.API> = {
-        @Dependency(Identity.Provider.Configuration.self) var provider
-        return Identity.API.Router().baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
+//        @Dependency(Identity.Configuration.Provider.self) var provider
+//        return Identity.API.Router().baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
+        fatalError()
     }()
     
     static let testValue: AnyParserPrinter<URLRequestData, Identity.API> = liveValue
 }
 
 extension DependencyValues {
-    public var identityProviderApiRouter: AnyParserPrinter<URLRequestData, Identity.API> {
+    public var identityProviderRouter: AnyParserPrinter<URLRequestData, Identity.API> {
         get { self[IdentityProviderAPIRouterKey.self] }
         set { self[IdentityProviderAPIRouterKey.self] = newValue }
     }

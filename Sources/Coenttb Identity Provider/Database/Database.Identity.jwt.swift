@@ -16,7 +16,6 @@ extension Database.Identity {
     package func generateJWTAccess(
     ) async throws -> String {
         @Dependency(\.application) var application
-        @Dependency(\.accessTokenConfig) var config
 
         let payload = try JWT.Token.Access(identity: self)
         
@@ -32,20 +31,20 @@ extension Database.Identity {
     }
     
     package func generateJWTAccess() async throws -> JWT.Token {
-        @Dependency(\.accessTokenConfig) var accessTokenConfig
+        @Dependency(\.identity.provider.cookies.accessToken) var config
         return try await .init(
             value: self.generateJWTAccess(),
             type: "Bearer",
-            expiresIn: accessTokenConfig.expiration
+            expiresIn: config.expiration
         )
     }
     
     package func generateJWTRefresh() async throws -> JWT.Token {
-        @Dependency(\.refreshTokenConfig) var refreshTokenConfig
+        @Dependency(\.identity.provider.cookies.refreshToken) var config
         return try await .init(
             value: self.generateJWTAccess(),
             type: "Bearer",
-            expiresIn: refreshTokenConfig.expiration
+            expiresIn: config.expiration
         )
     }
 
@@ -53,9 +52,6 @@ extension Database.Identity {
 
 extension Identity.Authentication.Response {
     public init(_ identity: Database.Identity) async throws {
-
-        @Dependency(\.accessTokenConfig) var accessTokenConfig
-        @Dependency(\.refreshTokenConfig) var refreshTokenConfig
 
         self = try await .init(
             accessToken: identity.generateJWTAccess(),
@@ -69,7 +65,7 @@ extension JWT.Token.Access {
         identity: Database.Identity
     ) throws {
         @Dependency(\.uuid) var uuid
-        @Dependency(\.accessTokenConfig) var config
+        @Dependency(\.identity.provider.cookies.accessToken) var config
         @Dependency(\.date) var date
 
         let currentTime = date()
@@ -88,7 +84,7 @@ extension JWT.Token.Refresh {
         identity: Database.Identity
     ) throws {
         @Dependency(\.uuid) var uuid
-        @Dependency(\.refreshTokenConfig) var config
+        @Dependency(\.identity.provider.cookies.refreshToken) var config
         @Dependency(\.date) var date
 
         let currentTime = date()
@@ -117,7 +113,7 @@ extension JWT.Token.Reauthorization {
         includeNotBefore: Bool = false
     ) throws {
         @Dependency(\.uuid) var uuid
-        @Dependency(\.refreshTokenConfig) var config
+        @Dependency(\.identity.provider.cookies.reauthorizationtoken) var config
 
         self = .init(
             expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expiration)),

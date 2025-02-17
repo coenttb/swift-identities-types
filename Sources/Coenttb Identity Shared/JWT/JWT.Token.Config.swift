@@ -26,36 +26,36 @@ private enum AccessTokenConfig: DependencyKey {
     public static let testValue: JWT.Token.Config = liveValue
 }
 
-extension DependencyValues {
-    public var accessTokenConfig: JWT.Token.Config {
-        get { self[AccessTokenConfig.self] }
-        set { self[AccessTokenConfig.self] = newValue }
-    }
-}
-
-private enum RefreshTokenConfig: DependencyKey {
-    public static let liveValue: JWT.Token.Config = .forAccessToken(issuer: "default-issuer")
-    public static let testValue: JWT.Token.Config = liveValue
-}
-
-extension DependencyValues {
-    public var refreshTokenConfig: JWT.Token.Config {
-        get { self[RefreshTokenConfig.self] }
-        set { self[RefreshTokenConfig.self] = newValue }
-    }
-}
-
-private enum ReauthorizationTokenConfig: DependencyKey {
-    public static let liveValue: JWT.Token.Config = .forReauthorizationToken(issuer: "default-issuer")
-    public static let testValue: JWT.Token.Config = liveValue
-}
-
-extension DependencyValues {
-    public var reauthorizationTokenConfig: JWT.Token.Config {
-        get { self[ReauthorizationTokenConfig.self] }
-        set { self[ReauthorizationTokenConfig.self] = newValue }
-    }
-}
+//extension DependencyValues {
+//    public var accessTokenConfig: JWT.Token.Config {
+//        get { self[AccessTokenConfig.self] }
+//        set { self[AccessTokenConfig.self] = newValue }
+//    }
+//}
+//
+//private enum RefreshTokenConfig: DependencyKey {
+//    public static let liveValue: JWT.Token.Config = .forAccessToken(issuer: "default-issuer")
+//    public static let testValue: JWT.Token.Config = liveValue
+//}
+//
+//extension DependencyValues {
+//    public var refreshTokenConfig: JWT.Token.Config {
+//        get { self[RefreshTokenConfig.self] }
+//        set { self[RefreshTokenConfig.self] = newValue }
+//    }
+//}
+//
+//private enum ReauthorizationTokenConfig: DependencyKey {
+//    public static let liveValue: JWT.Token.Config = .forReauthorizationToken(issuer: "default-issuer")
+//    public static let testValue: JWT.Token.Config = liveValue
+//}
+//
+//extension DependencyValues {
+//    public var reauthorizationTokenConfig: JWT.Token.Config {
+//        get { self[ReauthorizationTokenConfig.self] }
+//        set { self[ReauthorizationTokenConfig.self] = newValue }
+//    }
+//}
 
 extension JWT.Token.Config {
     public static func forAccessToken(

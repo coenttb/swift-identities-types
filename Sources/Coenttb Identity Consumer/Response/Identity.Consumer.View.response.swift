@@ -32,51 +32,51 @@ extension Identity.Consumer.View {
         termsOfUse: URL,
         privacyStatement: URL,
         loginHref: URL = {
-            @Dependency(Identity.Consumer.Route.Router.self) var router
+            @Dependency(\.identity.consumer.router) var router
             return router.url(for: .view(.login))
         }(),
         accountCreateHref: URL = {
-            @Dependency(Identity.Consumer.Route.Router.self) var router
+            @Dependency(\.identity.consumer.router) var router
             return router.url(for: .view(.create(.request)))
         }(),
         createFormAction: URL = {
-            @Dependency(Identity.Consumer.Route.Router.self) var router
+            @Dependency(\.identity.consumer.router) var router
             return router.url(for: .api(.create(.request(.init()))))
         }(),
         verificationAction: URL = {
-            @Dependency(Identity.Consumer.Route.Router.self) var router
+            @Dependency(\.identity.consumer.router) var router
             return router.url(for: .api(.create(.verify(.init()))))
         }(),
         passwordResetHref: URL = {
-            @Dependency(Identity.Consumer.Route.Router.self) var router
+            @Dependency(\.identity.consumer.router) var router
             return router.url(for: .view(.password(.reset(.request))))
         }(),
         loginFormAction: URL = {
-            @Dependency(Identity.Consumer.Route.Router.self) var router
+            @Dependency(\.identity.consumer.router) var router
             return router.url(for: .api(.authenticate(.credentials(.init()))))
         }(),
         passwordChangeRequestAction: URL = {
-            @Dependency(Identity.Consumer.Route.Router.self) var router
+            @Dependency(\.identity.consumer.router) var router
             return router.url(for: .api(.password(.change(.request(change: .init())))))
         }(),
         passwordResetAction: URL = {
-            @Dependency(Identity.Consumer.Route.Router.self) var router
+            @Dependency(\.identity.consumer.router) var router
             return router.url(for: .api(.password(.reset(.request(.init())))))
         }(),
         passwordResetConfirmAction: URL = {
-            @Dependency(Identity.Consumer.Route.Router.self) var router
+            @Dependency(\.identity.consumer.router) var router
             return router.url(for: .api(.password(.reset(.confirm(.init())))))
         }(),
         emailChangeRequestAction: URL = {
-            @Dependency(Identity.Consumer.Route.Router.self) var router
+            @Dependency(\.identity.consumer.router) var router
             return router.url(for: .api(.emailChange(.request(.init()))))
         }(),
         emailChangeConfirmFormAction: URL = {
-            @Dependency(Identity.Consumer.Route.Router.self) var router
+            @Dependency(\.identity.consumer.router) var router
             return router.url(for: .api(.emailChange(.confirm(.init()))))
         }(),
         reauthorizationFormAction: URL = {
-            @Dependency(Identity.Consumer.Route.Router.self) var router
+            @Dependency(\.identity.consumer.router) var router
             return router.url(for: .api(.reauthorize(.init())))
         }()
     ) async throws -> any AsyncResponseEncodable {

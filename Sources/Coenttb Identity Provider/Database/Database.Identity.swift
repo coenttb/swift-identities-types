@@ -79,25 +79,7 @@ extension Database {
     }
 }
 
-extension Database.Identity: Authenticatable {}
 
-// extension Database.Identity: ModelAuthenticatable {
-//    package static var usernameKey: KeyPath<Database.Identity, Field<String>> {
-//        \Database.Identity.$email
-//    }
-//
-//    package static var passwordHashKey: KeyPath<Database.Identity, Field<String>> {
-//        \Database.Identity.$passwordHash
-//    }
-//
-//    package func verify(password: String) throws -> Bool {
-//        try Bcrypt.verify(password, created: self.passwordHash) && self.emailVerificationStatus == .verified
-//    }
-// }
-//
-// extension Database.Identity: ModelCredentialsAuthenticatable {}
-//
-// extension Database.Identity: ModelSessionAuthenticatable {}
 
 extension Database.Identity {
     package enum Migration {
