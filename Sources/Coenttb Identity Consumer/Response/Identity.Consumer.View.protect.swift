@@ -21,7 +21,7 @@ extension Identity.Consumer.View {
 
         switch view {
         case .create:
-            if !request.auth.has(type) { throw Abort(.forbidden) }
+            if request.auth.has(type) { throw Abort(.forbidden) }
 
         case .delete:
             try request.auth.require(type)
@@ -29,11 +29,11 @@ extension Identity.Consumer.View {
         case .authenticate(let authenticate):
             switch authenticate {
             case .credentials:
-                if !request.auth.has(type) { throw Abort(.forbidden) }
+                if request.auth.has(type) { throw Abort(.forbidden) }
             }
 
         case .logout:
-            if !request.auth.has(type) {
+            if request.auth.has(type) {
                 throw Abort(.forbidden)
             }
 
