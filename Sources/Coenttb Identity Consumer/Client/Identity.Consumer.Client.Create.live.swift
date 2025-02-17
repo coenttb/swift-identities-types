@@ -19,7 +19,7 @@ extension Identity.Consumer.Client.Create {
     package static func live(
         
     ) -> Self {
-        @Dependency(Identity.Consumer.Client.self) var client
+        @Dependency(\.identity.consumer.client) var client
         
         return .init(
             request: { email, password in

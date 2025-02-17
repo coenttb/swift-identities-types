@@ -19,7 +19,7 @@ extension Identity.Consumer.Client.Delete {
     package static func live(
         
     ) -> Self {
-        @Dependency(Identity.Consumer.Client.self) var client
+        @Dependency(\.identity.consumer.client) var client
         return .init(
             request: { reauthToken in
                 do {

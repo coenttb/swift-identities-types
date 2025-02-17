@@ -27,21 +27,25 @@ extension Identity.Provider.Configuration {
         public var baseURL: URL
         public var domain: String?
         public var issuer: String?
-        public var router: AnyParserPrinter<URLRequestData, Identity.API>
         public var cookies: Identity.CookiesConfiguration
+        public var router: AnyParserPrinter<URLRequestData, Identity.API>
+        public var client: Identity.Provider.Client
         
         public init(
             baseURL: URL,
             domain: String?,
             issuer: String?,
             cookies: Identity.CookiesConfiguration,
-            router: AnyParserPrinter<URLRequestData, Identity.API>
+            router: AnyParserPrinter<URLRequestData, Identity.API>,
+            client: Identity.Provider.Client
+            
         ) {
             self.baseURL = baseURL
             self.domain = domain
             self.issuer = issuer
             self.cookies = cookies
             self.router = router.baseURL(baseURL.absoluteString).eraseToAnyParserPrinter()
+            self.client = client
         }
     }
 }
@@ -63,7 +67,8 @@ extension Identity.Provider.Configuration.Provider: TestDependencyKey {
         domain: nil,
         issuer: nil,
         cookies: .testValue,
-        router: Identity.API.Router().eraseToAnyParserPrinter()
+        router: Identity.API.Router().eraseToAnyParserPrinter(),
+        client: .testValue
     )
 }
 

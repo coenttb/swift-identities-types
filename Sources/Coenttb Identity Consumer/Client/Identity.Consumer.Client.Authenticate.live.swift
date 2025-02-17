@@ -18,7 +18,7 @@ import RateLimiter
 extension Identity.Consumer.Client.Authenticate {
     package static func live(
     ) -> Self {
-        @Dependency(Identity.Consumer.Client.self) var client
+        @Dependency(\.identity.consumer.client) var client
         
         return .init(
             credentials: { username, password in

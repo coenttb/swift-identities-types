@@ -44,7 +44,8 @@ extension Identity.Consumer.Configuration.Consumer: TestDependencyKey {
         baseURL: .init(string: "")!,
         domain: nil,
         cookies: .testValue,
-        router: Identity.Consumer.Route.Router().eraseToAnyParserPrinter()
+        router: Identity.Consumer.Route.Router().eraseToAnyParserPrinter(),
+        client: .testValue
     )
 }
 
@@ -52,19 +53,22 @@ extension Identity.Consumer.Configuration {
     public struct Consumer: Sendable {
         public var baseURL: URL
         public var domain: String?
-        public var router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>
         public var cookies: Identity.CookiesConfiguration
+        public var router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>
+        public var client: Identity.Consumer.Client
         
         public init(
             baseURL: URL,
             domain: String?,
             cookies: Identity.CookiesConfiguration,
-            router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>
+            router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>,
+            client: Identity.Consumer.Client
         ) {
             self.baseURL = baseURL
             self.domain = domain
             self.cookies = cookies
             self.router = router.baseURL(baseURL.absoluteString).eraseToAnyParserPrinter()
+            self.client = client
         }
     }
 }

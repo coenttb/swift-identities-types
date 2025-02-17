@@ -14,7 +14,7 @@ extension Identity.Consumer.Client {
     ) -> Self {
 
         @Dependency(RateLimiters.self) var rateLimiter
-        @Dependency(Identity.Consumer.Client.self) var client
+        @Dependency(\.identity.consumer.client) var client
         
         return .init(
             authenticate: .live(),

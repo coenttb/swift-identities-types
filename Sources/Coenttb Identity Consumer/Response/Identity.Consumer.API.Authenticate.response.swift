@@ -15,7 +15,7 @@ extension Identity.Consumer.API.Authenticate {
         authenticate: Identity.Consumer.API.Authenticate
     ) async throws -> Response {
 
-        @Dependency(Identity.Consumer.Client.self) var client
+        @Dependency(\.identity.consumer.client) var client
 
         do {
             switch authenticate {

@@ -20,7 +20,7 @@ extension Identity.Consumer.Client.Password {
         
     ) -> Self {
         
-        @Dependency(Identity.Consumer.Client.self) var client
+        @Dependency(\.identity.consumer.client) var client
         
         return .init(
             reset: .init(

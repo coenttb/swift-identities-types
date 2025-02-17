@@ -81,7 +81,7 @@ extension Identity.Consumer.View {
         }()
     ) async throws -> any AsyncResponseEncodable {
         
-        @Dependency(Identity.Consumer.Client.self) var client
+        @Dependency(\.identity.consumer.client) var client
         
         do {
             do {

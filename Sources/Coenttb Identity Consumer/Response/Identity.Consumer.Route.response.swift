@@ -77,7 +77,7 @@ extension Identity.Consumer.Route {
        emailChangeConfirmSuccessRedirect: URL
     ) async throws -> any AsyncResponseEncodable {
 
-        @Dependency(Identity.Consumer.Client.self) var client
+        @Dependency(\.identity.consumer.client) var client
 
 //        do {
 //            do {

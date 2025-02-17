@@ -15,7 +15,7 @@ extension Identity.Consumer.API {
         api: Identity.Consumer.API
     ) async throws -> Response {
 
-        @Dependency(Identity.Consumer.Client.self) var client
+        @Dependency(\.identity.consumer.client) var client
 
         do {
             try Identity.Consumer.API.protect(
