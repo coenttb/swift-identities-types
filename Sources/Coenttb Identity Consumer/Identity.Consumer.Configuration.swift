@@ -43,7 +43,8 @@ extension Identity.Consumer.Configuration.Consumer: TestDependencyKey {
     public static let testValue: Self = .init(
         baseURL: .init(string: "")!,
         domain: nil,
-        cookies: .testValue
+        cookies: .testValue,
+        router: Identity.Consumer.Route.Router().eraseToAnyParserPrinter()
     )
 }
 
@@ -58,7 +59,7 @@ extension Identity.Consumer.Configuration {
             baseURL: URL,
             domain: String?,
             cookies: Identity.CookiesConfiguration,
-            router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = Identity.Consumer.Route.Router().eraseToAnyParserPrinter()
+            router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>
         ) {
             self.baseURL = baseURL
             self.domain = domain

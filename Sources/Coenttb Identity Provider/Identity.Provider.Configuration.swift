@@ -35,7 +35,7 @@ extension Identity.Provider.Configuration {
             domain: String?,
             issuer: String?,
             cookies: Identity.CookiesConfiguration,
-            router: AnyParserPrinter<URLRequestData, Identity.API> = Identity.API.Router().eraseToAnyParserPrinter()
+            router: AnyParserPrinter<URLRequestData, Identity.API>
         ) {
             self.baseURL = baseURL
             self.domain = domain
@@ -62,7 +62,8 @@ extension Identity.Provider.Configuration.Provider: TestDependencyKey {
         baseURL: .init(string: "")!,
         domain: nil,
         issuer: nil,
-        cookies: .testValue
+        cookies: .testValue,
+        router: Identity.API.Router().eraseToAnyParserPrinter()
     )
 }
 
