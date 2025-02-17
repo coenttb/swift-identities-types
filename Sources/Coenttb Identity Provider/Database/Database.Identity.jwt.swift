@@ -42,7 +42,7 @@ extension Database.Identity {
     package func generateJWTRefresh() async throws -> JWT.Token {
         @Dependency(\.identity.provider.cookies.refreshToken) var config
         return try await .init(
-            value: self.generateJWTAccess(),
+            value: self.generateJWTRefresh(),
             type: "Bearer",
             expiresIn: config.expires
         )
