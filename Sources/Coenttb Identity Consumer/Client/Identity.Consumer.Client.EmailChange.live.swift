@@ -23,9 +23,6 @@ extension Identity.Consumer.Client.EmailChange {
         
         return .init(
             request: { newEmail in
-                guard let newEmail = newEmail?.rawValue else {
-                    throw Abort(.conflict, reason: "Email address cannot be nil")
-                }
 
                 do {
                     return try await client.handleRequest(

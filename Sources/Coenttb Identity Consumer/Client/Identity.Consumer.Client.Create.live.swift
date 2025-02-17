@@ -19,7 +19,6 @@ extension Identity.Consumer.Client.Create {
     package static func live(
         
     ) -> Self {
-        
         @Dependency(Identity.Consumer.Client.self) var client
         
         return .init(
@@ -33,7 +32,7 @@ extension Identity.Consumer.Client.Create {
             },
             verify: { email, token in
                 do {
-                    try await client.handleRequest(for: .create(.verify(.init(email: email, token: token))))
+                    try await client.handleRequest(for: .create(.verify(.init(token: token, email: email))))
                 }
                 catch {
                     throw Abort(.internalServerError)

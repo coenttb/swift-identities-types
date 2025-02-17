@@ -2,13 +2,6 @@
 //  File.swift
 //  coenttb-web
 //
-//  Created by Coen ten Thije Boonkkamp on 16/10/2024.
-//
-
-//
-//  File.swift
-//  coenttb-web
-//
 //  Created by Coen ten Thije Boonkkamp on 12/09/2024.
 //
 
@@ -32,12 +25,6 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
         return .init(
             request: { newEmail in
                 do {
-                    
-                    guard let newEmail
-                    else {
-                        throw ValidationError.invalidInput("Email address cannot be nil")
-                    }
-                    
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
                     guard let token = request.cookies.reauthorizationToken?.string
@@ -54,6 +41,9 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                     }
                     
                     let identity = try await Database.Identity.get(by: .auth, on: database)
+                    
+                    let newEmail = try EmailAddress(newEmail)
+                    
                     try await database.transaction { db in
                         
                         if try await Database.Identity.query(on: db)
@@ -61,7 +51,7 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                             .first() != nil {
                             throw ValidationError.invalidInput("Email address is already in use")
                         }
-                        // Delete any existing email change tokens
+
                         do {
                             try await Database.Identity.Token.query(on: db)
                                 .filter(\.$identity.$id == identity.id!)
@@ -71,14 +61,13 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                             
                         }
                         
-                        // Generate and save new token
                         let changeToken = try identity.generateToken(
                             type: .emailChange,
                             validUntil: Date().addingTimeInterval(24 * 60 * 60)
                         )
                         
                         try await changeToken.save(on: db)
-                        // Create and save email change request
+                        
                         let emailChangeRequest = try Database.EmailChangeRequest(
                             identity: identity,
                             newEmail: newEmail,

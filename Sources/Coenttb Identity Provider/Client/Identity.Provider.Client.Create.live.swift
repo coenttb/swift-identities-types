@@ -27,7 +27,8 @@ extension Identity_Provider.Identity.Provider.Client.Create {
             request: { email, password in
                 do {
                     try validatePassword(password)
-
+                    let email = try EmailAddress(email)
+                                    
                     try await database.transaction { database in
                         guard try await Database.Identity
                             .query(on: database)
@@ -79,6 +80,8 @@ extension Identity_Provider.Identity.Provider.Client.Create {
                             try await identityToken.delete(on: database)
                             throw Abort(.gone, reason: "Token has expired")
                         }
+                        
+                        let email = try EmailAddress(email)
 
                         guard identityToken.identity.email == email.rawValue else {
                             throw Abort(.badRequest, reason: "Email mismatch")

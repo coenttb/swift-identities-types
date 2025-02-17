@@ -61,7 +61,7 @@
       "location" : "https://github.com/coenttb/coenttb-server-vapor",
       "state" : {
         "branch" : "main",
-        "revision" : "d0ba69e78e26d11a96e7acf027325a4193ade24d"
+        "revision" : "feaa536edc31ab082f3d03193204ba7e715d6fee"
       }
     },
     {
@@ -430,7 +430,7 @@
       "location" : "https://github.com/coenttb/swift-identity",
       "state" : {
         "branch" : "main",
-        "revision" : "89343d52694e16f9140b0e2df1127d7805c30dfa"
+        "revision" : "d845b2812b47f952aaad1c6993f8ed24925b3e30"
       }
     },
     {

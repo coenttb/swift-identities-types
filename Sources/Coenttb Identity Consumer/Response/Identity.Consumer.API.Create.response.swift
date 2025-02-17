@@ -28,7 +28,7 @@ extension Identity.Consumer.API.Create {
 
         case .verify(let verify):
             do {
-                try await client.create.verify(email: try .init(verify.email), token: verify.token)
+                try await client.create.verify(email: verify.email, token: verify.token)
                 return Response.success(true)
             } catch {
                 throw Abort(.internalServerError, reason: "Failed to verify account creation")

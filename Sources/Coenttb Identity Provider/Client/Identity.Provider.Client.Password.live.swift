@@ -31,6 +31,8 @@ extension Identity_Provider.Identity.Provider.Client.Password {
         return .init(
             reset: .init(
                 request: { email in
+                    let email = try EmailAddress(email)
+                    
                     try await database.transaction { db in
                         guard let identity = try await Database.Identity.query(on: db)
                             .filter(\.$email == email.rawValue)
