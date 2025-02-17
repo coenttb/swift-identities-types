@@ -15,6 +15,10 @@ import Coenttb_Identity_Shared
 extension Identity.Provider {
     public struct Configuration:  Sendable {
         public var provider: Identity.Provider.Configuration.Provider
+        
+        public init(provider: Identity.Provider.Configuration.Provider) {
+            self.provider = provider
+        }
     }
 }
 
