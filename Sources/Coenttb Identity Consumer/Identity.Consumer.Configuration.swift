@@ -12,14 +12,14 @@ import Identity_Consumer
 import Coenttb_Identity_Shared
 import URLRouting
 
-extension Identity {
+extension Identity.Consumer {
     public struct Configuration:  Sendable {
-        public let provider: Identity.Configuration.Provider
-        public let consumer: Identity.Configuration.Consumer
+        public let provider: Identity.Consumer.Configuration.Provider
+        public let consumer: Identity.Consumer.Configuration.Consumer
     }
 }
 
-extension Identity.Configuration: TestDependencyKey {
+extension Identity.Consumer.Configuration: TestDependencyKey {
     public static let testValue: Self = .init(
         provider: .testValue,
         consumer: .testValue
@@ -28,13 +28,13 @@ extension Identity.Configuration: TestDependencyKey {
 
 
 extension DependencyValues {
-    public var identity: Identity.Configuration {
-        get { self[Identity.Configuration.self] }
-        set { self[Identity.Configuration.self] = newValue }
+    public var identity: Identity.Consumer.Configuration {
+        get { self[Identity.Consumer.Configuration.self] }
+        set { self[Identity.Consumer.Configuration.self] = newValue }
     }
 }
 
-extension Identity.Configuration.Consumer: TestDependencyKey {
+extension Identity.Consumer.Configuration.Consumer: TestDependencyKey {
     public static let testValue: Self = .init(
         baseURL: .init(string: "")!,
         domain: nil,
@@ -42,7 +42,7 @@ extension Identity.Configuration.Consumer: TestDependencyKey {
     )
 }
 
-extension Identity.Configuration {
+extension Identity.Consumer.Configuration {
     public struct Consumer: Sendable {
         public let baseURL: URL
         public let domain: String?
@@ -63,7 +63,7 @@ extension Identity.Configuration {
     }
 }
 
-extension Identity.Configuration {
+extension Identity.Consumer.Configuration {
     public struct Provider: Sendable {
         public let baseURL: URL
         public let domain: String?
@@ -82,7 +82,7 @@ extension Identity.Configuration {
 }
 
 
-extension Identity.Configuration.Provider: TestDependencyKey {
+extension Identity.Consumer.Configuration.Provider: TestDependencyKey {
     public static let testValue: Self = .init(
         baseURL: .init(string: "")!,
         domain: nil

@@ -9,8 +9,8 @@ extension JWT.Token {
         public var expiration: ExpirationClaim
         public var issuedAt: IssuedAtClaim
         public var subject: SubjectClaim
-        public var issuer: IssuerClaim
-        public var audience: AudienceClaim
+        public var issuer: IssuerClaim?
+        public var audience: AudienceClaim?
         public var tokenId: IDClaim
 
         // Optional Standard Claims
@@ -25,8 +25,8 @@ extension JWT.Token {
             expiration: ExpirationClaim,
             issuedAt: IssuedAtClaim,
             subject: SubjectClaim,
-            issuer: IssuerClaim,
-            audience: AudienceClaim,
+            issuer: IssuerClaim?,
+            audience: AudienceClaim? = nil,
             tokenId: IDClaim,
             notBefore: NotBeforeClaim? = nil,
             identityId: UUID,
@@ -43,8 +43,6 @@ extension JWT.Token {
             self.identityId = identityId
             self.email = email
             self.sessionVersion = sessionVersion
-
-            self.audience.value.append("refresh")
         }
 
         enum CodingKeys: String, CodingKey {

@@ -59,7 +59,7 @@ extension Identity.Consumer.Client {
 extension Identity.Consumer.Client {
     package static func makeRequest(_ route: Identity.Consumer.API) throws -> URLRequest {
         
-        @Dependency(\.identityProviderRouter) var router
+        @Dependency(\.identity.provider.router) var router
         
         do {
             guard let request = try URLRequest(

@@ -12,49 +12,87 @@ import Identity_Provider
 import URLRouting
 import Coenttb_Identity_Shared
 
-extension Identity {
+extension Identity.Provider {
     public struct Configuration:  Sendable {
-        public var provider: Identity.Configuration.Provider
+        public var provider: Identity.Provider.Configuration.Provider
     }
 }
 
-extension Identity.Configuration {
+extension Identity.Provider.Configuration {
     public struct Provider: Sendable {
         public var baseURL: URL
         public var domain: String?
+        public var issuer: String?
         public var router: AnyParserPrinter<URLRequestData, Identity.API>
         public var cookies: Identity.CookiesConfiguration
         
         public init(
             baseURL: URL,
             domain: String?,
+            issuer: String?,
             cookies: Identity.CookiesConfiguration,
             router: AnyParserPrinter<URLRequestData, Identity.API> = Identity.API.Router().eraseToAnyParserPrinter()
         ) {
             self.baseURL = baseURL
             self.domain = domain
+            self.issuer = issuer
             self.cookies = cookies
             self.router = router.baseURL(baseURL.absoluteString).eraseToAnyParserPrinter()
         }
     }
 }
 
-extension Identity.Configuration: TestDependencyKey {
+extension Identity.Provider.Configuration: TestDependencyKey {
     public static let testValue: Self = .init(provider: .testValue)
 }
 
 extension DependencyValues {
-    public var identity: Identity.Configuration {
-        get { self[Identity.Configuration.self] }
-        set { self[Identity.Configuration.self] = newValue }
+    public var identity: Identity.Provider.Configuration {
+        get { self[Identity.Provider.Configuration.self] }
+        set { self[Identity.Provider.Configuration.self] = newValue }
     }
 }
 
-extension Identity.Configuration.Provider: TestDependencyKey {
+extension Identity.Provider.Configuration.Provider: TestDependencyKey {
     public static let testValue: Self = .init(
         baseURL: .init(string: "")!,
         domain: nil,
+        issuer: nil,
         cookies: .testValue
     )
 }
 
+
+
+import Vapor
+extension HTTPCookies.Value {
+    
+    package static func accessToken(
+        token: JWT.Token
+    ) -> Self {
+        @Dependency(\.identity.provider.cookies.accessToken) var config
+
+        return withDependencies {
+            $0.identity.provider.cookies.accessToken.sameSitePolicy = .lax
+        } operation: {
+            return HTTPCookies.Value(
+                token: token.value
+            )
+        }
+    }
+    
+    package static func refreshToken(
+        token: JWT.Token
+    ) -> Self {
+        @Dependency(\.identity.provider.cookies.refreshToken) var config
+        @Dependency(\.identity.provider.router) var identityProviderRouter
+
+        return withDependencies {
+            $0.identity.provider.cookies.refreshToken.path = identityProviderRouter.url(for: .authenticate(.token(.refresh(.init(token: token.value))))).relativePath
+        } operation: {
+            return .init(
+                token: token.value
+            )
+        }
+    }
+}

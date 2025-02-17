@@ -35,7 +35,7 @@ extension Database.Identity {
         return try await .init(
             value: self.generateJWTAccess(),
             type: "Bearer",
-            expiresIn: config.expiration
+            expiresIn: config.expires
         )
     }
     
@@ -44,7 +44,7 @@ extension Database.Identity {
         return try await .init(
             value: self.generateJWTAccess(),
             type: "Bearer",
-            expiresIn: config.expiration
+            expiresIn: config.expires
         )
     }
 
@@ -71,7 +71,7 @@ extension JWT.Token.Access {
         let currentTime = date()
         
         self = try .init(
-            expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expiration)),
+            expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expires)),
             issuedAt: IssuedAtClaim(value: currentTime),
             identityId: identity.requireID(),
             email: identity.emailAddress
@@ -90,7 +90,7 @@ extension JWT.Token.Refresh {
         let currentTime = date()
         
         self = .init(
-            expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expiration)),
+            expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expires)),
             issuedAt: IssuedAtClaim(value: currentTime),
             identityId: try identity.requireID(),
             tokenId: .init(uuid()),
@@ -108,21 +108,23 @@ extension IDClaim {
 extension JWT.Token.Reauthorization {
     package init(
         identity: Database.Identity,
-        currentTime: Date = .init(),
-        includeTokenId: Bool = false,
-        includeNotBefore: Bool = false
+        audience: AudienceClaim? = nil
     ) throws {
+        @Dependency(\.date) var date
         @Dependency(\.uuid) var uuid
-        @Dependency(\.identity.provider.cookies.reauthorizationtoken) var config
-
+        @Dependency(\.identity.provider.cookies.reauthorizationToken) var config
+        @Dependency(\.identity.provider.issuer) var issuer
+        
+        let currentTime = date()
+        
         self = .init(
-            expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expiration)),
+            expiration: ExpirationClaim(value: currentTime.addingTimeInterval(config.expires)),
             issuedAt: IssuedAtClaim(value: currentTime),
             subject: SubjectClaim(value: try identity.requireID().uuidString),
-            issuer: IssuerClaim(value: config.issuer),
-            audience: "reauthorization",
+            issuer: issuer.map { IssuerClaim(value: $0) },
+            audience: audience,
             tokenId: IDClaim(value: uuid().uuidString),
-            notBefore: includeNotBefore ? NotBeforeClaim(value: currentTime) : nil,
+            notBefore: NotBeforeClaim(value: currentTime),
             identityId: try identity.requireID(),
             email: identity.email,
             sessionVersion: identity.sessionVersion

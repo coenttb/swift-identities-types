@@ -12,8 +12,8 @@ extension Vapor.Response {
         _ tokens: Identity.Authentication.Response,
         domain: String?
     ) -> Vapor.Response {
-        self.cookies.accessToken = .accessToken(token: tokens.accessToken)
-        self.cookies.refreshToken = .refreshToken(token: tokens.refreshToken)
+        self.cookies.accessToken = .init(token: tokens.accessToken.value)
+        self.cookies.refreshToken = .init(token: tokens.refreshToken.value)
         self.cookies.refreshToken?.sameSite = .strict
         self.cookies.refreshToken?.isHTTPOnly = true
         

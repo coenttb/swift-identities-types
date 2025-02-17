@@ -43,8 +43,8 @@ extension Identity.Consumer.API.Authenticate {
                 do {
                     let data = try await client.authenticate.credentials(credentials)
                     let response = Response.success(true)
-                    response.cookies.accessToken = .accessToken(token: data.accessToken)
-                    response.cookies.refreshToken = .refreshToken(token: data.refreshToken)
+                    response.cookies.accessToken = .init(token: data.accessToken.value)
+                    response.cookies.refreshToken = .init(token: data.refreshToken.value)
                     return response
                 } catch {
                     print("Failed in credentials case with error:", error)

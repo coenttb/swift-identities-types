@@ -23,7 +23,6 @@ import JWT
 
 extension Identity_Provider.Identity.Provider.Client.Authenticate {
     package static func live(
-        issuer: String
     ) -> Self {
         @Dependency(\.logger) var logger
         

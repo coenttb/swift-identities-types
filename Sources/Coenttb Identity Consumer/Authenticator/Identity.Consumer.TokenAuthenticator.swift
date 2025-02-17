@@ -29,8 +29,8 @@ extension Identity.Consumer {
                     else { return try await next.respond(to: request) }
 
                     let response = try await next.respond(to: request)
-                    response.cookies.accessToken = .accessToken(token: tokens.accessToken)
-                    response.cookies.refreshToken = .refreshToken(token: tokens.refreshToken)
+                    response.cookies.accessToken = .init(token: tokens.accessToken.value)
+                    response.cookies.refreshToken = .init(token: tokens.refreshToken.value)
                     return response
                 }
                 catch {
