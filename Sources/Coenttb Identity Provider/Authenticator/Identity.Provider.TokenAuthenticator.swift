@@ -18,7 +18,7 @@ extension Identity.Provider {
         @Dependency(\.identity.provider.client) var client
         
         public func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
-            return await withDependencies {
+            return try await withDependencies {
                 $0.request = request
             } operation: {
                 if let bearerAuth = request.headers.bearerAuthorization {
@@ -26,6 +26,7 @@ extension Identity.Provider {
                         try await client.authenticate.token.access(token: bearerAuth.token)
                         return try await next.respond(to: request)
                     } catch {
+                        
                     }
                 }
                 
@@ -34,7 +35,7 @@ extension Identity.Provider {
                         _ = try await client.authenticate.token.access(token: accessToken)
                         return try await next.respond(to: request)
                     } catch {
-
+                        
                     }
                 }
                 
@@ -43,13 +44,10 @@ extension Identity.Provider {
                         _ = try await client.authenticate.token.refresh(token: refreshToken)
                         return try await next.respond(to: request)
                     } catch {
-
+                        
                     }
                 }
-                
-                let response = Response(status: .unauthorized)
-                response.expire(cookies: .identity)
-                return response
+                return try await next.respond(to: request)
             }
         }
     }
