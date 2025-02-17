@@ -18,7 +18,7 @@ extension HTTPCookies {
         public var sameSitePolicy: HTTPCookies.SameSitePolicy
         
         public init(
-            expires: TimeInterval = 0,
+            expires: TimeInterval,
             maxAge: Int? = nil,
             domain: String? = nil,
             isSecure: Bool = true,
@@ -35,13 +35,13 @@ extension HTTPCookies {
     }
 }
 
-extension HTTPCookies.Configuration: DependencyKey {
-    public static let liveValue: HTTPCookies.Configuration = .init(domain: nil)
-    public static let testValue: HTTPCookies.Configuration = liveValue
+extension HTTPCookies.Configuration: TestDependencyKey {
+    public static let testValue: HTTPCookies.Configuration = .init(expires: 60*60*24)
 }
 
 extension HTTPCookies.Configuration {
     public static let localDevelopment: HTTPCookies.Configuration = .init(
+        expires: 60*60*24,
         domain: nil,
         isSecure: false,
         isHTTPOnly: true,

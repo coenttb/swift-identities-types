@@ -35,3 +35,32 @@ extension Identity.CookiesConfiguration: TestDependencyKey {
         reauthorizationToken: .testValue
     )
 }
+
+extension Identity.CookiesConfiguration {
+    public static let development: Self = .init(
+        accessToken: .init(
+            expires: 60 * 15,
+            maxAge: 60 * 15,
+            domain: nil,
+            isSecure: false,
+            isHTTPOnly: true,
+            sameSitePolicy: .lax  // Lax for local development across ports
+        ),
+        refreshToken: .init(
+            expires: 60 * 60 * 24 * 30,
+            maxAge: 60 * 60 * 24 * 30,
+            domain: nil,
+            isSecure: false,
+            isHTTPOnly: true,
+            sameSitePolicy: .lax
+        ),
+        reauthorizationToken: .init(
+            expires: 60 * 5,
+            maxAge: 60 * 5,
+            domain: nil,
+            isSecure: false,
+            isHTTPOnly: true,
+            sameSitePolicy: .lax
+        )
+    )
+}

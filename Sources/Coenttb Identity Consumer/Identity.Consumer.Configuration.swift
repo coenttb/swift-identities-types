@@ -60,7 +60,7 @@ extension Identity.Consumer.Configuration {
         public init(
             baseURL: URL,
             domain: String?,
-            cookies: Identity.CookiesConfiguration,
+            cookies: Identity.CookiesConfiguration = .live,
             router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>,
             client: Identity.Consumer.Client
         ) {
@@ -99,3 +99,33 @@ extension Identity.Consumer.Configuration.Provider: TestDependencyKey {
         router: Identity.API.Router().eraseToAnyParserPrinter()
     )
 }
+
+extension Identity.CookiesConfiguration {
+    public static let live: Self = .init(
+        accessToken: .init(
+            expires: 60 * 15, // 15 minutes
+            maxAge: 60 * 15,
+            domain: nil,      // Will use the consumer's domain
+            isSecure: true,
+            isHTTPOnly: true,
+            sameSitePolicy: .strict  // Can be strict since it's same-origin with the consumer website
+        ),
+        refreshToken: .init(
+            expires: 60 * 60 * 24 * 30, // 30 days
+            maxAge: 60 * 60 * 24 * 30,
+            domain: nil,
+            isSecure: true,
+            isHTTPOnly: true,
+            sameSitePolicy: .lax    // Lax for refresh flows
+        ),
+        reauthorizationToken: .init(
+            expires: 60 * 5,  // 5 minutes
+            maxAge: 60 * 5,
+            domain: nil,
+            isSecure: true,
+            isHTTPOnly: true,
+            sameSitePolicy: .strict  // Can be strict for consumer site
+        )
+    )
+}
+
