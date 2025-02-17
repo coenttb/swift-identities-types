@@ -16,7 +16,7 @@ extension Identity.Provider.API.Authenticate {
         logoutRedirectURL: () -> URL
     ) async throws -> Response {
 
-        @Dependency(Identity.Provider.Client.self) var client
+        @Dependency(\.identity.provider.client) var client
 
         switch authenticate {
         case .credentials(let credentials):

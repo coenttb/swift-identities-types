@@ -15,7 +15,7 @@ extension Identity.Provider.API.Password {
         password: Identity.Provider.API.Password
     ) async throws -> Response {
 
-        @Dependency(Identity.Provider.Client.self) var client
+        @Dependency(\.identity.provider.client) var client
 
         switch password {
         case .reset(let reset):

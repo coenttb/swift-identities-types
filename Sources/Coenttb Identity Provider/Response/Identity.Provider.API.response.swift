@@ -24,7 +24,7 @@ extension Identity.Provider.API {
             throw Abort(.unauthorized)
         }
         
-        @Dependency(Identity.Provider.Client.self) var client
+        @Dependency(\.identity.provider.client) var client
         
         switch api {
         case .authenticate(let authenticate):

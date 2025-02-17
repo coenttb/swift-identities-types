@@ -15,7 +15,7 @@ extension Identity.Provider.API.EmailChange {
         emailChange: Identity.Provider.API.EmailChange
     ) async throws -> Response {
 
-        @Dependency(Identity.Provider.Client.self) var client
+        @Dependency(\.identity.provider.client) var client
 
         switch emailChange {
         case .request(let request):

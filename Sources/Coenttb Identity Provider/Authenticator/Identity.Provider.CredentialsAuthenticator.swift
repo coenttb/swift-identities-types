@@ -15,7 +15,7 @@ import JWT
 extension Identity.Provider {
     public struct CredentialsAuthenticator: AsyncBasicAuthenticator {
 
-        @Dependency(Identity.Provider.Client.self) var client
+        @Dependency(\.identity.provider.client) var client
 
         public init() {}
 

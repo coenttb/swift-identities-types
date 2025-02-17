@@ -15,7 +15,7 @@ extension Identity.Provider.API.Create {
         create: Identity.Provider.API.Create
     ) async throws -> Response {
 
-        @Dependency(Identity.Provider.Client.self) var client
+        @Dependency(\.identity.provider.client) var client
 
         switch create {
         case .request(let request):
