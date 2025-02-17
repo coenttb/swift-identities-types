@@ -82,7 +82,7 @@ extension Identity.Consumer.Configuration {
         public init(
             baseURL: URL,
             domain: String?,
-            router: AnyParserPrinter<URLRequestData, Identity.API> = Identity.API.Router().eraseToAnyParserPrinter()
+            router: AnyParserPrinter<URLRequestData, Identity.API>
         ) {
             self.baseURL = baseURL
             self.domain = domain
@@ -95,6 +95,7 @@ extension Identity.Consumer.Configuration {
 extension Identity.Consumer.Configuration.Provider: TestDependencyKey {
     public static let testValue: Self = .init(
         baseURL: .init(string: "")!,
-        domain: nil
+        domain: nil,
+        router: Identity.API.Router().eraseToAnyParserPrinter()
     )
 }
