@@ -17,11 +17,12 @@ import Vapor
 extension Identity_Provider.Identity.Provider.Client.Delete {
     package static func live(
         database: Fluent.Database,
-        logger: Logger,
         sendDeletionRequestNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
         sendDeletionConfirmationNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void
     ) -> Self {
-        .init(
+        @Dependency(\.logger) var logger
+        
+        return .init(
             request: { reauthToken in
                 let identity = try await Database.Identity.get(by: .auth, on: database)
 

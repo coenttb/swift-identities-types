@@ -24,7 +24,6 @@ import JWT
 extension Identity_Provider.Identity.Provider.Client {
     public static func live<DatabaseUser: Fluent.Model & Sendable>(
         database: Fluent.Database,
-        logger: Logger,
         issuer: String = ._coenttbIssuer,
         createDatabaseUser: @escaping @Sendable (_ identityId: UUID) async throws -> DatabaseUser,
         sendVerificationEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
@@ -42,10 +41,11 @@ extension Identity_Provider.Identity.Provider.Client {
         //        )?
     ) -> Self {
 
+        @Dependency(\.logger) var logger
+        
         return Identity.Provider.Client(
             authenticate: .live(
                 database: database,
-                logger: logger,
                 issuer: issuer
             ),
             logout: {
@@ -74,33 +74,28 @@ extension Identity_Provider.Identity.Provider.Client {
                     return try await .init(value: application.jwt.keys.sign(payload), expiresIn: config.expiration)
 
                 } catch {
-                    logger.error("Error in reauthorize: \(String(describing: error))")
                     throw error
                 }
             },
             create: .live(
                 database: database,
-                logger: logger,
                 createDatabaseUser: createDatabaseUser,
                 sendVerificationEmail: sendVerificationEmail
             ),
             delete: .live(
                 database: database,
-                logger: logger,
                 //                getDatabaseUserbyIdentityId: getDatabaseUserbyIdentityId,
                 sendDeletionRequestNotification: sendDeletionRequestNotification,
                 sendDeletionConfirmationNotification: sendDeletionConfirmationNotification
             ),
             emailChange: .live(
                 database: database,
-                logger: logger,
                 sendEmailChangeConfirmation: sendEmailChangeConfirmation,
                 sendEmailChangeRequestNotification: sendEmailChangeRequestNotification,
                 onEmailChangeSuccess: onEmailChangeSuccess
             ),
             password: .live(
                 database: database,
-                logger: logger,
                 sendPasswordResetEmail: sendPasswordResetEmail,
                 sendPasswordChangeNotification: sendPasswordChangeNotification
             )

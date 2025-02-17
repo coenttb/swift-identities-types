@@ -10,7 +10,6 @@ import Dependencies
 import URLRouting
 import Identity_Provider
 
-
 private enum IdentityProviderAPIRouterKey: DependencyKey {
     static let liveValue: AnyParserPrinter<URLRequestData, Identity.API> = {
         @Dependency(Identity.Provider.Configuration.self) var provider

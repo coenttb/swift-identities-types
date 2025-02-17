@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Vapor
+import Coenttb_Vapor
 
 extension Abort {
     /// Creates a rate limit error response with appropriate Retry-After header

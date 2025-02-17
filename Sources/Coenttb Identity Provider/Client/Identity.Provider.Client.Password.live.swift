@@ -23,11 +23,12 @@ import Vapor
 extension Identity_Provider.Identity.Provider.Client.Password {
     package static func live(
         database: Fluent.Database,
-        logger: Logger,
         sendPasswordResetEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
         sendPasswordChangeNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void
     ) -> Self {
-        .init(
+        @Dependency(\.logger) var logger
+        
+        return .init(
             reset: .init(
                 request: { email in
                     try await database.transaction { db in

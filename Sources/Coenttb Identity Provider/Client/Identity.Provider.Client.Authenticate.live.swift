@@ -23,11 +23,11 @@ import JWT
 
 extension Identity_Provider.Identity.Provider.Client.Authenticate {
     package static func live(
-        database: Fluent.Database,
-        logger: Logger,
         issuer: String
     ) -> Self {
-        .init(
+        @Dependency(\.logger) var logger
+        
+        return .init(
             credentials: { username, password in
 
                 @Dependency(\.request) var request
