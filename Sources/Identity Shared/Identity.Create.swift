@@ -76,11 +76,11 @@ extension Identity.Create {
 
 extension Identity.Create.Verify {
     public init(
-        email: EmailAddress,
-        token: String
+        token: String,
+        email: EmailAddress
     ) {
-        self.email = email.rawValue
         self.token = token
+        self.email = email.rawValue
     }
 }
 
