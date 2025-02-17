@@ -20,8 +20,6 @@ extension Identity.API {
             switch authenticate {
             case .credentials, .token, .apiKey:
                 break
-            case .multifactor:
-                try request.auth.require(type)
 
             }
 

@@ -37,11 +37,6 @@ extension Identity.Provider.API.Authenticate {
             let data = try await client.authenticate.apiKey(apiKey)
             return Response.success(true, data: data)
 
-        case .multifactor(let multifactor):
-            return try await Identity.Provider.API.Authenticate.Multifactor.response(
-                multifactor: multifactor,
-                logoutRedirectURL: logoutRedirectURL
-            )
         }
     }
 }

@@ -80,12 +80,12 @@ extension Identity.Consumer.View {
             return router.url(for: .api(.reauthorize(.init())))
         }()
     ) async throws -> any AsyncResponseEncodable {
-
+        
         @Dependency(Identity.Consumer.Client.self) var client
-
+        
         do {
             do {
-                try Identity.Consumer.View.protect(
+                try await Identity.Consumer.View.protect(
                     view: view,
                     with: JWT.Token.Access.self,
                     createProtectedRedirect: createProtectedRedirect,
@@ -99,15 +99,28 @@ extension Identity.Consumer.View {
                 switch view {
                 case .create:
                     return request.redirect(to: createProtectedRedirect.relativePath)
+                    
                 case .authenticate(.credentials):
                     return request.redirect(to: loginProtectedRedirect.relativePath)
+                    
+                case .emailChange(.request):
+                    return accountDefaultContainer {
+                        Identity.Consumer.View.Reauthorize(
+                            currentUserName: "currentUserName",
+                            primaryColor: primaryColor,
+                            passwordResetHref: passwordResetHref,
+                            confirmFormAction: reauthorizationFormAction,
+                            redirectOnSuccess: emailChangeReauthorizationSuccessRedirect
+                        )
+                    }
+                    
                 default: break
                 }
             }
         } catch {
             throw Abort(.unauthorized)
         }
-
+        
         func accountDefaultContainer<Content: HTML>(
             @HTMLBuilder _ content: @escaping () -> Content
         ) -> Identity.Consumer.HTMLDocument<_HTMLTuple<HTMLInlineStyle<Identity.Consumer.View.Logo>, Content>> {
@@ -125,12 +138,12 @@ extension Identity.Consumer.View {
                 body: {
                     logo
                         .margin(top: .medium)
-
+                    
                     content()
                 }
             )
         }
-
+        
         switch view {
         case let .create(create):
             switch create {
@@ -153,7 +166,7 @@ extension Identity.Consumer.View {
             }
         case .delete:
             fatalError()
-
+            
         case .authenticate(let authenticate):
             switch authenticate {
             case .credentials:
@@ -166,29 +179,27 @@ extension Identity.Consumer.View {
                         loginSuccessRedirect: loginSuccessRedirect
                     )
                 }
-            case .multifactor:
-                fatalError()
             }
-
+            
         case .logout:
             try? await client.logout()
-
+            
             let response = Response.success(true)
             
             response.expire(cookies: .identity)
-
+            
             let html = accountDefaultContainer {
                 PageHeader(title: "Hope to see you soon!") {}
             }
-
+            
             response.headers.contentType = .html
-
+            
             let bytes: ContiguousArray<UInt8> = html.render()
-
+            
             response.body = .init(data: Data(bytes))
-
+            
             return response
-
+            
         case let .password(password):
             switch password {
             case .reset(let reset):
@@ -201,7 +212,7 @@ extension Identity.Consumer.View {
                             primaryColor: primaryColor
                         )
                     }
-
+                    
                 case .confirm(let confirm):
                     return accountDefaultContainer {
                         Identity.Consumer.View.Password.Reset.Confirm(
@@ -213,7 +224,7 @@ extension Identity.Consumer.View {
                         )
                     }
                 }
-
+                
             case .change(let change):
                 switch change {
                 case .request:
@@ -226,52 +237,28 @@ extension Identity.Consumer.View {
                     }
                 }
             }
-
+            
         case .emailChange(let emailChange):
             switch emailChange {
             case .request:
-                do {
-                    @Dependency(\.request) var request
-                    guard let request else { throw Abort.requestUnavailable }
-                    
-                    guard let requestToken = request.cookies.reauthorizationToken?.string
-                    else { throw Abort(.internalServerError) }
-
-                    try await request.jwt.verify(
-                        requestToken,
-                        as: JWT.Token.Reauthorization.self
+                return accountDefaultContainer {
+                    Identity.Consumer.View.EmailChange.Request(
+                        formActionURL: emailChangeRequestAction,
+                        homeHref: homeHref,
+                        primaryColor: primaryColor
                     )
-
-                    return accountDefaultContainer {
-                        Identity.Consumer.View.EmailChange.Request(
-                            formActionURL: emailChangeRequestAction,
-                            homeHref: homeHref,
-                            primaryColor: primaryColor
-                        )
-                    }
-
-                } catch {
-                    return accountDefaultContainer {
-                        Identity.Consumer.View.Reauthorize(
-                            currentUserName: "currentUserName",
-                            primaryColor: primaryColor,
-                            passwordResetHref: passwordResetHref,
-                            confirmFormAction: reauthorizationFormAction,
-                            redirectOnSuccess: emailChangeReauthorizationSuccessRedirect
-                        )
-                    }
                 }
-
+                
             case .confirm(let confirm):
-
-                let _ = try await client.emailChange.confirm(token: confirm.token)
-
+                _ = try await client.emailChange.confirm(token: confirm.token)
+                
                 return accountDefaultContainer {
                     Identity.Consumer.View.EmailChange.Confirm(
                         redirect: emailChangeConfirmSuccessRedirect,
                         primaryColor: primaryColor
                     )
                 }
+                
             case .reauthorization:
                 return accountDefaultContainer {
                     Identity.Consumer.View.Reauthorize(

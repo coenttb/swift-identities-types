@@ -104,15 +104,6 @@ extension Identity_Provider.Identity.Provider.Client {
                 sendPasswordResetEmail: sendPasswordResetEmail,
                 sendPasswordChangeNotification: sendPasswordChangeNotification
             )
-//            multifactorAuthentication: multifactorAuthentication.map { mfa in
-//                    .live(
-//                        database: database,
-//                        logger: logger,
-//                        sendSMSCode: mfa.sendSMSCode,
-//                        sendEmailCode: mfa.sendEmailCode,
-//                        generateTOTPSecret: mfa.generateTOTPSecret
-//                    )
-//            }
         )
     }
 }

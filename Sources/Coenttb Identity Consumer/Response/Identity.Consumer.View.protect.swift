@@ -15,7 +15,7 @@ extension Identity.Consumer.View {
         with type: Authenticatable.Type,
         createProtectedRedirect: URL,
         loginProtectedRedirect: URL
-    ) throws {
+    ) async throws {
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
 
@@ -30,9 +30,6 @@ extension Identity.Consumer.View {
             switch authenticate {
             case .credentials:
                 if !request.auth.has(type) { throw Abort(.forbidden) }
-                
-            case .multifactor:
-                try request.auth.require(type)
             }
 
         case .logout:
@@ -49,6 +46,18 @@ extension Identity.Consumer.View {
                 try request.auth.require(type)
             }
 
+        case .emailChange(.request):
+            @Dependency(\.request) var request
+            guard let request else { throw Abort.requestUnavailable }
+            
+            guard let requestToken = request.cookies.reauthorizationToken?.string
+            else { throw Abort(.internalServerError) }
+
+            try await request.jwt.verify(
+                requestToken,
+                as: JWT.Token.Reauthorization.self
+            )
+            
         case .emailChange:
             try request.auth.require(type)
         }

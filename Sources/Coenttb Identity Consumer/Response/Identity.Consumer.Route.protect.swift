@@ -15,7 +15,7 @@ extension Identity.Consumer.Route {
         with type: Authenticatable.Type,
         createProtectedRedirect: URL,
         loginProtectedRedirect: URL
-    ) throws {
+    ) async throws {
         switch route {
         case .api(let api):
             do {
@@ -25,7 +25,7 @@ extension Identity.Consumer.Route {
             }
         case .view(let view):
             do {
-                try Identity.Consumer.View.protect(
+                try await Identity.Consumer.View.protect(
                     view: view,
                     with: JWT.Token.Access.self,
                     createProtectedRedirect: createProtectedRedirect,

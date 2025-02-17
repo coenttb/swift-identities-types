@@ -59,24 +59,6 @@ extension Identity.API {
                 }
                 return .init(limiter: rateLimiter.apiKey, key: apiKey.token)
 
-            case .multifactor(let multifactor):
-                switch multifactor {
-                case .setup:
-                    let key = request.realIP
-                    let rateLimit = await rateLimiter.credentials.checkLimit(key)
-                    guard rateLimit.isAllowed else {
-                        throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
-                    }
-                    return .init(limiter: rateLimiter.credentials, key: key)
-
-                case .challenge, .verify, .recovery, .configuration, .disable:
-                    let key = request.realIP
-                    let rateLimit = await rateLimiter.tokenAccess.checkLimit(key)
-                    guard rateLimit.isAllowed else {
-                        throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
-                    }
-                    return .init(limiter: rateLimiter.tokenAccess, key: key)
-                }
             }
 
         case .create(let create):

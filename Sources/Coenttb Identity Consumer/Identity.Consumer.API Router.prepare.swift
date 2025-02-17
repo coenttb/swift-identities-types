@@ -36,12 +36,6 @@ extension Identity.Consumer.API.Router {
             case .apiKey:
                 break
 
-            case .multifactor:
-                router = router
-                    .setAccessToken(request.cookies.accessToken)
-                    .setRefreshToken(request.cookies.refreshToken)
-                    .setBearerAuth(request.cookies.accessToken?.string)
-                    .eraseToAnyParserPrinter()
             }
 
         case .emailChange:
