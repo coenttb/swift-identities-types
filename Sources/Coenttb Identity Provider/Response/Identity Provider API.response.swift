@@ -14,11 +14,18 @@ extension Identity.Provider.API {
     public static func response(
         api: Identity.Provider.API,
         logoutRedirectURL: () -> URL
-    ) async throws -> any AsyncResponseEncodable {
-        @Dependency(Identity.Provider.Client.self) var client
-
+    ) async throws -> Response {
+        
         let rateLimitClient = try await Identity.API.rateLimit(api: api)
 
+        do {
+            try Identity.API.protect(api: api, with: Database.Identity.self)
+        } catch {
+            throw Abort(.unauthorized)
+        }
+        
+        @Dependency(Identity.Provider.Client.self) var client
+        
         switch api {
         case .authenticate(let authenticate):
             do {

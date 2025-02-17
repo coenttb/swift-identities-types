@@ -13,7 +13,7 @@ import Identity_Consumer
 extension Identity.Consumer.API.EmailChange {
     package static func response(
         emailChange: Identity.Consumer.API.EmailChange
-    ) async throws -> any AsyncResponseEncodable {
+    ) async throws -> Response {
 
         @Dependency(Identity.Consumer.Client.self) var client
 

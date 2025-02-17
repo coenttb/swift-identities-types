@@ -79,24 +79,26 @@ extension Identity.Consumer.Route {
 
         @Dependency(Identity.Consumer.Client.self) var client
 
-        do {
-            if let response = try Identity.Consumer.Route.protect(
-                route: route,
-                with: JWT.Token.Access.self,
-                createProtectedRedirect: createProtectedRedirect,
-                loginProtectedRedirect: loginProtectedRedirect
-            ) {
-                return response
-            }
-        } catch {
-            throw Abort(.unauthorized)
-        }
+//        do {
+//            do {
+//                try Identity.Consumer.Route.protect(
+//                    route: route,
+//                    with: JWT.Token.Access.self,
+//                    createProtectedRedirect: createProtectedRedirect,
+//                    loginProtectedRedirect: loginProtectedRedirect
+//                )
+//            } catch {
+//                switch route {
+//
+//                }
+//            }
+//        } catch {
+//            throw Abort(.unauthorized)
+//        }
 
         switch route {
         case .api(let api):
-            return try await Identity.Consumer.API.response(
-                api: api
-            )
+            return try await Identity.Consumer.API.response(api: api)
 
         case .view(let view):
             return try await Identity.Consumer.View.response(

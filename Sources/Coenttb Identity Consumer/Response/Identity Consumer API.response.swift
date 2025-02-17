@@ -13,17 +13,15 @@ import Identity_Consumer
 extension Identity.Consumer.API {
     public static func response(
         api: Identity.Consumer.API
-    ) async throws -> any AsyncResponseEncodable {
+    ) async throws -> Response {
 
         @Dependency(Identity.Consumer.Client.self) var client
 
         do {
-            if let response = try Identity.Consumer.API.protect(
+            try Identity.Consumer.API.protect(
                 api: api,
                 with: JWT.Token.Access.self
-            ) {
-                return response
-            }
+            )
         } catch {
             throw Abort(.unauthorized)
         }

@@ -17,7 +17,7 @@ extension Identity.Consumer.API.Router {
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
 
-        @Dependency(Identity.Consumer.Client.Provider.self) var provider
+        @Dependency(Identity.Provider.Configuration.self) var provider
         var router = baseRouter.baseURL(provider.baseURL.absoluteString).eraseToAnyParserPrinter()
 
         switch route {

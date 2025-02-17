@@ -14,7 +14,7 @@ extension Identity.Provider.API.Authenticate {
     package static func response(
         authenticate: Identity.Provider.API.Authenticate,
         logoutRedirectURL: () -> URL
-    ) async throws -> any AsyncResponseEncodable {
+    ) async throws -> Response {
 
         @Dependency(Identity.Provider.Client.self) var client
 

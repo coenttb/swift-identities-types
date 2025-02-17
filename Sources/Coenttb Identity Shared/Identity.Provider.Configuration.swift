@@ -7,9 +7,11 @@
 
 import Foundation
 import Dependencies
+import Identity_Shared
+import Identity_Provider
 
-extension Identity.Consumer.Client {
-    public struct Provider: Codable, Hashable, Sendable {
+extension Identity.Provider {
+    public struct Configuration: Codable, Hashable, Sendable {
         public let baseURL: URL
         public let domain: String?
 
@@ -20,7 +22,7 @@ extension Identity.Consumer.Client {
     }
 }
 
-extension Identity.Consumer.Client.Provider: TestDependencyKey {
+extension Identity.Provider.Configuration: TestDependencyKey {
     public static let testValue: Self = .init(
         baseURL: .init(string: "")!,
         domain: nil

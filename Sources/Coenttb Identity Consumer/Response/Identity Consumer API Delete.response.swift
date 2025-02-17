@@ -13,7 +13,7 @@ import Identity_Consumer
 extension Identity.Consumer.API.Delete {
     package static func response(
         delete: Identity.Consumer.API.Delete
-    ) async throws -> any AsyncResponseEncodable {
+    ) async throws -> Response {
 
         @Dependency(Identity.Consumer.Client.self) var client
 

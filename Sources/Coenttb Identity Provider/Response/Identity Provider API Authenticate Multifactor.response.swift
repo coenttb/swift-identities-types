@@ -14,7 +14,7 @@ extension Identity.Provider.API.Authenticate.Multifactor {
     package static func response(
         multifactor: Identity.Provider.API.Authenticate.Multifactor,
         logoutRedirectURL: () -> URL
-    ) async throws -> any AsyncResponseEncodable {
+    ) async throws -> Response {
 
         @Dependency(Identity.Provider.Client.self) var client
 

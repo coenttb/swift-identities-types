@@ -13,7 +13,7 @@ import Identity_Provider
 extension Identity.Provider.API.Delete {
     package static func response(
         delete: Identity.Provider.API.Delete
-    ) async throws -> any AsyncResponseEncodable {
+    ) async throws -> Response {
 
         @Dependency(Identity.Provider.Client.self) var client
 

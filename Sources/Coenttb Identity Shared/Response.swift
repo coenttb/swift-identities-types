@@ -25,7 +25,7 @@ extension Vapor.Response {
 extension [WritableKeyPath<HTTPCookies, HTTPCookies.Value?>] {
     package static let identity: Self = [
         \.accessToken,
-         \.refreshToken,
-         \.reauthorizationToken
+        \.refreshToken,
+        \.reauthorizationToken
     ]
 }

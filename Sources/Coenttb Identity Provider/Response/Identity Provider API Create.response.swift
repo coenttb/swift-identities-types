@@ -13,7 +13,7 @@ import Identity_Provider
 extension Identity.Provider.API.Create {
     package static func response(
         create: Identity.Provider.API.Create
-    ) async throws -> any AsyncResponseEncodable {
+    ) async throws -> Response {
 
         @Dependency(Identity.Provider.Client.self) var client
 

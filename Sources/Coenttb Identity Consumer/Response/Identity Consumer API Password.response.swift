@@ -13,7 +13,7 @@ import Identity_Consumer
 extension Identity.Consumer.API.Password {
     package static func response(
         password: Identity.Consumer.API.Password
-    ) async throws -> any AsyncResponseEncodable {
+    ) async throws -> Response {
 
         @Dependency(Identity.Consumer.Client.self) var client
 

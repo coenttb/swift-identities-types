@@ -15,49 +15,42 @@ extension Identity.Consumer.View {
         with type: Authenticatable.Type,
         createProtectedRedirect: URL,
         loginProtectedRedirect: URL
-    ) throws -> (any AsyncResponseEncodable)? {
+    ) throws {
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
 
         switch view {
         case .create:
-            return request.auth.has(type)
-            ? request.redirect(to: createProtectedRedirect.relativePath)
-            : nil
+            if !request.auth.has(type) { throw Abort(.forbidden) }
 
         case .delete:
             try request.auth.require(type)
-            return nil
 
         case .authenticate(let authenticate):
             switch authenticate {
             case .credentials:
-                return request.auth.has(type)
-                ? request.redirect(to: loginProtectedRedirect.relativePath)
-                : nil
+                if !request.auth.has(type) { throw Abort(.forbidden) }
+                
             case .multifactor:
                 try request.auth.require(type)
-                return nil
             }
 
         case .logout:
-//            try request.auth.require(type)
-            return nil
+            if !request.auth.has(type) {
+                throw Abort(.forbidden)
+            }
 
         case .password(let password):
             switch password {
             case .reset:
-                return nil
-
+                break
+                
             case .change:
                 try request.auth.require(type)
-                return nil
             }
 
         case .emailChange:
             try request.auth.require(type)
-            return nil
-
         }
     }
 }

@@ -82,16 +82,27 @@ extension Identity.Consumer.View {
     ) async throws -> any AsyncResponseEncodable {
 
         @Dependency(Identity.Consumer.Client.self) var client
-        
 
         do {
-            if let response = try Identity.Consumer.View.protect(
-                view: view,
-                with: JWT.Token.Access.self,
-                createProtectedRedirect: createProtectedRedirect,
-                loginProtectedRedirect: loginProtectedRedirect
-            ) {
-                return response
+            do {
+                try Identity.Consumer.View.protect(
+                    view: view,
+                    with: JWT.Token.Access.self,
+                    createProtectedRedirect: createProtectedRedirect,
+                    loginProtectedRedirect: loginProtectedRedirect
+                )
+            }
+            catch {
+                @Dependency(\.request) var request
+                guard let request else { throw Abort.requestUnavailable }
+                
+                switch view {
+                case .create:
+                    return request.redirect(to: createProtectedRedirect.relativePath)
+                case .authenticate(.credentials):
+                    return request.redirect(to: loginProtectedRedirect.relativePath)
+                default: break
+                }
             }
         } catch {
             throw Abort(.unauthorized)

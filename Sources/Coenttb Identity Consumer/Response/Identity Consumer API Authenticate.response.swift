@@ -13,7 +13,7 @@ import Identity_Consumer
 extension Identity.Consumer.API.Authenticate {
     package static func response(
         authenticate: Identity.Consumer.API.Authenticate
-    ) async throws -> any AsyncResponseEncodable {
+    ) async throws -> Response {
 
         @Dependency(Identity.Consumer.Client.self) var client
 

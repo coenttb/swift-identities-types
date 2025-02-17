@@ -15,17 +15,17 @@ extension Identity.Consumer.Route {
         with type: Authenticatable.Type,
         createProtectedRedirect: URL,
         loginProtectedRedirect: URL
-    ) throws -> (any AsyncResponseEncodable)? {
+    ) throws {
         switch route {
         case .api(let api):
             do {
-                return try Identity.API.protect(api: api, with: JWT.Token.Access.self)
+                try Identity.API.protect(api: api, with: JWT.Token.Access.self)
             } catch {
                 throw Abort(.unauthorized)
             }
         case .view(let view):
             do {
-                return try Identity.Consumer.View.protect(
+                try Identity.Consumer.View.protect(
                     view: view,
                     with: JWT.Token.Access.self,
                     createProtectedRedirect: createProtectedRedirect,
