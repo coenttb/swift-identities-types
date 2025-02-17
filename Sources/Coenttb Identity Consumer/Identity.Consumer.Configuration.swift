@@ -16,6 +16,11 @@ extension Identity.Consumer {
     public struct Configuration:  Sendable {
         public var provider: Identity.Consumer.Configuration.Provider
         public var consumer: Identity.Consumer.Configuration.Consumer
+        
+        public init(provider: Identity.Consumer.Configuration.Provider, consumer: Identity.Consumer.Configuration.Consumer) {
+            self.provider = provider
+            self.consumer = consumer
+        }
     }
 }
 
