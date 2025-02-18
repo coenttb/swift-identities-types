@@ -43,7 +43,7 @@ extension Identity.Consumer {
             CoenttbWebHTMLDocumentHeader(
                 title: title(view),
                 description: description(view),
-                canonicalHref: canonicalHref,
+                canonicalHref: canonicalHref(view),
                 rssXml: nil,
                 themeColor: accentColor,
                 language: language,

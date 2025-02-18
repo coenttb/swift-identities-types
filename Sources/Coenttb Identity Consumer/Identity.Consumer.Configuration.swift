@@ -48,7 +48,7 @@ extension Identity.Consumer.Configuration.Consumer: TestDependencyKey {
 extension Identity.Consumer.Configuration {
     public struct Consumer: Sendable {
         public var baseURL: URL
-        public var canonicalHref: URL?
+        
         public var domain: String?
         public var cookies: Identity.CookiesConfiguration
         public var router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> {
@@ -58,7 +58,9 @@ extension Identity.Consumer.Configuration {
         }
         
         public var client: Identity.Consumer.Client
+        
         public var currentUserName: @Sendable () -> String?
+        public var canonicalHref: @Sendable (Identity.Consumer.View) -> URL?
         public var hreflang: @Sendable (Identity.Consumer.View, Languages.Language) -> URL
         
         public var branding: Branding
@@ -67,7 +69,7 @@ extension Identity.Consumer.Configuration {
         
         public init(
             baseURL: URL,
-            canonicalHref: URL? = nil,
+            canonicalHref: @escaping @Sendable (Identity.Consumer.View) -> URL? = { _ in nil },
             domain: String? = nil,
             cookies: Identity.CookiesConfiguration,
             router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>,
@@ -106,13 +108,14 @@ extension Identity.Consumer.Configuration {
         
         public init(
             createProtected: @escaping @Sendable () -> URL,
+            createVerificationSuccess: @escaping @Sendable () -> URL,
             loginProtected: @escaping @Sendable () -> URL,
             logoutSuccess: @escaping @Sendable () -> URL,
             loginSuccess: @escaping @Sendable () -> URL,
             passwordResetSuccess: @escaping @Sendable () -> URL,
             emailChangeReauthorizationSuccess: @escaping @Sendable () -> URL,
-            emailChangeConfirmSuccess: @escaping @Sendable () -> URL,
-            createVerificationSuccess: @escaping @Sendable () -> URL
+            emailChangeConfirmSuccess: @escaping @Sendable () -> URL
+            
         ) {
             self.createProtected = createProtected
             self.loginProtected = loginProtected
@@ -131,13 +134,13 @@ extension Identity.Consumer.Configuration.Redirect {
         
         return .init(
             createProtected: home,
+            createVerificationSuccess: home,
             loginProtected: home,
             logoutSuccess: home,
             loginSuccess: home,
             passwordResetSuccess: home,
             emailChangeReauthorizationSuccess: home,
-            emailChangeConfirmSuccess: home,
-            createVerificationSuccess: home
+            emailChangeConfirmSuccess: home
         )
     }
 }
@@ -145,6 +148,10 @@ extension Identity.Consumer.Configuration.Redirect {
 extension Identity.Consumer.Configuration {
     public struct Navigation: Sendable {
         public var home: @Sendable () -> URL
+        
+        public init(home: @escaping @Sendable () -> URL) {
+            self.home = home
+        }
     }
 }
  
