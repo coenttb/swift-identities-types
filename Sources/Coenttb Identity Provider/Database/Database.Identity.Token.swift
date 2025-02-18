@@ -95,7 +95,9 @@ extension Database.Identity {
                 SymmetricKey(size: .bits256)
                     .withUnsafeBytes { Data($0) }
                     .base64EncodedString()
-                    .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+                    .replacingOccurrences(of: "+", with: "-")
+                    .replacingOccurrences(of: "/", with: "_")
+                    .replacingOccurrences(of: "=", with: "")
             default:
                 SymmetricKey(size: .bits256)
                     .withUnsafeBytes { Data($0) }
