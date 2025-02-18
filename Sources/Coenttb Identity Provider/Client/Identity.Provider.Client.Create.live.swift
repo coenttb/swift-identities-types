@@ -69,35 +69,44 @@ extension Identity_Provider.Identity.Provider.Client.Create {
             verify: { email, token in
                 do {
                     try await database.transaction { db in
+                        print(1)
                         guard let identityToken = try await Database.Identity.Token.query(on: db)
                             .filter(\.$value == token)
                             .with(\.$identity)
-                            .first() else {
+                            .first()
+                        else {
+                            print(2)
                             throw Abort(.notFound, reason: "Invalid or expired token")
                         }
-
-                        guard identityToken.validUntil > Date.now else {
+                        print(3)
+                        guard identityToken.validUntil > Date.now
+                        else {
+                            print(4)
                             try await identityToken.delete(on: database)
                             throw Abort(.gone, reason: "Token has expired")
                         }
                         
                         let email = try EmailAddress(email)
 
-                        guard identityToken.identity.email == email.rawValue else {
+                        guard identityToken.identity.email == email.rawValue
+                        else {
+                            print(5)
                             throw Abort(.badRequest, reason: "Email mismatch")
                         }
-
+                        print(6)
                         identityToken.identity.emailVerificationStatus = .verified
 
-                        guard let identityId = identityToken.identity.id else {
+                        guard let identityId = identityToken.identity.id
+                        else {
+                            print(7)
                             throw Abort(.internalServerError, reason: "identity has no id")
                         }
-
+                        print(8)
                         try await identityToken.identity.save(on: database)
-
+                        print(9)
                         try await createDatabaseUser(identityId)
                             .save(on: database)
-
+                        print(10)
                         try await identityToken.delete(on: database)
                     }
                 } catch {

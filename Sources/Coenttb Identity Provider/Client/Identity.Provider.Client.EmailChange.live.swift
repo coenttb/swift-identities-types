@@ -41,7 +41,7 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                     
                     let newEmail = try EmailAddress(newEmail)
                     
-                    try await database.transaction { db in
+                    let changeToken = try await database.transaction { db in
                         
                         if try await Database.Identity.query(on: db)
                             .filter(\.$email == newEmail.rawValue)
@@ -73,26 +73,29 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                         
                         try await emailChangeRequest.save(on: db)
                         
-                        @Dependency(\.fireAndForget) var fireAndForget
+                        return changeToken.value
+
+                    }
+                    
+                    @Dependency(\.fireAndForget) var fireAndForget
+                    
+                    await fireAndForget {
+                        try await sendEmailChangeConfirmation(
+                            identity.emailAddress,
+                            newEmail,
+                            changeToken
+                        )
                         
-                        await fireAndForget {
-                            try await sendEmailChangeConfirmation(
-                                identity.emailAddress,
-                                newEmail,
-                                changeToken.value
-                            )
-                            
-                            logger.notice("Emailchange confirmation-request for user: \(identity.email) to new email: \(newEmail)")
-                        }
+                        logger.notice("Emailchange confirmation-request for user: \(identity.email) to new email: \(newEmail)")
+                    }
+                    
+                    await fireAndForget {
+                        try await sendEmailChangeRequestNotification(
+                            identity.emailAddress,
+                            newEmail
+                        )
                         
-                        await fireAndForget {
-                            try await sendEmailChangeRequestNotification(
-                                identity.emailAddress,
-                                newEmail
-                            )
-                            
-                            logger.notice("Emailchange notification for user: \(identity.email) to email: \(identity.emailAddress)")
-                        }
+                        logger.notice("Emailchange notification for user: \(identity.email) to email: \(identity.emailAddress)")
                     }
                     
                     return .success

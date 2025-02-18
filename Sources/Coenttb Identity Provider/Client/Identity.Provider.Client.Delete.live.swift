@@ -46,12 +46,11 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                     deletion.requestedAt = Date()
                     try await deletion.save(on: db)
                     logger.notice("Deletion requested for user \(String(describing: identity.id))")
-
-                    @Dependency(\.fireAndForget) var fireAndForget
-                    await fireAndForget {
-                        try await sendDeletionRequestNotification(identity.emailAddress)
-                    }
-                    
+                }
+                
+                @Dependency(\.fireAndForget) var fireAndForget
+                await fireAndForget {
+                    try await sendDeletionRequestNotification(identity.emailAddress)
                 }
             },
             cancel: {
@@ -91,15 +90,13 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                     // Update user state
                     identity.deletion?.state = .deleted
                     try await identity.save(on: db)
-
-                    // Send confirmation and log
-                    
-                    @Dependency(\.fireAndForget) var fireAndForget
-                    await fireAndForget {
-                        try await sendDeletionConfirmationNotification(identity.emailAddress)                     
-                    }
                     
                     logger.notice("Identity \(String(describing: identity.id)) marked as deleted")
+                }
+                
+                @Dependency(\.fireAndForget) var fireAndForget
+                await fireAndForget {
+                    try await sendDeletionConfirmationNotification(identity.emailAddress)
                 }
             }
         )

@@ -23,14 +23,10 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                 request: { email in
                     let email = try EmailAddress(email)
                     
-                    try await database.transaction { db in
-                        guard let identity = try await Database.Identity.query(on: db)
-                            .filter(\.$email == email.rawValue)
-                            .first() else {
-                            logger.warning("Password reset requested for non-existent email: \(email)")
-                            return
-                        }
-
+                    let identity = try await Database.Identity.get(by: .email(email), on: database)
+                        
+                    let resetToken = try await database.transaction { db in
+                        
                         guard let identityId = identity.id else {
                             throw Abort(.internalServerError, reason: "Invalid identity state")
                         }
@@ -48,19 +44,22 @@ extension Identity_Provider.Identity.Provider.Client.Password {
 
                         try await resetToken.save(on: db)
                         
-                        @Dependency(\.fireAndForget) var fireAndForget
-                        await fireAndForget {
-                            try await sendPasswordResetEmail(email, resetToken.value)
-                        }
+                        return resetToken.value
 
-                        logger.notice("Password reset email sent to: \(email)")
                     }
+                    
+                    @Dependency(\.fireAndForget) var fireAndForget
+                    await fireAndForget {
+                        try await sendPasswordResetEmail(email, resetToken)
+                    }
+
+                    logger.notice("Password reset email sent to: \(email)")
                 },
                 confirm: { token, newPassword in
                     do {
                         try validatePassword(newPassword)
 
-                        try await database.transaction { db in
+                        let emailAddress = try await database.transaction { db in
                             // Fetch and validate token within transaction for consistency
                             guard let resetToken = try await Database.Identity.Token.query(on: db)
                                 .filter(\.$value == token)
@@ -83,14 +82,16 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                             try await resetToken.identity.save(on: db)
                             try await resetToken.delete(on: db)
 
-                            // Send notification after changes are committed
-                            @Dependency(\.fireAndForget) var fireAndForget
-                            await fireAndForget {
-                                try await sendPasswordChangeNotification(resetToken.identity.emailAddress)
-                            }
-
-                            logger.notice("Password reset successful for email: \(resetToken.identity.email)")
+                            return resetToken.identity.emailAddress
                         }
+                        
+                        @Dependency(\.fireAndForget) var fireAndForget
+                        await fireAndForget {
+                            try await sendPasswordChangeNotification(emailAddress)
+                        }
+
+                        logger.notice("Password reset successful for email: \(emailAddress)")
+                        
                     } catch {
                         logger.error("Error in resetPassword: \(String(describing: error))")
                         throw error
@@ -118,7 +119,7 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                         @Dependency(\.fireAndForget) var fireAndForget
                         await fireAndForget {
                             try await sendPasswordChangeNotification(identity.emailAddress)
-                        }                        
+                        }
 
                         logger.notice("Password changed successfully for user: \(identity.email)")
                     }
