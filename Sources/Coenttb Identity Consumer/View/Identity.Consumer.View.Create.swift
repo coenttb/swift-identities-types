@@ -286,6 +286,7 @@ extension Identity.Consumer.View.Create {
                             setTimeout(() => { window.location.href = '\(redirectURL.absoluteString)'; }, 5000);
 
                         } else {
+                            console.log(data)
                             throw new Error(data.message || 'Account creation failed');
                         }
                     } catch (error) {
