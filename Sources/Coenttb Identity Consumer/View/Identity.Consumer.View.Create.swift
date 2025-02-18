@@ -266,8 +266,8 @@ extension Identity.Consumer.View.Create {
                 });
             
                 async function verifyEmail(token, email) {
-                    try {            
-                        const response = await fetch(\(verificationAction.absoluteString), {
+                    try {
+                        const response = await fetch('\(verificationAction.absoluteString)', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -278,9 +278,8 @@ extension Identity.Consumer.View.Create {
                                 email: email
                             }).toString()
                         });
-            
+                        
                         const data = await response.json();
-            
             
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_verify_id)");
