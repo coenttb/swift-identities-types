@@ -52,7 +52,7 @@ extension Identity_Provider.Identity.Provider.Client.Create {
                         let verificationToken = try identity.generateToken(type: .emailVerification)
 
                         try await verificationToken.save(on: database)
-                        try await sendVerificationEmail(email, verificationToken.value.base64String())
+                        try await sendVerificationEmail(email, verificationToken.value)
                     }
 
                     logger.log(.notice, "User created successfully and verification email sent")
