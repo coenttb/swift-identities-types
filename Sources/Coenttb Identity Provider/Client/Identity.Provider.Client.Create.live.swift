@@ -24,7 +24,7 @@ extension Identity_Provider.Identity.Provider.Client.Create {
                     try validatePassword(password)
                     let email = try EmailAddress(email)
                                     
-                    try await database.transaction { database in
+                    let verificationToken = try await database.transaction { database in
                         guard try await Database.Identity
                             .query(on: database)
                             .filter(\.$email == email.rawValue)
@@ -52,7 +52,12 @@ extension Identity_Provider.Identity.Provider.Client.Create {
                         let verificationToken = try identity.generateToken(type: .emailVerification)
 
                         try await verificationToken.save(on: database)
-                        try await sendVerificationEmail(email, verificationToken.value)
+                        return verificationToken.value
+                    }
+                    
+                    @Dependency(\.fireAndForget) var fireAndForget
+                    await fireAndForget {
+                        try await sendVerificationEmail(email, verificationToken)
                     }
 
                     logger.log(.notice, "User created successfully and verification email sent")

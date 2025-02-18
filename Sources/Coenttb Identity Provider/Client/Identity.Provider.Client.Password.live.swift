@@ -47,7 +47,11 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                         )
 
                         try await resetToken.save(on: db)
-                        try await sendPasswordResetEmail(email, resetToken.value)
+                        
+                        @Dependency(\.fireAndForget) var fireAndForget
+                        await fireAndForget {
+                            try await sendPasswordResetEmail(email, resetToken.value)
+                        }
 
                         logger.notice("Password reset email sent to: \(email)")
                     }
@@ -80,7 +84,10 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                             try await resetToken.delete(on: db)
 
                             // Send notification after changes are committed
-                            try await sendPasswordChangeNotification(resetToken.identity.emailAddress)
+                            @Dependency(\.fireAndForget) var fireAndForget
+                            await fireAndForget {
+                                try await sendPasswordChangeNotification(resetToken.identity.emailAddress)
+                            }
 
                             logger.notice("Password reset successful for email: \(resetToken.identity.email)")
                         }
@@ -108,7 +115,10 @@ extension Identity_Provider.Identity.Provider.Client.Password {
 
                         try await identity.save(on: db)
 
-                        try await sendPasswordChangeNotification(identity.emailAddress)
+                        @Dependency(\.fireAndForget) var fireAndForget
+                        await fireAndForget {
+                            try await sendPasswordChangeNotification(identity.emailAddress)
+                        }                        
 
                         logger.notice("Password changed successfully for user: \(identity.email)")
                     }
