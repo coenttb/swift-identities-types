@@ -108,7 +108,6 @@ extension Identity.Consumer.Configuration {
         public var logoutSuccess: @Sendable () -> URL
         public var loginSuccess: @Sendable () -> URL
         public var passwordResetSuccess: @Sendable () -> URL
-        public var emailChangeReauthorizationSuccess: @Sendable () -> URL
         public var emailChangeConfirmSuccess: @Sendable () -> URL
         public var createVerificationSuccess: @Sendable () -> URL
         
@@ -119,7 +118,6 @@ extension Identity.Consumer.Configuration {
             logoutSuccess: @escaping @Sendable () -> URL,
             loginSuccess: @escaping @Sendable () -> URL,
             passwordResetSuccess: @escaping @Sendable () -> URL,
-            emailChangeReauthorizationSuccess: @escaping @Sendable () -> URL,
             emailChangeConfirmSuccess: @escaping @Sendable () -> URL
             
         ) {
@@ -128,7 +126,6 @@ extension Identity.Consumer.Configuration {
             self.logoutSuccess = logoutSuccess
             self.loginSuccess = loginSuccess
             self.passwordResetSuccess = passwordResetSuccess
-            self.emailChangeReauthorizationSuccess = emailChangeReauthorizationSuccess
             self.emailChangeConfirmSuccess = emailChangeConfirmSuccess
             self.createVerificationSuccess = createVerificationSuccess
         }
@@ -146,7 +143,6 @@ extension Identity.Consumer.Configuration.Redirect {
             logoutSuccess: home,
             loginSuccess: home,
             passwordResetSuccess: home,
-            emailChangeReauthorizationSuccess: home,
             emailChangeConfirmSuccess: home
         )
     }
