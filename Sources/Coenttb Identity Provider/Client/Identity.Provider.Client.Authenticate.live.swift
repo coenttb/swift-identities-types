@@ -16,7 +16,7 @@ import Coenttb_Server
 import Coenttb_Vapor
 import Coenttb_Web
 import Fluent
-import FluentKit
+@preconcurrency import FluentKit
 import Identity_Provider
 import JWT
 @preconcurrency import Mailgun

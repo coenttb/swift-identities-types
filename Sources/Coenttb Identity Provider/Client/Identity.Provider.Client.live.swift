@@ -16,7 +16,7 @@ import Coenttb_Server
 import Coenttb_Vapor
 import Coenttb_Web
 import Fluent
-import FluentKit
+@preconcurrency import FluentKit
 import Identity_Provider
 import JWT
 import Dependencies
@@ -42,13 +42,13 @@ extension Identity_Provider.Identity.Provider.Client {
             authenticate: .live(),
             logout: {
                 
-                @Dependency(\.database) var database
-                let identity = try await Database.Identity.get(by: .auth, on: database)
-                identity.sessionVersion += 1
-                try await identity.save(on: database)
-                
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
+                
+                let identity = try await Database.Identity.get(by: .auth, on: request.db)
+                identity.sessionVersion += 1
+                try await identity.save(on: request.db)
+                
                 request.auth.logout(Database.Identity.self)
             },
             reauthorize: { password in
