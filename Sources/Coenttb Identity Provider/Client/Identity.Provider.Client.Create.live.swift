@@ -34,7 +34,6 @@ extension Identity_Provider.Identity.Provider.Client.Create {
                         let identity = try Database.Identity(email: email, password: password)
                         try await identity.save(on: database)
 
-                        // Claude: Delete any existing verification tokens for this identity
                         try await Database.Identity.Token.query(on: database)
                             .filter(\.$identity.$id == identity.id!)
                             .filter(\.$type == .emailVerification)
@@ -43,7 +42,6 @@ extension Identity_Provider.Identity.Provider.Client.Create {
                         guard try await identity.canGenerateToken(on: database)
                         else { throw Abort(.tooManyRequests, reason: "Token generation limit exceeded") }
 
-                        // Delete existing verification tokens first
                         try await Database.Identity.Token.query(on: database)
                             .filter(\.$identity.$id == identity.id!)
                             .filter(\.$type == .emailVerification)
@@ -69,19 +67,14 @@ extension Identity_Provider.Identity.Provider.Client.Create {
             verify: { email, token in
                 do {
                     try await database.transaction { database in
-                        print(1)
                         guard let identityToken = try await Database.Identity.Token.query(on: database)
                             .filter(\.$value == token)
                             .with(\.$identity)
                             .first()
-                        else {
-                            print(2)
-                            throw Abort(.notFound, reason: "Invalid or expired token")
-                        }
-                        print(3)
+                        else { throw Abort(.notFound, reason: "Invalid or expired token") }
+
                         guard identityToken.validUntil > Date.now
                         else {
-                            print(4)
                             try await identityToken.delete(on: database)
                             throw Abort(.gone, reason: "Token has expired")
                         }
@@ -89,24 +82,18 @@ extension Identity_Provider.Identity.Provider.Client.Create {
                         let email = try EmailAddress(email)
 
                         guard identityToken.identity.email == email.rawValue
-                        else {
-                            print(5)
-                            throw Abort(.badRequest, reason: "Email mismatch")
-                        }
-                        print(6)
+                        else { throw Abort(.badRequest, reason: "Email mismatch") }
+
                         identityToken.identity.emailVerificationStatus = .verified
 
                         guard let identityId = identityToken.identity.id
-                        else {
-                            print(7)
-                            throw Abort(.internalServerError, reason: "identity has no id")
-                        }
-                        print(8)
+                        else { throw Abort(.internalServerError, reason: "identity has no id") }
+
                         try await identityToken.identity.save(on: database)
-                        print(9)
+
                         try await createDatabaseUser(identityId)
                             .save(on: database)
-                        print(10)
+
                         try await identityToken.delete(on: database)
                     }
                 } catch {
