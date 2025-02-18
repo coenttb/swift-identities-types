@@ -41,6 +41,12 @@ extension Identity_Provider.Identity.Provider.Client {
         return Identity.Provider.Client(
             authenticate: .live(),
             logout: {
+                
+                @Dependency(\.database) var database
+                let identity = try await Database.Identity.get(by: .auth, on: database)
+                identity.sessionVersion += 1
+                try await identity.save(on: database)
+                
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
                 request.auth.logout(Database.Identity.self)
