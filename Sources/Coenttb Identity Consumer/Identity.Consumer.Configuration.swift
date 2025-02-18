@@ -119,7 +119,6 @@ extension Identity.Consumer.Configuration {
             loginSuccess: @escaping @Sendable () -> URL,
             passwordResetSuccess: @escaping @Sendable () -> URL,
             emailChangeConfirmSuccess: @escaping @Sendable () -> URL
-            
         ) {
             self.createProtected = createProtected
             self.loginProtected = loginProtected
