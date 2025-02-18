@@ -33,7 +33,6 @@ extension Identity.Consumer.View {
         @Dependency(\.identity.consumer.redirect.loginProtected) var loginProtectedRedirect
         @Dependency(\.identity.consumer.redirect.logoutSuccess) var logoutSuccessRedirect
         @Dependency(\.identity.consumer.redirect.passwordResetSuccess) var passwordResetSuccessRedirect
-        @Dependency(\.identity.consumer.redirect.emailChangeReauthorizationSuccess) var emailChangeReauthorizationSuccessRedirect
         @Dependency(\.identity.consumer.redirect.emailChangeConfirmSuccess) var emailChangeConfirmSuccessRedirect
         
         do {
@@ -63,7 +62,7 @@ extension Identity.Consumer.View {
                             primaryColor: primaryColor,
                             passwordResetHref: router.url(for: .view(.password(.reset(.request)))),
                             confirmFormAction: router.url(for: .api(.reauthorize(.init()))),
-                            redirectOnSuccess: emailChangeReauthorizationSuccessRedirect()
+                            redirectOnSuccess: router.url(for: .view(.emailChange(.request)))
                         )
                     }
                     
