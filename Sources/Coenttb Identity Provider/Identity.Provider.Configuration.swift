@@ -38,7 +38,6 @@ extension Identity.Provider.Configuration {
             cookies: Identity.CookiesConfiguration = .live,
             router: AnyParserPrinter<URLRequestData, Identity.API>,
             client: Identity.Provider.Client
-            
         ) {
             self.baseURL = baseURL
             self.domain = domain
@@ -46,8 +45,6 @@ extension Identity.Provider.Configuration {
             self.cookies = cookies
             self.router = router.baseURL(baseURL.absoluteString).eraseToAnyParserPrinter()
             self.client = client
-            
-            self.cookies.refreshToken.path = self.router.url(for: .authenticate(.token(.refresh(.init(token: "--------------------"))))).absoluteString
         }
     }
 }
@@ -103,4 +100,3 @@ extension Identity.Provider.Configuration.Provider: TestDependencyKey {
         client: .testValue
     )
 }
-

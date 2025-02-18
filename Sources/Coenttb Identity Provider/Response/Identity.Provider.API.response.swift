@@ -12,8 +12,7 @@ import Identity_Provider
 
 extension Identity.Provider.API {
     public static func response(
-        api: Identity.Provider.API,
-        logoutRedirectURL: () -> URL
+        api: Identity.Provider.API
     ) async throws -> Response {
         
         let rateLimitClient = try await Identity.API.rateLimit(api: api)
@@ -29,7 +28,7 @@ extension Identity.Provider.API {
         switch api {
         case .authenticate(let authenticate):
             do {
-                let response = try await Identity.Provider.API.Authenticate.response(authenticate: authenticate, logoutRedirectURL: logoutRedirectURL)
+                let response = try await Identity.Provider.API.Authenticate.response(authenticate: authenticate)
                 await rateLimitClient.recordSuccess()
                 return response
             } catch {
@@ -59,10 +58,7 @@ extension Identity.Provider.API {
 
         case .logout:
             try await client.logout()
-            @Dependency(\.request) var request
-            guard let request else { throw Abort.requestUnavailable }
-
-            return request.redirect(to: logoutRedirectURL().absoluteString)
+            return Response.success(true)
 
         case let .password(password):
             do {

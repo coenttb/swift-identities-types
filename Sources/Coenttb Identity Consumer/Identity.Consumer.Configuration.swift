@@ -134,6 +134,7 @@ extension Identity.Consumer.Configuration {
         }
     }
 }
+
 extension Identity.Consumer.Configuration.Redirect {
     public static func toHome() -> Self {
         @Dependency(\.identity.consumer.navigation.home) var home
