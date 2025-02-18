@@ -22,11 +22,11 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
             request: { reauthToken in
                 let identity = try await Database.Identity.get(by: .auth, on: database)
 
-                try await database.transaction { db in
+                try await database.transaction { database in
 
                     guard
                         let id = identity.id,
-                        let token = try await Database.Identity.Token.query(on: db)
+                        let token = try await Database.Identity.Token.query(on: database)
                         .filter(\.$identity.$id == id)
                         .filter(\.$type == .reauthenticationToken)
                         .filter(\.$value == reauthToken)
@@ -34,7 +34,7 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                         .first()
                     else { throw Abort(.unauthorized, reason: "Invalid reauthorization token") }
 
-                    try await token.delete(on: db)
+                    try await token.delete(on: database)
 
                     guard identity.deletion?.state == nil else {
                         throw Abort(.badRequest, reason: "User is already pending deletion")
@@ -44,7 +44,7 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
 
                     deletion.state = .pending
                     deletion.requestedAt = Date()
-                    try await deletion.save(on: db)
+                    try await deletion.save(on: database)
                     logger.notice("Deletion requested for user \(String(describing: identity.id))")
                 }
                 
@@ -56,7 +56,7 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
             cancel: {
                 let identity = try await Database.Identity.get(by: .auth, on: database)
 
-                try await database.transaction { db in
+                try await database.transaction { database in
 
                     guard identity.deletion?.state == .pending else {
                         throw Abort(.badRequest, reason: "User is not pending deletion")
@@ -65,14 +65,14 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                     identity.deletion?.state = nil
                     identity.deletion?.requestedAt = nil
 
-                    try await identity.save(on: db)
+                    try await identity.save(on: database)
                     logger.notice("Deletion cancelled for user \(String(describing: identity.id))")
                 }
             },
             confirm: {
                 let identity = try await Database.Identity.get(by: .auth, on: database)
 
-                try await database.transaction { db in
+                try await database.transaction { database in
                     guard
                         let deletion = identity.deletion,
                         deletion.state == .pending,
@@ -89,7 +89,7 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
 
                     // Update user state
                     identity.deletion?.state = .deleted
-                    try await identity.save(on: db)
+                    try await identity.save(on: database)
                     
                     logger.notice("Identity \(String(describing: identity.id)) marked as deleted")
                 }

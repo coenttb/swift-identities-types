@@ -25,14 +25,14 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                     
                     let identity = try await Database.Identity.get(by: .email(email), on: database)
                         
-                    let resetToken = try await database.transaction { db in
+                    let resetToken = try await database.transaction { database in
                         
                         guard let identityId = identity.id else {
                             throw Abort(.internalServerError, reason: "Invalid identity state")
                         }
 
                         // Delete existing reset tokens
-                        try await Database.Identity.Token.query(on: db)
+                        try await Database.Identity.Token.query(on: database)
                             .filter(\.$identity.$id == identityId)
                             .filter(\.$type == .passwordReset)
                             .delete()
@@ -42,7 +42,7 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                             validUntil: Date().addingTimeInterval(3600)
                         )
 
-                        try await resetToken.save(on: db)
+                        try await resetToken.save(on: database)
                         
                         return resetToken.value
 
@@ -59,9 +59,9 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                     do {
                         try validatePassword(newPassword)
 
-                        let emailAddress = try await database.transaction { db in
+                        let emailAddress = try await database.transaction { database in
                             // Fetch and validate token within transaction for consistency
-                            guard let resetToken = try await Database.Identity.Token.query(on: db)
+                            guard let resetToken = try await Database.Identity.Token.query(on: database)
                                 .filter(\.$value == token)
                                 .filter(\.$type == .passwordReset)
                                 .with(\.$identity)
@@ -70,7 +70,7 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                             }
 
                             guard resetToken.validUntil > Date() else {
-                                try await resetToken.delete(on: db)
+                                try await resetToken.delete(on: database)
                                 throw Abort(.gone, reason: "Reset token has expired")
                             }
 
@@ -79,8 +79,8 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                             resetToken.identity.sessionVersion += 1
 
                             // Save changes and cleanup
-                            try await resetToken.identity.save(on: db)
-                            try await resetToken.delete(on: db)
+                            try await resetToken.identity.save(on: database)
+                            try await resetToken.delete(on: database)
 
                             return resetToken.identity.emailAddress
                         }
@@ -103,7 +103,7 @@ extension Identity_Provider.Identity.Provider.Client.Password {
 
                     let identity = try await Database.Identity.get(by: .auth, on: database)
 
-                    try await database.transaction { db in
+                    try await database.transaction { database in
 
                         guard try identity.verifyPassword(currentPassword)
                         else { throw AuthenticationError.invalidCredentials }
@@ -114,7 +114,7 @@ extension Identity_Provider.Identity.Provider.Client.Password {
 
                         identity.sessionVersion += 1
 
-                        try await identity.save(on: db)
+                        try await identity.save(on: database)
 
                         @Dependency(\.fireAndForget) var fireAndForget
                         await fireAndForget {

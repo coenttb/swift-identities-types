@@ -41,16 +41,16 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                     
                     let newEmail = try EmailAddress(newEmail)
                     
-                    let changeToken = try await database.transaction { db in
+                    let changeToken = try await database.transaction { database in
                         
-                        if try await Database.Identity.query(on: db)
+                        if try await Database.Identity.query(on: database)
                             .filter(\.$email == newEmail.rawValue)
                             .first() != nil {
                             throw ValidationError.invalidInput("Email address is already in use")
                         }
 
                         do {
-                            try await Database.Identity.Token.query(on: db)
+                            try await Database.Identity.Token.query(on: database)
                                 .filter(\.$identity.$id == identity.id!)
                                 .filter(\.$type == .emailChange)
                                 .delete()
@@ -63,7 +63,7 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                             validUntil: Date().addingTimeInterval(24 * 60 * 60)
                         )
                         
-                        try await changeToken.save(on: db)
+                        try await changeToken.save(on: database)
                         
                         let emailChangeRequest = try Database.EmailChangeRequest(
                             identity: identity,
@@ -71,7 +71,7 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                             token: changeToken
                         )
                         
-                        try await emailChangeRequest.save(on: db)
+                        try await emailChangeRequest.save(on: database)
                         
                         return changeToken.value
 
@@ -106,8 +106,8 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
             },
             confirm: { token in
                 do {
-                    let (response, oldEmail, newEmail) = try await database.transaction { db in
-                        guard let token = try await Database.Identity.Token.query(on: db)
+                    let (response, oldEmail, newEmail) = try await database.transaction { database in
+                        guard let token = try await Database.Identity.Token.query(on: database)
                             .filter(\.$value == token)
                             .filter(\.$type == .emailChange)
                             .with(\.$identity)
@@ -115,7 +115,7 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                             throw ValidationError.invalidToken
                         }
                         
-                        guard let emailChangeRequest = try await Database.EmailChangeRequest.query(on: db)
+                        guard let emailChangeRequest = try await Database.EmailChangeRequest.query(on: database)
                             .filter(\.$token.$id == token.id!)
                             .with(\.$identity)
                             .first() else {
@@ -123,14 +123,14 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                         }
                         
                         guard token.validUntil > Date() else {
-                            try await token.delete(on: db)
-                            try await emailChangeRequest.delete(on: db)
+                            try await token.delete(on: database)
+                            try await emailChangeRequest.delete(on: database)
                             throw Abort(.gone, reason: "Email change token has expired")
                         }
                         
                         let newEmail = try EmailAddress(emailChangeRequest.newEmail)
 
-                        if try await Database.Identity.query(on: db)
+                        if try await Database.Identity.query(on: database)
                             .filter(\.$email == newEmail.rawValue)
                             .filter(\.$id != emailChangeRequest.identity.id!)
                             .first() != nil {
@@ -142,19 +142,19 @@ extension Identity_Provider.Identity.Provider.Client.EmailChange {
                         emailChangeRequest.identity.emailAddress = newEmail
                         emailChangeRequest.identity.sessionVersion += 1
 
-                        try await emailChangeRequest.identity.save(on: db)
+                        try await emailChangeRequest.identity.save(on: database)
 
-                        try await token.delete(on: db)
+                        try await token.delete(on: database)
 
-                        try await emailChangeRequest.delete(on: db)
+                        try await emailChangeRequest.delete(on: database)
 
                         logger.notice("Email change completed successfully from \(oldEmail) to \(newEmail)")
                         
-                        try await emailChangeRequest.identity.save(on: db)
+                        try await emailChangeRequest.identity.save(on: database)
 
-                        try await token.delete(on: db)
+                        try await token.delete(on: database)
 
-                        try await emailChangeRequest.delete(on: db)
+                        try await emailChangeRequest.delete(on: database)
 
                         logger.notice("Email change completed successfully from \(oldEmail) to \(newEmail)")
                         

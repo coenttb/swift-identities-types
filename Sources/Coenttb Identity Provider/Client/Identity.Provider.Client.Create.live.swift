@@ -68,9 +68,9 @@ extension Identity_Provider.Identity.Provider.Client.Create {
             },
             verify: { email, token in
                 do {
-                    try await database.transaction { db in
+                    try await database.transaction { database in
                         print(1)
-                        guard let identityToken = try await Database.Identity.Token.query(on: db)
+                        guard let identityToken = try await Database.Identity.Token.query(on: database)
                             .filter(\.$value == token)
                             .with(\.$identity)
                             .first()
