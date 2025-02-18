@@ -1,6 +1,6 @@
-# coenttb-syndication
+# coenttb-identity
 
-`coenttb-syndication`
+`coenttb-identity`
 
 ![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
 
@@ -8,20 +8,20 @@ This package is currently in active development and is subject to frequent chang
 
 ## Installation
 
-You can add `coenttb-syndication` to an Xcode project by including it as a package dependency:
+You can add `coenttb-identity` to an Xcode project by including it as a package dependency:
 
-Repository URL: https://github.com/coenttb/coenttb-syndication
+Repository URL: https://github.com/coenttb/coenttb-identity
 
 For a Swift Package Manager project, add the dependency in your Package.swift file:
 ```
 dependencies: [
-  .package(url: "https://github.com/coenttb/coenttb-syndication", branch: "main")
+  .package(url: "https://github.com/coenttb/coenttb-identity", branch: "main")
 ]
 ```
 
 ## Example
 
-Refer to [coenttb/coenttb-com-server](https://www.github.com/coenttb/coenttb-com-server) for an example of how to use coenttb-syndication.
+Refer to [coenttb/coenttb-com-server](https://www.github.com/coenttb/coenttb-com-server) for an example of how to use coenttb-identity.
 
 ## Related Projects
 

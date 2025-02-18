@@ -9,6 +9,7 @@ import Foundation
 import Identity_Shared
 import Dependencies
 import Vapor
+import Coenttb_Vapor
 
 extension Identity {
     public struct CookiesConfiguration: Sendable, Hashable {

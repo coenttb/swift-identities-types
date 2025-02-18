@@ -135,6 +135,7 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
             apiKey: { apiKey in
                 @Dependency(\.request) var request
                 @Dependency(\.logger) var logger
+                @Dependency(\.date) var date
                 guard let request else { throw Abort.requestUnavailable }
 
                 do {
@@ -142,16 +143,22 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                     guard let apiKey = try await Database.ApiKey.query(on: request.db)
                         .filter(\.$key == apiKey)
                         .with(\.$identity)
-                        .first() else {
-                            logger.warning("API key authentication failed: No identity found for API key \(apiKey)")
-                            throw Abort(.unauthorized, reason: "Invalid API key")
+                        .first()
+                    else {
+                        logger.warning("API key authentication failed: No identity found for API key \(apiKey)")
+                        throw Abort(.unauthorized, reason: "Invalid API key")
                     }
 
+                    guard date() < apiKey.validUntil
+                    else {
+                        apiKey.isActive = false
+                        try await apiKey.save(on: request.db)
+                        throw Abort(.unauthorized)
+                    }
+                    
                     let identity = apiKey.identity
 
                     let response: Identity.Authentication.Response = try await .init(identity)
-
-                    request.headers.bearerAuthorization = .init(token: response.accessToken.value)
 
                     identity.lastLoginAt = Date()
                     try await identity.save(on: request.db)

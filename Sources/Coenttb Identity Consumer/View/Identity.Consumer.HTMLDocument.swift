@@ -16,38 +16,24 @@ extension Identity.Consumer {
         let view: Identity.Consumer.View
         let title: (Identity.Consumer.View) -> String
         let description: (Identity.Consumer.View) -> String
-        let primaryColor: HTMLColor
-        let accentColor: HTMLColor
-        let favicons: Favicons
-        let canonicalHref: URL?
-        let hreflang: (Identity.Consumer.View, Languages.Language) -> URL
-        let termsOfUse: URL
-        let privacyStatement: URL
         let _body: Body
-
+        
+        @Dependency(\.identity.consumer.branding.primaryColor) var primaryColor
+        @Dependency(\.identity.consumer.branding.accentColor) var accentColor
+        @Dependency(\.identity.consumer.branding.favicons) var favicons
+        @Dependency(\.identity.consumer.canonicalHref) var canonicalHref
+        @Dependency(\.identity.consumer.hreflang) var hreflang
+        @Dependency(\.identity.consumer.branding.footer_links) var footer_links
+        
         package init(
             view: Identity.Consumer.View,
             title: @escaping (Identity.Consumer.View) -> String,
             description: @escaping (Identity.Consumer.View) -> String,
-            primaryColor: HTMLColor,
-            accentColor: HTMLColor,
-            @HTMLBuilder favicons: () -> Favicons,
-            canonicalHref: URL?,
-            hreflang: @escaping (Identity.Consumer.View, Languages.Language) -> URL,
-            termsOfUse: URL,
-            privacyStatement: URL,
             @HTMLBuilder body: () -> Body
         ) {
             self.view = view
             self.title = title
             self.description = description
-            self.primaryColor = primaryColor
-            self.accentColor = accentColor
-            self.favicons = favicons()
-            self.canonicalHref = canonicalHref
-            self.hreflang = hreflang
-            self.termsOfUse = termsOfUse
-            self.privacyStatement = privacyStatement
             self._body = body()
         }
 
@@ -74,11 +60,7 @@ extension Identity.Consumer {
             HTMLGroup {
                 _body
 
-                IdentityFooter(
-                    termsOfUse: self.termsOfUse,
-                    privacyStatement: self.privacyStatement
-                )
-
+                Identity.Consumer.View.Footer(links: footer_links)
             }
             .dependency(\.language, language)
             .linkColor(self.primaryColor)

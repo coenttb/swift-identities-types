@@ -10,7 +10,7 @@ import Foundation
 import Identity_Consumer
 
 extension Identity.Consumer.View {
-    public struct Logo: HTML {
+    public struct Logo: HTML, Sendable {
         let logo: SVG
         let href: URL
 

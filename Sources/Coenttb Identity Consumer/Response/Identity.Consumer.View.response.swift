@@ -12,84 +12,37 @@ import Identity_Consumer
 
 extension Identity.Consumer.View {
     public static func response(
-        view: Identity.Consumer.View,
-        currentUserName: () -> String?,
-        logo: Identity.Consumer.View.Logo,
-        hreflang: @escaping (Identity.Consumer.View, Language) -> URL,
-        primaryColor: HTMLColor,
-        accentColor: HTMLColor,
-        favicons: Favicons,
-        canonicalHref: URL?,
-        homeHref: URL = URL(string: "/")!,
-        createVerificationSuccessRedirect: URL,
-        createProtectedRedirect: URL,
-        loginSuccessRedirect: URL,
-        loginProtectedRedirect: URL,
-        logoutSuccessRedirect: URL,
-        passwordResetSuccessRedirect: URL,
-        emailChangeReauthorizationSuccessRedirect: URL,
-        emailChangeConfirmSuccessRedirect: URL,
-        termsOfUse: URL,
-        privacyStatement: URL,
-        loginHref: URL = {
-            @Dependency(\.identity.consumer.router) var router
-            return router.url(for: .view(.login))
-        }(),
-        accountCreateHref: URL = {
-            @Dependency(\.identity.consumer.router) var router
-            return router.url(for: .view(.create(.request)))
-        }(),
-        createFormAction: URL = {
-            @Dependency(\.identity.consumer.router) var router
-            return router.url(for: .api(.create(.request(.init()))))
-        }(),
-        verificationAction: URL = {
-            @Dependency(\.identity.consumer.router) var router
-            return router.url(for: .api(.create(.verify(.init()))))
-        }(),
-        passwordResetHref: URL = {
-            @Dependency(\.identity.consumer.router) var router
-            return router.url(for: .view(.password(.reset(.request))))
-        }(),
-        loginFormAction: URL = {
-            @Dependency(\.identity.consumer.router) var router
-            return router.url(for: .api(.authenticate(.credentials(.init()))))
-        }(),
-        passwordChangeRequestAction: URL = {
-            @Dependency(\.identity.consumer.router) var router
-            return router.url(for: .api(.password(.change(.request(change: .init())))))
-        }(),
-        passwordResetAction: URL = {
-            @Dependency(\.identity.consumer.router) var router
-            return router.url(for: .api(.password(.reset(.request(.init())))))
-        }(),
-        passwordResetConfirmAction: URL = {
-            @Dependency(\.identity.consumer.router) var router
-            return router.url(for: .api(.password(.reset(.confirm(.init())))))
-        }(),
-        emailChangeRequestAction: URL = {
-            @Dependency(\.identity.consumer.router) var router
-            return router.url(for: .api(.emailChange(.request(.init()))))
-        }(),
-        emailChangeConfirmFormAction: URL = {
-            @Dependency(\.identity.consumer.router) var router
-            return router.url(for: .api(.emailChange(.confirm(.init()))))
-        }(),
-        reauthorizationFormAction: URL = {
-            @Dependency(\.identity.consumer.router) var router
-            return router.url(for: .api(.reauthorize(.init())))
-        }()
+        view: Identity.Consumer.View
     ) async throws -> any AsyncResponseEncodable {
         
         @Dependency(\.identity.consumer.client) var client
+        @Dependency(\.identity.consumer.router) var router
+        @Dependency(\.identity.consumer.canonicalHref) var canonicalHref
+        @Dependency(\.identity.consumer.currentUserName) var currentUserName
+        
+        @Dependency(\.identity.consumer.navigation.home) var homeHref
+        
+        @Dependency(\.identity.consumer.branding.primaryColor) var primaryColor
+        @Dependency(\.identity.consumer.branding.accentColor) var accentColor
+        @Dependency(\.identity.consumer.branding.favicons) var favicons
+        @Dependency(\.identity.consumer.branding.logo) var logo
+                
+        @Dependency(\.identity.consumer.redirect.createVerificationSuccess) var createVerificationSuccessRedirect
+        @Dependency(\.identity.consumer.redirect.createProtected) var createProtectedRedirect
+        @Dependency(\.identity.consumer.redirect.loginSuccess) var loginSuccessRedirect
+        @Dependency(\.identity.consumer.redirect.loginProtected) var loginProtectedRedirect
+        @Dependency(\.identity.consumer.redirect.logoutSuccess) var logoutSuccessRedirect
+        @Dependency(\.identity.consumer.redirect.passwordResetSuccess) var passwordResetSuccessRedirect
+        @Dependency(\.identity.consumer.redirect.emailChangeReauthorizationSuccess) var emailChangeReauthorizationSuccessRedirect
+        @Dependency(\.identity.consumer.redirect.emailChangeConfirmSuccess) var emailChangeConfirmSuccessRedirect
         
         do {
             do {
                 try await Identity.Consumer.View.protect(
                     view: view,
                     with: JWT.Token.Access.self,
-                    createProtectedRedirect: createProtectedRedirect,
-                    loginProtectedRedirect: loginProtectedRedirect
+                    createProtectedRedirect: createProtectedRedirect(),
+                    loginProtectedRedirect: loginProtectedRedirect()
                 )
             }
             catch {
@@ -98,19 +51,19 @@ extension Identity.Consumer.View {
                 
                 switch view {
                 case .create:
-                    return request.redirect(to: createProtectedRedirect.relativePath)
+                    return request.redirect(to: createProtectedRedirect().relativePath)
                     
                 case .authenticate(.credentials):
-                    return request.redirect(to: loginProtectedRedirect.relativePath)
+                    return request.redirect(to: loginProtectedRedirect().relativePath)
                     
                 case .emailChange(.request):
                     return accountDefaultContainer {
                         Identity.Consumer.View.Reauthorize(
                             currentUserName: "currentUserName",
                             primaryColor: primaryColor,
-                            passwordResetHref: passwordResetHref,
-                            confirmFormAction: reauthorizationFormAction,
-                            redirectOnSuccess: emailChangeReauthorizationSuccessRedirect
+                            passwordResetHref: router.url(for: .view(.password(.reset(.request)))),
+                            confirmFormAction: router.url(for: .api(.reauthorize(.init()))),
+                            redirectOnSuccess: emailChangeReauthorizationSuccessRedirect()
                         )
                     }
                     
@@ -128,13 +81,6 @@ extension Identity.Consumer.View {
                 view: view,
                 title: { _ in "" },
                 description: { _ in "" },
-                primaryColor: primaryColor,
-                accentColor: accentColor,
-                favicons: { favicons },
-                canonicalHref: canonicalHref,
-                hreflang: hreflang,
-                termsOfUse: termsOfUse,
-                privacyStatement: privacyStatement,
                 body: {
                     logo
                         .margin(top: .medium)
@@ -151,16 +97,16 @@ extension Identity.Consumer.View {
                 return accountDefaultContainer {
                     Identity.Consumer.View.Create.Request(
                         primaryColor: primaryColor,
-                        loginHref: loginHref,
-                        accountCreateHref: accountCreateHref,
-                        createFormAction: createFormAction
+                        loginHref: router.url(for: .view(.login)),
+                        accountCreateHref: router.url(for: .view(.create(.request))),
+                        createFormAction: router.url(for: .api(.create(.request(.init()))))
                     )
                 }
             case .verify:
                 return accountDefaultContainer {
                     Identity.Consumer.View.Create.Verify(
-                        verificationAction: verificationAction,
-                        redirectURL: createVerificationSuccessRedirect
+                        verificationAction: router.url(for: .api(.create(.verify(.init())))),
+                        redirectURL: createVerificationSuccessRedirect()
                     )
                 }
             }
@@ -173,10 +119,10 @@ extension Identity.Consumer.View {
                 return accountDefaultContainer {
                     Identity.Consumer.View.Authenticate.Login(
                         primaryColor: primaryColor,
-                        passwordResetHref: passwordResetHref,
-                        accountCreateHref: accountCreateHref,
-                        loginFormAction: loginFormAction,
-                        loginSuccessRedirect: loginSuccessRedirect
+                        passwordResetHref: router.url(for: .view(.password(.reset(.request)))),
+                        accountCreateHref: router.url(for: .view(.create(.request))),
+                        loginFormAction: router.url(for: .api(.authenticate(.credentials(.init())))),
+                        loginSuccessRedirect: loginSuccessRedirect()
                     )
                 }
             }
@@ -207,8 +153,8 @@ extension Identity.Consumer.View {
                 case .request:
                     return accountDefaultContainer {
                         Identity.Consumer.View.Password.Reset.Request(
-                            formActionURL: passwordResetAction,
-                            homeHref: homeHref,
+                            formActionURL: router.url(for: .api(.password(.reset(.request(.init()))))),
+                            homeHref: homeHref(),
                             primaryColor: primaryColor
                         )
                     }
@@ -217,9 +163,9 @@ extension Identity.Consumer.View {
                     return accountDefaultContainer {
                         Identity.Consumer.View.Password.Reset.Confirm(
                             token: confirm.token,
-                            passwordResetAction: passwordResetConfirmAction,
-                            homeHref: homeHref,
-                            redirect: passwordResetSuccessRedirect,
+                            passwordResetAction: router.url(for: .api(.password(.reset(.confirm(.init()))))),
+                            homeHref: homeHref(),
+                            redirect: passwordResetSuccessRedirect(),
                             primaryColor: primaryColor
                         )
                     }
@@ -230,8 +176,8 @@ extension Identity.Consumer.View {
                 case .request:
                     return accountDefaultContainer {
                         Identity.Consumer.View.Password.Change.Request(
-                            formActionURL: passwordChangeRequestAction,
-                            redirectOnSuccess: loginHref,
+                            formActionURL: router.url(for: .api(.password(.change(.request(change: .init()))))),
+                            redirectOnSuccess: router.url(for: .view(.login)),
                             primaryColor: primaryColor
                         )
                     }
@@ -243,8 +189,8 @@ extension Identity.Consumer.View {
             case .request:
                 return accountDefaultContainer {
                     Identity.Consumer.View.EmailChange.Request(
-                        formActionURL: emailChangeRequestAction,
-                        homeHref: homeHref,
+                        formActionURL: router.url(for: .api(.emailChange(.request(.init())))),
+                        homeHref: homeHref(),
                         primaryColor: primaryColor
                     )
                 }
@@ -254,7 +200,7 @@ extension Identity.Consumer.View {
                 
                 return accountDefaultContainer {
                     Identity.Consumer.View.EmailChange.Confirm(
-                        redirect: emailChangeConfirmSuccessRedirect,
+                        redirect: emailChangeConfirmSuccessRedirect(),
                         primaryColor: primaryColor
                     )
                 }
@@ -262,11 +208,11 @@ extension Identity.Consumer.View {
             case .reauthorization:
                 return accountDefaultContainer {
                     Identity.Consumer.View.Reauthorize(
-                        currentUserName: "currentUsername2",
+                        currentUserName: currentUserName() ?? "",
                         primaryColor: primaryColor,
-                        passwordResetHref: passwordResetHref,
-                        confirmFormAction: reauthorizationFormAction,
-                        redirectOnSuccess: homeHref
+                        passwordResetHref: router.url(for: .view(.password(.reset(.request)))),
+                        confirmFormAction: router.url(for: .api(.reauthorize(.init()))),
+                        redirectOnSuccess: homeHref()
                     )
                 }
             }

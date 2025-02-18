@@ -53,37 +53,33 @@ extension Identity.Provider.Configuration {
 }
 
 extension Identity.CookiesConfiguration {
-    static public let live: Identity.CookiesConfiguration = {
-//        @Dependency(\.identity.provider.router) var router
-        
-        return .init(
-            accessToken: .init(
-                expires: 60 * 15,
-                maxAge: 60 * 15,
-                domain: nil,
-                isSecure: true,
-                isHTTPOnly: true,
-                sameSitePolicy: .lax
-            ),
-            refreshToken: .init(
-                expires: 60 * 60 * 24 * 30,
-                maxAge: 60 * 60 * 24 * 30,
-                domain: nil,
-                path: nil,
-                isSecure: true,
-                isHTTPOnly: true,
-                sameSitePolicy: .lax
-            ),
-            reauthorizationToken: .init(
-                expires: 60 * 5,
-                maxAge: 60 * 5,
-                domain: nil,
-                isSecure: true,
-                isHTTPOnly: true,
-                sameSitePolicy: .lax
-            )
+    static public let live: Identity.CookiesConfiguration = .init(
+        accessToken: .init(
+            expires: 60 * 15,
+            maxAge: 60 * 15,
+            domain: nil,
+            isSecure: true,
+            isHTTPOnly: true,
+            sameSitePolicy: .lax
+        ),
+        refreshToken: .init(
+            expires: 60 * 60 * 24 * 30,
+            maxAge: 60 * 60 * 24 * 30,
+            domain: nil,
+            path: nil,
+            isSecure: true,
+            isHTTPOnly: true,
+            sameSitePolicy: .lax
+        ),
+        reauthorizationToken: .init(
+            expires: 60 * 5,
+            maxAge: 60 * 5,
+            domain: nil,
+            isSecure: true,
+            isHTTPOnly: true,
+            sameSitePolicy: .lax
         )
-    }()
+    )
 }
 
 extension Identity.Provider.Configuration: TestDependencyKey {

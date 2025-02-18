@@ -79,7 +79,6 @@ extension Identity.Consumer.Client.Authenticate {
                 }
             ),
             apiKey: { apiKey in
-                
                 do {
                     return try await client.handleRequest(
                         for: .authenticate(.apiKey(.init(token: apiKey))),
@@ -93,45 +92,3 @@ extension Identity.Consumer.Client.Authenticate {
     }
 }
 
-extension Identity.Client {
-    public func login(
-        request: Request,
-        accessToken: String?,
-        refreshToken: (Vapor.Request) -> String?,
-        expirationBuffer: TimeInterval = 300
-    ) async throws -> Identity.Authentication.Response? {
-        
-        @Dependency(\.date) var date
-        
-        guard let accessToken = accessToken
-        else {
-            guard let refreshToken = request.cookies.refreshToken?.string
-            else { return nil }
-            
-            return try await authenticate.token.refresh(token: refreshToken)
-        }
-
-        do {
-            try await authenticate.token.access(token: accessToken)
-            
-            guard let currentToken = request.auth.get(JWT.Token.Access.self)
-            else { throw Abort(.unauthorized) }
-            
-            guard date().addingTimeInterval(expirationBuffer) < currentToken.expiration.value
-            else {
-                guard let refreshToken = refreshToken(request)
-                else { throw Abort(.unauthorized) }
-                
-                return try await authenticate.token.refresh(token: refreshToken)
-            }
-            
-            return nil
-        } catch {
-            // Access token invalid, try refresh
-            guard let refreshToken = request.cookies.refreshToken?.string else {
-                return nil
-            }
-            return try await authenticate.token.refresh(token: refreshToken)
-        }
-    }
-}
