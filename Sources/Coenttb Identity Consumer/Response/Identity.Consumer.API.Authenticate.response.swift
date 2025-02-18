@@ -47,9 +47,11 @@ extension Identity.Consumer.API.Authenticate {
                     let identityAuthenticationResponse = try await client.authenticate.credentials(credentials)
                     @Dependency(\.identity.consumer.cookies.accessToken) var accessTokenConfiguration
                     @Dependency(\.identity.consumer.cookies.refreshToken) var refreshTokenConfiguration
+                    @Dependency(\.logger) var logger
                     
-                    let response = Response.success(true)
-                    return response
+                    logger.debug("Identity.Consumer.API.Authenticate.response will return credentials with cookies")
+                    
+                    return Response.success(true)
                         .withTokens(for: identityAuthenticationResponse)
                 } catch {
                     print("Failed in credentials case with error:", error)
