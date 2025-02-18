@@ -69,12 +69,12 @@ extension Identity.Consumer.Configuration {
         
         public init(
             baseURL: URL,
-            canonicalHref: @escaping @Sendable (Identity.Consumer.View) -> URL? = { _ in nil },
             domain: String? = nil,
             cookies: Identity.CookiesConfiguration,
             router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>,
             client: Identity.Consumer.Client,
             currentUserName: @escaping @Sendable () -> String?,
+            canonicalHref: @escaping @Sendable (Identity.Consumer.View) -> URL? = { _ in nil },
             hreflang: @escaping @Sendable (Identity.Consumer.View, Languages.Language) -> URL,
             branding: Branding,
             navigation: Navigation,
