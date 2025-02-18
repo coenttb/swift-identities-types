@@ -74,8 +74,14 @@ extension Identity.Consumer.Configuration {
             router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>,
             client: Identity.Consumer.Client,
             currentUserName: @escaping @Sendable () -> String?,
-            canonicalHref: @escaping @Sendable (Identity.Consumer.View) -> URL? = { _ in nil },
-            hreflang: @escaping @Sendable (Identity.Consumer.View, Languages.Language) -> URL,
+            canonicalHref: @escaping @Sendable (Identity.Consumer.View) -> URL? = {
+                @Dependency(\.identity.consumer.router) var router
+                return router.url(for: .view($0))
+            },
+            hreflang: @escaping @Sendable (Identity.Consumer.View, Languages.Language) -> URL = { view, _ in
+                @Dependency(\.identity.consumer.router) var router
+                return router.url(for: .view(view))
+            },
             branding: Branding,
             navigation: Navigation,
             redirect: Identity.Consumer.Configuration.Redirect
