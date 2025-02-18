@@ -85,14 +85,22 @@ extension Database.Identity {
             self.id = id
             self.$identity.id = try identity.requireID()
             self.type = type
-            self.value = Database.Identity.Token.generateSecureToken()
+            self.value = Database.Identity.Token.generateSecureToken(type: type)
             self.validUntil = validUntil ?? Date().addingTimeInterval(3600) // Default 1 hour validity
         }
 
-        private static func generateSecureToken() -> String {
-            SymmetricKey(size: .bits256)
-                .withUnsafeBytes { Data($0) }
-                .base64EncodedString()
+        private static func generateSecureToken(type: Database.Identity.Token.TokenType) -> String {
+            switch type {
+            case .emailVerification:
+                SymmetricKey(size: .bits256)
+                    .withUnsafeBytes { Data($0) }
+                    .base64EncodedString()
+                    .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+            default:
+                SymmetricKey(size: .bits256)
+                    .withUnsafeBytes { Data($0) }
+                    .base64EncodedString()
+            }
         }
     }
 }
