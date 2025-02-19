@@ -9,6 +9,7 @@ import Dependencies
 import DependenciesMacros
 import EmailAddress
 import Foundation
+import SwiftWeb
 
 extension Identity {
     @DependencyClient

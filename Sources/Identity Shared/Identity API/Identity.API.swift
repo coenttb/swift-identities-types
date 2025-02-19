@@ -5,15 +5,15 @@
 //  Created by Coen ten Thije Boonkkamp on 10/09/2024.
 //
 
-import Coenttb_Web
+import SwiftWeb
 
 extension Identity {
     public enum API: Equatable, Sendable {
         case authenticate(Identity.API.Authenticate)
+        case reauthorize(Identity.API.Reauthorize)
         case create(Identity.API.Create)
         case delete(Identity.API.Delete)
         case logout
-        case reauthorize(Identity.API.Reauthorize)
         case email(Identity.API.Email)
         case password(Identity.API.Password)
     }
@@ -26,7 +26,6 @@ extension Identity.API {
 
         public var body: some URLRouting.Router<Identity.API> {
             OneOf {
-
                 URLRouting.Route(.case(Identity.API.create)) {
                     Path.create
                     Identity.API.Create.Router()
@@ -66,9 +65,6 @@ extension Identity.API {
         }
     }
 }
-
-extension URLRequestData: @retroactive @unchecked Sendable {}
-extension AnyParserPrinter: @unchecked @retroactive Sendable where Input: Sendable, Output: Sendable {}
 
 extension Identity.API.Router: TestDependencyKey {
     public static let testValue: AnyParserPrinter<URLRequestData, Identity.API> = Identity.API.Router().eraseToAnyParserPrinter()

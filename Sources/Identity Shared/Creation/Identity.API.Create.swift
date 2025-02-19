@@ -5,12 +5,12 @@
 //  Created by Coen ten Thije Boonkkamp on 17/10/2024.
 //
 
-import Coenttb_Web
+import SwiftWeb
 
 extension Identity.API {
     public enum Create: Equatable, Sendable {
-        case request(Identity.Create.Request)
-        case verify(Identity.Create.Verify)
+        case request(Identity.Creation.Request)
+        case verify(Identity.Creation.Verify)
     }
 }
 
@@ -22,10 +22,10 @@ extension Identity.API.Create {
         public var body: some URLRouting.Router<Identity.API.Create> {
             OneOf {
                 URLRouting.Route(.case(Identity.API.Create.request)) {
-                    Identity.Create.Request.Router()
+                    Identity.Creation.Request.Router()
                 }
                 URLRouting.Route(.case(Identity.API.Create.verify)) {
-                    Identity.Create.Verify.Router()
+                    Identity.Creation.Verify.Router()
                 }
             }
         }

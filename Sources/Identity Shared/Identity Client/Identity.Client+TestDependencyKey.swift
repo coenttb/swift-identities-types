@@ -19,10 +19,10 @@ extension Identity.Client: TestDependencyKey {
 extension Identity.Client.Create: TestDependencyKey {
     public static var testValue: Self {
         .init(
-            request: { email, password in
-                
+            request: { _, _ in
+
             },
-            verify: { email, token in
+            verify: { email, _ in
                 _ = try EmailAddress(email)
             }
         )
@@ -36,12 +36,12 @@ extension Identity.Client.Password: TestDependencyKey {
                 request: { email in
                     _ = try EmailAddress(email)
                 },
-                confirm: { token, newPassword in
+                confirm: { _, _ in
 
                 }
             ),
             change: .init(
-                request: { currentPassword, newPassword in
+                request: { _, _ in
 
                 }
             )
@@ -49,15 +49,13 @@ extension Identity.Client.Password: TestDependencyKey {
     }
 }
 
-
-
 extension Identity.Client.Email.Change: TestDependencyKey {
     public static var testValue: Self {
         .init(
             request: { _ in
                 return .success
             },
-            confirm: { token in
+            confirm: { _ in
                 return .testValue
             }
         )
@@ -67,11 +65,11 @@ extension Identity.Client.Email.Change: TestDependencyKey {
 extension Identity.Client.Delete: TestDependencyKey {
     public static var testValue: Self {
         .init(
-            request: { reauthToken in
-                
+            request: { _ in
+
             },
             cancel: {
-                
+
             },
             confirm: {
             }
@@ -86,17 +84,16 @@ extension Identity.Client.Authenticate: TestDependencyKey {
                     .testValue
             },
             token: .init(
-                access: { token in
-                    
+                access: { _ in
+
                 },
-                refresh: { token in
+                refresh: { _ in
                     .testValue
                 }
             ),
-            apiKey: { apiKey in
+            apiKey: { _ in
                     .testValue
             }
         )
     }
 }
-

@@ -5,7 +5,7 @@
 //  Created by Coen ten Thije Boonkkamp on 05/02/2025.
 //
 
-import Coenttb_Web
+import SwiftWeb
 
 extension Identity {
     public struct Reauthorization: Codable, Hashable, Sendable {

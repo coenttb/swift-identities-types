@@ -1,11 +1,11 @@
 //
-//  File.swift
-//  coenttb-identity
+//  Identity.Password.swift
+//  swift-identity
 //
 //  Created by Coen ten Thije Boonkkamp on 28/01/2025.
 //
 
-import Coenttb_Web
+import SwiftWeb
 
 extension Identity {
     public enum Password {}
@@ -13,7 +13,6 @@ extension Identity {
 
 extension Identity.Password {
     public enum Reset {}
-    public enum Change {}
 }
 
 extension Identity.Password.Reset {
@@ -86,6 +85,10 @@ extension Identity.Password.Reset.Confirm {
     }
 }
 
+extension Identity.Password {
+    public enum Change {}
+}
+
 extension Identity.Password.Change {
     public typealias Reauthorization = Identity.Reauthorization
 }
@@ -122,4 +125,3 @@ extension Identity.Password.Change.Request {
         }
     }
 }
-

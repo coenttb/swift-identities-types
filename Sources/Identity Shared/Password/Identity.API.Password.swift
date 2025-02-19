@@ -5,7 +5,7 @@
 //  Created by Coen ten Thije Boonkkamp on 17/10/2024.
 //
 
-import Coenttb_Web
+import SwiftWeb
 
 extension Identity.API {
     public enum Password: Equatable, Sendable {

@@ -1,44 +1,40 @@
 //
 //  File.swift
-//  coenttb-identity
+//  swift-identity
 //
 //  Created by Coen ten Thije Boonkkamp on 28/01/2025.
 //
 
-import Coenttb_Web
+import SwiftWeb
 
 extension Identity {
-    public enum Delete {}
+    public enum Deletion {}
 }
 
-extension Identity.Delete {
+extension Identity.Deletion {
     public struct Request: Codable, Hashable, Sendable {
-//        public let userId: String
         public let reauthToken: String
 
         public init(
-//            userId: String = "",
             reauthToken: String = ""
         ) {
-//            self.userId = userId
             self.reauthToken = reauthToken
         }
 
         public enum CodingKeys: String, CodingKey {
-//            case userId
             case reauthToken
         }
     }
 }
 
-extension Identity.Delete.Request {
+extension Identity.Deletion.Request {
     public struct Router: ParserPrinter, Sendable {
 
         public init() {}
 
-        public var body: some URLRouting.Router<Identity.Delete.Request> {
+        public var body: some URLRouting.Router<Identity.Deletion.Request> {
             Method.post
-            Body(.form(Identity.Delete.Request.self, decoder: .default))
+            Body(.form(Identity.Deletion.Request.self, decoder: .default))
         }
     }
 }
@@ -56,14 +52,14 @@ extension Identity.Delete.Request {
 //    }
 // }
 
-// extension Identity.Delete.Cancel {
+// extension Identity.Deletion.Cancel {
 //    public struct Router: ParserPrinter, Sendable {
 //        
 //        public init() {}
 //
-//        public var body: some URLRouting.Router<Identity.Delete.Cancel> {
+//        public var body: some URLRouting.Router<Identity.Deletion.Cancel> {
 //            Method.post
-//            Body(.form(Identity.Delete.Cancel.self, decoder: .default))
+//            Body(.form(Identity.Deletion.Cancel.self, decoder: .default))
 //        }
 //    }
 // }
@@ -80,14 +76,14 @@ extension Identity.Delete.Request {
 //    }
 // }
 //
-// extension Identity.Delete.Confirm {
+// extension Identity.Deletion.Confirm {
 //    public struct Router: ParserPrinter, Sendable {
 //        
 //        public init() {}
 //
-//        public var body: some URLRouting.Router<Identity.Delete.Confirm> {
+//        public var body: some URLRouting.Router<Identity.Deletion.Confirm> {
 //            Method.post
-//            Body(.form(Identity.Delete.Confirm.self, decoder: .default))
+//            Body(.form(Identity.Deletion.Confirm.self, decoder: .default))
 //        }
 //    }
 // }

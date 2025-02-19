@@ -1,14 +1,14 @@
 //
 //  File.swift
-//  coenttb-identity
+//  swift-identity
 //
 //  Created by Coen ten Thije Boonkkamp on 28/01/2025.
 //
 
 import BearerAuth
 import Coenttb_Authentication
-import SwiftWeb
 import EmailAddress
+import SwiftWeb
 
 extension Identity {
     public enum Authentication: Equatable, Sendable {
@@ -42,7 +42,10 @@ extension Identity.Authentication.Credentials {
         email: EmailAddress,
         password: String
     ) {
-        self = .init(username: email.rawValue, password: password)
+        self = .init(
+            username: email.rawValue,
+            password: password
+        )
     }
 }
 

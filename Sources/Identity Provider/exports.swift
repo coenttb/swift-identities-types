@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  coenttb-identity
+//  swift-identity
 //
 //  Created by Coen ten Thije Boonkkamp on 28/01/2025.
 //

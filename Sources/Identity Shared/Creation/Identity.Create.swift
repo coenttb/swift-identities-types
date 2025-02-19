@@ -1,17 +1,17 @@
 //
 //  File.swift
-//  coenttb-identity
+//  swift-identity
 //
 //  Created by Coen ten Thije Boonkkamp on 28/01/2025.
 //
 
-import Coenttb_Web
+import SwiftWeb
 
 extension Identity {
-    public enum Create {}
+    public enum Creation {}
 }
 
-extension Identity.Create {
+extension Identity.Creation {
     public struct Request: Codable, Hashable, Sendable {
         public let email: String
         public let password: String
@@ -31,7 +31,7 @@ extension Identity.Create {
     }
 }
 
-extension Identity.Create.Request {
+extension Identity.Creation.Request {
     public init(
         email: EmailAddress,
         password: String
@@ -41,20 +41,20 @@ extension Identity.Create.Request {
     }
 }
 
-extension Identity.Create.Request {
+extension Identity.Creation.Request {
     public struct Router: ParserPrinter, Sendable {
 
         public init() {}
 
-        public var body: some URLRouting.Router<Identity.Create.Request> {
+        public var body: some URLRouting.Router<Identity.Creation.Request> {
             Method.post
             Path.request
-            Body(.form(Identity.Create.Request.self, decoder: .default))
+            Body(.form(Identity.Creation.Request.self, decoder: .default))
         }
     }
 }
 
-extension Identity.Create {
+extension Identity.Creation {
     public struct Verify: Codable, Hashable, Sendable {
         public let token: String
         public let email: String
@@ -74,7 +74,7 @@ extension Identity.Create {
     }
 }
 
-extension Identity.Create.Verify {
+extension Identity.Creation.Verify {
     public init(
         token: String,
         email: EmailAddress
@@ -84,15 +84,15 @@ extension Identity.Create.Verify {
     }
 }
 
-extension Identity.Create.Verify {
+extension Identity.Creation.Verify {
     public struct Router: ParserPrinter, Sendable {
 
         public init() {}
 
-        public var body: some URLRouting.Router<Identity.Create.Verify> {
+        public var body: some URLRouting.Router<Identity.Creation.Verify> {
             Method.post
             Path.verify
-            Body(.form(Identity.Create.Verify.self, decoder: .default))
+            Body(.form(Identity.Creation.Verify.self, decoder: .default))
         }
     }
 }

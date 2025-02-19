@@ -22,13 +22,13 @@ extension Identity.Client {
 }
 
 extension Identity.Client.Create {
-    public func request(_ request: Identity.Create.Request) async throws {
+    public func request(_ request: Identity.Creation.Request) async throws {
         try await self.request(email: request.email, password: request.password)
     }
 }
 
 extension Identity.Client.Create {
-    public func verify(_ verify: Identity.Create.Verify) async throws {
+    public func verify(_ verify: Identity.Creation.Verify) async throws {
         try await self.verify(email: verify.email, token: verify.token)
     }
 }

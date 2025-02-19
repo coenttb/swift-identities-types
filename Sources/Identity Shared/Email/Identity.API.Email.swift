@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Coenttb_Web
+import SwiftWeb
 
 extension Identity.API {
     public enum Email: Equatable, Sendable {
@@ -54,4 +54,3 @@ extension Identity.API.Email.Change {
         }
     }
 }
-

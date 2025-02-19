@@ -25,7 +25,7 @@ extension Identity.Client {
 }
 
 extension Identity.Client.Delete {
-    public func request(_ request: Identity.Delete.Request) async throws {
+    public func request(_ request: Identity.Deletion.Request) async throws {
         try await self.request(reauthToken: request.reauthToken)
     }
 }
