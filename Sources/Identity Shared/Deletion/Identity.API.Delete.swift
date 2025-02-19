@@ -29,12 +29,10 @@ extension Identity.API.Delete {
 
                 URLRouting.Route(.case(Identity.API.Delete.cancel)) {
                     Path.cancel
-//                    Identity.Deletion.Cancel.Router()
                 }
 
                 URLRouting.Route(.case(Identity.API.Delete.confirm)) {
                     Path.confirm
-//                    Identity.Deletion.Confirm.Router()
                 }
             }
         }

@@ -14,7 +14,6 @@ extension Identity.Client {
     @DependencyClient
     public struct Delete: @unchecked Sendable {
         public var request: (
-//            _ userId: UUID,
             _ reauthToken: String
         ) async throws -> Void
 
