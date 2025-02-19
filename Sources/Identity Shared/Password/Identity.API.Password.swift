@@ -23,7 +23,6 @@ extension Identity.API.Password {
 
 extension Identity.API.Password {
     public enum Change: Equatable, Sendable {
-//        case reauthorization(Identity.Password.Change.Reauthorization)
         case request(change: Identity.Password.Change.Request)
     }
 }

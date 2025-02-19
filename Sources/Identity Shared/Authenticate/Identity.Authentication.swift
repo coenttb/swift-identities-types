@@ -7,7 +7,7 @@
 
 import BearerAuth
 import Coenttb_Authentication
-import Coenttb_Web
+import SwiftWeb
 import EmailAddress
 
 extension Identity {
@@ -66,4 +66,11 @@ extension Identity.Authentication {
             self.refreshToken = refreshToken
         }
     }
+}
+
+extension Identity.Authentication.Response: TestDependencyKey {
+    public static let testValue: Self = .init(
+        accessToken: .testValue,
+        refreshToken: .testValue
+    )
 }

@@ -12,9 +12,9 @@ extension Identity {
         case authenticate(Identity.API.Authenticate)
         case create(Identity.API.Create)
         case delete(Identity.API.Delete)
-        case emailChange(Identity.API.EmailChange)
         case logout
         case reauthorize(Identity.API.Reauthorize)
+        case email(Identity.API.Email)
         case password(Identity.API.Password)
     }
 }
@@ -58,20 +58,12 @@ extension Identity.API {
                     Identity.API.Password.Router()
                 }
 
-                URLRouting.Route(.case(Identity.API.emailChange)) {
-                    Path.emailChange
-                    Identity.API.EmailChange.Router()
+                URLRouting.Route(.case(Identity.API.email)) {
+                    Path.email
+                    Identity.API.Email.Router()
                 }
             }
         }
-    }
-}
-
-extension UrlFormDecoder {
-    fileprivate static var `default`: UrlFormDecoder {
-        let decoder = UrlFormDecoder()
-        decoder.parsingStrategy = .bracketsWithIndices
-        return decoder
     }
 }
 

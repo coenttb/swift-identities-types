@@ -25,7 +25,7 @@ extension Identity {
 
         public var delete: Identity.Client.Delete
 
-        public var emailChange: Identity.Client.EmailChange
+        public var email: Identity.Client.Email
 
         public var password: Identity.Client.Password
 
@@ -34,7 +34,7 @@ extension Identity {
             logout: @escaping () async throws -> Void,
             create: Identity.Client.Create,
             delete: Identity.Client.Delete,
-            emailChange: Identity.Client.EmailChange,
+            email: Identity.Client.Email,
             password: Identity.Client.Password
         ) {
             self.create = create
@@ -42,7 +42,26 @@ extension Identity {
             self.authenticate = authenticate
             self.logout = logout
             self.password = password
-            self.emailChange = emailChange
+            self.email = email
         }
+    }
+}
+
+// MARK: Conveniences
+extension Identity.Client {
+    public func login(username: String, password: String) async throws -> Identity.Authentication.Response {
+        try await self.authenticate.credentials(username: username, password: password)
+    }
+}
+
+extension Identity.Client {
+    public func login(accessToken: String) async throws {
+        try await self.authenticate.token.access(.init(token: accessToken))
+    }
+}
+
+extension Identity.Client {
+    public func login(apiKey: String) async throws -> Identity.Authentication.Response {
+        try await self.authenticate.apiKey(.init(token: apiKey))
     }
 }

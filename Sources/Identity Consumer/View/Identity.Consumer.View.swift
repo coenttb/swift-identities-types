@@ -6,7 +6,7 @@
 //
 
 import CasePaths
-import Coenttb_Web
+import SwiftWeb
 import Identity_Shared
 
 extension Identity.Consumer {
@@ -16,11 +16,13 @@ extension Identity.Consumer {
         case delete
         case authenticate(Identity.Consumer.View.Authenticate)
         case logout
-        case emailChange(Identity.Consumer.View.EmailChange)
+        case email(Identity.Consumer.View.Email)
         case password(Identity.Consumer.View.Password)
-
-        public static let login: Self = .authenticate(.credentials)
     }
+}
+
+extension Identity.Consumer.View {
+    public static let login: Self = .authenticate(.credentials)
 }
 
 extension Identity.Consumer.View {
@@ -33,13 +35,15 @@ extension Identity.Consumer.View {
 
                 URLRouting.Route(.case(Identity.Consumer.View.create)) {
                     Path.create
+                    
                     OneOf {
                         URLRouting.Route(.case(Identity.Consumer.View.Create.request)) {
                             Path.request
                         }
 
                         URLRouting.Route(.case(Identity.Consumer.View.Create.verify)) {
-                            Path.emailVerification
+                            Path.verification
+                            
                             Parse(.memberwise(Identity.Create.Verify.init)) {
                                 Query {
                                     Field(Identity.Create.Verify.CodingKeys.token.rawValue, .string)
@@ -69,9 +73,11 @@ extension Identity.Consumer.View {
 
                 URLRouting.Route(.case(Identity.Consumer.View.password)) {
                     Path.password
+                    
                     OneOf {
                         URLRouting.Route(.case(Identity.Consumer.View.Password.reset)) {
                             Path.reset
+                            
                             OneOf {
                                 URLRouting.Route(.case(Identity.Consumer.View.Password.Reset.request)) {
                                     Path.request
@@ -79,6 +85,7 @@ extension Identity.Consumer.View {
 
                                 URLRouting.Route(.case(Identity.Consumer.View.Password.Reset.confirm)) {
                                     Path.confirm
+                                    
                                     Parse(.memberwise(Identity.Password.Reset.Confirm.init)) {
                                         Query {
                                             Field(Identity.Password.Reset.Confirm.CodingKeys.token.rawValue, .string)
@@ -93,6 +100,7 @@ extension Identity.Consumer.View {
 
                         URLRouting.Route(.case(Identity.Consumer.View.Password.change)) {
                             Path.change
+                            
                             OneOf {
                                 URLRouting.Route(.case(Identity.Consumer.View.Password.Change.request)) {
                                     Path.request
@@ -102,22 +110,29 @@ extension Identity.Consumer.View {
                     }
                 }
 
-                URLRouting.Route(.case(Identity.Consumer.View.emailChange)) {
-                    Path.emailChange
+                URLRouting.Route(.case(Identity.Consumer.View.email)) {
+                    Path.email
                     OneOf {
-                        URLRouting.Route(.case(Identity.Consumer.View.EmailChange.reauthorization)) {
-                            Path.reauthorization
-                        }
+                        URLRouting.Route(.case(Identity.Consumer.View.Email.change)) {
+                            Path.change
+                            
+                            OneOf {
+                                URLRouting.Route(.case(Identity.Consumer.View.Email.Change.reauthorization)) {
+                                    Path.reauthorization
+                                }
 
-                        URLRouting.Route(.case(Identity.Consumer.View.EmailChange.request)) {
-                            Path.request
-                        }
+                                URLRouting.Route(.case(Identity.Consumer.View.Email.Change.request)) {
+                                    Path.request
+                                }
 
-                        URLRouting.Route(.case(Identity.Consumer.View.EmailChange.confirm)) {
-                            Path.confirm
-                            Parse(.memberwise(Identity.EmailChange.Confirm.init)) {
-                                Query {
-                                    Field(Identity.EmailChange.Confirm.CodingKeys.token.rawValue, .string)
+                                URLRouting.Route(.case(Identity.Consumer.View.Email.Change.confirm)) {
+                                    Path.confirm
+                                    
+                                    Parse(.memberwise(Identity.Email.Change.Confirm.init)) {
+                                        Query {
+                                            Field(Identity.Email.Change.Confirm.CodingKeys.token.rawValue, .string)
+                                        }
+                                    }
                                 }
                             }
                         }

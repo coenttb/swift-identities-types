@@ -78,17 +78,17 @@ extension Path<PathBuilder.Component<String>> {
     nonisolated(unsafe) public static let password = Path {
         "password"
     }
-    nonisolated(unsafe) public static let emailChange = Path {
-        "email-change"
-    }
-    nonisolated(unsafe) public static let emailVerification = Path {
-        "email-verification"
-    }
-    nonisolated(unsafe) public static let reset = Path {
-        "reset"
+    nonisolated(unsafe) public static let email = Path {
+        "email"
     }
     nonisolated(unsafe) public static let change = Path {
         "change"
+    }
+    nonisolated(unsafe) public static let verification = Path {
+        "verification"
+    }
+    nonisolated(unsafe) public static let reset = Path {
+        "reset"
     }
 }
 

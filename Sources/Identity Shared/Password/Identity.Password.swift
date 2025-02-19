@@ -123,10 +123,3 @@ extension Identity.Password.Change.Request {
     }
 }
 
-extension UrlFormDecoder {
-    fileprivate static var `default`: UrlFormDecoder {
-        let decoder = UrlFormDecoder()
-        decoder.parsingStrategy = .bracketsWithIndices
-        return decoder
-    }
-}

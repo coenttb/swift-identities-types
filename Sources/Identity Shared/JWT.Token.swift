@@ -6,9 +6,9 @@
 //
 
 import Foundation
+import Dependencies
 
 extension JWT {
-
     public struct Token: Codable, Hashable, Sendable {
         public let value: String
         public let type: String?
@@ -30,4 +30,8 @@ extension JWT {
             case expiresIn = "exp"
         }
     }
+}
+
+extension JWT.Token: TestDependencyKey {
+    public static let testValue: Self = .init(value: "test", expiresIn: 100)
 }
