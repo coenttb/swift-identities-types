@@ -8,8 +8,8 @@ This package is currently in active development and is subject to frequent chang
 
 ## Features
 
-- User authentication and authorization
-- Account management
+- authentication and authorization
+- Identity management
 - Password reset and recovery
 - Email verification
 - Session handling

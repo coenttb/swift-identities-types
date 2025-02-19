@@ -73,9 +73,6 @@ extension Path<PathBuilder.Component<String>> {
     public static let credentials = Path {
         "credentials"
     }
-    public static let currentUser = Path {
-        "current-user"
-    }
     public static let logout = Path {
         "logout"
     }

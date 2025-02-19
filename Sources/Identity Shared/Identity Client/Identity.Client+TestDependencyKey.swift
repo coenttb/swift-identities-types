@@ -2,98 +2,100 @@ import Dependencies
 import EmailAddress
 import Foundation
 
+// MARK: - Client Test Implementation
 extension Identity.Client: TestDependencyKey {
-    public static var testValue: Identity.Client {
-        .init(
-            authenticate: .testValue,
-            logout: { },
-            reauthorize: { _ in return .init(value: "test", expiresIn: 1000) },
-            create: .testValue,
-            delete: .testValue,
-            email: .testValue,
-            password: .testValue
-        )
-    }
-}
-
-extension Identity.Client.Create: TestDependencyKey {
+    package static let database: Identity.Client.TestDatabase = .init()
+    
     public static var testValue: Self {
-        .init(
-            request: { _, _ in
-
-            },
-            verify: { email, _ in
-                _ = try EmailAddress(email)
-            }
-        )
-    }
-}
-
-extension Identity.Client.Password: TestDependencyKey {
-    public static var testValue: Self {
-        .init(
-            reset: .init(
-                request: { email in
-                    _ = try EmailAddress(email)
+        
+        return Self(
+            authenticate: .init(
+                credentials: { username, password in
+                    let session = try await Self.database.authenticate(email: username, password: password)
+                    return .init(
+                        accessToken: .init(value: session.accessToken, expiresIn: 3600),
+                        refreshToken: .init(value: session.refreshToken, expiresIn: 86400)
+                    )
                 },
-                confirm: { _, _ in
-
+                token: .init(
+                    access: { token in
+                        // Validate access token exists
+                    },
+                    refresh: { token in
+                        let session = try await Self.database.refreshSession(token: token)
+                        return .init(
+                            accessToken: .init(value: session.accessToken, expiresIn: 3600),
+                            refreshToken: .init(value: session.refreshToken, expiresIn: 86400)
+                        )
+                    }
+                ),
+                apiKey: { apiKey in
+                    // Simulate API key authentication
+                    return .init(
+                        accessToken: .init(value: UUID().uuidString, expiresIn: 3600),
+                        refreshToken: .init(value: UUID().uuidString, expiresIn: 86400)
+                    )
                 }
             ),
-            change: .init(
-                request: { _, _ in
-
+            logout: {
+                // Simulate logout by invalidating session
+            },
+            reauthorize: { password in
+                // Simulate reauthorization
+                return .init(value: UUID().uuidString, expiresIn: 3600)
+            },
+            create: .init(
+                request: { email, password in
+                    _ = try EmailAddress(email) // Validate email format
+                    try await Self.database.createUser(email: email, password: password)
+                },
+                verify: { email, token in
+                    _ = try EmailAddress(email) // Validate email format
+                    try await Self.database.verifyUser(email: email, token: token)
                 }
+            ),
+            delete: .init(
+                request: { reauthToken in
+                    // Validate reauth token and mark for deletion
+                },
+                cancel: {
+                    // Remove deletion mark
+                },
+                confirm: {
+                    // Permanently delete user
+                }
+            ),
+            email: .init(
+                change: .init(
+                    request: { newEmail in
+                        _ = try EmailAddress(newEmail) // Validate email format
+                        return .success
+                    },
+                    confirm: { token in
+                        // Confirm email change
+                        return .init(
+                            accessToken: .init(value: UUID().uuidString, expiresIn: 3600),
+                            refreshToken: .init(value: UUID().uuidString, expiresIn: 86400)
+                        )
+                    }
+                )
+            ),
+            password: .init(
+                reset: .init(
+                    request: { email in
+                        _ = try EmailAddress(email) // Validate email format
+                        _ = try await Self.database.initiatePasswordReset(email: email)
+                    },
+                    confirm: { newPassword, token in
+                        try await Self.database.confirmPasswordReset(token: token, newPassword: newPassword)
+                    }
+                ),
+                change: .init(
+                    request: { currentPassword, newPassword in
+                        // Validate current password and update to new password
+                    }
+                )
             )
-        )
-    }
-}
-
-extension Identity.Client.Email.Change: TestDependencyKey {
-    public static var testValue: Self {
-        .init(
-            request: { _ in
-                return .success
-            },
-            confirm: { _ in
-                return .testValue
-            }
-        )
-    }
-}
-
-extension Identity.Client.Delete: TestDependencyKey {
-    public static var testValue: Self {
-        .init(
-            request: { _ in
-
-            },
-            cancel: {
-
-            },
-            confirm: {
-            }
-        )
-    }
-}
-
-extension Identity.Client.Authenticate: TestDependencyKey {
-    public static var testValue: Self {
-        .init(
-            credentials: { _, _ in
-                    .testValue
-            },
-            token: .init(
-                access: { _ in
-
-                },
-                refresh: { _ in
-                    .testValue
-                }
-            ),
-            apiKey: { _ in
-                    .testValue
-            }
         )
     }
 }

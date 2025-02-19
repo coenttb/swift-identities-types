@@ -11,13 +11,42 @@ import Identity_Shared
 import SwiftWeb
 
 extension Identity.Consumer {
+    /// Routes available in the consumer-side identity system.
+    ///
+    /// The `Route` enum defines two primary categories of routes:
+    /// - API routes for server communication
+    /// - View routes for UI navigation
+    ///
+    /// Example usage:
+    /// ```swift
+    /// switch route {
+    /// case .api(let api):
+    ///     // Handle API requests like authentication
+    /// case .view(let view):
+    ///     // Handle view transitions like showing login form
+    /// }
+    /// ```
     public enum Route: Equatable, Sendable {
+        /// Routes to API endpoints for server communication
         case api(Identity.Consumer.API)
+        /// Routes to view states for UI navigation
         case view(Identity.Consumer.View)
     }
 }
 
 extension Identity.Consumer.Route {
+    /// A type-safe router for mapping URLs to consumer identity routes.
+    ///
+    /// The router handles two main path structures:
+    /// - `/api/*` for API endpoints
+    /// - `/*` for view navigation
+    ///
+    /// Example URL patterns:
+    /// ```
+    /// /api/authenticate          -> .api(.authenticate)
+    /// /login                     -> .view(.authenticate(.credentials))
+    /// /create/request           -> .view(.create(.request))
+    /// ```
     public struct Router: ParserPrinter, Sendable {
 
         public init() {}
@@ -39,5 +68,9 @@ extension Identity.Consumer.Route {
 }
 
 extension Identity.Consumer.Route.Router: TestDependencyKey {
+    /// A test implementation of the consumer route router.
+    ///
+    /// This provides a parser-printer for use in test environments to verify
+    /// routing logic without requiring a full client implementation.
     public static let testValue: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> = Identity.Consumer.Route.Router().eraseToAnyParserPrinter()
 }

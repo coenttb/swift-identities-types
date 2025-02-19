@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  coenttb-web
+//  swift-web
 //
 //  Created by Coen ten Thije Boonkkamp on 07/10/2024.
 //
@@ -36,7 +36,7 @@ extension Identity.Consumer.View {
     @CasePathable
     public enum Create: Codable, Hashable, Sendable {
         case request
-        case verify(Identity.Create.Verify)
+        case verify(Identity.Creation.Verification)
     }
 }
 
@@ -50,7 +50,7 @@ extension Identity.Consumer.View {
 extension Identity.Consumer.View.Email {
     public enum Change: Codable, Hashable, Sendable {
         case request
-        case confirm(Identity.Email.Change.Confirm)
+        case confirm(Identity.Email.Change.Confirmation)
         case reauthorization
     }
 }
@@ -92,12 +92,12 @@ extension Identity.Consumer.View {
                         URLRouting.Route(.case(Identity.Consumer.View.Create.verify)) {
                             Path.verification
 
-                            Parse(.memberwise(Identity.Create.Verify.init)) {
+                            Parse(.memberwise(Identity.Creation.Verification.init)) {
                                 Query {
-                                    Field(Identity.Create.Verify.CodingKeys.token.rawValue, .string)
+                                    Field(Identity.Creation.Verification.CodingKeys.token.rawValue, .string)
                                 }
                                 Query {
-                                    Field(Identity.Create.Verify.CodingKeys.email.rawValue, .string)
+                                    Field(Identity.Creation.Verification.CodingKeys.email.rawValue, .string)
                                 }
                             }
                         }
@@ -176,9 +176,9 @@ extension Identity.Consumer.View {
                                 URLRouting.Route(.case(Identity.Consumer.View.Email.Change.confirm)) {
                                     Path.confirm
 
-                                    Parse(.memberwise(Identity.Email.Change.Confirm.init)) {
+                                    Parse(.memberwise(Identity.Email.Change.Confirmation.init)) {
                                         Query {
-                                            Field(Identity.Email.Change.Confirm.CodingKeys.token.rawValue, .string)
+                                            Field(Identity.Email.Change.Confirmation.CodingKeys.token.rawValue, .string)
                                         }
                                     }
                                 }
@@ -190,3 +190,6 @@ extension Identity.Consumer.View {
         }
     }
 }
+
+
+
