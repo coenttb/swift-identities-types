@@ -37,32 +37,33 @@ extension Database.Identity {
 
         switch identifier {
         case .id(let id):
-            guard let identity = try await Database.Identity.find(id, on: database) else {
-                throw Abort(.notFound, reason: "Identity not found")
-            }
+            guard let identity = try await Database.Identity.find(id, on: database)
+            else { throw Abort(.notFound, reason: "Identity not found") }
             return identity
 
         case .email(let email):
             guard let identity = try await Database.Identity.query(on: database)
                 .filter(\.$email == email)
-                .first() else {
+                .first()
+            else {
                 throw Abort(.notFound, reason: "Identity not found")
             }
             return identity
 
         case .auth:
             @Dependency(\.request) var request
-            guard let request else {
+            guard let request
+            else {
                 print("Request not available for Identity.get(.auth, ...)")
                 throw Abort.requestUnavailable
             }
 
-            guard let identity = request.auth.get(Database.Identity.self) else {
-                throw Abort(.unauthorized, reason: "Not authenticated")
-            }
-            guard let id = identity.id else {
-                throw Abort(.internalServerError, reason: "Invalid identity state")
-            }
+            guard let identity = request.auth.get(Database.Identity.self)
+            else { throw Abort(.unauthorized, reason: "Not authenticated") }
+            
+            guard let id = identity.id
+            else { throw Abort(.internalServerError, reason: "Invalid identity state") }
+            
             return try await Database.Identity.get(by: .id(id), on: database)
         }
     }

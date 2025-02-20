@@ -11,9 +11,9 @@ import Identity_Provider
 import Vapor
 
 extension Identity_Provider.Identity.Provider.Client.Create {
-    package static func live<DatabaseUser: Fluent.Model & Sendable>(
-        createDatabaseUser: @escaping @Sendable (_ identityId: UUID) async throws -> DatabaseUser,
-        sendVerificationEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void
+    package static func live(
+        sendVerificationEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
+        onIdentityCreationSuccess: @escaping @Sendable (_ identity: (id: UUID, email: EmailAddress)) async throws -> Void
     ) -> Self {
         @Dependency(\.logger) var logger
         @Dependency(\.database) var database
@@ -91,10 +91,12 @@ extension Identity_Provider.Identity.Provider.Client.Create {
 
                         try await identityToken.identity.save(on: database)
 
-                        try await createDatabaseUser(identityId)
-                            .save(on: database)
-
                         try await identityToken.delete(on: database)
+                        
+                        @Dependency(\.fireAndForget) var fireAndForget
+                        await fireAndForget {
+                            try await onIdentityCreationSuccess((identityId, identityToken.identity.emailAddress))
+                        }
                     }
                 } catch {
                     throw Abort(.internalServerError, reason: "Verification failed: \(error.localizedDescription)")

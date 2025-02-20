@@ -22,11 +22,8 @@ extension Identity.Consumer.API.Authenticate {
             case .token(let token):
                 switch token {
                 case .access(let access):
-                    @Dependency(\.request) var request
-                    guard let request else { throw Abort.requestUnavailable }
                     
                     if let identityAuthenticationResponse = try await client.login(
-                        request: request,
                         accessToken: access.token,
                         refreshToken: \.cookies.refreshToken?.string
                     ) {

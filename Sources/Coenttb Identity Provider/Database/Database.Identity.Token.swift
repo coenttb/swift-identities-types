@@ -109,9 +109,8 @@ extension Database.Identity {
 
 extension Database.Identity.Token {
     package func rotateIfNecessary(on db: Fluent.Database) async throws -> Database.Identity.Token {
-        guard self.type == .apiAccess || self.type == .refreshToken else {
-            return self
-        }
+        guard self.type == .apiAccess || self.type == .refreshToken
+        else { return self }
 
         @Dependency(\.date) var date
         let currentDate = date()

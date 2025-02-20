@@ -114,20 +114,19 @@ extension Identity_Provider.Identity.Provider.Client.Email {
                                 .filter(\.$value == token)
                                 .filter(\.$type == .emailChange)
                                 .with(\.$identity)
-                                .first() else {
-                                throw ValidationError.invalidToken
-                            }
+                                .first()
+                            else { throw ValidationError.invalidToken }
                             
                             guard let emailChangeRequest = try await Database.EmailChangeRequest.query(on: database)
                                 .filter(\.$token.$id == token.id!)
                                 .with(\.$identity)
-                                .first() else {
-                                throw Abort(.notFound, reason: "Email change request not found")
-                            }
+                                .first()
+                            else { throw Abort(.notFound, reason: "Email change request not found") }
                             
                             @Dependency(\.date) var date
                             
-                            guard token.validUntil > date() else {
+                            guard token.validUntil > date()
+                            else {
                                 try await token.delete(on: database)
                                 try await emailChangeRequest.delete(on: database)
                                 throw Abort(.gone, reason: "Email change token has expired")

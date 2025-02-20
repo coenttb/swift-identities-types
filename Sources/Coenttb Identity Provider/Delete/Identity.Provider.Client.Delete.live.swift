@@ -36,9 +36,8 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
 
                     try await token.delete(on: database)
 
-                    guard identity.deletion?.state == nil else {
-                        throw Abort(.badRequest, reason: "User is already pending deletion")
-                    }
+                    guard identity.deletion?.state == nil
+                    else { throw Abort(.badRequest, reason: "User is already pending deletion") }
 
                     let deletion: Database.Identity.Deletion = try .init(identity: identity)
 
@@ -58,9 +57,8 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
 
                 try await database.transaction { database in
 
-                    guard identity.deletion?.state == .pending else {
-                        throw Abort(.badRequest, reason: "User is not pending deletion")
-                    }
+                    guard identity.deletion?.state == .pending
+                    else { throw Abort(.badRequest, reason: "User is not pending deletion") }
 
                     identity.deletion?.state = nil
                     identity.deletion?.requestedAt = nil
@@ -77,18 +75,16 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                         let deletion = identity.deletion,
                         deletion.state == .pending,
                         let deletionRequestedAt = deletion.requestedAt
-                    else {
-                        throw Abort(.badRequest, reason: "User is not pending deletion")
-                    }
+                    
+                    else { throw Abort(.badRequest, reason: "User is not pending deletion") }
 
                     // Check grace period
                     let gracePeriod: TimeInterval = 7 * 24 * 60 * 60 // 7 days
                     
                     @Dependency(\.date) var date
                     
-                    guard date().timeIntervalSince(deletionRequestedAt) >= gracePeriod else {
-                        throw Abort(.badRequest, reason: "Grace period has not yet expired")
-                    }
+                    guard date().timeIntervalSince(deletionRequestedAt) >= gracePeriod
+                    else { throw Abort(.badRequest, reason: "Grace period has not yet expired") }
 
                     // Update user state
                     identity.deletion?.state = .deleted

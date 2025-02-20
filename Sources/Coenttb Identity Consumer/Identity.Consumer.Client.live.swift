@@ -12,7 +12,7 @@ extension Identity.Consumer.Client {
     public static func live(
         
     ) -> Self {
-
+        
         @Dependency(RateLimiters.self) var rateLimiter
         @Dependency(\.identity.consumer.client) var client
         
@@ -53,7 +53,7 @@ extension URLRequest {
             setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
     }
-
+    
     /// Sets the refresh token as a cookie
     /// - Parameter token: The refresh token to be set as a cookie. If nil, removes the refresh_token cookie
     public mutating func setRefreshTokenCookie(_ token: String?) {
@@ -72,28 +72,29 @@ extension ParserPrinter where Input == URLRequestData {
         requestData.headers["cookie", default: []].append("\(name)=\(value.string)"[...])
         return self.baseRequestData(requestData)
     }
-
+    
     @inlinable
-     public func cookie(_ name: String, _ value: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
-       guard let value = value else { return self.baseRequestData(.init()) }
-       return self.cookie(name, value)
-     }
-
+    public func cookie(_ name: String, _ value: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
+        guard let value = value
+        else { return self.baseRequestData(.init()) }
+        return self.cookie(name, value)
+    }
+    
     @inlinable
     public func setAccessToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
         return self.cookie("access_token", token)
     }
-
+    
     @inlinable
     public func setRefreshToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
         return self.cookie("refresh_token", token)
     }
-
+    
     @inlinable
     public func setReauthorizationToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
         return self.cookie("reauthorization_token", token)
     }
-
+    
     @inlinable
     public func cookies(_ cookies: [String: HTTPCookies.Value]) -> BaseURLPrinter<Self> {
         var requestData = URLRequestData()

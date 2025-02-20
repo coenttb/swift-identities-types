@@ -36,12 +36,14 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                 do {
                     let identity = try await Database.Identity.get(by: .email(email), on: request.db)
 
-                    guard try identity.verifyPassword(password) else {
+                    guard try identity.verifyPassword(password)
+                    else {
                         logger.warning("Login attempt failed: Invalid password for email: \(email)")
                         throw Abort(.unauthorized, reason: "Invalid credentials")
                     }
 
-                    guard identity.emailVerificationStatus == .verified else {
+                    guard identity.emailVerificationStatus == .verified
+                    else {
                         logger.warning("Login attempt failed: Email not verified for: \(email)")
                         throw Abort(.unauthorized, reason: "Email not verified")
                     }
@@ -78,9 +80,8 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
 
                         let identity = try await Database.Identity.get(by: .id(payload.identityId), on: request.db)
 
-                        guard identity.emailAddress == payload.email else {
-                            throw Abort(.unauthorized, reason: "Identity details have changed")
-                        }
+                        guard identity.emailAddress == payload.email
+                        else { throw Abort(.unauthorized, reason: "Identity details have changed") }
                         
                         @Dependency(\.date) var date
 

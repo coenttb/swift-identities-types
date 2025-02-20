@@ -27,9 +27,8 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                         
                     let resetToken = try await database.transaction { database in
                         
-                        guard let identityId = identity.id else {
-                            throw Abort(.internalServerError, reason: "Invalid identity state")
-                        }
+                        guard let identityId = identity.id
+                        else { throw Abort(.internalServerError, reason: "Invalid identity state") }
 
                         // Delete existing reset tokens
                         try await Database.Identity.Token.query(on: database)
@@ -67,13 +66,13 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                                 .filter(\.$value == token)
                                 .filter(\.$type == .passwordReset)
                                 .with(\.$identity)
-                                .first() else {
-                                throw ValidationError.invalidToken
-                            }
+                                .first()
+                            else { throw ValidationError.invalidToken }
                             
                             @Dependency(\.date) var date
 
-                            guard resetToken.validUntil > date() else {
+                            guard resetToken.validUntil > date()
+                            else {
                                 try await resetToken.delete(on: database)
                                 throw Abort(.gone, reason: "Reset token has expired")
                             }

@@ -21,7 +21,6 @@ extension Identity.Consumer {
                 $0.request = request
             } operation: {
                 guard let identityAuthenticationResponse = try await client.login(
-                    request: request,
                     accessToken: request.cookies.accessToken?.string,
                     refreshToken: \.cookies.accessToken?.string
                 )

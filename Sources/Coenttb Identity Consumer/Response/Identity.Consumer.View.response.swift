@@ -45,14 +45,17 @@ extension Identity.Consumer.View {
                 )
             }
             catch {
-                @Dependency(\.request) var request
-                guard let request else { throw Abort.requestUnavailable }
-                
                 switch view {
                 case .create:
+                    @Dependency(\.request) var request
+                    guard let request else { throw Abort.requestUnavailable }
+                    
                     return request.redirect(to: createProtectedRedirect().relativePath)
                     
                 case .authenticate(.credentials):
+                    @Dependency(\.request) var request
+                    guard let request else { throw Abort.requestUnavailable }
+                    
                     return request.redirect(to: loginProtectedRedirect().relativePath)
                     
                 case .email(.change(.request)):

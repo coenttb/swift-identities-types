@@ -19,8 +19,7 @@ import Identity_Provider
 import JWT
 
 extension Identity_Provider.Identity.Provider.Client {
-    public static func live<DatabaseUser: Fluent.Model & Sendable>(
-        createDatabaseUser: @escaping @Sendable (_ identityId: UUID) async throws -> DatabaseUser,
+    public static func live(
         sendVerificationEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
         sendPasswordResetEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
         sendPasswordChangeNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
@@ -28,9 +27,9 @@ extension Identity_Provider.Identity.Provider.Client {
         sendEmailChangeRequestNotification: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress) async throws -> Void,
         onEmailChangeSuccess: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress) async throws -> Void,
         sendDeletionRequestNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
-        sendDeletionConfirmationNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void
+        sendDeletionConfirmationNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
+        onIdentityCreationSuccess: @escaping @Sendable (_ identity: (id: UUID, email: EmailAddress)) async throws -> Void = { _ in }
     ) -> Self {
-        
         @Dependency(\.logger) var logger
         @Dependency(\.database) var database
         
@@ -50,13 +49,10 @@ extension Identity_Provider.Identity.Provider.Client {
                 do {
                     let identity = try await Database.Identity.get(by: .auth)
                     
-                    guard try identity.verifyPassword(password) else {
-                        throw AuthenticationError.invalidCredentials
-                    }
+                    guard try identity.verifyPassword(password)
+                    else { throw AuthenticationError.invalidCredentials }
                     
-                    let payload = try JWT.Token.Reauthorization.init(
-                        identity: identity
-                    )
+                    let payload = try JWT.Token.Reauthorization.init(identity: identity)
                     
                     @Dependency(\.application) var application
                     @Dependency(\.identity.provider.cookies.reauthorizationToken) var config
@@ -68,8 +64,8 @@ extension Identity_Provider.Identity.Provider.Client {
                 }
             },
             create: .live(
-                createDatabaseUser: createDatabaseUser,
-                sendVerificationEmail: sendVerificationEmail
+                sendVerificationEmail: sendVerificationEmail,
+                onIdentityCreationSuccess: onIdentityCreationSuccess
             ),
             delete: .live(
                 sendDeletionRequestNotification: sendDeletionRequestNotification,
@@ -101,31 +97,26 @@ public enum AuthenticationError: Error {
 private struct PasswordValidation {
     static func validate(_ password: String) -> ValidationError? {
         // Minimum length check
-        guard password.count >= 8 else {
-            return .tooShort
-        }
+        guard password.count >= 8
+        else { return .tooShort }
         
         // Check for at least one uppercase letter
-        guard password.contains(where: { $0.isUppercase }) else {
-            return .missingUppercase
-        }
+        guard password.contains(where: { $0.isUppercase })
+        else { return .missingUppercase }
         
         // Check for at least one lowercase letter
-        guard password.contains(where: { $0.isLowercase }) else {
-            return .missingLowercase
-        }
+        guard password.contains(where: { $0.isLowercase })
+        else { return .missingLowercase }
         
         // Check for at least one number
-        guard password.contains(where: { $0.isNumber }) else {
-            return .missingNumber
-        }
+        guard password.contains(where: { $0.isNumber })
+        else { return .missingNumber }
         
         // Check for at least one special character
         let specialCharacters = CharacterSet(charactersIn: "!@#$%^&*()_+-=[]{}|;:,.<>?")
         
-        guard password.rangeOfCharacter(from: specialCharacters) != nil else {
-            return .missingSpecialCharacter
-        }
+        guard password.rangeOfCharacter(from: specialCharacters) != nil
+        else { return .missingSpecialCharacter }
         
         return nil
     }

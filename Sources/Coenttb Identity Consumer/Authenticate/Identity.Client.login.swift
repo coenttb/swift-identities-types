@@ -13,11 +13,13 @@ import Identity_Shared
 
 extension Identity.Client {
     public func login(
-        request: Request,
         accessToken: String?,
         refreshToken: (Vapor.Request) -> String?,
         expirationBuffer: TimeInterval = 300
     ) async throws -> Identity.Authentication.Response? {
+        
+        @Dependency(\.request) var request
+        guard let request else { throw Abort.requestUnavailable }
         
         @Dependency(\.date) var date
         
