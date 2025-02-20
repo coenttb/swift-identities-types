@@ -1,9 +1,9 @@
-# ``IdentityConsumer``
+# ``Identity_Provider``
 
 ## Overview
 
 @Metadata {
-    @DisplayName("Identity Consumer")
+    @DisplayName("Identity Provider")
 }
 
 swift-identities provides an API and Client for identity authententication and management via tokens. The purpose of `swift-identities` is to provide the abstract Client and concrete API and associated types as a foundation upon which you can build your identity provider and/or identity consumer.

@@ -1,1 +1,1 @@
-# What is an Idenity Consumer
+# What is an Identity Consumer
