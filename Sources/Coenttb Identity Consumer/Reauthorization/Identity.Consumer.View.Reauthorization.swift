@@ -20,7 +20,7 @@ extension Identity.Consumer.View {
         let redirectOnSuccess: URL
 
         package init(
-            codingKey: CodingKey = Identity.EmailChange.Reauthorization.CodingKeys.password,
+            codingKey: CodingKey = Identity.Email.Change.Reauthorization.CodingKeys.password,
             currentUserName: String,
             primaryColor: HTMLColor,
             passwordResetHref: URL,
@@ -175,7 +175,7 @@ extension PageModule.Theme {
 import SwiftUI
 
 @MainActor let confirmAccess: some HTML = Identity.Consumer.View.Reauthorize(
-    codingKey: Identity.Create.Request.CodingKeys.password,
+    codingKey: Identity.Creation.Request.CodingKeys.password,
     currentUserName: "Coen ten Thije Boonkkamp",
     primaryColor: .red,
     passwordResetHref: .desktopDirectory,

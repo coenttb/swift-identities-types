@@ -103,21 +103,24 @@ extension Identity.API {
                 return .init(limiter: rateLimiter.deleteCancel, key: key)
             }
 
-        case .emailChange(let emailChange):
-            switch emailChange {
-            case .request(let request):
-                let rateLimit = await rateLimiter.emailChangeRequest.checkLimit(request.newEmail)
-                guard rateLimit.isAllowed else {
-                    throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
-                }
-                return .init(limiter: rateLimiter.emailChangeRequest, key: request.newEmail)
+        case .email(let email):
+            switch email {
+            case .change(let change):
+                switch change {
+                case .request(let request):
+                    let rateLimit = await rateLimiter.emailChangeRequest.checkLimit(request.newEmail)
+                    guard rateLimit.isAllowed else {
+                        throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
+                    }
+                    return .init(limiter: rateLimiter.emailChangeRequest, key: request.newEmail)
 
-            case .confirm(let confirm):
-                let rateLimit = await rateLimiter.emailChangeConfirm.checkLimit(confirm.token)
-                guard rateLimit.isAllowed else {
-                    throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
+                case .confirm(let confirm):
+                    let rateLimit = await rateLimiter.emailChangeConfirm.checkLimit(confirm.token)
+                    guard rateLimit.isAllowed else {
+                        throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
+                    }
+                    return .init(limiter: rateLimiter.emailChangeConfirm, key: confirm.token)
                 }
-                return .init(limiter: rateLimiter.emailChangeConfirm, key: confirm.token)
             }
 
         case .logout:

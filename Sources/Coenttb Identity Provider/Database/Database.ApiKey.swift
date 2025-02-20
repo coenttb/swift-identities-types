@@ -57,7 +57,10 @@ extension Database {
             identity: Identity,
             scopes: [String] = [],
             rateLimit: Int = 1000,
-            validUntil: Date = Date().addingTimeInterval(365 * 24 * 3600)
+            validUntil: Date = {
+                @Dependency(\.date) var date
+                return date()
+            }().addingTimeInterval(365 * 24 * 3600)
         ) throws {
             self.id = id
             self.name = name

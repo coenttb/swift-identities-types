@@ -8,5 +8,6 @@
 import Coenttb_Identity_Shared
 import Foundation
 import Vapor
+import SwiftWeb
 
 extension JWT.Token.Access: Authenticatable {}

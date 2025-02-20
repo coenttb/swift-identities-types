@@ -58,9 +58,9 @@ extension Identity.Consumer.API {
                 throw error
             }
 
-        case .emailChange(let emailChange):
+        case .email(let email):
             do {
-                let response = try await Identity.Consumer.API.EmailChange.response(emailChange: emailChange)
+                let response = try await Identity.Consumer.API.Email.Change.response(email: email)
                 await rateLimitClient.recordSuccess()
                 return response
             } catch {

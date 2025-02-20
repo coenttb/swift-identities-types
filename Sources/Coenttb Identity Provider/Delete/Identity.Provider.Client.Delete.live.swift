@@ -12,10 +12,10 @@ import Vapor
 
 extension Identity_Provider.Identity.Provider.Client.Delete {
     package static func live(
-        database: Fluent.Database,
         sendDeletionRequestNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
         sendDeletionConfirmationNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void
     ) -> Self {
+        @Dependency(\.database) var database
         @Dependency(\.logger) var logger
         
         return .init(
@@ -23,14 +23,14 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                 let identity = try await Database.Identity.get(by: .auth, on: database)
 
                 try await database.transaction { database in
-
+                    @Dependency(\.date) var date
                     guard
                         let id = identity.id,
                         let token = try await Database.Identity.Token.query(on: database)
                         .filter(\.$identity.$id == id)
                         .filter(\.$type == .reauthenticationToken)
                         .filter(\.$value == reauthToken)
-                        .filter(\.$validUntil > Date())
+                        .filter(\.$validUntil > date())
                         .first()
                     else { throw Abort(.unauthorized, reason: "Invalid reauthorization token") }
 
@@ -43,7 +43,7 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
                     let deletion: Database.Identity.Deletion = try .init(identity: identity)
 
                     deletion.state = .pending
-                    deletion.requestedAt = Date()
+                    deletion.requestedAt = date()
                     try await deletion.save(on: database)
                     logger.notice("Deletion requested for user \(String(describing: identity.id))")
                 }
@@ -83,7 +83,10 @@ extension Identity_Provider.Identity.Provider.Client.Delete {
 
                     // Check grace period
                     let gracePeriod: TimeInterval = 7 * 24 * 60 * 60 // 7 days
-                    guard Date().timeIntervalSince(deletionRequestedAt) >= gracePeriod else {
+                    
+                    @Dependency(\.date) var date
+                    
+                    guard date().timeIntervalSince(deletionRequestedAt) >= gracePeriod else {
                         throw Abort(.badRequest, reason: "Grace period has not yet expired")
                     }
 

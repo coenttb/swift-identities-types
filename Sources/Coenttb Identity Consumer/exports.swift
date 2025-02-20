@@ -6,4 +6,5 @@
 //
 
 @_exported import Coenttb_Identity_Shared
+@_exported import Identity_Shared
 @_exported import Identity_Consumer

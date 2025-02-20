@@ -12,6 +12,7 @@ import Fluent
 @preconcurrency import FluentKit
 import Foundation
 import Identity_Provider
+import Coenttb_Fluent
 
 extension Database.Identity {
     public enum Get {
@@ -28,7 +29,10 @@ extension Database.Identity {
 
     public static func get(
         by identifier: Database.Identity.Get.Identifier,
-        on database: Fluent.Database
+        on database: Fluent.Database = {
+            @Dependency(\.database) var database
+            return database
+        }()
     ) async throws -> Database.Identity {
 
         switch identifier {

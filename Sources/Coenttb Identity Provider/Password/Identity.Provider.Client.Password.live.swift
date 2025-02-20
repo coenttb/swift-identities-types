@@ -12,10 +12,10 @@ import Vapor
 
 extension Identity_Provider.Identity.Provider.Client.Password {
     package static func live(
-        database: Fluent.Database,
         sendPasswordResetEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
         sendPasswordChangeNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void
     ) -> Self {
+        @Dependency(\.database) var database
         @Dependency(\.logger) var logger
         
         return .init(
@@ -37,9 +37,11 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                             .filter(\.$type == .passwordReset)
                             .delete()
 
+                        @Dependency(\.date) var date
+                        
                         let resetToken = try identity.generateToken(
                             type: .passwordReset,
-                            validUntil: Date().addingTimeInterval(3600)
+                            validUntil: date().addingTimeInterval(3600)
                         )
 
                         try await resetToken.save(on: database)
@@ -68,8 +70,10 @@ extension Identity_Provider.Identity.Provider.Client.Password {
                                 .first() else {
                                 throw ValidationError.invalidToken
                             }
+                            
+                            @Dependency(\.date) var date
 
-                            guard resetToken.validUntil > Date() else {
+                            guard resetToken.validUntil > date() else {
                                 try await resetToken.delete(on: database)
                                 throw Abort(.gone, reason: "Reset token has expired")
                             }

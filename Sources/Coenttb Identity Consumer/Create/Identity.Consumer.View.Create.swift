@@ -54,12 +54,12 @@ extension Identity.Consumer.View.Create {
             PageModule(theme: .login) {
                 form {
                     VStack {
-                        Input.default(Identity.Create.Request.CodingKeys.email)
+                        Input.default(Identity.Creation.Request.CodingKeys.email)
                             .type(.email)
                             .placeholder(String.email.description)
                             .focusOnPageLoad()
                         
-                        Input.default(Identity.Create.Request.CodingKeys.password)
+                        Input.default(Identity.Creation.Request.CodingKeys.password)
                             .type(.password)
                             .placeholder(String.password.description)
                         
@@ -109,8 +109,8 @@ extension Identity.Consumer.View.Create {
                     event.preventDefault();
             
                     const formData = new FormData(form);
-                    const email = formData.get('\(Identity.Create.Request.CodingKeys.email.rawValue)');
-                    const password = formData.get('\(Identity.Create.Request.CodingKeys.password.rawValue)');
+                    const email = formData.get('\(Identity.Creation.Request.CodingKeys.email.rawValue)');
+                    const password = formData.get('\(Identity.Creation.Request.CodingKeys.password.rawValue)');
             
                     try {
                         const response = await fetch(form.action, {
@@ -120,8 +120,8 @@ extension Identity.Consumer.View.Create {
                                 'Accept': 'application/json'
                             },
                             body: new URLSearchParams({
-                                 \(Identity.Create.Request.CodingKeys.email.rawValue): email,
-                                 \(Identity.Create.Request.CodingKeys.password.rawValue): password
+                                 \(Identity.Creation.Request.CodingKeys.email.rawValue): email,
+                                 \(Identity.Creation.Request.CodingKeys.password.rawValue): password
                             }).toString()
                         });
             
@@ -283,7 +283,7 @@ extension Identity.Consumer.View.Create {
             
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_verify_id)");
-                            pageModule.outerHTML = "\(html: Identity.Create.VerifyConfirmation(redirectURL: redirectURL))";
+                            pageModule.outerHTML = "\(html: Identity.Creation.VerifyConfirmation(redirectURL: redirectURL))";
                             setTimeout(() => { window.location.href = '\(redirectURL.absoluteString)'; }, 5000);
             
                         } else {
@@ -308,7 +308,7 @@ extension Identity.Consumer.View.Create {
     }
 }
 
-extension Identity.Create {
+extension Identity.Creation {
     package struct VerifyConfirmation: HTML {
         let redirectURL: URL
         

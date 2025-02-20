@@ -28,7 +28,7 @@ extension Identity.API {
         case .delete:
             try request.auth.require(type)
 
-        case .emailChange:
+        case .email:
             try request.auth.require(type)
 
         case .logout:

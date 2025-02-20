@@ -9,7 +9,7 @@ import Coenttb_Web
 import Foundation
 import Identity_Consumer
 
-extension Identity.Consumer.View.EmailChange {
+extension Identity.Consumer.View.Email.Change {
     package struct Confirm: HTML {
         let redirect: URL
         let primaryColor: HTMLColor

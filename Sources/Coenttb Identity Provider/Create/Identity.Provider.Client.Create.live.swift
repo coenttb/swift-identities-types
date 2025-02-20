@@ -12,11 +12,11 @@ import Vapor
 
 extension Identity_Provider.Identity.Provider.Client.Create {
     package static func live<DatabaseUser: Fluent.Model & Sendable>(
-        database: Fluent.Database,
         createDatabaseUser: @escaping @Sendable (_ identityId: UUID) async throws -> DatabaseUser,
         sendVerificationEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void
     ) -> Self {
         @Dependency(\.logger) var logger
+        @Dependency(\.database) var database
         
         return .init(
             request: { email, password in

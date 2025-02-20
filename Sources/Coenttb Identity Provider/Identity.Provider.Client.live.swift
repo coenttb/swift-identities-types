@@ -37,7 +37,6 @@ extension Identity_Provider.Identity.Provider.Client {
         return Identity.Provider.Client(
             authenticate: .live(),
             logout: {
-                
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
                 
@@ -49,7 +48,7 @@ extension Identity_Provider.Identity.Provider.Client {
             },
             reauthorize: { password in
                 do {
-                    let identity = try await Database.Identity.get(by: .auth, on: database)
+                    let identity = try await Database.Identity.get(by: .auth)
                     
                     guard try identity.verifyPassword(password) else {
                         throw AuthenticationError.invalidCredentials
@@ -69,24 +68,19 @@ extension Identity_Provider.Identity.Provider.Client {
                 }
             },
             create: .live(
-                database: database,
                 createDatabaseUser: createDatabaseUser,
                 sendVerificationEmail: sendVerificationEmail
             ),
             delete: .live(
-                database: database,
-                //                getDatabaseUserbyIdentityId: getDatabaseUserbyIdentityId,
                 sendDeletionRequestNotification: sendDeletionRequestNotification,
                 sendDeletionConfirmationNotification: sendDeletionConfirmationNotification
             ),
-            emailChange: .live(
-                database: database,
+            email: .live(
                 sendEmailChangeConfirmation: sendEmailChangeConfirmation,
                 sendEmailChangeRequestNotification: sendEmailChangeRequestNotification,
                 onEmailChangeSuccess: onEmailChangeSuccess
             ),
             password: .live(
-                database: database,
                 sendPasswordResetEmail: sendPasswordResetEmail,
                 sendPasswordChangeNotification: sendPasswordChangeNotification
             )

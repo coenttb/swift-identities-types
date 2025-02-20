@@ -20,9 +20,9 @@ extension Target.Dependency {
     static var coenttbServer: Self { .product(name: "Coenttb Server", package: "coenttb-server") }
     static var coenttbVapor: Self { .product(name: "Coenttb Vapor", package: "coenttb-server-vapor") }
     static var coenttbFluent: Self { .product(name: "Coenttb Fluent", package: "coenttb-server-vapor") }
-    static var identityConsumer: Self { .product(name: "Identity Consumer", package: "swift-identity") }
-    static var identityProvider: Self { .product(name: "Identity Provider", package: "swift-identity") }
-    static var identityShared: Self { .product(name: "Identity Shared", package: "swift-identity") }
+    static var identityConsumer: Self { .product(name: "Identity Consumer", package: "swift-identities") }
+    static var identityProvider: Self { .product(name: "Identity Provider", package: "swift-identities") }
+    static var identityShared: Self { .product(name: "Identity Shared", package: "swift-identities") }
     static var dependenciesMacros: Self { .product(name: "DependenciesMacros", package: "swift-dependencies") }
     static var dependenciesTestSupport: Self { .product(name: "DependenciesTestSupport", package: "swift-dependencies") }
     static var mailgun: Self { .product(name: "Mailgun", package: "coenttb-mailgun") }
@@ -31,7 +31,7 @@ extension Target.Dependency {
 }
 
 let package = Package(
-    name: "coenttb-identity",
+    name: "coenttb-identities",
     platforms: [
         .macOS(.v14),
         .iOS(.v17)
@@ -45,7 +45,7 @@ let package = Package(
         .package(url: "https://github.com/coenttb/coenttb-server", branch: "main"),
         .package(url: "https://github.com/coenttb/coenttb-server-vapor", branch: "main"),
         .package(url: "https://github.com/coenttb/coenttb-mailgun", branch: "main"),
-        .package(url: "https://github.com/coenttb/swift-identity", branch: "main"),
+        .package(url: "https://github.com/coenttb/swift-identities", branch: "main"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3"),
         .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/jwt.git", from: "5.0.0")

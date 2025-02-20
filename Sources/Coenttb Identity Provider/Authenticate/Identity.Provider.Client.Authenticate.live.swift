@@ -28,7 +28,6 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
         
         return .init(
             credentials: { username, password in
-
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
 
@@ -48,8 +47,10 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                     }
 
                     let response: Identity.Authentication.Response = try await .init(identity)
-
-                    identity.lastLoginAt = Date()
+                    
+                    @Dependency(\.date) var date
+                    
+                    identity.lastLoginAt = date()
                     try await identity.save(on: request.db)
 
                     request.auth.login(identity)
@@ -80,8 +81,10 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
                         guard identity.emailAddress == payload.email else {
                             throw Abort(.unauthorized, reason: "Identity details have changed")
                         }
+                        
+                        @Dependency(\.date) var date
 
-                        identity.lastLoginAt = Date()
+                        identity.lastLoginAt = date()
                         try await identity.save(on: request.db)
 
                         request.auth.login(identity)
@@ -160,7 +163,9 @@ extension Identity_Provider.Identity.Provider.Client.Authenticate {
 
                     let response: Identity.Authentication.Response = try await .init(identity)
 
-                    identity.lastLoginAt = Date()
+                    @Dependency(\.date) var date
+                    
+                    identity.lastLoginAt = date()
                     try await identity.save(on: request.db)
 
                     request.auth.login(identity)

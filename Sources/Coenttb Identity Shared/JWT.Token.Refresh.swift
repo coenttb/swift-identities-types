@@ -3,6 +3,7 @@ import Foundation
 import JWT
 import Vapor
 import EmailAddress
+import SwiftWeb
 
 extension JWT.Token {
     public struct Refresh: Codable, Sendable {

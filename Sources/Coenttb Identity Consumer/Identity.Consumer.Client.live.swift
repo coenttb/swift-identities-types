@@ -31,7 +31,7 @@ extension Identity.Consumer.Client {
             },
             create: .live(),
             delete: .live(),
-            emailChange: .live(),
+            email: .live(),
             password: .live()
         )
     }

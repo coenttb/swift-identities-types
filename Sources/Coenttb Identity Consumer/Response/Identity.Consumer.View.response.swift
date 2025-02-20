@@ -55,14 +55,14 @@ extension Identity.Consumer.View {
                 case .authenticate(.credentials):
                     return request.redirect(to: loginProtectedRedirect().relativePath)
                     
-                case .emailChange(.request):
+                case .email(.change(.request)):
                     return accountDefaultContainer {
                         Identity.Consumer.View.Reauthorize(
                             currentUserName: "currentUserName",
                             primaryColor: primaryColor,
                             passwordResetHref: router.url(for: .view(.password(.reset(.request)))),
                             confirmFormAction: router.url(for: .api(.reauthorize(.init()))),
-                            redirectOnSuccess: router.url(for: .view(.emailChange(.request)))
+                            redirectOnSuccess: router.url(for: .view(.email(.change(.request))))
                         )
                     }
                     
@@ -183,38 +183,42 @@ extension Identity.Consumer.View {
                 }
             }
             
-        case .emailChange(let emailChange):
-            switch emailChange {
-            case .request:
-                return accountDefaultContainer {
-                    Identity.Consumer.View.EmailChange.Request(
-                        formActionURL: router.url(for: .api(.emailChange(.request(.init())))),
-                        homeHref: homeHref(),
-                        primaryColor: primaryColor
-                    )
-                }
-                
-            case .confirm(let confirm):
-                _ = try await client.emailChange.confirm(token: confirm.token)
-                
-                return accountDefaultContainer {
-                    Identity.Consumer.View.EmailChange.Confirm(
-                        redirect: emailChangeConfirmSuccessRedirect(),
-                        primaryColor: primaryColor
-                    )
-                }
-                
-            case .reauthorization:
-                return accountDefaultContainer {
-                    Identity.Consumer.View.Reauthorize(
-                        currentUserName: currentUserName() ?? "",
-                        primaryColor: primaryColor,
-                        passwordResetHref: router.url(for: .view(.password(.reset(.request)))),
-                        confirmFormAction: router.url(for: .api(.reauthorize(.init()))),
-                        redirectOnSuccess: homeHref()
-                    )
+        case .email(let email):
+            switch email {
+            case .change(let change):
+                switch change {
+                case .request:
+                    return accountDefaultContainer {
+                        Identity.Consumer.View.Email.Change.Request(
+                            formActionURL: router.url(for: .api(.email(.change(.request(.init()))))),
+                            homeHref: homeHref(),
+                            primaryColor: primaryColor
+                        )
+                    }
+                    
+                case .confirm(let confirm):
+                    _ = try await client.email.change.confirm(token: confirm.token)
+                    
+                    return accountDefaultContainer {
+                        Identity.Consumer.View.Email.Change.Confirm(
+                            redirect: emailChangeConfirmSuccessRedirect(),
+                            primaryColor: primaryColor
+                        )
+                    }
+                    
+                case .reauthorization:
+                    return accountDefaultContainer {
+                        Identity.Consumer.View.Reauthorize(
+                            currentUserName: currentUserName() ?? "",
+                            primaryColor: primaryColor,
+                            passwordResetHref: router.url(for: .view(.password(.reset(.request)))),
+                            confirmFormAction: router.url(for: .api(.reauthorize(.init()))),
+                            redirectOnSuccess: homeHref()
+                        )
+                    }
                 }
             }
+            
         }
     }
 }

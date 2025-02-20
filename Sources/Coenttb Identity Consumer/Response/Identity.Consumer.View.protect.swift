@@ -46,7 +46,7 @@ extension Identity.Consumer.View {
                 try request.auth.require(type)
             }
 
-        case .emailChange(.request):
+        case .email(.change(.request)):
             @Dependency(\.request) var request
             guard let request else { throw Abort.requestUnavailable }
             
@@ -58,7 +58,7 @@ extension Identity.Consumer.View {
                 as: JWT.Token.Reauthorization.self
             )
             
-        case .emailChange:
+        case .email:
             try request.auth.require(type)
         }
     }

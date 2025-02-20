@@ -70,9 +70,9 @@ extension Identity.Provider.API {
                 throw error
             }
 
-        case let .emailChange(emailChange):
+        case let .email(email):
             do {
-                let response = try await Identity.Provider.API.EmailChange.response(emailChange: emailChange)
+                let response = try await Identity.Provider.API.Email.response(email: email)
                 await rateLimitClient.recordSuccess()
                 return response
             } catch {

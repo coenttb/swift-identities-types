@@ -9,7 +9,7 @@ import Coenttb_Web
 import Foundation
 import Identity_Consumer
 
-extension Identity.Consumer.View.EmailChange {
+extension Identity.Consumer.View.Email.Change {
     package struct Request: HTML {
         let formActionURL: URL
         let homeHref: URL
@@ -43,7 +43,7 @@ extension Identity.Consumer.View.EmailChange {
 
                     form {
                         VStack {
-                            Input.default(Identity.EmailChange.Request.CodingKeys.newEmail)
+                            Input.default(Identity.Email.Change.Request.CodingKeys.newEmail)
                                 .type(.email)
                                 .placeholder("New Email")
                                 .focusOnPageLoad()
@@ -111,7 +111,7 @@ extension Identity.Consumer.View.EmailChange {
                     errorContainer.textContent = '';
 
                     const formData = new FormData(form);
-                    const newEmail = formData.get('\#(Identity.EmailChange.Request.CodingKeys.newEmail.rawValue)');
+                    const newEmail = formData.get('\#(Identity.Email.Change.Request.CodingKeys.newEmail.rawValue)');
 
                     const emailRegex = new RegExp("\#(String.emailRegularExpression)", "i");
 
@@ -138,7 +138,7 @@ extension Identity.Consumer.View.EmailChange {
 
                         if (data.success) {
                             const pageModule = document.getElementById("\#(Self.pagemodule_request_email_change_id)");
-                            pageModule.outerHTML = `\#(html: Identity.Consumer.View.EmailChange.Request.ReceiptConfirmation(homeHref: self.homeHref, primaryColor: self.primaryColor))`;
+                            pageModule.outerHTML = `\#(html: Identity.Consumer.View.Email.Change.Request.ReceiptConfirmation(homeHref: self.homeHref, primaryColor: self.primaryColor))`;
                         } else {
                             throw new Error(data.reason || '\#(TranslatedString(
                                 dutch: "Verzoek om e-mailadres te wijzigen mislukt",
@@ -169,7 +169,7 @@ extension Identity.Consumer.View.EmailChange {
 //                            ))');
 //                        }
 
-extension Identity.Consumer.View.EmailChange.Request {
+extension Identity.Consumer.View.Email.Change.Request {
     package struct ReceiptConfirmation: HTML {
         let homeHref: URL
         let primaryColor: HTMLColor

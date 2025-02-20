@@ -37,12 +37,12 @@ extension Identity.Consumer.API.Router {
 
             }
 
-        case .emailChange:
+        case .email:
             return router
                 .setAccessToken(request.cookies.accessToken)
                 .setRefreshToken(request.cookies.refreshToken)
-                .setReauthorizationToken(request.cookies.reauthorizationToken)
                 .setBearerAuth(request.cookies.accessToken?.string)
+                .setReauthorizationToken(request.cookies.reauthorizationToken)
                 .eraseToAnyParserPrinter()
 
         case .password(let password):

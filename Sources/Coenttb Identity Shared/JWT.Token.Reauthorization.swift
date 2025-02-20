@@ -2,6 +2,7 @@ import Dependencies
 import Foundation
 import JWT
 import Vapor
+import SwiftWeb
 
 extension JWT.Token {
     public struct Reauthorization: Codable, Sendable {
