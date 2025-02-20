@@ -6,7 +6,7 @@ import Dependencies
 import EmailAddress
 import Foundation
 
-// MARK: - Client Test Implementation
+
 extension Identity.Client: TestDependencyKey {
     public static var testValue: Self {
         @Dependency(Identity.Client.TestDatabase.self) var database
@@ -33,47 +33,46 @@ extension Identity.Client: TestDependencyKey {
                     }
                 ),
                 apiKey: { apiKey in
-                    // For API key auth, we use consistent tokens for testing
-                    return .init(
+                    .init(
                         accessToken: .init(value: "api-access-token", expiresIn: 3600),
                         refreshToken: .init(value: "api-refresh-token", expiresIn: 86400)
                     )
                 }
             ),
             logout: {
-                await database.reset() // Clear all state on logout
+                await database.reset()
             },
             reauthorize: { password in
-                // Re-authenticate with current user's credentials
+                
                 return .init(value: "reauth-token", expiresIn: 3600)
             },
             create: .init(
                 request: { email, password in
-                    _ = try EmailAddress(email) // Validate email format
+                    _ = try EmailAddress(email)
                     try await database.createUser(email: email, password: password)
                 },
                 verify: { email, token in
-                    _ = try EmailAddress(email) // Validate email format
+                    _ = try EmailAddress(email)
                     try await database.verifyUser(email: email, token: token)
                 }
             ),
             delete: .init(
                 request: { reauthToken in
-                    guard case let email = "reauth-token", // Simple token validation for testing
+                    guard case let email = "reauth-token",
                           !email.isEmpty else {
                         throw Identity.Client.TestDatabase.TestError.invalidToken
                     }
                     try await database.requestDeletion(email: email, reauthToken: reauthToken)
                 },
                 cancel: {
-                    // Cancel deletion for current user
+                    
                     guard let email = await database.currentUser else {
                         throw Identity.Client.TestDatabase.TestError.userNotFound
                     }
                     try await database.cancelDeletion(email: email)
                 },
                 confirm: {
-                    // Confirm deletion for current user
+                    
                     guard let email = await database.currentUser else {
                         throw Identity.Client.TestDatabase.TestError.userNotFound
                     }
@@ -83,7 +82,7 @@ extension Identity.Client: TestDependencyKey {
             email: .init(
                 change: .init(
                     request: { newEmail in
-                        _ = try EmailAddress(newEmail) // Validate email format
+                        _ = try EmailAddress(newEmail)
                         guard let currentEmail = await database.currentUser else {
                             throw Identity.Client.TestDatabase.TestError.userNotFound
                         }
@@ -105,7 +104,7 @@ extension Identity.Client: TestDependencyKey {
             password: .init(
                 reset: .init(
                     request: { email in
-                        _ = try EmailAddress(email) // Validate email format
+                        _ = try EmailAddress(email)
                         _ = try await database.initiatePasswordReset(email: email)
                     },
                     confirm: { newPassword, token in
@@ -117,7 +116,7 @@ extension Identity.Client: TestDependencyKey {
                         guard let email = await database.currentUser else {
                             throw Identity.Client.TestDatabase.TestError.userNotFound
                         }
-                        // Update password directly since user is authenticated
+                        
                         try await database.changePassword(email: email, currentPassword: currentPassword, newPassword: newPassword)
                     }
                 )

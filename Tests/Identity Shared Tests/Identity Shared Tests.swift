@@ -5,15 +5,13 @@
 //  Created by Coen ten Thije Boonkkamp on 28/01/2025.
 //
 
+import Foundation
 import Dependencies
 import EmailAddress
 import Testing
 @testable import Identity_Shared
 import DependenciesTestSupport
 
-
-
-// MARK: - Authentication Tests
 @Suite(
     "Authentication Tests"
 )
@@ -83,14 +81,10 @@ struct AuthenticationTests {
             
             // Refresh token
             let refreshedResponse = try await client.authenticate.token.refresh(initialResponse.refreshToken.value)
-            
-            
-            
         }
     }
 }
 
-// MARK: - Identity Creation Tests
 @Suite(
     "Identity Creation Tests"
 )
@@ -148,7 +142,6 @@ struct IdentityCreationTests {
     }
 }
 
-// MARK: - Password Management Tests
 @Suite(
     "Password Management Tests"
 )
@@ -231,7 +224,6 @@ struct PasswordManagementTests {
     }
 }
 
-// MARK: - Email Management Tests
 @Suite(
     "Email Management Tests"
 )
@@ -272,7 +264,6 @@ struct EmailManagementTests {
 }
 
 
-//// MARK: - Identity Deletion Tests
 ///try await TestHelper.withIsolatedDatabase {
 
 ///
@@ -329,7 +320,6 @@ struct EmailManagementTests {
 //    }
 //}
 
-//// MARK: - Session Management Tests
 ///try await TestHelper.withIsolatedDatabase {
 
 ///

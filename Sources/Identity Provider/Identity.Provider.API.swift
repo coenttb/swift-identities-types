@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Identity.Provider.API.swift
 //  swift-identities
 //
 //  Created by Coen ten Thije Boonkkamp on 05/02/2025.

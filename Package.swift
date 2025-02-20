@@ -4,7 +4,6 @@ import Foundation
 import PackageDescription
 
 extension String {
-    static let identities: Self = "Identities"
     static let identityProvider: Self = "Identity Provider"
     static let identityConsumer: Self = "Identity Consumer"
     static let identityShared: Self = "Identity Shared"
@@ -40,14 +39,6 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3")
     ],
     targets: [
-        .target(
-            name: .identities,
-            dependencies: [
-                .identityProvider,
-                .identityConsumer,
-                .identityShared,
-            ]
-        ),
         .target(
             name: .identityShared,
             dependencies: [

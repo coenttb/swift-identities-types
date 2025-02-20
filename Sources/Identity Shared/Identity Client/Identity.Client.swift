@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Identity.Client.swift
 //  swift-web
 //
 //  Created by Coen ten Thije Boonkkamp on 11/09/2024.
@@ -100,9 +100,9 @@ extension Identity {
     }
 }
 
-// MARK: Conveniences
+// MARK: - Conveniences
 extension Identity.Client {
-    /// Authenticates a user with username and password credentials.
+    /// Convenience method to authenticate an identity with username and password credentials.
     ///
     /// - Parameters:
     ///   - username: The user's email address or username
@@ -112,14 +112,14 @@ extension Identity.Client {
         try await self.authenticate.credentials(username: username, password: password)
     }
     
-    /// Authenticates a user with an access token.
+    /// Convenience method to authenticate an identity with an access token.
     ///
     /// - Parameter accessToken: A valid JWT access token
     public func login(accessToken: String) async throws {
         try await self.authenticate.token.access(.init(token: accessToken))
     }
     
-    /// Authenticates a user with an API key.
+    /// Convenience method to authenticate an identity with an API key.
     ///
     /// - Parameter apiKey: A valid API key
     /// - Returns: An authentication response containing access and refresh tokens

@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Identity.Client.TestDatabase.swift
 //  swift-identities
 //
 //  Created by Coen ten Thije Boonkkamp on 19/02/2025.
@@ -23,7 +23,6 @@ extension Identity.Client {
 
         public init() {}
         
-        // MARK: - Types
         struct User {
             let email: String
             var password: String
@@ -46,7 +45,6 @@ extension Identity.Client {
             let token: String
         }
         
-        // MARK: - State Management
         public func reset() async {
             users.removeAll()
             sessions.removeAll()
@@ -55,7 +53,6 @@ extension Identity.Client {
             currentUser = nil
         }
         
-        // MARK: - User Management
         func createUser(email: String, password: String) throws {
             guard users[email] == nil else {
                 throw TestError.emailAlreadyExists
@@ -87,7 +84,6 @@ extension Identity.Client {
             pendingVerifications.removeValue(forKey: token)
         }
         
-        // MARK: - Authentication
         func authenticate(email: String, password: String) throws -> Session {
             guard let user = users[email],
                   user.password == password,
@@ -112,7 +108,6 @@ extension Identity.Client {
             }
         }
         
-        // MARK: - Password Management
         func initiatePasswordReset(email: String) throws -> String {
             guard users[email] != nil else {
                 throw TestError.userNotFound
@@ -143,7 +138,6 @@ extension Identity.Client {
             users[email]?.password = newPassword
         }
         
-        // MARK: - Email Management
         func initiateEmailChange(currentEmail: String, newEmail: String) throws -> String {
             guard users[currentEmail] != nil else {
                 throw TestError.userNotFound
@@ -180,7 +174,6 @@ extension Identity.Client {
             return createSession(for: newEmail)
         }
         
-        // MARK: - Deletion Management
         func requestDeletion(email: String, reauthToken: String) throws {
             guard users[email] != nil else {
                 throw TestError.userNotFound
@@ -209,7 +202,6 @@ extension Identity.Client {
             sessions = sessions.filter { $0.value.userId != email }
         }
         
-        // MARK: - Private Helpers
         private func createSession(for userId: String) -> Session {
             let session = Session(
                 userId: userId,
@@ -243,7 +235,6 @@ extension Identity.Client {
     }
 }
 
-// MARK: - Error Types
 extension Identity.Client.TestDatabase {
     enum TestError: Swift.Error {
         case emailAlreadyExists
@@ -255,7 +246,6 @@ extension Identity.Client.TestDatabase {
     }
 }
 
-// MARK: - Dependency Key Implementation
 extension Identity.Client.TestDatabase: TestDependencyKey {
     package static var testValue: Identity.Client.TestDatabase = .init()
     package static var testValue2: Identity.Client.TestDatabase = .init()

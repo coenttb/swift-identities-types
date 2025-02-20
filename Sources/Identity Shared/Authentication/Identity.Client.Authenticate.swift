@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Identity.Client.Authenticate.swift
 //  swift-identities
 //
 //  Created by Coen ten Thije Boonkkamp on 12/02/2025.

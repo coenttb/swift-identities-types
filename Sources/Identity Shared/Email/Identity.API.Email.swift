@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Identity.API.Email.swift
 //  swift-identities
 //
 //  Created by Coen ten Thije Boonkkamp on 18/02/2025.

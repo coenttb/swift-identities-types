@@ -8,7 +8,7 @@
 
 swift-identities provides an API and Client for identity authententication and management via tokens. The purpose of `swift-identities` is to provide the abstract Client and concrete API and associated types as a foundation upon which you can build your identity provider and/or identity consumer.
 
-> Tip: Please see [coenttb-identity](https://github.com/coenttb/coenttb-identity) for an example. 
+> Tip: Please see [coenttb-identities](https://github.com/coenttb/coenttb-identities) for an example. 
 
 > Note: Identity is the part of a user that is necessary for to authenticate that user. A common pattern is that of an identity provider and a server that uses that identity provider to authenticate its users (identity consumer). The identity provider can be at id.example.com, while the consumer is example.com, app.example.com, an iOS or android app, or a third party service.
 

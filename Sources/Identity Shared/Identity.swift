@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Identity.swift
 //  swift-identities
 //
 //  Created by Coen ten Thije Boonkkamp on 31/01/2025.

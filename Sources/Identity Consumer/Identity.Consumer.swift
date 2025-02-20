@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Identity.Consumer.swift
 //  swift-identities
 //
 //  Created by Coen ten Thije Boonkkamp on 28/01/2025.
@@ -8,7 +8,7 @@
 import Foundation
 import Identity_Shared
 
-extension Identity_Shared.Identity {
+extension Identity {
     /// A namespace for client-side identity management operations and user sessions.
     ///
     /// The `Consumer` namespace provides types and interfaces for client applications
