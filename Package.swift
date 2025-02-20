@@ -32,6 +32,7 @@ let package = Package(
     products: [
         .library(name: .identityProvider, targets: [.identityProvider]),
         .library(name: .identityConsumer, targets: [.identityConsumer]),
+        .library(name: .identityShared, targets: [.identityShared]),
     ],
     dependencies: [
         .package(url: "https://github.com/coenttb/coenttb-authentication", branch: "main"),
