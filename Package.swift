@@ -4,9 +4,10 @@ import Foundation
 import PackageDescription
 
 extension String {
-    static let identityProvider: Self = "Identity Provider"
-    static let identityConsumer: Self = "Identity Consumer"
-    static let identityShared: Self = "Identity Shared"
+    static let identities: Self = "Identities"
+    static let identityProvider: Self = "IdentityProvider"
+    static let identityConsumer: Self = "IdentityConsumer"
+    static let identityShared: Self = "IdentityShared"
 }
 
 extension Target.Dependency {
@@ -23,7 +24,7 @@ extension Target.Dependency {
 }
 
 let package = Package(
-    name: "swift-identity",
+    name: "swift-identities",
     platforms: [
         .macOS(.v14),
         .iOS(.v17)
@@ -31,7 +32,6 @@ let package = Package(
     products: [
         .library(name: .identityProvider, targets: [.identityProvider]),
         .library(name: .identityConsumer, targets: [.identityConsumer]),
-        .library(name: .identityShared, targets: [.identityShared])
     ],
     dependencies: [
         .package(url: "https://github.com/coenttb/coenttb-authentication", branch: "main"),
@@ -39,6 +39,14 @@ let package = Package(
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3")
     ],
     targets: [
+        .target(
+            name: .identities,
+            dependencies: [
+                .identityProvider,
+                .identityConsumer,
+                .identityShared,
+            ]
+        ),
         .target(
             name: .identityShared,
             dependencies: [
@@ -93,3 +101,10 @@ let package = Package(
 extension String {
     var tests: Self { "\(self) Tests" }
 }
+
+#if !os(Windows)
+  // Add the documentation compiler plugin if possible
+  package.dependencies.append(
+    .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.4.0")
+  )
+#endif
