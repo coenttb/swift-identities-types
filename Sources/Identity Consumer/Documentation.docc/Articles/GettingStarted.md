@@ -1,1 +1,1 @@
-# What is an Identity Consumer
+# Getting started

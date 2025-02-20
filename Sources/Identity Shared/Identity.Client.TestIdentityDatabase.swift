@@ -95,7 +95,7 @@ extension Identity.Client {
         }
         
         func refreshSession(token: String) throws -> Session {
-            guard let session = sessions.first(where: { $0.value.refreshToken == token }),
+            guard let _ = sessions.first(where: { $0.value.refreshToken == token }),
                   let email = currentUser else {
                 throw TestError.invalidToken
             }

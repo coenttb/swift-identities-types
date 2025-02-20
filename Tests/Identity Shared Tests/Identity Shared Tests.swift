@@ -43,7 +43,6 @@ struct AuthenticationTests {
             
             @Dependency(Identity.Client.self) var client
             
-            
             await #expect(throws: Identity.Client.TestDatabase.TestError.invalidCredentials) {
                 try await client.login(username: "nonexistent@example.com", password: "wrongpass")
             }
@@ -80,7 +79,7 @@ struct AuthenticationTests {
             let initialResponse = try await client.authenticate.credentials(username: email, password: password)
             
             // Refresh token
-            let refreshedResponse = try await client.authenticate.token.refresh(initialResponse.refreshToken.value)
+            let _ = try await client.authenticate.token.refresh(initialResponse.refreshToken.value)
         }
     }
 }
@@ -129,7 +128,7 @@ struct IdentityCreationTests {
         try await TestHelper.withIsolatedDatabase {
             
             @Dependency(Identity.Client.self) var client
-            @Dependency(Identity.Client.TestDatabase.self) var database
+            
             let email = "duplicate@example.com"
             
             try await client.create.request(email: email, password: "password123")
@@ -137,7 +136,6 @@ struct IdentityCreationTests {
             await #expect(throws: Identity.Client.TestDatabase.TestError.emailAlreadyExists) {
                 try await client.create.request(email: email, password: "anotherpass")
             }
-            
         }
     }
 }
@@ -151,7 +149,7 @@ struct PasswordManagementTests {
         try await TestHelper.withIsolatedDatabase {
             
             @Dependency(Identity.Client.self) var client
-            @Dependency(Identity.Client.TestDatabase.self) var database
+            
             let email = "reset@example.com"
             let initialPassword = "initial123"
             let newPassword = "newPass123"
@@ -181,7 +179,7 @@ struct PasswordManagementTests {
         try await TestHelper.withIsolatedDatabase {
             
             @Dependency(Identity.Client.self) var client
-            @Dependency(Identity.Client.TestDatabase.self) var database
+            
             let email = "change@example.com"
             let currentPassword = "current123"
             let newPassword = "new123"
@@ -205,7 +203,6 @@ struct PasswordManagementTests {
             await #expect(throws: Identity.Client.TestDatabase.TestError.invalidCredentials) {
                 _ = try await client.login(username: email, password: currentPassword)
             }
-            
         }
     }
     
@@ -214,7 +211,7 @@ struct PasswordManagementTests {
         try await TestHelper.withIsolatedDatabase {
             
             @Dependency(Identity.Client.self) var client
-            @Dependency(Identity.Client.TestDatabase.self) var database
+            
             
             await #expect(throws: Identity.Client.TestDatabase.TestError.invalidResetToken) {
                 try await client.password.reset.confirm(newPassword: "newpass", token: "invalid-token")
