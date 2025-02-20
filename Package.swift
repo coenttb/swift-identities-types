@@ -5,9 +5,9 @@ import PackageDescription
 
 extension String {
     static let identities: Self = "Identities"
-    static let identityProvider: Self = "IdentityProvider"
-    static let identityConsumer: Self = "IdentityConsumer"
-    static let identityShared: Self = "IdentityShared"
+    static let identityProvider: Self = "Identity Provider"
+    static let identityConsumer: Self = "Identity Consumer"
+    static let identityShared: Self = "Identity Shared"
 }
 
 extension Target.Dependency {

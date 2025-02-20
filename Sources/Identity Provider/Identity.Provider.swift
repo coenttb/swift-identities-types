@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import IdentityShared
+import Identity_Shared
 
-extension IdentityShared.Identity {
+extension Identity_Shared.Identity {
     /// A namespace for server-side identity management operations and authentication services.
     ///
     /// The `Provider` namespace provides types and interfaces for identity provider services
@@ -19,7 +19,7 @@ extension IdentityShared.Identity {
     /// - Email verification and communication
     ///
     /// The namespace is designed to work in tandem with the `Consumer` namespace,
-    /// sharing common types through `IdentityShared` to ensure consistent and secure
+    /// sharing common types through `Identity_Shared` to ensure consistent and secure
     /// client-server interactions. Key features include:
     /// - Secure token generation and validation
     /// - User credential management

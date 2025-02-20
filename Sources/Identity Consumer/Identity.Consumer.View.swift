@@ -6,7 +6,7 @@
 //
 
 import CasePaths
-import IdentityShared
+import Identity_Shared
 import SwiftWeb
 
 extension Identity.Consumer {

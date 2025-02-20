@@ -6,9 +6,9 @@
 //
 
 import Foundation
-import IdentityShared
+import Identity_Shared
 
-extension IdentityShared.Identity {
+extension Identity_Shared.Identity {
     /// A namespace for client-side identity management operations and user sessions.
     ///
     /// The `Consumer` namespace provides types and interfaces for client applications
@@ -19,7 +19,7 @@ extension IdentityShared.Identity {
     /// - View routing for identity-related UI flows
     ///
     /// The namespace is designed to work in tandem with the `Provider` namespace,
-    /// sharing common types through `IdentityShared` to ensure consistency in
+    /// sharing common types through `Identity_Shared` to ensure consistency in
     /// client-server communication.
     public enum Consumer {}
 }

@@ -7,7 +7,7 @@
 
 import Dependencies
 import Foundation
-import IdentityShared
+import Identity_Shared
 import SwiftWeb
 
 extension Identity.Consumer {

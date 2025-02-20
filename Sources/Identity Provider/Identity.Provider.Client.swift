@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import IdentityShared
+import Identity_Shared
 
 extension Identity.Provider {
    /// A type alias providing access to the shared client interface for provider-side identity operations.
@@ -32,5 +32,5 @@ extension Identity.Provider {
    /// By using the shared client definition, providers have access to a complete
    /// set of identity management operations that integrate seamlessly with consumer
    /// implementations while maintaining appropriate security boundaries and controls.
-   public typealias Client = IdentityShared.Identity.Client
+   public typealias Client = Identity_Shared.Identity.Client
 }

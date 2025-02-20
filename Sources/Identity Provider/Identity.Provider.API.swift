@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import IdentityShared
+import Identity_Shared
 
 extension Identity.Provider {
     /// A type alias providing access to the shared API interface for identity provider services.
@@ -35,5 +35,5 @@ extension Identity.Provider {
     /// - Authentication flows
     /// - Error handling
     /// - Data validation rules
-    public typealias API = IdentityShared.Identity.API
+    public typealias API = Identity_Shared.Identity.API
 }

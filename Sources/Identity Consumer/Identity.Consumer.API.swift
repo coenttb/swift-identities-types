@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import IdentityShared
+import Identity_Shared
 
 extension Identity.Consumer {
     /// A type alias providing access to the shared API interface for client applications.
@@ -30,5 +30,5 @@ extension Identity.Consumer {
     ///
     /// By using the shared API definition, the consumer maintains compatibility
     /// with the identity provider's endpoint specifications and data structures.
-    public typealias API = IdentityShared.Identity.API
+    public typealias API = Identity_Shared.Identity.API
 }
