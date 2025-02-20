@@ -16,7 +16,7 @@ extension Identity.Consumer {
     /// - Authentication operations (login, logout)
     /// - Identity management (create, delete)
     /// - Profile updates (email, password)
-    /// - Session managçement
+    /// - Session management
     ///
     /// Example usage:
     /// ```swift

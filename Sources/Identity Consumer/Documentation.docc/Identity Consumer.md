@@ -51,11 +51,22 @@ extension Identity.Provider.Client: DependencyKey {
 ```
 
 3. Now you can use the Client anywhere in your server:
-```swift
-@Dependency(\.identity.provider.client) var client
+@Row {
+    @Column {
+        ```swift
+        @Dependency(Identity.Provider.Client.self) var client
 
-client.authenticate.credentials(username: "...", password: "...")
-```
+        client.authenticate.credentials(username: "...", password: "...")
+        ```
+    }
+    @Column {
+        ```swift
+        @Dependency(Identity.Consumer.Client.self) var client
+
+        client.authenticate.credentials(username: "...", password: "...")
+        ```
+    }
+}
 
 Depending on your choice of server and database, you will also need to define a HTTP response. This is the 'outer' layer of the identity provider/consumer, and should be concerned with rate limiting and setting headers and cookies.
 
