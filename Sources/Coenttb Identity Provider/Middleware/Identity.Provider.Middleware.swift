@@ -1,6 +1,6 @@
 //
 //  Identity.Provider.Middleware.swift
-//  coenttb-identity
+//  coenttb-identities
 //
 //  Created by Coen ten Thije Boonkkamp on 17/02/2025.
 //

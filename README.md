@@ -1,6 +1,6 @@
-# coenttb-identity
+# coenttb-identities
 
-`coenttb-identity`
+`coenttb-identities`
 
 ![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
 
@@ -8,20 +8,20 @@ This package is currently in active development and is subject to frequent chang
 
 ## Installation
 
-You can add `coenttb-identity` to an Xcode project by including it as a package dependency:
+You can add `coenttb-identities` to an Xcode project by including it as a package dependency:
 
-Repository URL: https://github.com/coenttb/coenttb-identity
+Repository URL: https://github.com/coenttb/coenttb-identities
 
 For a Swift Package Manager project, add the dependency in your Package.swift file:
 ```
 dependencies: [
-  .package(url: "https://github.com/coenttb/coenttb-identity", branch: "main")
+  .package(url: "https://github.com/coenttb/coenttb-identities", branch: "main")
 ]
 ```
 
 ## Example
 
-Refer to [coenttb/coenttb-com-server](https://www.github.com/coenttb/coenttb-com-server) for an example of how to use coenttb-identity.
+Refer to [coenttb/coenttb-com-server](https://www.github.com/coenttb/coenttb-com-server) for an example of how to use coenttb-identities.
 
 ## Related Projects
 
