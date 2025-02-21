@@ -6,6 +6,7 @@
 //
 
 import SwiftWeb
+import CasePaths
 
 extension Identity.API {
     /// Identity creation endpoints that handle new user registration and verification.
@@ -28,6 +29,8 @@ extension Identity.API {
     ///   .init(token: "verification-token", email: "new@example.com")
     /// )
     /// ```
+    @CasePathable
+    @dynamicMemberLookup
     public enum Create: Equatable, Sendable {
         /// Initiates identity creation with email and password
         case request(Identity.Creation.Request)

@@ -9,6 +9,7 @@ import BearerAuth
 import Coenttb_Authentication
 import EmailAddress
 import SwiftWeb
+import CasePaths
 
 extension Identity {
    /// Authentication methods supported by the Identity system.
@@ -19,7 +20,9 @@ extension Identity {
    ///
    /// This design implements a robust authentication system with support for
    /// both initial authentication and session maintenance through token refresh.
-   public enum Authentication: Equatable, Sendable {
+    @CasePathable
+    @dynamicMemberLookup
+    public enum Authentication: Equatable, Sendable {
        /// Authenticate using username and password credentials
        case credentials(Credentials)
        /// Authenticate using an access or refresh token

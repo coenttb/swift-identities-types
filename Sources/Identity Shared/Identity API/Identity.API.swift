@@ -6,6 +6,7 @@
 //
 
 import SwiftWeb
+import CasePaths
 
 extension Identity {
     /// A comprehensive set of identity management API endpoints.
@@ -29,6 +30,8 @@ extension Identity {
     ///   // Handle identity creation
     /// }
     /// ```
+    @CasePathable
+    @dynamicMemberLookup
     public enum API: Equatable, Sendable {
         /// Handles user authentication via credentials, tokens, or API keys
         case authenticate(Identity.API.Authenticate)

@@ -6,6 +6,7 @@
 //
 
 import SwiftWeb
+import CasePaths
 
 extension Identity.API {
     /// Password management endpoints for handling password changes and resets.
@@ -29,6 +30,8 @@ extension Identity.API {
     ///   ))
     /// )
     /// ```
+    @CasePathable
+    @dynamicMemberLookup
     public enum Password: Equatable, Sendable {
         /// Password reset flow for forgotten passwords
         case reset(Identity.API.Password.Reset)
@@ -47,6 +50,8 @@ extension Identity.API.Password {
     ///
     /// > Important: Reset tokens expire after a short time period and
     /// > can only be used once.
+    @CasePathable
+    @dynamicMemberLookup
     public enum Reset: Equatable, Sendable {
         /// Initiates a password reset request
         case request(Identity.Password.Reset.Request)
@@ -61,6 +66,8 @@ extension Identity.API.Password {
     ///
     /// Requires the user's current password for security verification
     /// before allowing the password change.
+    @CasePathable
+    @dynamicMemberLookup
     public enum Change: Equatable, Sendable {
         /// Request to change password with current and new passwords
         case request(change: Identity.Password.Change.Request)

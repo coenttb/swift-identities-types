@@ -9,6 +9,7 @@ import Dependencies
 import Foundation
 import Identity_Shared
 import SwiftWeb
+import CasePaths
 
 extension Identity.Consumer {
     /// Routes available in the consumer-side identity system.
@@ -26,6 +27,8 @@ extension Identity.Consumer {
     ///     // Handle view transitions like showing login form
     /// }
     /// ```
+    @CasePathable
+    @dynamicMemberLookup
     public enum Route: Equatable, Sendable {
         /// Routes to API endpoints for server communication
         case api(Identity.Consumer.API)

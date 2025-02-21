@@ -8,6 +8,7 @@
 import EmailAddress
 import Foundation
 import URLRouting
+import CasePaths
 
 extension Identity {
     /// Namespace for email-related functionality within the Identity system.

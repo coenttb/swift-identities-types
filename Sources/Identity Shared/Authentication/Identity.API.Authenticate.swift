@@ -9,6 +9,7 @@ import BearerAuth
 import Foundation
 import SwiftWeb
 import URLRouting
+import CasePaths
 
 extension Identity.API {
     /// Authentication endpoints for managing user sessions and access.
@@ -30,6 +31,8 @@ extension Identity.API {
     /// // Authenticate with a refresh token
     /// let auth = Identity.API.Authenticate.token(.refresh(bearerToken))
     /// ```
+    @CasePathable
+    @dynamicMemberLookup
     public enum Authenticate: Equatable, Sendable {
         
         /// Authenticates using username/password credentials
@@ -53,6 +56,8 @@ extension Identity.API.Authenticate {
     /// Access tokens have shorter lifetimes but grant full API access, while
     /// refresh tokens have longer lifetimes but can only be used to obtain new
     /// access tokens.
+    @CasePathable
+    @dynamicMemberLookup
     public enum Token: Codable, Hashable, Sendable {
         /// Authenticates using a JWT access token
         case access(BearerAuth)

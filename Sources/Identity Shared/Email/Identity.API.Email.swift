@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftWeb
+import CasePaths
 
 extension Identity.API {
     /// Email management endpoints for handling email address updates.
@@ -16,6 +17,8 @@ extension Identity.API {
     /// 2. Verify new email via confirmation token
     ///
     /// Future extensions may include additional email management features.
+    @CasePathable
+    @dynamicMemberLookup
     public enum Email: Equatable, Sendable {
         /// Email address change operation
         case change(Identity.API.Email.Change)
@@ -63,6 +66,8 @@ extension Identity.API.Email {
     ///
     /// > Important: The new email address is not activated until confirmed
     /// > through the verification token sent to that address.
+    @CasePathable
+    @dynamicMemberLookup
     public enum Change: Equatable, Sendable {
         /// Initiates an email change request with the new address
         case request(Identity.Email.Change.Request)

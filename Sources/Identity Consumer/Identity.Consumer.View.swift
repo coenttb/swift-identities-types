@@ -19,6 +19,7 @@ extension Identity.Consumer {
     /// - Profile management (email, password)
     /// - Account deletion
     @CasePathable
+    @dynamicMemberLookup
     public enum View: Codable, Hashable, Sendable {
         case authenticate(Identity.Consumer.View.Authenticate)
         case create(Identity.Consumer.View.Create)
@@ -39,6 +40,7 @@ extension Identity.Consumer.View {
     ///
     /// Defines the possible UI states during user authentication flows.
     @CasePathable
+    @dynamicMemberLookup
     public enum Authenticate: Codable, Hashable, Sendable {
         /// Username/password credentials entry view
         case credentials
@@ -52,6 +54,7 @@ extension Identity.Consumer.View {
     /// - Initial registration form
     /// - Email verification
     @CasePathable
+    @dynamicMemberLookup
     public enum Create: Codable, Hashable, Sendable {
         /// New account registration form view
         case request
@@ -65,6 +68,7 @@ extension Identity.Consumer.View {
     ///
     /// Handles UI flows for email-related operations like address changes.
     @CasePathable
+    @dynamicMemberLookup
     public enum Email: Codable, Hashable, Sendable {
         /// Email change flow views
         case change(Identity.Consumer.View.Email.Change)
@@ -78,6 +82,8 @@ extension Identity.Consumer.View.Email {
     /// - Initial change request
     /// - Verification confirmation
     /// - Security reauthorization if needed
+    @CasePathable
+    @dynamicMemberLookup
     public enum Change: Codable, Hashable, Sendable {
         /// Email change request form
         case request
@@ -94,6 +100,8 @@ extension Identity.Consumer.View {
     /// Handles UI flows for password-related operations:
     /// - Password reset (forgotten password)
     /// - Password change (while authenticated)
+    @CasePathable
+    @dynamicMemberLookup
     public enum Password: Codable, Hashable, Sendable {
         /// Password reset flow views
         case reset(Identity.Consumer.View.Password.Reset)
@@ -108,6 +116,8 @@ extension Identity.Consumer.View.Password {
     /// Manages the UI states for resetting a forgotten password:
     /// - Initial reset request
     /// - New password confirmation
+    @CasePathable
+    @dynamicMemberLookup
     public enum Reset: Codable, Hashable, Sendable {
         /// Password reset request form
         case request
@@ -118,6 +128,8 @@ extension Identity.Consumer.View.Password {
     /// Password change flow view states.
     ///
     /// Manages the UI for changing password while authenticated.
+    @CasePathable
+    @dynamicMemberLookup
     public enum Change: Codable, Hashable, Sendable {
         /// Password change request form
         case request

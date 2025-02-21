@@ -6,6 +6,7 @@
 //
 
 import SwiftWeb
+import CasePaths
 
 extension Identity.API {
     /// Identity deletion endpoints with a multi-step confirmation process for safety.
@@ -31,6 +32,8 @@ extension Identity.API {
     ///
     /// > Important: Identity deletion is permanent and cannot be undone after confirmation.
     /// > Identities have a grace period between request and confirmation during which they can cancel.
+    @CasePathable
+    @dynamicMemberLookup
     public enum Delete: Codable, Hashable, Sendable {
         /// Initiates identity deletion, requiring recent authentication
         case request(Identity.Deletion.Request)
