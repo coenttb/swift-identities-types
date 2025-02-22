@@ -112,13 +112,33 @@ extension Identity.Consumer.Configuration {
         public var createVerificationSuccess: @Sendable () -> URL
         
         public init(
-            createProtected: @escaping @Sendable () -> URL,
-            createVerificationSuccess: @escaping @Sendable () -> URL,
-            loginProtected: @escaping @Sendable () -> URL,
-            logoutSuccess: @escaping @Sendable () -> URL,
-            loginSuccess: @escaping @Sendable () -> URL,
-            passwordResetSuccess: @escaping @Sendable () -> URL,
-            emailChangeConfirmSuccess: @escaping @Sendable () -> URL
+            createProtected: @escaping @Sendable () -> URL = {
+                @Dependency(\.identity.consumer.router) var router
+                return URL(string: "/")!
+            },
+            createVerificationSuccess: @escaping @Sendable () -> URL = {
+                @Dependency(\.identity.consumer.router) var router
+                return router.url(for: .view(.login))
+            },
+            loginProtected: @escaping @Sendable () -> URL = {
+                return URL(string: "/")!
+            },
+            logoutSuccess: @escaping @Sendable () -> URL = {
+                @Dependency(\.identity.consumer.router) var router
+                return router.url(for: .view(.login))
+            },
+            loginSuccess: @escaping @Sendable () -> URL = {
+                @Dependency(\.identity.consumer.router) var router
+                return URL(string: "/")!
+            },
+            passwordResetSuccess: @escaping @Sendable () -> URL = {
+                @Dependency(\.identity.consumer.router) var router
+                return router.url(for: .view(.login))
+            },
+            emailChangeConfirmSuccess: @escaping @Sendable () -> URL = {
+                @Dependency(\.identity.consumer.router) var router
+                return router.url(for: .view(.login))
+            }
         ) {
             self.createProtected = createProtected
             self.loginProtected = loginProtected
