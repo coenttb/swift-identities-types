@@ -7,7 +7,7 @@
 
 import Coenttb_Vapor
 import Favicon
-import Identity_Consumer
+import Identities
 
 extension Identity.Consumer.View {
     package static func protect<Authenticatable: Vapor.Authenticatable>(

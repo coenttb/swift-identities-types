@@ -7,10 +7,10 @@
 
 import Coenttb_Server
 import Fluent
-import Identity_Provider
+import Identities
 import Vapor
 
-extension Identity_Provider.Identity.Provider.Client.Create {
+extension Identity.Provider.Client.Create {
     package static func live(
         sendVerificationEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
         onIdentityCreationSuccess: @escaping @Sendable (_ identity: (id: UUID, email: EmailAddress)) async throws -> Void

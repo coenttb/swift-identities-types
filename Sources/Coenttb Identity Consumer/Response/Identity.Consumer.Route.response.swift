@@ -7,7 +7,7 @@
 
 import Coenttb_Vapor
 import Coenttb_Web
-import Identity_Consumer
+import Identities
 
 extension Identity.Consumer.API {
     public static func response(

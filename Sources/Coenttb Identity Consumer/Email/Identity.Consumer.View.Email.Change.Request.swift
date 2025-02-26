@@ -7,7 +7,7 @@
 
 import Coenttb_Web
 import Foundation
-import Identity_Consumer
+import Identities
 
 extension Identity.Consumer.View.Email.Change {
     package struct Request: HTML {

@@ -61,7 +61,7 @@
       "location" : "https://github.com/coenttb/coenttb-server-vapor",
       "state" : {
         "branch" : "main",
-        "revision" : "a7faea08f4276be3edf0aaa15ef4ffc60ac11f22"
+        "revision" : "c27b60e2e154ff5e33c6934596960ce4423e921b"
       }
     },
     {
@@ -375,8 +375,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-dependencies",
       "state" : {
-        "revision" : "52b5e1a09dc016e64ce253e19ab3124b7fae9ac9",
-        "version" : "1.7.0"
+        "revision" : "121a428c505c01c4ce02d5ada1c8fc3da93afce9",
+        "version" : "1.8.0"
       }
     },
     {
@@ -439,7 +439,7 @@
       "location" : "https://github.com/coenttb/swift-identities",
       "state" : {
         "branch" : "main",
-        "revision" : "16d899c40dcd66fb16fd061f2cb3e569f3b3eb9b"
+        "revision" : "e3751af6f0799ca56a1b4b2bbc159a12f89092a4"
       }
     },
     {
@@ -654,8 +654,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
       "state" : {
-        "revision" : "b444594f79844b0d6d76d70fbfb3f7f71728f938",
-        "version" : "1.5.1"
+        "revision" : "39de59b2d47f7ef3ca88a039dff3084688fe27f4",
+        "version" : "1.5.2"
       }
     }
   ],

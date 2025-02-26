@@ -11,7 +11,7 @@ import Coenttb_Web
 import Fluent
 @preconcurrency import FluentKit
 import Foundation
-import Identity_Provider
+import Identities
 import Coenttb_Fluent
 
 extension Database.Identity {

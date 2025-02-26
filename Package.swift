@@ -20,9 +20,7 @@ extension Target.Dependency {
     static var coenttbServer: Self { .product(name: "Coenttb Server", package: "coenttb-server") }
     static var coenttbVapor: Self { .product(name: "Coenttb Vapor", package: "coenttb-server-vapor") }
     static var coenttbFluent: Self { .product(name: "Coenttb Fluent", package: "coenttb-server-vapor") }
-    static var identityConsumer: Self { .product(name: "Identity Consumer", package: "swift-identities") }
-    static var identityProvider: Self { .product(name: "Identity Provider", package: "swift-identities") }
-    static var identityShared: Self { .product(name: "Identity Shared", package: "swift-identities") }
+    static var identities: Self { .product(name: "Identities", package: "swift-identities") }
     static var dependenciesMacros: Self { .product(name: "DependenciesMacros", package: "swift-dependencies") }
     static var dependenciesTestSupport: Self { .product(name: "DependenciesTestSupport", package: "swift-dependencies") }
     static var mailgun: Self { .product(name: "Mailgun", package: "coenttb-mailgun") }
@@ -54,7 +52,7 @@ let package = Package(
         .target(
             name: .coenttbIdentityShared,
             dependencies: [
-                .identityShared,
+                .identities,
                 .coenttbWeb,
                 .dependenciesMacros,
                 .vaporJWT,
@@ -64,7 +62,7 @@ let package = Package(
         .target(
             name: .coenttbIdentityConsumer,
             dependencies: [
-                .identityConsumer,
+                .identities,
                 .coenttbWeb,
                 .dependenciesMacros,
                 .coenttbIdentityShared,
@@ -75,7 +73,7 @@ let package = Package(
         .target(
             name: .coenttbIdentityProvider,
             dependencies: [
-                .identityProvider,
+                .identities,
                 .coenttbWeb,
                 .coenttbServer,
                 .coenttbVapor,

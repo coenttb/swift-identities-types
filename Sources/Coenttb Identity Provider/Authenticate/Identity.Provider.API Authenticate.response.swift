@@ -8,7 +8,7 @@
 import Coenttb_Vapor
 import Coenttb_Web
 import Foundation
-import Identity_Provider
+import Identities
 
 extension Identity.Provider.API.Authenticate {
     package static func response(

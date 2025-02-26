@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Identity_Shared
+import Identities
 import Dependencies
 import Vapor
 import Coenttb_Vapor

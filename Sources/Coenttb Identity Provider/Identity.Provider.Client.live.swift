@@ -15,10 +15,10 @@
 import Coenttb_Vapor
 import Dependencies
 import Fluent
-import Identity_Provider
+import Identities
 import JWT
 
-extension Identity_Provider.Identity.Provider.Client {
+extension Identity.Provider.Client {
     public static func live(
         sendVerificationEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
         sendPasswordResetEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,

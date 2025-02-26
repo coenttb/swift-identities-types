@@ -7,8 +7,8 @@
 
 import Foundation
 import Dependencies
-import Identity_Shared
-import Identity_Provider
+import Identities
+import Identities
 import URLRouting
 import Coenttb_Identity_Shared
 

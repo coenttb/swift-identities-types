@@ -7,7 +7,7 @@
 
 import Coenttb_Web
 import Foundation
-import Identity_Consumer
+import Identities
 
 extension Identity.Consumer.View {
     public struct Logo: HTML, Sendable {

@@ -7,7 +7,7 @@
 
 import Coenttb_Identity_Shared
 import Coenttb_Vapor
-import Identity_Consumer
+import Identities
 import JWT
 
 extension Identity.Consumer {
@@ -20,16 +20,21 @@ extension Identity.Consumer {
             return try await withDependencies {
                 $0.request = request
             } operation: {
-                guard let identityAuthenticationResponse = try await client.login(
-                    accessToken: request.cookies.accessToken?.string,
-                    refreshToken: \.cookies.accessToken?.string
-                )
-                else { return try await next.respond(to: request) }
-
-                let response = try await next.respond(to: request)
-                
-                return response
-                    .withTokens(for: identityAuthenticationResponse)
+                do {
+                    let identityAuthenticationResponse = try await client.login(
+                        accessToken: request.cookies.accessToken?.string,
+                        refreshToken: \.cookies.refreshToken?.string
+                    )
+                    
+                    let response = try await next.respond(to: request)
+                    
+                    return response
+                        .withTokens(for: identityAuthenticationResponse)
+                } catch {
+                    let response = try await next.respond(to: request)
+                    response.expire(cookies: .identity)
+                    return response
+                }
             }
         }
     }

@@ -7,10 +7,10 @@
 
 import Coenttb_Server
 import Fluent
-import Identity_Provider
+import Identities
 import Vapor
 
-extension Identity_Provider.Identity.Provider.Client.Password {
+extension Identity.Provider.Client.Password {
     package static func live(
         sendPasswordResetEmail: @escaping @Sendable (_ email: EmailAddress, _ token: String) async throws -> Void,
         sendPasswordChangeNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void

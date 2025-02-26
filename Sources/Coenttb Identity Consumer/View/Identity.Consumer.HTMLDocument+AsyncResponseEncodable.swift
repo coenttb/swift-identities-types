@@ -6,6 +6,6 @@
 //
 
 import Coenttb_Vapor
-import Identity_Consumer
+import Identities
 
 extension Identity.Consumer.HTMLDocument: AsyncResponseEncodable {}

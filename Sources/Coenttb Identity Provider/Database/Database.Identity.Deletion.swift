@@ -1,7 +1,7 @@
 import Coenttb_Database
 import Coenttb_Vapor
 import Fluent
-import Identity_Provider
+import Identities
 
 extension Database.Identity {
     package final class Deletion: Model, @unchecked Sendable {

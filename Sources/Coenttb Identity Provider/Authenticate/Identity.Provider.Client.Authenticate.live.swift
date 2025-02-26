@@ -17,11 +17,11 @@ import Coenttb_Vapor
 import Coenttb_Web
 import Fluent
 @preconcurrency import FluentKit
-import Identity_Provider
+import Identities
 import JWT
 @preconcurrency import Mailgun
 
-extension Identity_Provider.Identity.Provider.Client.Authenticate {
+extension Identity.Provider.Client.Authenticate {
     package static func live(
     ) -> Self {
         @Dependency(\.logger) var logger

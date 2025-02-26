@@ -6,4 +6,4 @@
 //
 
 import Foundation
-@_exported import Identity_Shared
+@_exported import Identities

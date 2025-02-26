@@ -8,7 +8,7 @@
 import Coenttb_Vapor
 import Coenttb_Web
 import Favicon
-import Identity_Consumer
+import Identities
 
 extension Identity.Consumer.API.Authenticate {
     package static func response(
@@ -23,14 +23,13 @@ extension Identity.Consumer.API.Authenticate {
                 switch token {
                 case .access(let access):
                     
-                    if let identityAuthenticationResponse = try await client.login(
+                    let identityAuthenticationResponse = try await client.login(
                         accessToken: access.token,
                         refreshToken: \.cookies.refreshToken?.string
-                    ) {
-                        return Response.success(true)
-                            .withTokens(for: identityAuthenticationResponse)
-                    }
+                    )
+                        
                     return Response.success(true)
+                        .withTokens(for: identityAuthenticationResponse)
                     
                 case .refresh(let refresh):
                     let identityAuthenticationResponse = try await client.authenticate.token.refresh(token: refresh.token)
@@ -40,29 +39,19 @@ extension Identity.Consumer.API.Authenticate {
                 }
 
             case .credentials(let credentials):
-                do {
-                    let identityAuthenticationResponse = try await client.authenticate.credentials(credentials)
-                    @Dependency(\.identity.consumer.cookies.accessToken) var accessTokenConfiguration
-                    @Dependency(\.identity.consumer.cookies.refreshToken) var refreshTokenConfiguration
-                    @Dependency(\.logger) var logger
-                    
-                    logger.debug("Identity.Consumer.API.Authenticate.response will return credentials with cookies")
-                    
-                    return Response.success(true)
-                        .withTokens(for: identityAuthenticationResponse)
-                } catch {
-                    print("Failed in credentials case with error:", error)
-                    throw Abort(.internalServerError, reason: "Failed to authenticate account: \(error)")
-                }
-
+                let identityAuthenticationResponse = try await client.authenticate.credentials(credentials)
+                
+                return Response.success(true)
+                    .withTokens(for: identityAuthenticationResponse)
             case .apiKey(let apiKey):
                 let data = try await client.authenticate.apiKey(apiKey: apiKey.token)
                 return Response.success(true, data: data)
 
             }
-
         } catch {
-            throw Abort(.internalServerError, reason: "Failed to authenticate account")
+            let response = Response.success(false, message: "Failed to authenticate with error: \(error)")
+            response.expire(cookies: .identity)
+            return response
         }
     }
 }

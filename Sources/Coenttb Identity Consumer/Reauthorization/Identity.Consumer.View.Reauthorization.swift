@@ -7,8 +7,8 @@
 
 import Coenttb_Web
 import Foundation
-import Identity_Consumer
-import Identity_Shared
+import Identities
+import Identities
 
 extension Identity.Consumer.View {
     package struct Reauthorize<CodingKey: RawRepresentable>: HTML where CodingKey.RawValue == String {

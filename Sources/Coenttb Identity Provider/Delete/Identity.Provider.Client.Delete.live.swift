@@ -7,10 +7,10 @@
 
 import Coenttb_Server
 import Fluent
-import Identity_Provider
+import Identities
 import Vapor
 
-extension Identity_Provider.Identity.Provider.Client.Delete {
+extension Identity.Provider.Client.Delete {
     package static func live(
         sendDeletionRequestNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void,
         sendDeletionConfirmationNotification: @escaping @Sendable (_ email: EmailAddress) async throws -> Void

@@ -7,7 +7,7 @@
 
 import Coenttb_Identity_Shared
 import Coenttb_Vapor
-import Identity_Consumer
+import Identities
 import JWT
 
 extension Identity.Consumer {

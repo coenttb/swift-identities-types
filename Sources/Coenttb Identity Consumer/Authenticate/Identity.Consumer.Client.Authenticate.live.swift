@@ -10,8 +10,8 @@ import Coenttb_Vapor
 import Coenttb_Web
 import Dependencies
 import EmailAddress
-import Identity_Consumer
-import Identity_Shared
+import Identities
+import Identities
 import JWT
 import RateLimiter
 

@@ -7,10 +7,10 @@
 
 import Coenttb_Server
 import Fluent
-import Identity_Provider
+import Identities
 import Vapor
 
-extension Identity_Provider.Identity.Provider.Client.Email {
+extension Identity.Provider.Client.Email {
     package static func live(
         sendEmailChangeConfirmation: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress, _ token: String) async throws -> Void,
         sendEmailChangeRequestNotification: @escaping @Sendable (_ currentEmail: EmailAddress, _ newEmail: EmailAddress) async throws -> Void,

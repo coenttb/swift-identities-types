@@ -8,7 +8,7 @@
 import Coenttb_Vapor
 import Coenttb_Web
 import Favicon
-import Identity_Consumer
+import Identities
 
 extension Identity.Consumer.API.Password {
     package static func response(
