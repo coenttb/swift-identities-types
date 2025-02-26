@@ -13,7 +13,7 @@ import Identities
 extension Identity.Client {
     public func login(
         accessToken: String?,
-        refreshToken: (Vapor.Request) -> String?,
+        refreshToken: @escaping (Vapor.Request) -> String?,
         expirationBuffer: TimeInterval = 300
     ) async throws -> Identity.Authentication.Response {
         
@@ -31,9 +31,14 @@ extension Identity.Client {
                 guard let currentToken = request.auth.get(JWT.Token.Access.self)
                 else { throw Identity.Client.Authenticate.Error.unauthorizedAccess }
                 
-                // If token is valid and not near expiration, no refresh needed
+                // If token is still valid and NOT near expiration, return existing auth
                 if date().addingTimeInterval(expirationBuffer) < currentToken.expiration.value {
-                    throw Identity.Client.Authenticate.Error.tokenNearExpiration
+                    // Token is still valid and not near expiration
+                    // Return a response with the current token information
+                    return .init(
+                        accessToken: .init(value: accessToken, expiresIn: currentToken.expiration.value.timeIntervalSince(date())),
+                        refreshToken: try await refreshOrReuse(refreshToken(request))
+                    )
                 }
                 
                 // Token is near expiration, try to refresh it
@@ -43,11 +48,17 @@ extension Identity.Client {
                 
                 return try await authenticate.token.refresh(token: refreshTokenValue)
             } catch let error as Identity.Client.Authenticate.Error {
-                // Propagate authenticate errors
+                // Handle specific authentication errors
+                if case .tokenNearExpiration = error {
+                    // Try to refresh using the refresh token
+                    if let refreshTokenValue = refreshToken(request) {
+                        return try await authenticate.token.refresh(token: refreshTokenValue)
+                    }
+                }
+                
                 throw error
             } catch {
                 // Access token failed, try refresh token as fallback
-                // Let it continue to the refresh token flow below
             }
         }
         
@@ -57,12 +68,20 @@ extension Identity.Client {
             do {
                 return try await authenticate.token.refresh(token: refreshTokenValue)
             } catch {
-                // Just propagate the error, response handling is done in the response layer
                 throw error
             }
         }
         
         // No tokens available
+        throw Identity.Client.Authenticate.Error.noTokensAvailable
+    }
+    
+    // Helper method to reuse existing refresh token or get a new one
+    private func refreshOrReuse(_ refreshToken: String?) async throws -> JWT.Token {
+        if let refreshToken = refreshToken {
+            return .init(value: refreshToken, expiresIn: 86400) // Default to 24 hours if we can't determine
+        }
+        
         throw Identity.Client.Authenticate.Error.noTokensAvailable
     }
 }
