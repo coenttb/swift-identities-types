@@ -1,5 +1,5 @@
 {
-  "originHash" : "24d764d3d27b92f19e034eb34e68816181a766135fa077d66ae1d7d11628e0f5",
+  "originHash" : "e61f3157a579339e2ed8ab02401c8878aa7d90f5d082fde51c5ab92771c90ffa",
   "pins" : [
     {
       "identity" : "coenttb-authentication",
@@ -132,8 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-dependencies",
       "state" : {
-        "revision" : "121a428c505c01c4ce02d5ada1c8fc3da93afce9",
-        "version" : "1.8.0"
+        "revision" : "52b5e1a09dc016e64ce253e19ab3124b7fae9ac9",
+        "version" : "1.7.0"
       }
     },
     {
@@ -166,7 +166,7 @@
     {
       "identity" : "swift-html",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/coenttb/swift-html.git",
+      "location" : "https://github.com/coenttb/swift-html",
       "state" : {
         "branch" : "main",
         "revision" : "977162ee3acb9334c5e0b6ac01a16682c343355f"
@@ -276,8 +276,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/xctest-dynamic-overlay",
       "state" : {
-        "revision" : "39de59b2d47f7ef3ca88a039dff3084688fe27f4",
-        "version" : "1.5.2"
+        "revision" : "b444594f79844b0d6d76d70fbfb3f7f71728f938",
+        "version" : "1.5.1"
       }
     }
   ],
