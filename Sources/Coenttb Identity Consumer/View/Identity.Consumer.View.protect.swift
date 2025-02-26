@@ -49,6 +49,7 @@ extension Identity.Consumer.View {
         case .email(.change(.request)):
             @Dependency(\.request) var request
             guard let request else { throw Abort.requestUnavailable }
+            try request.auth.require(type)
             
             guard let requestToken = request.cookies.reauthorizationToken?.string
             else { throw Abort(.internalServerError) }
