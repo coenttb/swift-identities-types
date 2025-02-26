@@ -43,18 +43,19 @@ extension Identity.CookiesConfiguration {
             expires: 60 * 15,
             maxAge: 60 * 15,
             domain: nil,
+            path: "/",
             isSecure: false,
             isHTTPOnly: true,
-            sameSitePolicy: .lax  // Lax for local development across ports
+            sameSitePolicy: .none  // Lax for local development across ports
         ),
         refreshToken: .init(
             expires: 60 * 60 * 24 * 30,
             maxAge: 60 * 60 * 24 * 30,
             domain: nil,
-            path: nil,
+            path: "/",
             isSecure: false,
             isHTTPOnly: true,
-            sameSitePolicy: .lax
+            sameSitePolicy: .none
         ),
         reauthorizationToken: .init(
             expires: 60 * 5,
@@ -62,7 +63,7 @@ extension Identity.CookiesConfiguration {
             domain: nil,
             isSecure: false,
             isHTTPOnly: true,
-            sameSitePolicy: .lax
+            sameSitePolicy: .none
         )
     )
 }
