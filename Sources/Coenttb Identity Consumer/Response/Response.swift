@@ -26,7 +26,9 @@ extension HTTPCookies {
         @Dependency(\.identity.consumer.cookies.accessToken) var accessTokenConfiguration
         @Dependency(\.identity.consumer.cookies.refreshToken) var refreshTokenConfiguration
         
-        print("Setting tokens - Access: \(response.accessToken.value), Refresh: \(response.refreshToken.value)")
+        // Debug logs
+        print("Setting access token: \(response.accessToken.value.prefix(10))...")
+        print("Setting refresh token: \(response.refreshToken.value.prefix(10))...")
         
         self.accessToken = .init(token: response.accessToken.value, configuration: accessTokenConfiguration)
         self.refreshToken = .init(token: response.refreshToken.value, configuration: refreshTokenConfiguration)

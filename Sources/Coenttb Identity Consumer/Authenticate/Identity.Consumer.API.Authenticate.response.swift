@@ -40,14 +40,8 @@ extension Identity.Consumer.API.Authenticate {
 
             case .credentials(let credentials):
                 do {
-                    let identityAuthenticationResponse = try await client.authenticate.credentials(credentials)
-                    
-                    // Debug log to verify tokens are created
-                    logger.debug("Identity.Consumer.API.Authenticate.response will return credentials with cookies")
-                    
-                    // Return response with tokens attached as cookies
-                    return Response.success(true)
-                        .withTokens(for: identityAuthenticationResponse)
+                    return try await Response.success(true)
+                        .withTokens(for: client.authenticate.credentials(credentials))
                 } catch {
                     print("Failed in credentials case with error:", error)
                     throw Abort(.internalServerError, reason: "Failed to authenticate account: \(error)")
