@@ -51,7 +51,7 @@ extension Identity.CookiesConfiguration {
             expires: 60 * 60 * 24 * 30,
             maxAge: 60 * 60 * 24 * 30,
             domain: nil,
-            path: "",
+            path: nil,
             isSecure: false,
             isHTTPOnly: true,
             sameSitePolicy: .lax

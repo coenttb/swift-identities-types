@@ -25,6 +25,9 @@ extension HTTPCookies {
     fileprivate mutating func setTokens(for response: Identity.Authentication.Response) {
         @Dependency(\.identity.consumer.cookies.accessToken) var accessTokenConfiguration
         @Dependency(\.identity.consumer.cookies.refreshToken) var refreshTokenConfiguration
+        
+        print("Setting tokens - Access: \(response.accessToken.value), Refresh: \(response.refreshToken.value)")
+        
         self.accessToken = .init(token: response.accessToken.value, configuration: accessTokenConfiguration)
         self.refreshToken = .init(token: response.refreshToken.value, configuration: refreshTokenConfiguration)
     }
