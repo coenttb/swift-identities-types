@@ -1,6 +1,5 @@
 import Dependencies
 import EmailAddress
-@testable import Identity_Provider
-@testable import Identity_Shared
+@testable import Identities
 import Testing
 import URLRouting

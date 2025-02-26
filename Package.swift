@@ -4,15 +4,11 @@ import Foundation
 import PackageDescription
 
 extension String {
-    static let identityProvider: Self = "Identity Provider"
-    static let identityConsumer: Self = "Identity Consumer"
-    static let identityShared: Self = "Identity Shared"
+    static let identities: Self = "Identities"
 }
 
 extension Target.Dependency {
-    static var identityProvider: Self { .target(name: .identityProvider) }
-    static var identityConsumer: Self { .target(name: .identityConsumer) }
-    static var identityShared: Self { .target(name: .identityShared) }
+    static var identities: Self { .target(name: .identities) }
 }
 
 extension Target.Dependency {
@@ -29,9 +25,7 @@ let package = Package(
         .iOS(.v17)
     ],
     products: [
-        .library(name: .identityProvider, targets: [.identityProvider]),
-        .library(name: .identityConsumer, targets: [.identityConsumer]),
-        .library(name: .identityShared, targets: [.identityShared]),
+        .library(name: .identities, targets: [.identities]),
     ],
     dependencies: [
         .package(url: "https://github.com/coenttb/coenttb-authentication", branch: "main"),
@@ -40,7 +34,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: .identityShared,
+            name: .identities,
             dependencies: [
                 .swiftWeb,
                 .dependenciesMacros,
@@ -48,44 +42,12 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: .identityShared.tests,
+            name: .identities.tests,
             dependencies: [
-                .identityShared,
+                .identities,
                 .dependenciesTestSupport
             ]
         ),
-        .target(
-            name: .identityConsumer,
-            dependencies: [
-                .swiftWeb,
-                .dependenciesMacros,
-                .identityShared
-            ]
-        ),
-        .testTarget(
-            name: .identityConsumer.tests,
-            dependencies: [
-                .identityShared,
-                .identityConsumer,
-                .dependenciesTestSupport
-            ]
-        ),
-        .target(
-            name: .identityProvider,
-            dependencies: [
-                .identityShared,
-                .swiftWeb,
-                .dependenciesMacros
-            ]
-        ),
-        .testTarget(
-            name: .identityProvider.tests,
-            dependencies: [
-                .identityShared,
-                .identityProvider,
-                .dependenciesTestSupport
-            ]
-        )
     ],
     swiftLanguageModes: [.v6]
 )

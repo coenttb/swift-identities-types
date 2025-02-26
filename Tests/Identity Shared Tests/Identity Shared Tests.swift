@@ -9,7 +9,7 @@ import Foundation
 import Dependencies
 import EmailAddress
 import Testing
-@testable import Identity_Shared
+@testable import Identities
 import DependenciesTestSupport
 
 @Suite(

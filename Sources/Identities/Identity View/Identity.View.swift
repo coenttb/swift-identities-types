@@ -1,15 +1,14 @@
 //
-//  Identity.Consumer.View.swift
+//  Identity.View.swift
 //  swift-web
 //
 //  Created by Coen ten Thije Boonkkamp on 07/10/2024.
 //
 
 import CasePaths
-import Identity_Shared
 import SwiftWeb
 
-extension Identity.Consumer {
+extension Identity {
     /// View routing and navigation states for the identity consumer interface.
     ///
     /// This namespace defines the possible view states and navigation flows for client-side
@@ -21,21 +20,21 @@ extension Identity.Consumer {
     @CasePathable
     @dynamicMemberLookup
     public enum View: Codable, Hashable, Sendable {
-        case authenticate(Identity.Consumer.View.Authenticate)
-        case create(Identity.Consumer.View.Create)
+        case authenticate(Identity.View.Authenticate)
+        case create(Identity.View.Create)
         case delete
         case logout
-        case email(Identity.Consumer.View.Email)
-        case password(Identity.Consumer.View.Password)
+        case email(Identity.View.Email)
+        case password(Identity.View.Password)
     }
 }
 
-extension Identity.Consumer.View {
+extension Identity.View {
     /// Convenience accessor for the login view state.
     public static let login: Self = .authenticate(.credentials)
 }
 
-extension Identity.Consumer.View {
+extension Identity.View {
     /// Authentication-related view states.
     ///
     /// Defines the possible UI states during user authentication flows.
@@ -47,23 +46,23 @@ extension Identity.Consumer.View {
     }
 }
 
-extension Identity.Consumer.View {
+extension Identity.View {
     /// Account creation view states.
     ///
-    /// Manages the UI flow for new account creation, including:
+    /// Manages the UI flow for new identity creation, including:
     /// - Initial registration form
     /// - Email verification
     @CasePathable
     @dynamicMemberLookup
     public enum Create: Codable, Hashable, Sendable {
-        /// New account registration form view
+        /// New identity registration form view
         case request
         /// Email verification view with token
         case verify(Identity.Creation.Verification)
     }
 }
 
-extension Identity.Consumer.View {
+extension Identity.View {
     /// Email management view states.
     ///
     /// Handles UI flows for email-related operations like address changes.
@@ -71,14 +70,14 @@ extension Identity.Consumer.View {
     @dynamicMemberLookup
     public enum Email: Codable, Hashable, Sendable {
         /// Email change flow views
-        case change(Identity.Consumer.View.Email.Change)
+        case change(Identity.View.Email.Change)
     }
 }
 
-extension Identity.Consumer.View.Email {
+extension Identity.View.Email {
     /// Email change flow view states.
     ///
-    /// Manages the UI states for changing an account's email address:
+    /// Manages the UI states for changing an identity's email address:
     /// - Initial change request
     /// - Verification confirmation
     /// - Security reauthorization if needed
@@ -94,7 +93,7 @@ extension Identity.Consumer.View.Email {
     }
 }
 
-extension Identity.Consumer.View {
+extension Identity.View {
     /// Password management view states.
     ///
     /// Handles UI flows for password-related operations:
@@ -104,13 +103,13 @@ extension Identity.Consumer.View {
     @dynamicMemberLookup
     public enum Password: Codable, Hashable, Sendable {
         /// Password reset flow views
-        case reset(Identity.Consumer.View.Password.Reset)
+        case reset(Identity.View.Password.Reset)
         /// Password change flow views
-        case change(Identity.Consumer.View.Password.Change)
+        case change(Identity.View.Password.Change)
     }
 }
 
-extension Identity.Consumer.View.Password {
+extension Identity.View.Password {
     /// Password reset flow view states.
     ///
     /// Manages the UI states for resetting a forgotten password:
@@ -136,7 +135,7 @@ extension Identity.Consumer.View.Password {
     }
 }
 
-extension Identity.Consumer.View {
+extension Identity.View {
     /// URL router for mapping between URLs and view states.
     ///
     /// This router handles bidirectional conversion between URLs and view states,
@@ -152,18 +151,18 @@ extension Identity.Consumer.View {
         /// - /login, /credentials - Authentication
         /// - /password/* - Password management
         /// - /email/* - Email management
-        public var body: some URLRouting.Router<Identity.Consumer.View> {
+        public var body: some URLRouting.Router<Identity.View> {
             OneOf {
                 
-                URLRouting.Route(.case(Identity.Consumer.View.create)) {
+                URLRouting.Route(.case(Identity.View.create)) {
                     Path.create
                     
                     OneOf {
-                        URLRouting.Route(.case(Identity.Consumer.View.Create.request)) {
+                        URLRouting.Route(.case(Identity.View.Create.request)) {
                             Path.request
                         }
                         
-                        URLRouting.Route(.case(Identity.Consumer.View.Create.verify)) {
+                        URLRouting.Route(.case(Identity.View.Create.verify)) {
                             Path.verification
                             
                             Parse(.memberwise(Identity.Creation.Verification.init)) {
@@ -178,9 +177,9 @@ extension Identity.Consumer.View {
                     }
                 }
                 
-                URLRouting.Route(.case(Identity.Consumer.View.authenticate)) {
+                URLRouting.Route(.case(Identity.View.authenticate)) {
                     OneOf {
-                        URLRouting.Route(.case(Identity.Consumer.View.Authenticate.credentials)) {
+                        URLRouting.Route(.case(Identity.View.Authenticate.credentials)) {
                             OneOf {
                                 Path.credentials
                                 Path.login
@@ -189,23 +188,23 @@ extension Identity.Consumer.View {
                     }
                 }
                 
-                URLRouting.Route(.case(Identity.Consumer.View.logout)) {
+                URLRouting.Route(.case(Identity.View.logout)) {
                     Path.logout
                 }
                 
-                URLRouting.Route(.case(Identity.Consumer.View.password)) {
+                URLRouting.Route(.case(Identity.View.password)) {
                     Path.password
                     
                     OneOf {
-                        URLRouting.Route(.case(Identity.Consumer.View.Password.reset)) {
+                        URLRouting.Route(.case(Identity.View.Password.reset)) {
                             Path.reset
                             
                             OneOf {
-                                URLRouting.Route(.case(Identity.Consumer.View.Password.Reset.request)) {
+                                URLRouting.Route(.case(Identity.View.Password.Reset.request)) {
                                     Path.request
                                 }
                                 
-                                URLRouting.Route(.case(Identity.Consumer.View.Password.Reset.confirm)) {
+                                URLRouting.Route(.case(Identity.View.Password.Reset.confirm)) {
                                     Path.confirm
                                     
                                     Parse(.memberwise(Identity.Password.Reset.Confirm.init)) {
@@ -220,11 +219,11 @@ extension Identity.Consumer.View {
                             }
                         }
                         
-                        URLRouting.Route(.case(Identity.Consumer.View.Password.change)) {
+                        URLRouting.Route(.case(Identity.View.Password.change)) {
                             Path.change
                             
                             OneOf {
-                                URLRouting.Route(.case(Identity.Consumer.View.Password.Change.request)) {
+                                URLRouting.Route(.case(Identity.View.Password.Change.request)) {
                                     Path.request
                                 }
                             }
@@ -232,22 +231,22 @@ extension Identity.Consumer.View {
                     }
                 }
                 
-                URLRouting.Route(.case(Identity.Consumer.View.email)) {
+                URLRouting.Route(.case(Identity.View.email)) {
                     Path.email
                     OneOf {
-                        URLRouting.Route(.case(Identity.Consumer.View.Email.change)) {
+                        URLRouting.Route(.case(Identity.View.Email.change)) {
                             Path.change
                             
                             OneOf {
-                                URLRouting.Route(.case(Identity.Consumer.View.Email.Change.reauthorization)) {
+                                URLRouting.Route(.case(Identity.View.Email.Change.reauthorization)) {
                                     Path.reauthorization
                                 }
                                 
-                                URLRouting.Route(.case(Identity.Consumer.View.Email.Change.request)) {
+                                URLRouting.Route(.case(Identity.View.Email.Change.request)) {
                                     Path.request
                                 }
                                 
-                                URLRouting.Route(.case(Identity.Consumer.View.Email.Change.confirm)) {
+                                URLRouting.Route(.case(Identity.View.Email.Change.confirm)) {
                                     Path.confirm
                                     
                                     Parse(.memberwise(Identity.Email.Change.Confirmation.init)) {

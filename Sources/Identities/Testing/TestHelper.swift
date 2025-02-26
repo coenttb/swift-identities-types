@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import Identity_Shared
 import Dependencies
 
 struct TestHelper {
