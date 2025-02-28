@@ -38,7 +38,7 @@ extension Database.Identity {
         switch identifier {
         case .id(let id):
             guard let identity = try await Database.Identity.find(id, on: database)
-            else { throw Abort(.notFound, reason: "Identity not found") }
+            else { throw Abort(.notFound, reason: "Identity not found for id \(id)") }
             return identity
 
         case .email(let email):
@@ -46,7 +46,7 @@ extension Database.Identity {
                 .filter(\.$email == email)
                 .first()
             else {
-                throw Abort(.notFound, reason: "Identity not found")
+                throw Abort(.notFound, reason: "Identity not found for email \(email)")
             }
             return identity
 

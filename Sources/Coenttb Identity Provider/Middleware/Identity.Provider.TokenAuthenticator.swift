@@ -22,11 +22,19 @@ extension Identity.Provider {
                 $0.request = request
             } operation: {
                 if let bearerAuth = request.headers.bearerAuthorization {
+                    // First try access token verification
                     do {
                         try await client.authenticate.token.access(token: bearerAuth.token)
                         return try await next.respond(to: request)
                     } catch {
-                        
+                        // If access token fails, try refresh token verification
+                        // This handles the case when a refresh token is sent as a Bearer token
+                        do {
+                            _ = try await client.authenticate.token.refresh(token: bearerAuth.token) 
+                            return try await next.respond(to: request)
+                        } catch {
+                            // Both verifications failed
+                        }
                     }
                 }
                 

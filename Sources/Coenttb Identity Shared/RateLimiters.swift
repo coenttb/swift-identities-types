@@ -61,7 +61,7 @@ public struct RateLimiters: Sendable {
 }
 
 extension RateLimiters: DependencyKey {
-    public static let testValue: Self = testValue
+    public static let testValue: Self = .liveValue
     public static let liveValue: Self = .init()
 }
 

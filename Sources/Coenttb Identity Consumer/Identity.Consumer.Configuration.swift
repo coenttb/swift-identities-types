@@ -20,6 +20,7 @@ extension Identity.Consumer {
         public var provider: Identity.Consumer.Configuration.Provider
         public var consumer: Identity.Consumer.Configuration.Consumer
         
+        
         public init(provider: Identity.Consumer.Configuration.Provider, consumer: Identity.Consumer.Configuration.Consumer) {
             self.provider = provider
             self.consumer = consumer
@@ -243,32 +244,40 @@ extension Identity.Consumer.Configuration.Provider: TestDependencyKey {
 }
 
 extension Identity.CookiesConfiguration {
-    public static let live: Identity.CookiesConfiguration = .init(
-        accessToken: .init(
-            expires: 60 * 15, // 15 minutes
-            maxAge: 60 * 15,
-            domain: nil,
-            isSecure: true,
-            isHTTPOnly: true,
-            sameSitePolicy: .strict
-        ),
-        refreshToken: .init(
-            expires: 60 * 60 * 24 * 30, // 30 days
-            maxAge: 60 * 60 * 24 * 30,
-            domain: nil,
-//                path: router.url(for: .api(.authenticate(.token(.refresh(.init(token: "--------------------")))))).absoluteString,
-            isSecure: true,
-            isHTTPOnly: true,
-            sameSitePolicy: .lax
-        ),
-        reauthorizationToken: .init(
-            expires: 60 * 5,
-            maxAge: 60 * 5,
-            domain: nil,
-            isSecure: true,
-            isHTTPOnly: true,
-            sameSitePolicy: .strict
+    public static var live: Identity.CookiesConfiguration {
+        
+        @Dependency(\.identity.consumer.router) var router
+        
+        // We use a dummy 'token' because we only care about the path and not the payload.
+        let path = router.url(for: .api(.authenticate(.token(.refresh(.init(token: "token")))))).path
+        
+        return .init(
+            accessToken: .init(
+                expires: 60 * 15, // 15 minutes
+                maxAge: 60 * 15,
+                domain: nil,
+                isSecure: true,
+                isHTTPOnly: true,
+                sameSitePolicy: .strict
+            ),
+            refreshToken: .init(
+                expires: 60 * 60 * 24 * 30, // 30 days
+                maxAge: 60 * 60 * 24 * 30,
+                domain: nil,
+                path: path,
+                isSecure: true,
+                isHTTPOnly: true,
+                sameSitePolicy: .lax
+            ),
+            reauthorizationToken: .init(
+                expires: 60 * 5,
+                maxAge: 60 * 5,
+                domain: nil,
+                isSecure: true,
+                isHTTPOnly: true,
+                sameSitePolicy: .strict
+            )
         )
-    )
+    }
 }
 

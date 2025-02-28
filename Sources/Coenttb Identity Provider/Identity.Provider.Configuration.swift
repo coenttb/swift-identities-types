@@ -92,7 +92,7 @@ extension DependencyValues {
 
 extension Identity.Provider.Configuration.Provider: TestDependencyKey {
     public static let testValue: Self = .init(
-        baseURL: .init(string: "")!,
+        baseURL: .init(string: "/")!,
         domain: nil,
         issuer: nil,
         cookies: .testValue,

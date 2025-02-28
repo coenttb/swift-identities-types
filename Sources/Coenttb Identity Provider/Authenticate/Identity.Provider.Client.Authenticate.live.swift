@@ -78,9 +78,11 @@ extension Identity.Provider.Client.Authenticate {
                             as: JWT.Token.Access.self
                         )
 
+                        print("payload", payload)
+                        
                         let identity = try await Database.Identity.get(by: .id(payload.identityId), on: request.db)
-
-                        guard identity.emailAddress == payload.email
+                        
+                        guard identity.emailAddress == payload.emailAddress
                         else { throw Abort(.unauthorized, reason: "Identity details have changed") }
                         
                         @Dependency(\.date) var date
