@@ -14,36 +14,6 @@ import FluentSQLiteDriver
 import EmailAddress
 
 
-extension Identity.Provider.Client {
-    static let liveTest: Self = .live(
-        sendVerificationEmail: { email, token in
-            print("sendVerificationEmail called")
-        },
-        sendPasswordResetEmail: { email, token in
-            print("sendPasswordResetEmail called")
-        },
-        sendPasswordChangeNotification: { email in
-            print("sendPasswordChangeNotification called")
-        },
-        sendEmailChangeConfirmation: { currentEmail, newEmail, token in
-            print("sendEmailChangeConfirmation called")
-        },
-        sendEmailChangeRequestNotification: { currentEmail, newEmail in
-            print("sendEmailChangeRequestNotification called")
-        },
-        onEmailChangeSuccess: { currentEmail, newEmail in
-            print("onEmailChangeSuccess called")
-        },
-        sendDeletionRequestNotification: { email in
-            print("sendDeletionRequestNotification called")
-        },
-        sendDeletionConfirmationNotification: { email in
-            print("sendDeletionConfirmationNotification called")
-        }
-    )
-}
-
-
 @Suite(
     "Identity Provider Tests",
     .dependency(\.uuid, .incrementing),
@@ -351,7 +321,7 @@ struct IdentityProviderTests {
             let refreshToken = responseData.data.refreshToken.value
             
             // First verify the access token works normally
-            let initialVerifyResponse = try await app.test(
+            let initialVerifyResponse = try await app .test(
                 identity: .authenticate(
                     .token(
                         .access(
@@ -372,8 +342,6 @@ struct IdentityProviderTests {
             
             // Advance time to just after access token expiration but before refresh token expires
             let midwayTime = accessExpiration.addingTimeInterval(10) // 10 seconds after access expiration
-            
-            
             
             #expect(midwayTime > accessExpiration, "Advanced time should be after access token expiration")
             #expect(midwayTime < refreshExpiration, "Advanced time should be before refresh token expiration")

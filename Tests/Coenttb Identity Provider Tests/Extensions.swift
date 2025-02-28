@@ -154,3 +154,32 @@ extension Application {
         try await self.testing().performTest(request: .init(route))
     }
 }
+
+extension Identity.Provider.Client {
+    static let liveTest: Self = .live(
+        sendVerificationEmail: { email, token in
+            print("sendVerificationEmail called")
+        },
+        sendPasswordResetEmail: { email, token in
+            print("sendPasswordResetEmail called")
+        },
+        sendPasswordChangeNotification: { email in
+            print("sendPasswordChangeNotification called")
+        },
+        sendEmailChangeConfirmation: { currentEmail, newEmail, token in
+            print("sendEmailChangeConfirmation called")
+        },
+        sendEmailChangeRequestNotification: { currentEmail, newEmail in
+            print("sendEmailChangeRequestNotification called")
+        },
+        onEmailChangeSuccess: { currentEmail, newEmail in
+            print("onEmailChangeSuccess called")
+        },
+        sendDeletionRequestNotification: { email in
+            print("sendDeletionRequestNotification called")
+        },
+        sendDeletionConfirmationNotification: { email in
+            print("sendDeletionConfirmationNotification called")
+        }
+    )
+}
