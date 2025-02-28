@@ -105,7 +105,7 @@ extension Identity.Authentication {
        /// Short-lived token for API authentication
        case access(BearerAuth)
        /// Long-lived token for obtaining new access tokens
-       case refresh(BearerAuth)
+       case refresh(JWT.Token)
    }
 }
 

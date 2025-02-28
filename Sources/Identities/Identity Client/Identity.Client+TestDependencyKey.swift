@@ -16,8 +16,8 @@ extension Identity.Client: TestDependencyKey {
                 credentials: { username, password in
                     let session = try await database.authenticate(email: username, password: password)
                     return .init(
-                        accessToken: .init(value: session.accessToken, expiresIn: 3600),
-                        refreshToken: .init(value: session.refreshToken, expiresIn: 86400)
+                        accessToken: .init(value: session.accessToken),
+                        refreshToken: .init(value: session.refreshToken)
                     )
                 },
                 token: .init(
@@ -27,15 +27,15 @@ extension Identity.Client: TestDependencyKey {
                     refresh: { token in
                         let session = try await database.refreshSession(token: token)
                         return .init(
-                            accessToken: .init(value: session.accessToken, expiresIn: 3600),
-                            refreshToken: .init(value: session.refreshToken, expiresIn: 86400)
+                            accessToken: .init(value: session.accessToken),
+                            refreshToken: .init(value: session.refreshToken)
                         )
                     }
                 ),
                 apiKey: { apiKey in
                     .init(
-                        accessToken: .init(value: "api-access-token", expiresIn: 3600),
-                        refreshToken: .init(value: "api-refresh-token", expiresIn: 86400)
+                        accessToken: .init(value: "api-access-token"),
+                        refreshToken: .init(value: "api-refresh-token")
                     )
                 }
             ),
@@ -44,7 +44,7 @@ extension Identity.Client: TestDependencyKey {
             },
             reauthorize: { password in
                 
-                return .init(value: "reauth-token", expiresIn: 3600)
+                return .init(value: "reauth-token")
             },
             create: .init(
                 request: { email, password in
@@ -95,8 +95,8 @@ extension Identity.Client: TestDependencyKey {
                         }
                         let session = try await database.confirmEmailChange(email: email, token: token)
                         return .init(
-                            accessToken: .init(value: session.accessToken, expiresIn: 3600),
-                            refreshToken: .init(value: session.refreshToken, expiresIn: 86400)
+                            accessToken: .init(value: session.accessToken),
+                            refreshToken: .init(value: session.refreshToken)
                         )
                     }
                 )
