@@ -50,6 +50,7 @@ extension JWT.Token {
 
 extension JWT.Token.Refresh: JWTPayload {
     public func verify(using algorithm: some JWTKit.JWTAlgorithm) async throws {
-        try self.expiration.verifyNotExpired()
+        @Dependency(\.date) var date
+        try self.expiration.verifyNotExpired(currentDate: date())
     }
 }

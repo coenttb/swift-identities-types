@@ -44,7 +44,7 @@ extension Identity.API {
                     return .init(limiter: rateLimiter.tokenAccess, key: access.token)
 
                 case .refresh(let refresh):
-                    let rateLimit = await rateLimiter.tokenRefresh.checkLimit(refresh.token)
+                    let rateLimit = await rateLimiter.tokenRefresh.checkLimit(refresh.value)
                     
                     guard rateLimit.isAllowed
                     else {
@@ -53,7 +53,7 @@ extension Identity.API {
                         ])
                     }
                     
-                    return .init(limiter: rateLimiter.tokenRefresh, key: refresh.token)
+                    return .init(limiter: rateLimiter.tokenRefresh, key: refresh.value)
                 }
 
             case .apiKey(let apiKey):

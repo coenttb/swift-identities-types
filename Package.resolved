@@ -1,5 +1,5 @@
 {
-  "originHash" : "35c74dc7c77d8c50469b233384adc410804fa36b9f1bbd996578d5b5c7fa3458",
+  "originHash" : "aa585da85af60d5df44277167d55741a6f7d950b562f9809f1d3f7556083f020",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -439,7 +439,7 @@
       "location" : "https://github.com/coenttb/swift-identities",
       "state" : {
         "branch" : "main",
-        "revision" : "7a7af3762d77466cae029b3fc73556dab92a619c"
+        "revision" : "b5ff4d458831af13f72d8ddc18694debde28c612"
       }
     },
     {
@@ -610,7 +610,7 @@
       "location" : "https://github.com/coenttb/swift-web",
       "state" : {
         "branch" : "main",
-        "revision" : "61de91893ba32cd9edaecc978484004c92314e6f"
+        "revision" : "d1e02124fd0f1324001ba0667ba4422f1a9bb15c"
       }
     },
     {

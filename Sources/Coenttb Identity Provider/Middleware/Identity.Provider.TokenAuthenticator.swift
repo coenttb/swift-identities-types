@@ -21,22 +21,28 @@ extension Identity.Provider {
             return try await withDependencies {
                 $0.request = request
             } operation: {
-                if let bearerAuth = request.headers.bearerAuthorization {
-                    // First try access token verification
-                    do {
+                
+                // First try access token verification
+                do {
+                    if let bearerAuth = request.headers.bearerAuthorization {
                         try await client.authenticate.token.access(token: bearerAuth.token)
                         return try await next.respond(to: request)
+                    }
+                } catch {
+                    // If access token fails, try refresh token verification
+                    // This handles the case when a refresh token is sent as a Bearer token
+                    do {
+                        print("trying to get refreshtoken")
+                        let token: JWT.Token = try request.content.decode(JWT.Token.self)
+                        print("decoded token: \(token)")
+                        _ = try await client.authenticate.token.refresh(token: token.value)
+                        print("refreshed without error ✅")
+                        return try await next.respond(to: request)
                     } catch {
-                        // If access token fails, try refresh token verification
-                        // This handles the case when a refresh token is sent as a Bearer token
-                        do {
-                            _ = try await client.authenticate.token.refresh(token: bearerAuth.token) 
-                            return try await next.respond(to: request)
-                        } catch {
-                            // Both verifications failed
-                        }
+                        // Both verifications failed
                     }
                 }
+                
                 
                 if let accessToken = request.cookies.accessToken?.string {
                     do {

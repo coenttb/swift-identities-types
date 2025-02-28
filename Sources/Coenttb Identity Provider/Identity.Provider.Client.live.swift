@@ -57,7 +57,9 @@ extension Identity.Provider.Client {
                     @Dependency(\.application) var application
                     @Dependency(\.identity.provider.cookies.reauthorizationToken) var config
                     
-                    return try await .init(value: application.jwt.keys.sign(payload), expiresIn: config.expires)
+                    return try await .init(
+                        value: application.jwt.keys.sign(payload)
+                    )
                     
                 } catch {
                     throw error

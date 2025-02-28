@@ -21,34 +21,24 @@ extension Identity.Authentication.Response {
      */
     public init(_ identity: Database.Identity) async throws {
         
+        @Dependency(\.application) var application
+        
         var accessToken: JWT.Token {
             get async throws {
-                @Dependency(\.identity.provider.cookies.accessToken) var config
-                
-                @Dependency(\.application) var application
-                
                 let payload: JWT.Token.Access = try .init(identity: identity)
                 
                 return try await .init(
-                    value: application.jwt.keys.sign(payload),
-                    type: "Bearer",
-                    expiresIn: config.expires
+                    value: application.jwt.keys.sign(payload)
                 )
             }
         }
         
         var refreshToken: JWT.Token {
             get async throws {
-                
-                @Dependency(\.application) var application
-                let payload = try JWT.Token.Refresh(identity: identity)
-                
-                @Dependency(\.identity.provider.cookies.refreshToken) var config
-                
+                let payload: JWT.Token.Refresh = try .init(identity: identity)
+                                
                 return .init(
-                    value: try await application.jwt.keys.sign(payload),
-                    type: "Bearer",
-                    expiresIn: config.expires
+                    value: try await application.jwt.keys.sign(payload)
                 )
             }
         }
@@ -73,6 +63,9 @@ extension JWT.Token.Access {
 
         let currentTime = date()
         let expirationTime = currentTime.addingTimeInterval(config.expires)
+        
+        print("access config.expires \(config.expires)")
+        print("access expirationTime \(expirationTime)")
         
         // Ensure we have the identity ID and email address
         let identityId = try identity.requireID()
@@ -105,8 +98,13 @@ extension JWT.Token.Refresh {
         @Dependency(\.identity.provider.cookies.refreshToken) var config
         @Dependency(\.date) var date
 
+        
+        
         let currentTime = date()
         let expirationTime = currentTime.addingTimeInterval(config.expires)
+        
+        print("refresh config.expires \(config.expires)")
+        print("refresh expirationTime \(expirationTime)")
         let identityId = try identity.requireID()
         
         self = .init(

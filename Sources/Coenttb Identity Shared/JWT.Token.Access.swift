@@ -11,32 +11,22 @@ extension JWT.Token {
         public var expiration: ExpirationClaim
         public var issuedAt: IssuedAtClaim
         public var subject: SubjectClaim
-        public var notBefore: NotBeforeClaim?
         
         package init(
             expiration: ExpirationClaim,
             issuedAt: IssuedAtClaim,
             identityId: UUID,
-            email: EmailAddress,
-            notBefore: NotBeforeClaim? = nil
+            email: EmailAddress
         ) {
             self.expiration = expiration
             self.issuedAt = issuedAt
-            
-            // Ensure both ID and email are encoded in subject
-            let subjectValue = "\(identityId.uuidString):\(email.rawValue)"
-            self.subject = SubjectClaim(value: subjectValue)
-            self.notBefore = notBefore
-            
-            print("JWT.Token.Access init: identityId=\(identityId), email=\(email.rawValue)")
-            print("JWT.Token.Access init: subject=\(subjectValue)")
+            self.subject = SubjectClaim(value: "\(identityId.uuidString):\(email.rawValue)")
         }
         
         enum CodingKeys: String, CodingKey {
             case expiration = "exp"
             case issuedAt = "iat"
             case subject = "sub"
-            case notBefore = "nbf"
         }
     }
 }
@@ -62,12 +52,13 @@ extension JWT.Token.Access {
     public var emailAddress: EmailAddress {
         get {
             let components = subject.value.components(separatedBy: ":")
-            if components.count > 1 {
-                return EmailAddress(rawValue: components[1])!
-            } else {
-                print("WARNING: JWT Access token missing email in subject: \(subject.value)")
-                return EmailAddress(rawValue: "fallback@example.com")!
+            guard components.count > 1,
+                  !components[1].isEmpty,
+                  let email = EmailAddress(rawValue: components[1]) else {
+                print("ERROR: Missing or invalid email in subject: \(subject.value)")
+                fatalError("Missing or invalid email in JWT subject")
             }
+            return email
         }
         set {
             let components = subject.value.components(separatedBy: ":")
@@ -79,6 +70,7 @@ extension JWT.Token.Access {
 
 extension JWT.Token.Access: JWTPayload {
     public func verify(using algorithm: some JWTKit.JWTAlgorithm) async throws {
-        try self.expiration.verifyNotExpired()
+        @Dependency(\.date) var date
+        try self.expiration.verifyNotExpired(currentDate: date())
     }
 }

@@ -31,8 +31,16 @@ extension Identity {
 
 extension Identity.CookiesConfiguration: TestDependencyKey {
     public static let testValue: Self = .init(
-        accessToken: .testValue,
-        refreshToken: .testValue,
+        accessToken: {
+            var x: HTTPCookies.Configuration = .testValue
+            x.expires = 60 * 15
+            return x
+        }(),
+        refreshToken: {
+            var x: HTTPCookies.Configuration = .testValue
+            x.expires = 60 * 60 * 24 * 30
+            return x
+        }(),
         reauthorizationToken: .testValue
     )
 }

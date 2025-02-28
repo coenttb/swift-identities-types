@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  JWTTokenTests.swift
 //  coenttb-identities
 //
 //  Created by Coen ten Thije Boonkkamp on 28/02/2025.
@@ -10,7 +10,6 @@ import Coenttb_Identity_Shared
 import Coenttb_Web
 import DependenciesTestSupport
 import Foundation
-import Mailgun
 import Testing
 import JWT
 import Vapor
@@ -18,7 +17,10 @@ import VaporTesting
 import FluentSQLiteDriver
 import EmailAddress
 
-@Suite("JWT Token Tests")
+@Suite(
+    "JWT Token Tests",
+    .dependency(\.date, .init(Date.init))
+)
 struct JWTTokenTests {
     @Test("JWT Token Access should encode both identity ID and email in subject")
     func testAccessTokenSubjectFormat() async throws {
@@ -78,11 +80,9 @@ struct JWTTokenTests {
             
             // 2. Encode the token to a string
             let encodedToken = try await app.jwt.keys.sign(accessToken)
-            print("Original token subject:", accessToken.subject.value)
             
             // 3. Decode the token back
             let decodedToken = try await app.jwt.keys.verify(encodedToken, as: JWT.Token.Access.self)
-            print("Decoded token subject:", decodedToken.subject.value)
             
             // 4. Verify the subject format is preserved
             let components = decodedToken.subject.value.components(separatedBy: ":")
@@ -96,55 +96,32 @@ struct JWTTokenTests {
         }
     }
     
-//    @Test("JWT Token Access created from Database.Identity should include email in subject")
-//    func testAccessTokenFromDatabaseIdentity() async throws {
-//        try await withTestApp { app in
-//            // Create and verify a test identity
-//            let testEmail = "jwt-test@example.com"
-//            let testPassword = "securePassword123!"
-//
-//            // Create the identity directly in the database
-//            let identity = Database.Identity.init(
-//                email: try EmailAddress(testEmail),
-//                passwordHash: try Bcrypt.hash(testPassword)
-//            )
-//            try await identity.save(on: app.db)
-//
-//            // Verify identity was created with proper email
-//            let savedIdentity = try await Database.Identity.get(by: .email(try EmailAddress(testEmail)), on: app.db)
-//            #expect(savedIdentity.emailAddress == try EmailAddress(testEmail))
-//
-//            // Generate tokens using the database identity method
-//            prepareDependencies {
-//                $0.application = app
-//                $0.date = .init { Date() }
-//                $0.identity.provider.cookies.accessToken = .init(
-//                    name: "test_access",
-//                    expires: 900,
-//                    secure: false,
-//                    httpOnly: true,
-//                    sameSite: .lax
-//                )
-//            }
-//
-//            // Generated access token string
-//            let accessTokenString = try await savedIdentity.generateJWTAccess()
-//
-//            // Verify the token
-//            let accessToken = try await app.jwt.keys.verify(accessTokenString, as: JWT.Token.Access.self)
-//
-//            // Print the subject for debugging
-//            print("DB Identity subject value:", accessToken.subject.value)
-//
-//            // Check subject components
-//            let subjectComponents = accessToken.subject.value.components(separatedBy: ":")
-//            #expect(subjectComponents.count == 2, "Subject should contain both ID and email separated by ':'")
-//            #expect(subjectComponents[0] == savedIdentity.id?.uuidString, "First part of subject should be identity ID")
-//            #expect(subjectComponents[1] == testEmail, "Second part of subject should be email")
-//
-//            // Validate accessors work
-//            #expect(accessToken.identityId == savedIdentity.id, "identityId accessor should return correct ID")
-//            #expect(accessToken.email.rawValue == testEmail, "email accessor should return correct email")
-//        }
-//    }
+    @Test("JWT token should correctly verify expiration")
+    func testTokenExpiration() async throws {
+        try await withTestApp { app in
+            @Dependency(\.date) var date
+            let identityId = UUID()
+            let email = try EmailAddress("expired-test@example.com")
+            let pastTime = date().addingTimeInterval(-3600) // 1 hour ago
+            
+            let expiredToken = JWT.Token.Access(
+                expiration: .init(value: pastTime),
+                issuedAt: .init(value: pastTime.addingTimeInterval(-10)), // Issued 10 seconds before expiration
+                identityId: identityId,
+                email: email
+            )
+            
+            // Sign the token
+            let signedExpiredToken = try await app.jwt.keys.sign(expiredToken)
+            
+            // Verification should fail with expired error
+            do {
+                _ = try await app.jwt.keys.verify(signedExpiredToken, as: JWT.Token.Access.self)
+                #expect(Bool(false), "Verification should have failed with expired token")
+            } catch let error as JWTError {
+                // Expect JWTError.expired or similar error
+                #expect(Bool(true), "Correctly caught JWT expiration error: \(error)")
+            }
+        }
+    }
 }

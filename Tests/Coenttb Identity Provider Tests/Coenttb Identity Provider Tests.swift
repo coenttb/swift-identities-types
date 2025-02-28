@@ -283,17 +283,13 @@ struct IdentityProviderTests {
                 refreshToken.value,
                 as: JWT.Token.Refresh.self
             )
-            print("verified Refresh token:", verified)
-            
-            // Print the access token to debug
-            print("Initial access token:", responseData.data.accessToken.value)
             
             // Test token refresh - explicitly using the refresh token type
             let refreshResponse = try await app.test(
                 identity: .authenticate(
                     .token(
                         .refresh(
-                            .init(token: refreshToken.value)
+                            .init(stringLiteral: refreshToken.value)
                         )
                     )
                 )
@@ -309,16 +305,6 @@ struct IdentityProviderTests {
             #expect(!refreshResponseData.data.accessToken.value.isEmpty, "Expected non-empty access token")
             #expect(!refreshResponseData.data.refreshToken.value.isEmpty, "Expected non-empty refresh token")
             
-            // Print the new access token for debugging
-            print("New access token:", refreshResponseData.data.accessToken.value)
-            
-            // Try to decode the access token directly to check its structure
-            let decodedNewAccess = try? await app.jwt.keys.verify(
-                refreshResponseData.data.accessToken.value,
-                as: JWT.Token.Access.self
-            )
-            print("Decoded new access token:", decodedNewAccess?.subject.value ?? "decoding failed")
-            
             // Verify the new access token works via the API
             let accessToken = refreshResponseData.data.accessToken
             let accessVerifyResponse = try await app.test(
@@ -332,6 +318,111 @@ struct IdentityProviderTests {
             )
             
             #expect(accessVerifyResponse.status == .ok, "Expected successful access token verification")
+        }
+    }
+    
+    @Test("Test refresh token fallback when access token expires")
+    func testRefreshTokenFallbackWithTimeAdvance() async throws {
+        try await withTestApp { app in
+            let (testEmail, testPassword) = try await setupMockIdentity(app: app)
+            
+            // Get initial tokens via login
+            struct AuthResponseWrapper: Codable {
+                let success: Bool
+                let data: Identity.Authentication.Response
+            }
+            
+            let loginResponse = try await app.test(
+                identity: .authenticate(
+                    .credentials(
+                        .init(
+                            username: testEmail,
+                            password: testPassword
+                        )
+                    )
+                )
+            )
+            
+            #expect(loginResponse.status == .ok, "Expected successful login")
+            let responseData = try loginResponse.content.decode(AuthResponseWrapper.self)
+            
+            // Get both tokens
+            let accessToken = responseData.data.accessToken.value
+            let refreshToken = responseData.data.refreshToken.value
+            
+            // First verify the access token works normally
+            let initialVerifyResponse = try await app.test(
+                identity: .authenticate(
+                    .token(
+                        .access(
+                            .init(token: accessToken)
+                        )
+                    )
+                )
+            )
+            #expect(initialVerifyResponse.status == .ok, "Initial access token should be valid")
+            
+            // Decode tokens to get their expiration times
+            let decodedAccess = try await app.jwt.keys.verify(accessToken, as: JWT.Token.Access.self)
+            let decodedRefresh = try await app.jwt.keys.verify(refreshToken, as: JWT.Token.Refresh.self)
+            
+            // Access token typically has shorter lifetime than refresh token
+            let accessExpiration = decodedAccess.expiration.value
+            let refreshExpiration = decodedRefresh.expiration.value
+            
+            // Advance time to just after access token expiration but before refresh token expires
+            let midwayTime = accessExpiration.addingTimeInterval(10) // 10 seconds after access expiration
+            
+            
+            
+            #expect(midwayTime > accessExpiration, "Advanced time should be after access token expiration")
+            #expect(midwayTime < refreshExpiration, "Advanced time should be before refresh token expiration")
+            
+            // Test with advanced time that should make access token invalid but refresh token still valid
+            try await withDependencies {
+                $0.date = .init { midwayTime }
+            } operation: {
+                // Try to use the expired access token (should fail)
+                do {
+                    let _ = try await app.jwt.keys.verify(accessToken, as: JWT.Token.Access.self)
+                    #expect(false, "Access token verification should have failed due to expiration")
+                } catch {
+                    // Expected to fail with expiration error
+                    #expect(true, "Access token correctly failed verification after time advancement")
+                }
+                
+                // Verify refresh token is still valid
+                let verifiedRefresh = try await app.jwt.keys.verify(refreshToken, as: JWT.Token.Refresh.self)
+                #expect(verifiedRefresh.expiration.value > midwayTime, "Refresh token should still be valid")
+                
+                // Now create a request where we send the refresh token as a bearer token
+                // This should hit the fallback path in the TokenAuthenticator
+                
+                // Create a token wrapper to send in the request body
+                struct TokenWrapper: Codable {
+                    var value: String
+                }
+                
+                // Try using the refresh token directly (as if it were an access token)
+                // This should exercise the fallback code path where an access token verification fails
+                // but then it falls back to trying refresh token verification
+                let refreshFallbackResponse = try await app.test(
+                    identity: .authenticate(
+                        .token(
+                            .refresh(
+                                .init(stringLiteral: refreshToken)
+                            )
+                        )
+                    )
+                )
+                
+                #expect(refreshFallbackResponse.status == .ok, "Refresh token fallback should succeed")
+                
+                // Verify we got new tokens
+                let refreshResponseData = try refreshFallbackResponse.content.decode(AuthResponseWrapper.self)
+                #expect(!refreshResponseData.data.accessToken.value.isEmpty, "Should receive new access token")
+                #expect(!refreshResponseData.data.refreshToken.value.isEmpty, "Should receive new refresh token")
+            }
         }
     }
 }
