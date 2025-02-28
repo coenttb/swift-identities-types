@@ -63,7 +63,7 @@ extension Identity.API.Authenticate {
         case access(BearerAuth)
         
         /// Authenticates using a JWT refresh token to obtain a new access token
-        case refresh(BearerAuth)
+        case refresh(JWT.Token)
     }
 }
 
@@ -108,7 +108,7 @@ extension Identity.API.Authenticate {
 
                         URLRouting.Route(.case(Identity.API.Authenticate.Token.refresh)) {
                             Path.refresh
-                            BearerAuth.Router()
+                            Body(.json(JWT.Token.self))
                         }
                     }
                 }
