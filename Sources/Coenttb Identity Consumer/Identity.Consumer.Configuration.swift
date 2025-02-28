@@ -249,7 +249,7 @@ extension Identity.CookiesConfiguration {
         @Dependency(\.identity.consumer.router) var router
         
         // We use a dummy 'token' because we only care about the path and not the payload.
-        let path = router.url(for: .api(.authenticate(.token(.refresh(.init(token: "token")))))).path
+        let path = router.url(for: .api(.authenticate(.token(.refresh(.init(value: "token")))))).path
         
         return .init(
             accessToken: .init(

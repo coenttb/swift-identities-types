@@ -58,7 +58,7 @@ extension Identity.Consumer.Client.Authenticate {
                 refresh: { token in
                     do {
                         let response = try await client.handleRequest(
-                            for: .authenticate(.token(.refresh(.init(token: token)))),
+                            for: .authenticate(.token(.refresh(.init(value: token)))),
                             decodingTo: Identity.Authentication.Response.self
                         )
 
