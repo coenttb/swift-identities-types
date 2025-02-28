@@ -9,6 +9,7 @@ import Dependencies
 import DependenciesMacros
 import EmailAddress
 import Foundation
+import SwiftWeb
 
 extension Identity.Client {
     /// A client interface for handling user authentication operations.
@@ -116,8 +117,8 @@ extension Identity.Client.Authenticate.Token {
     /// - Parameter refresh: The bearer refresh token
     /// - Returns: A new authentication response with fresh tokens
     /// - Throws: Authentication errors if the refresh token is invalid
-    public func refresh(_ refresh: BearerAuth) async throws -> Identity.Authentication.Response {
-        return try await self.refresh(refresh.token)
+    public func refresh(_ refresh: JWT.Token) async throws -> Identity.Authentication.Response {
+        return try await self.refresh(refresh.value)
     }
 }
 
