@@ -112,6 +112,17 @@ extension Identity.Client.Authenticate.Token {
 }
 
 extension Identity.Client.Authenticate.Token {
+    /// Validates a bearer authentication token.
+    ///
+    /// - Parameter access: The JWT token to validate
+    /// - Throws: Authentication errors if the token is invalid
+    public func access(_ access: JWT.Token) async throws {
+        try await self.access(access.value)
+    }
+}
+
+
+extension Identity.Client.Authenticate.Token {
     /// Refreshes an expired bearer authentication token.
     ///
     /// - Parameter refresh: The bearer refresh token
