@@ -58,46 +58,54 @@ extension RateLimiter.Client {
 }
 
 public struct RateLimiters: Sendable {
-    public let credentials = RateLimiter<String>(
-        windows: [
-            .minutes(1, maxAttempts: 5),
-            .hours(1, maxAttempts: 20)
-        ],
-        metricsCallback: { key, result async in
-            @Dependency(\.logger) var logger
-            if !result.isAllowed {
-                logger.warning("Rate limit exceeded for \(key)")
-            }
-        }
-    )
+    public var credentials: RateLimiter<String>
 
-    public let tokenAccess = RateLimiter<String>(
-        windows: [
-            .minutes(1, maxAttempts: 60),
-            .hours(1, maxAttempts: 3000)
-        ],
-        metricsCallback: { key, result async in
-            @Dependency(\.logger) var logger
-            if !result.isAllowed {
-                logger.warning("Token access rate limit exceeded for \(key)")
-            }
-        }
-    )
+    public var tokenAccess: RateLimiter<String>
 
-    public let tokenRefresh = RateLimiter<String>(
-        windows: [
-            .minutes(1, maxAttempts: 10),
-            .hours(1, maxAttempts: 100)
-        ],
-        metricsCallback: { key, result async in
-            @Dependency(\.logger) var logger
-            if !result.isAllowed {
-                logger.warning("Token refresh rate limit exceeded for \(key)")
-            }
-        }
-    )
+    public var tokenRefresh: RateLimiter<String>
     
-    package init(){}
+    public init(
+        credentials: RateLimiter<String> = RateLimiter<String>(
+            windows: [
+                .minutes(1, maxAttempts: 5),
+                .hours(1, maxAttempts: 20)
+            ],
+            metricsCallback: { key, result async in
+                @Dependency(\.logger) var logger
+                if !result.isAllowed {
+                    logger.warning("Rate limit exceeded for \(key)")
+                }
+            }
+        ),
+        tokenAccess: RateLimiter<String> = RateLimiter<String>(
+            windows: [
+                .minutes(1, maxAttempts: 60),
+                .hours(1, maxAttempts: 3000)
+            ],
+            metricsCallback: { key, result async in
+                @Dependency(\.logger) var logger
+                if !result.isAllowed {
+                    logger.warning("Token access rate limit exceeded for \(key)")
+                }
+            }
+        ),
+        tokenRefresh: RateLimiter<String> = RateLimiter<String>(
+            windows: [
+                .minutes(1, maxAttempts: 10),
+                .hours(1, maxAttempts: 100)
+            ],
+            metricsCallback: { key, result async in
+                @Dependency(\.logger) var logger
+                if !result.isAllowed {
+                    logger.warning("Token refresh rate limit exceeded for \(key)")
+                }
+            }
+        )
+    ) {
+        self.credentials = credentials
+        self.tokenAccess = tokenAccess
+        self.tokenRefresh = tokenRefresh
+    }
 }
 
 extension RateLimiters {

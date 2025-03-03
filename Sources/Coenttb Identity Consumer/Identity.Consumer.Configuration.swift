@@ -87,7 +87,7 @@ extension Identity.Consumer.Configuration {
             branding: Branding,
             navigation: Navigation,
             redirect: Identity.Consumer.Configuration.Redirect,
-            rateLimiters: RateLimiters
+            rateLimiters: RateLimiters = .init()
         ) {
             self.baseURL = baseURL
             self.canonicalHref = canonicalHref
