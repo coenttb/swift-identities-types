@@ -39,7 +39,7 @@ extension Identity.Provider.Configuration {
             cookies: Identity.CookiesConfiguration = .live,
             router: AnyParserPrinter<URLRequestData, Identity.API>,
             client: Identity.Provider.Client,
-            rateLimiters: RateLimiters
+            rateLimiters: RateLimiters = .init()
         ) {
             self.baseURL = baseURL
             self.domain = domain
