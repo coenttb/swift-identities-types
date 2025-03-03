@@ -16,17 +16,17 @@ extension Target.Dependency {
 }
 
 extension Target.Dependency {
-    static var coenttbWeb: Self { .product(name: "Coenttb Web", package: "coenttb-web") }
+    static var coenttbFluent: Self { .product(name: "Coenttb Fluent", package: "coenttb-server-vapor") }
     static var coenttbServer: Self { .product(name: "Coenttb Server", package: "coenttb-server") }
     static var coenttbVapor: Self { .product(name: "Coenttb Vapor", package: "coenttb-server-vapor") }
-    static var coenttbFluent: Self { .product(name: "Coenttb Fluent", package: "coenttb-server-vapor") }
+    static var coenttbVaporTesting: Self { .product(name: "Coenttb Vapor Testing", package: "coenttb-server-vapor") }
+    static var coenttbWeb: Self { .product(name: "Coenttb Web", package: "coenttb-web") }
     static var identities: Self { .product(name: "Identities", package: "swift-identities") }
     static var dependenciesMacros: Self { .product(name: "DependenciesMacros", package: "swift-dependencies") }
     static var dependenciesTestSupport: Self { .product(name: "DependenciesTestSupport", package: "swift-dependencies") }
     static var mailgun: Self { .product(name: "Mailgun", package: "coenttb-mailgun") }
     static var fluentSqlLite: Self { .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver") }
     static var vaporJWT: Self { .product(name: "JWT", package: "jwt") }
-    static var vaporTesting: Self { .product(name: "VaporTesting", package: "vapor") }
 }
 
 let package = Package(
@@ -41,10 +41,10 @@ let package = Package(
         .library(name: .coenttbIdentityShared, targets: [.coenttbIdentityShared])
     ],
     dependencies: [
-        .package(url: "https://github.com/coenttb/coenttb-web", branch: "main"),
+        .package(url: "https://github.com/coenttb/coenttb-mailgun", branch: "main"),
         .package(url: "https://github.com/coenttb/coenttb-server", branch: "main"),
         .package(url: "https://github.com/coenttb/coenttb-server-vapor", branch: "main"),
-        .package(url: "https://github.com/coenttb/coenttb-mailgun", branch: "main"),
+        .package(url: "https://github.com/coenttb/coenttb-web", branch: "main"),
         .package(url: "https://github.com/coenttb/swift-identities", branch: "main"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3"),
         .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
@@ -92,7 +92,7 @@ let package = Package(
                 .coenttbIdentityConsumer,
                 .coenttbIdentityProvider,
                 .dependenciesTestSupport,
-                .vaporTesting,
+                .coenttbVaporTesting,
             ]
         ),
         .testTarget(
@@ -101,7 +101,7 @@ let package = Package(
                 .coenttbIdentityProvider,
                 .dependenciesTestSupport,
                 .fluentSqlLite,
-                .vaporTesting,
+                .coenttbVaporTesting,
             ]
         )
     ],
