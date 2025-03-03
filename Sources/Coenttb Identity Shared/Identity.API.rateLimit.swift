@@ -9,24 +9,44 @@ import Coenttb_Vapor
 
 extension Identity.API {
     package static func rateLimit(
-        api: Identity.API
+        api: Identity.API,
+        rateLimiter: RateLimiters
     ) async throws -> RateLimiter<String>.Client {
         
-        @Dependency(RateLimiters.self) var rateLimiter
-
         switch api {
         case .authenticate(let authenticate):
             switch authenticate {
             case .credentials(let credentials):
-                let rateLimit = await rateLimiter.credentials.checkLimit(credentials.username)
+                // Check rate limit by username/email
+                let emailRateLimit = await rateLimiter.credentials.checkLimit(credentials.username)
                 
-                guard rateLimit.isAllowed
+                guard emailRateLimit.isAllowed
                 else {
                     throw Abort(.tooManyRequests, headers: [
-                        "Retry-After": "\(Int(rateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"
+                        "Retry-After": "\(Int(emailRateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"
                     ])
                 }
                 
+                // Also check rate limit by IP address if available
+                @Dependency(\.request?.realIP) var realIP
+                
+                if let clientIP = realIP {
+                    let ipRateLimit = await rateLimiter.credentials.checkLimit("ip:\(clientIP)")
+                    
+                    guard ipRateLimit.isAllowed
+                    else {
+                        throw Abort(.tooManyRequests, headers: [
+                            "Retry-After": "\(Int(ipRateLimit.nextAllowedAttempt?.timeIntervalSinceNow ?? 60))"
+                        ])
+                    }
+                    
+                    // Create combined client that tracks both email and IP
+                    let usernameClient = RateLimiter<String>.Client(limiter: rateLimiter.credentials, key: credentials.username)
+                    let ipClient = RateLimiter<String>.Client(limiter: rateLimiter.credentials, key: "ip:\(clientIP)")
+                    return usernameClient + ipClient
+                }
+                
+                // Fallback to username-only rate limiting (for tests)
                 return .init(limiter: rateLimiter.credentials, key: credentials.username)
 
             case .token(let token):
@@ -73,13 +93,32 @@ extension Identity.API {
         case .create(let create):
             switch create {
             case .request(let request):
-                let rateLimit = await rateLimiter.createRequest.checkLimit(request.email)
                 
-                guard rateLimit.isAllowed
-                else {
-                    throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
+                let emailRateLimit = await rateLimiter.createRequest.checkLimit(request.email)
+                                
+                guard emailRateLimit.isAllowed else {
+                    throw Abort.rateLimit(nextAllowedAttempt: emailRateLimit.nextAllowedAttempt)
                 }
                 
+                // Get IP address for rate limiting if available
+                @Dependency(\.request?.realIP) var realIP
+                
+                // For tests where realIP might not be available
+                if let clientIP = realIP {
+                    let ipRateLimit = await rateLimiter.createRequest.checkLimit("ip:\(clientIP)")
+                    
+                    guard ipRateLimit.isAllowed else {
+                        throw Abort.rateLimit(nextAllowedAttempt: ipRateLimit.nextAllowedAttempt)
+                    }
+                    
+                    // Create combined client that tracks both email and IP
+                    let emailClient = RateLimiter<String>.Client(limiter: rateLimiter.createRequest, key: request.email)
+                    let ipClient = RateLimiter<String>.Client(limiter: rateLimiter.createRequest, key: "ip:\(clientIP)")
+                    
+                    return emailClient + ipClient
+                }
+                
+                // Fallback to email-only rate limiting (for tests)
                 return .init(limiter: rateLimiter.createRequest, key: request.email)
 
             case .verify(let verify):
@@ -135,23 +174,61 @@ extension Identity.API {
             case .change(let change):
                 switch change {
                 case .request(let request):
-                    let rateLimit = await rateLimiter.emailChangeRequest.checkLimit(request.newEmail)
+                    // Check rate limit by new email
+                    let emailRateLimit = await rateLimiter.emailChangeRequest.checkLimit(request.newEmail)
                     
-                    guard rateLimit.isAllowed
+                    guard emailRateLimit.isAllowed
                     else {
-                        throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
+                        throw Abort.rateLimit(nextAllowedAttempt: emailRateLimit.nextAllowedAttempt)
                     }
                     
+                    // Also check rate limit by IP address if available
+                    @Dependency(\.request?.realIP) var realIP
+                    
+                    if let clientIP = realIP {
+                        let ipRateLimit = await rateLimiter.emailChangeRequest.checkLimit("ip:\(clientIP)")
+                        
+                        guard ipRateLimit.isAllowed
+                        else {
+                            throw Abort.rateLimit(nextAllowedAttempt: ipRateLimit.nextAllowedAttempt)
+                        }
+                        
+                        // Create combined client that tracks both email and IP
+                        let emailClient = RateLimiter<String>.Client(limiter: rateLimiter.emailChangeRequest, key: request.newEmail)
+                        let ipClient = RateLimiter<String>.Client(limiter: rateLimiter.emailChangeRequest, key: "ip:\(clientIP)")
+                        return emailClient + ipClient
+                    }
+                    
+                    // Fallback to email-only rate limiting (for tests)
                     return .init(limiter: rateLimiter.emailChangeRequest, key: request.newEmail)
 
                 case .confirm(let confirm):
-                    let rateLimit = await rateLimiter.emailChangeConfirm.checkLimit(confirm.token)
+                    // Check rate limit by token
+                    let tokenRateLimit = await rateLimiter.emailChangeConfirm.checkLimit(confirm.token)
                     
-                    guard rateLimit.isAllowed
+                    guard tokenRateLimit.isAllowed
                     else {
-                        throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
+                        throw Abort.rateLimit(nextAllowedAttempt: tokenRateLimit.nextAllowedAttempt)
                     }
                     
+                    // Also check rate limit by IP address if available
+                    @Dependency(\.request?.realIP) var realIP
+                    
+                    if let clientIP = realIP {
+                        let ipRateLimit = await rateLimiter.emailChangeConfirm.checkLimit("ip:\(clientIP)")
+                        
+                        guard ipRateLimit.isAllowed
+                        else {
+                            throw Abort.rateLimit(nextAllowedAttempt: ipRateLimit.nextAllowedAttempt)
+                        }
+                        
+                        // Create combined client that tracks both token and IP
+                        let tokenClient = RateLimiter<String>.Client(limiter: rateLimiter.emailChangeConfirm, key: confirm.token)
+                        let ipClient = RateLimiter<String>.Client(limiter: rateLimiter.emailChangeConfirm, key: "ip:\(clientIP)")
+                        return tokenClient + ipClient
+                    }
+                    
+                    // Fallback to token-only rate limiting (for tests)
                     return .init(limiter: rateLimiter.emailChangeConfirm, key: confirm.token)
                 }
             }
@@ -173,23 +250,62 @@ extension Identity.API {
             case .reset(let reset):
                 switch reset {
                 case .request(let request):
-                    let rateLimit = await rateLimiter.passwordResetRequest.checkLimit(request.email)
+                    // Check rate limit by email
+                    let emailRateLimit = await rateLimiter.passwordResetRequest.checkLimit(request.email)
                     
-                    guard rateLimit.isAllowed
+                    guard emailRateLimit.isAllowed
                     else {
-                        throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
+                        throw Abort.rateLimit(nextAllowedAttempt: emailRateLimit.nextAllowedAttempt)
                     }
                     
+                    // Also check rate limit by IP address if available
+                    @Dependency(\.request?.realIP) var realIP
+                    
+                    if let clientIP = realIP {
+                        let ipRateLimit = await rateLimiter.passwordResetRequest.checkLimit("ip:\(clientIP)")
+                        
+                        guard ipRateLimit.isAllowed
+                        else {
+                            throw Abort.rateLimit(nextAllowedAttempt: ipRateLimit.nextAllowedAttempt)
+                        }
+                        
+                        // Create combined client that tracks both email and IP
+                        let emailClient = RateLimiter<String>.Client(limiter: rateLimiter.passwordResetRequest, key: request.email)
+                        let ipClient = RateLimiter<String>.Client(limiter: rateLimiter.passwordResetRequest, key: "ip:\(clientIP)")
+                        return emailClient + ipClient
+                    }
+                    
+                    // Fallback to email-only rate limiting (for tests)
                     return .init(limiter: rateLimiter.passwordResetRequest, key: request.email)
 
                 case .confirm(let confirm):
-                    let rateLimit = await rateLimiter.passwordResetConfirm.checkLimit(confirm.token)
+                    // Check rate limit by token
+                    let tokenRateLimit = await rateLimiter.passwordResetConfirm.checkLimit(confirm.token)
                     
-                    guard rateLimit.isAllowed
+                    guard tokenRateLimit.isAllowed
                     else {
-                        throw Abort.rateLimit(nextAllowedAttempt: rateLimit.nextAllowedAttempt)
+                        throw Abort.rateLimit(nextAllowedAttempt: tokenRateLimit.nextAllowedAttempt)
                     }
                     
+                    // Also check rate limit by IP address if available
+                    @Dependency(\.request?.realIP) var realIP
+                    
+                    if let clientIP = realIP {
+                        let ipRateLimit = await rateLimiter.passwordResetConfirm.checkLimit("ip:\(clientIP)")
+                        
+                        guard ipRateLimit.isAllowed
+                        else {
+                            throw Abort.rateLimit(nextAllowedAttempt: ipRateLimit.nextAllowedAttempt)
+                        }
+                        
+                        // Create combined client that tracks both token and IP
+                        let tokenClient = RateLimiter<String>.Client(limiter: rateLimiter.passwordResetConfirm, key: confirm.token)
+                        let ipClient = RateLimiter<String>.Client(limiter: rateLimiter.passwordResetConfirm, key: "ip:\(clientIP)")
+                        
+                        return tokenClient + ipClient
+                    }
+                    
+                    // Fallback to token-only rate limiting (for tests)
                     return .init(limiter: rateLimiter.passwordResetConfirm, key: confirm.token)
                 }
 

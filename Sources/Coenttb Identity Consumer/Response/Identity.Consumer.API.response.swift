@@ -25,53 +25,37 @@ extension Identity.Consumer.API {
         } catch {
             throw Abort(.unauthorized)
         }
+        
+        @Dependency(\.identity.consumer.rateLimiters) var rateLimiter
 
-        let rateLimitClient = try await Identity.API.rateLimit(api: api)
+        let rateLimitClient = try await Identity.API.rateLimit(
+            api: api,
+            rateLimiter: rateLimiter
+        )
 
-        switch api {
-        case .authenticate(let authenticate):
-            do {
+        do {
+            switch api {
+            case .authenticate(let authenticate):
                 let response = try await Identity.Consumer.API.Authenticate.response(authenticate: authenticate)
                 await rateLimitClient.recordSuccess()
                 return response
-            } catch {
-                await rateLimitClient.recordFailure()
-                throw error
-            }
 
-        case .create(let create):
-            do {
+            case .create(let create):
                 let response = try await Identity.Consumer.API.Create.response(create: create)
                 await rateLimitClient.recordSuccess()
                 return response
-            } catch {
-                await rateLimitClient.recordFailure()
-                throw error
-            }
-        case .delete(let delete):
-            do {
+                
+            case .delete(let delete):
                 let response = try await Identity.Consumer.API.Delete.response(delete: delete)
                 await rateLimitClient.recordSuccess()
                 return response
-            } catch {
-                await rateLimitClient.recordFailure()
-                throw error
-            }
 
-        case .email(let email):
-            do {
+            case .email(let email):
                 let response = try await Identity.Consumer.API.Email.Change.response(email: email)
                 await rateLimitClient.recordSuccess()
                 return response
-            } catch {
-                await rateLimitClient.recordFailure()
-                throw error
-            }
 
-        case .logout:
-            do {
-                let rateLimitClient = try await Identity.API.rateLimit(api: api)
-
+            case .logout:
                 try await client.logout()
 
                 let response = Response.success(true)
@@ -81,29 +65,15 @@ extension Identity.Consumer.API {
                 await rateLimitClient.recordSuccess()
 
                 return response
-            } catch {
-                if let rateLimitClient = try? await Identity.API.rateLimit(api: api) {
-                    await rateLimitClient.recordFailure()
-                }
-                throw Abort(.internalServerError, reason: "Failed to logout")
-            }
 
-        case .password(let password):
-            do {
+            case .password(let password):
                 let response = try await Identity.Consumer.API.Password.response(password: password)
 
                 await rateLimitClient.recordSuccess()
 
                 return response
-            } catch {
-                await rateLimitClient.recordFailure()
-                throw error
-            }
 
-        case .reauthorize(let reauthorize):
-            do {
-                let rateLimitClient = try await Identity.API.rateLimit(api: api)
-
+            case .reauthorize(let reauthorize):
                 let data = try await client.reauthorize(password: reauthorize.password)
 
                 let response = Response.success(true)
@@ -112,12 +82,10 @@ extension Identity.Consumer.API {
                 await rateLimitClient.recordSuccess()
 
                 return response
-            } catch {
-                if let rateLimitClient = try? await Identity.API.rateLimit(api: api) {
-                    await rateLimitClient.recordFailure()
-                }
-                throw Abort(.internalServerError, reason: "Failed to reauthorize")
             }
+        } catch {
+            await rateLimitClient.recordFailure()
+            throw error
         }
     }
 }

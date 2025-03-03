@@ -27,33 +27,40 @@ extension Identity.Provider {
             self.credentialsAuthenticator = credentialsAuthenticator
         }
         
-        public func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
-            do {
-                let tokenResponse = try await tokenAuthenticator.respond(to: request, chainingTo: next)
-                return tokenResponse
-            } catch {
-                
-            }
- 
-            do {
-                if let bearerAuth = request.headers.bearerAuthorization {
-                    try await apiKeyAuthenticator.authenticate(bearer: bearerAuth, for: request)
-                    return try await next.respond(to: request)
+        public func respond(
+            to request: Request,
+            chainingTo next: AsyncResponder
+        ) async throws -> Response {
+            return try await withDependencies {
+                $0.request = request
+            } operation: {
+                do {
+                    let tokenResponse = try await tokenAuthenticator.respond(to: request, chainingTo: next)
+                    return tokenResponse
+                } catch {
+                    
                 }
-            } catch {
-                
-            }
-            
-            do {
-                if let basicAuth = request.headers.basicAuthorization {
-                    try await credentialsAuthenticator.authenticate(basic: basicAuth, for: request)
-                    return try await next.respond(to: request)
+     
+                do {
+                    if let bearerAuth = request.headers.bearerAuthorization {
+                        try await apiKeyAuthenticator.authenticate(bearer: bearerAuth, for: request)
+                        return try await next.respond(to: request)
+                    }
+                } catch {
+                    
                 }
-            } catch {
                 
-            }
+                do {
+                    if let basicAuth = request.headers.basicAuthorization {
+                        try await credentialsAuthenticator.authenticate(basic: basicAuth, for: request)
+                        return try await next.respond(to: request)
+                    }
+                } catch {
+                    
+                }
 
-            return try await next.respond(to: request)
+                return try await next.respond(to: request)
+            }
         }
     }
 }

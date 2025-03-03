@@ -25,6 +25,7 @@ extension Identity.Consumer.API.Email.Change {
                     switch data {
                     case .success:
                         return Response.success(true)
+                        
                     case .requiresReauthentication:
                         return Response.success(false, message: "Requires reauthorization")
                     }

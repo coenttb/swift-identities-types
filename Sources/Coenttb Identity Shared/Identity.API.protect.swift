@@ -12,9 +12,7 @@ extension Identity.API {
         api: Identity.API,
         with type: Authenticatable.Type
     ) throws {
-        @Dependency(\.request) var request
-        guard let request else { throw Abort.requestUnavailable }
-
+        
         switch api {
         case .authenticate(let authenticate):
             switch authenticate {
@@ -26,15 +24,23 @@ extension Identity.API {
         case .create:
             break
         case .delete:
+            @Dependency(\.request) var request
+            guard let request else { throw Abort.requestUnavailable }
             try request.auth.require(type)
 
         case .email:
+            @Dependency(\.request) var request
+            guard let request else { throw Abort.requestUnavailable }
             try request.auth.require(type)
 
         case .logout:
+            @Dependency(\.request) var request
+            guard let request else { throw Abort.requestUnavailable }
             try request.auth.require(type)
 
         case .reauthorize:
+            @Dependency(\.request) var request
+            guard let request else { throw Abort.requestUnavailable }
             try request.auth.require(type)
 
         case .password(let password):
@@ -42,6 +48,8 @@ extension Identity.API {
             case .reset:
                 break
             case .change:
+                @Dependency(\.request) var request
+                guard let request else { throw Abort.requestUnavailable }
                 try request.auth.require(type)
 
             }

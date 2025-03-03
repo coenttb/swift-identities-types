@@ -8,6 +8,7 @@
 import Coenttb_Vapor
 import Coenttb_Web
 import Identities
+import Coenttb_Identity_Shared
 
 extension Identity.Consumer.API.Router {
     package static func configureAuthentication(
@@ -27,8 +28,8 @@ extension Identity.Consumer.API.Router {
 
             case .token:
                 return router
-                    .setAccessToken(request.cookies.accessToken)
-                    .setRefreshToken(request.cookies.refreshToken)
+//                    .setAccessToken(request.cookies.accessToken)
+//                    .setRefreshToken(request.cookies.refreshToken)
                     .setBearerAuth(request.cookies.accessToken?.string)
                     .eraseToAnyParserPrinter()
 
@@ -39,8 +40,8 @@ extension Identity.Consumer.API.Router {
 
         case .email:
             return router
-                .setAccessToken(request.cookies.accessToken)
-                .setRefreshToken(request.cookies.refreshToken)
+//                .setAccessToken(request.cookies.accessToken)
+//                .setRefreshToken(request.cookies.refreshToken)
                 .setBearerAuth(request.cookies.accessToken?.string)
                 .setReauthorizationToken(request.cookies.reauthorizationToken)
                 .eraseToAnyParserPrinter()
@@ -52,16 +53,16 @@ extension Identity.Consumer.API.Router {
 
             case .change:
                 return router
-                    .setAccessToken(request.cookies.accessToken)
-                    .setRefreshToken(request.cookies.refreshToken)
+//                    .setAccessToken(request.cookies.accessToken)
+//                    .setRefreshToken(request.cookies.refreshToken)
                     .setBearerAuth(request.cookies.accessToken?.string)
                     .eraseToAnyParserPrinter()
             }
 
         case .create, .delete, .logout, .reauthorize:
             return router
-                .setAccessToken(request.cookies.accessToken)
-                .setRefreshToken(request.cookies.refreshToken)
+//                .setAccessToken(request.cookies.accessToken)
+//                .setRefreshToken(request.cookies.refreshToken)
                 .setBearerAuth(request.cookies.accessToken?.string)
                 .eraseToAnyParserPrinter()
         }

@@ -33,7 +33,7 @@ extension Identity.Provider.Client {
         @Dependency(\.logger) var logger
         @Dependency(\.database) var database
         
-        return Identity.Provider.Client(
+        return .init(
             authenticate: .live(),
             logout: {
                 @Dependency(\.request) var request

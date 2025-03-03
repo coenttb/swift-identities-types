@@ -67,10 +67,10 @@
     {
       "identity" : "coenttb-utils",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/coenttb/coenttb-utils",
+      "location" : "https://github.com/coenttb/coenttb-utils.git",
       "state" : {
         "branch" : "main",
-        "revision" : "03cdc7f28e600db96b9f3e4bc70b1a79b52a95fd"
+        "revision" : "7858da2acbb76e77a68db8d14e4df1157c3fed17"
       }
     },
     {

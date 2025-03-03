@@ -15,15 +15,20 @@ extension Identity.Provider.API {
         api: Identity.Provider.API
     ) async throws -> Response {
         
-        let rateLimitClient = try await Identity.API.rateLimit(api: api)
-
+        @Dependency(\.identity.provider.rateLimiters) var rateLimiters
+        
+        let rateLimitClient = try await Identity.API.rateLimit(
+            api: api,
+            rateLimiter: rateLimiters
+        )
+        
+        // Then check protection
         do {
             try Identity.API.protect(api: api, with: Database.Identity.self)
         } catch {
-            throw Abort(.unauthorized)
+            await rateLimitClient.recordFailure()
+            throw error
         }
-        
-        @Dependency(\.identity.provider.client) var client
         
         switch api {
         case .authenticate(let authenticate):
@@ -57,6 +62,7 @@ extension Identity.Provider.API {
             }
 
         case .logout:
+            @Dependency(\.identity.provider.client) var client
             try await client.logout()
             return Response.success(true)
 
@@ -81,6 +87,7 @@ extension Identity.Provider.API {
             }
 
         case .reauthorize(let reauthorize):
+            @Dependency(\.identity.provider.client) var client
             let data = try await client.reauthorize(password: reauthorize.password)
             return Response.success(true, data: data)
         }

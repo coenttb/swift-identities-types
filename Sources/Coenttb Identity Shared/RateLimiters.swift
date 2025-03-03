@@ -6,16 +6,54 @@
 //
 
 import Coenttb_Server
+import Vapor
 
 extension RateLimiter {
     package struct Client {
         package let recordSuccess: () async -> Void
         package let recordFailure: () async -> Void
 
-        init(limiter: RateLimiter<String>, key: String) {
+        init(limiter: RateLimiter<Key>, key: Key) {
             self.recordSuccess = { await limiter.recordSuccess(key) }
             self.recordFailure = { await limiter.recordFailure(key) }
         }
+        
+        // For handling multiple rate limit keys 
+        init(successAction: @escaping () async -> Void, failureAction: @escaping () async -> Void) {
+            self.recordSuccess = successAction
+            self.recordFailure = failureAction
+        }
+    }
+}
+
+extension Vapor.HTTPHeaders {
+    public var retryAfter: [String] {
+        self["Retry-After"]
+    }
+}
+
+extension RateLimiter.Client {
+    static var empty: Self {
+        return .init(
+            successAction: { },
+            failureAction: { }
+        )
+    }
+    
+    static func + (
+        lhs: Self,
+        rhs: Self
+    ) -> Self {
+        return .init(
+            successAction: {
+                await lhs.recordSuccess()
+                await rhs.recordSuccess()
+            },
+            failureAction: {
+                await lhs.recordFailure()
+                await rhs.recordFailure()
+            }
+        )
     }
 }
 
@@ -58,11 +96,8 @@ public struct RateLimiters: Sendable {
             }
         }
     )
-}
-
-extension RateLimiters: DependencyKey {
-    public static let testValue: Self = .liveValue
-    public static let liveValue: Self = .init()
+    
+    package init(){}
 }
 
 extension RateLimiters {

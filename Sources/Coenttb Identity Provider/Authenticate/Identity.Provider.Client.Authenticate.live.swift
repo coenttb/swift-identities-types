@@ -28,10 +28,11 @@ extension Identity.Provider.Client.Authenticate {
         
         return .init(
             credentials: { username, password in
+                
+                let email: EmailAddress = try .init(username)
+                
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
-
-                let email: EmailAddress = try .init(username)
 
                 do {
                     let identity = try await Database.Identity.get(by: .email(email), on: request.db)
@@ -99,7 +100,7 @@ extension Identity.Provider.Client.Authenticate {
                         throw Abort(.unauthorized, reason: "Invalid access token")
                     } catch {
                         logger.error("Unexpected error during access token verification: \(error.localizedDescription)")
-                        throw Abort(.internalServerError)
+                        throw Abort(.internalServerError, reason: "Unexpected error during access token verification")
                     }
                 },
                 refresh: { token in
@@ -134,7 +135,7 @@ extension Identity.Provider.Client.Authenticate {
                     }
                     catch {
                         logger.error("Unexpected error during refresh token verification: \(error.localizedDescription)")
-                        throw Abort(.internalServerError)
+                        throw Abort(.internalServerError, reason: "Unexpected error during refresh token verification")
                     }
                 }
             ),
@@ -159,7 +160,7 @@ extension Identity.Provider.Client.Authenticate {
                     else {
                         apiKey.isActive = false
                         try await apiKey.save(on: request.db)
-                        throw Abort(.unauthorized)
+                        throw Abort(.unauthorized, reason: "API key has expired")
                     }
                     
                     let identity = apiKey.identity
@@ -178,7 +179,7 @@ extension Identity.Provider.Client.Authenticate {
                     return response
                 } catch {
                     logger.error("Unexpected error during api key verification: \(error.localizedDescription)")
-                    throw Abort(.internalServerError)
+                    throw Abort(.internalServerError, reason: "Unexpected error during api key verification")
                 }
             }
         )

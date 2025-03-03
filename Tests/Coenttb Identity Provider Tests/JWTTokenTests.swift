@@ -28,10 +28,11 @@ struct JWTTokenTests {
         let testIdentityId = UUID()
         let testEmail = try EmailAddress("test@example.com")
         
+        @Dependency(\.date) var date
         // Create a JWT Access token directly
         let accessToken = JWT.Token.Access(
-            expiration: .init(value: Date().addingTimeInterval(3600)),
-            issuedAt: .init(value: Date()),
+            expiration: .init(value: date().addingTimeInterval(3600)),
+            issuedAt: .init(value: date()),
             identityId: testIdentityId,
             email: testEmail
         )
@@ -71,9 +72,11 @@ struct JWTTokenTests {
             let identityId = UUID()
             let email = try EmailAddress("encode-test@example.com")
             
+            @Dependency(\.date) var date
+            
             let accessToken = JWT.Token.Access(
-                expiration: .init(value: Date().addingTimeInterval(3600)),
-                issuedAt: .init(value: Date()),
+                expiration: .init(value: date().addingTimeInterval(3600)),
+                issuedAt: .init(value: date()),
                 identityId: identityId,
                 email: email
             )

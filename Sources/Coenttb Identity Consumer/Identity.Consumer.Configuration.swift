@@ -67,6 +67,7 @@ extension Identity.Consumer.Configuration {
         public var branding: Branding
         public var navigation: Navigation
         public var redirect: Identity.Consumer.Configuration.Redirect
+        public var rateLimiters: RateLimiters
         
         public init(
             baseURL: URL,
@@ -85,7 +86,8 @@ extension Identity.Consumer.Configuration {
             },
             branding: Branding,
             navigation: Navigation,
-            redirect: Identity.Consumer.Configuration.Redirect
+            redirect: Identity.Consumer.Configuration.Redirect,
+            rateLimiters: RateLimiters
         ) {
             self.baseURL = baseURL
             self.canonicalHref = canonicalHref
@@ -98,6 +100,7 @@ extension Identity.Consumer.Configuration {
             self.branding = branding
             self.navigation = navigation
             self.redirect = redirect
+            self.rateLimiters = rateLimiters
         }
     }
 }

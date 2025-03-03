@@ -30,6 +30,7 @@ extension Identity.Provider.Configuration {
         public var cookies: Identity.CookiesConfiguration = .live
         public var router: AnyParserPrinter<URLRequestData, Identity.API>
         public var client: Identity.Provider.Client
+        public var rateLimiters: RateLimiters
         
         public init(
             baseURL: URL,
@@ -37,7 +38,8 @@ extension Identity.Provider.Configuration {
             issuer: String?,
             cookies: Identity.CookiesConfiguration = .live,
             router: AnyParserPrinter<URLRequestData, Identity.API>,
-            client: Identity.Provider.Client
+            client: Identity.Provider.Client,
+            rateLimiters: RateLimiters
         ) {
             self.baseURL = baseURL
             self.domain = domain
@@ -45,6 +47,7 @@ extension Identity.Provider.Configuration {
             self.cookies = cookies
             self.router = router.baseURL(baseURL.absoluteString).eraseToAnyParserPrinter()
             self.client = client
+            self.rateLimiters = rateLimiters
         }
     }
 }
@@ -97,6 +100,7 @@ extension Identity.Provider.Configuration.Provider: TestDependencyKey {
         issuer: nil,
         cookies: .testValue,
         router: Identity.API.Router().eraseToAnyParserPrinter(),
-        client: .testValue
+        client: .testValue,
+        rateLimiters: .init()
     )
 }

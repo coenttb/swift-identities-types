@@ -17,12 +17,13 @@ extension Identity.Provider {
         
         @Dependency(\.identity.provider.client) var client
         
-        public func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
+        public func respond(
+            to request: Request,
+            chainingTo next: AsyncResponder
+        ) async throws -> Response {
             return try await withDependencies {
                 $0.request = request
             } operation: {
-                
-                // First try access token verification
                 do {
                     if let bearerAuth = request.headers.bearerAuthorization {
                         try await client.authenticate.token.access(token: bearerAuth.token)

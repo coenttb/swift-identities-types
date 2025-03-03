@@ -14,8 +14,12 @@ import VaporTesting
 import JWT
 import Vapor
 import Fluent
+import Testing
+import EmailAddress
 
 func withTestApp(_ test: (Application) async throws -> ()) async throws {
+    
+    
     // Create a unique database ID for this test run to prevent cross-test contamination
     let dbId = UUID().uuidString
     let testId = dbId.prefix(8)
@@ -32,6 +36,7 @@ func withTestApp(_ test: (Application) async throws -> ()) async throws {
     try await app.autoMigrate()
     
     try await withDependencies {
+        $0.identity.provider.rateLimiters = .init()
         $0.application = app
         $0.database = app.databases.database(db, logger: $0.logger, on: app.eventLoopGroup.next())!
     } operation: {
@@ -61,6 +66,64 @@ func withTestApp(_ test: (Application) async throws -> ()) async throws {
         print("🔵 Test cleanup: \(testId)")
         try await app.asyncShutdown()
     }
+}
+
+func setupMockIdentity(app: Application) async throws -> (email: String, password: String) {
+    // Generate a unique test email for each test run
+    let uniqueId = UUID().uuidString.prefix(8).lowercased()
+    let testEmail = "test-\(uniqueId)@example.com"
+    let testPassword = "securePassword123!"
+    
+    print("Creating mock identity with email: \(testEmail)")
+    
+    let createResponse = try await app.test(
+        identity: .create(
+            .request(
+                .init(
+                    email: testEmail,
+                    password: testPassword
+                )
+            )
+        )
+    )
+    
+    #expect(createResponse.status == .ok, "Expected successful identity creation")
+    
+    let identity = try await Database.Identity.get(by: .email(try EmailAddress(testEmail)), on: app.db)
+    
+    #expect(identity.emailVerificationStatus == .unverified, "Expected email verification status to be pending")
+    
+    // Retrieve the verification token
+    guard let tokenRecord = try await Database.Identity.Token.query(on: app.db)
+        .filter(\.$identity.$id == identity.id!)
+        .filter(\.$type == .emailVerification)
+        .first()
+    else { #expect(Bool(false)); fatalError() }
+    
+    let verificationToken = tokenRecord.value
+    print("Verifying identity with token: \(verificationToken)")
+    
+    // Verify the email
+    let verifyResponse = try await app.test(
+        identity: .create(
+            .verify(
+                .init(
+                    token: verificationToken,
+                    email: testEmail
+                )
+            )
+        )
+    )
+    
+    // Verify the email verification was successful
+    #expect(verifyResponse.status == .created, "Expected successful email verification")
+    
+    // Check database that email verification status is now verified
+    let updatedIdentity = try await Database.Identity.get(by: .email(try EmailAddress(testEmail)), on: app.db)
+    #expect(updatedIdentity.emailVerificationStatus == .verified, "Expected email verification status to be verified")
+    
+    print("Successfully created and verified mock identity: \(testEmail)")
+    return (testEmail, testPassword) // Return the identity for use in tests
 }
 
 extension TestingHTTPRequest {

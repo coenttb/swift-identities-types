@@ -26,9 +26,9 @@ struct IdentityProviderTests {
         try await withTestApp { app in
             let identityId = UUID()
             let sessionVersion = 1
-            
+            @Dependency(\.date) var date
             // Create expiration and issuance dates
-            let now = Date()
+            let now = date.now
             let expirationDate = now.addingTimeInterval(60 * 60) // 1 hour from now
             
             // Create refresh token payload
@@ -58,7 +58,8 @@ struct IdentityProviderTests {
     func testExpiredRefreshToken() async throws {
         try await withTestApp { app in
             // Create an expired token (issued and expired in the past)
-            let pastDate = Date().addingTimeInterval(-3600) // 1 hour ago
+            @Dependency(\.date) var date
+            let pastDate = date().addingTimeInterval(-3600) // 1 hour ago
             let expiredDate = pastDate.addingTimeInterval(1) // 1 second after issuance (expired)
             
             let expiredToken = JWT.Token.Refresh(
@@ -89,10 +90,11 @@ struct IdentityProviderTests {
         
         try await withTestApp { app in
             
+            @Dependency(\.date) var date
             // Create valid token with session version 1
             let validToken = JWT.Token.Refresh(
-                expiration: .init(value: Date().addingTimeInterval(3600)),
-                issuedAt: .init(value: Date()),
+                expiration: .init(value: date().addingTimeInterval(3600)),
+                issuedAt: .init(value: date()),
                 identityId: UUID(),
                 tokenId: .init(value: UUID().uuidString),
                 sessionVersion: 1
@@ -112,63 +114,7 @@ struct IdentityProviderTests {
         }
     }
     
-    private func setupMockIdentity(app: Application) async throws -> (email: String, password: String) {
-        // Generate a unique test email for each test run
-        let uniqueId = UUID().uuidString.prefix(8).lowercased()
-        let testEmail = "test-\(uniqueId)@example.com"
-        let testPassword = "securePassword123!"
-        
-        print("Creating mock identity with email: \(testEmail)")
-        
-        let createResponse = try await app.test(
-            identity: .create(
-                .request(
-                    .init(
-                        email: testEmail,
-                        password: testPassword
-                    )
-                )
-            )
-        )
-        
-        #expect(createResponse.status == .ok, "Expected successful identity creation")
-        
-        let identity = try await Database.Identity.get(by: .email(try EmailAddress(testEmail)), on: app.db)
-        
-        #expect(identity.emailVerificationStatus == .unverified, "Expected email verification status to be pending")
-        
-        // Retrieve the verification token
-        guard let tokenRecord = try await Database.Identity.Token.query(on: app.db)
-            .filter(\.$identity.$id == identity.id!)
-            .filter(\.$type == .emailVerification)
-            .first()
-        else { #expect(Bool(false)); fatalError() }
-        
-        let verificationToken = tokenRecord.value
-        print("Verifying identity with token: \(verificationToken)")
-        
-        // Verify the email
-        let verifyResponse = try await app.test(
-            identity: .create(
-                .verify(
-                    .init(
-                        token: verificationToken,
-                        email: testEmail
-                    )
-                )
-            )
-        )
-        
-        // Verify the email verification was successful
-        #expect(verifyResponse.status == .ok, "Expected successful email verification")
-        
-        // Check database that email verification status is now verified
-        let updatedIdentity = try await Database.Identity.get(by: .email(try EmailAddress(testEmail)), on: app.db)
-        #expect(updatedIdentity.emailVerificationStatus == .verified, "Expected email verification status to be verified")
-        
-        print("Successfully created and verified mock identity: \(testEmail)")
-        return (testEmail, testPassword) // Return the identity for use in tests
-    }
+    
     
     @Test("Test creating a new identity with credentials")
     func testCreateIdentity() async throws {

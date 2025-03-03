@@ -23,16 +23,23 @@ extension Identity.Provider.API.Create {
             do {
                 try await client.create.request(request)
                 return Response.success(true)
-            } catch {
-                @Dependencies.Dependency(\.logger) var logger
-                logger.log(.critical, "Failed to create account. Error: \(String(describing: error))")
-
-                throw Abort(.internalServerError, reason: "Failed to request account creation")
             }
+            catch {
+                throw error
+            }
+//            catch let error as Abort where error.status == .tooManyRequests {
+//                throw error
+//            }
+//            catch {
+//                @Dependencies.Dependency(\.logger) var logger
+//                logger.log(.critical, "Failed to create account. Error: \(String(describing: error))")
+//
+//                throw Abort(.internalServerError, reason: "Failed to request account creation")
+//            }
         case .verify(let verify):
             do {
                 try await client.create.verify(verify)
-                return Response.success(true)
+                return Response.success(true, status: .created)
             } catch {
                 throw Abort(.internalServerError, reason: "Failed to verify account creation. Error: \(String(describing: error))")
             }
