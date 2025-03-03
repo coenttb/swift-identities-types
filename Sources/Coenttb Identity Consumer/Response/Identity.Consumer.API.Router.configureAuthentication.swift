@@ -17,7 +17,7 @@ extension Identity.Consumer.API.Router {
     ) throws -> AnyParserPrinter<URLRequestData, Identity.Consumer.API> {
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
-
+        
         @Dependency(\.identity.provider.router) var router
         
         switch route {
@@ -25,48 +25,40 @@ extension Identity.Consumer.API.Router {
             switch authenticate {
             case .credentials:
                 break
-
+                
             case .token:
                 return router
-//                    .setAccessToken(request.cookies.accessToken)
-//                    .setRefreshToken(request.cookies.refreshToken)
                     .setBearerAuth(request.cookies.accessToken?.string)
                     .eraseToAnyParserPrinter()
-
+                
             case .apiKey:
                 break
-
+                
             }
-
+            
         case .email:
             return router
-//                .setAccessToken(request.cookies.accessToken)
-//                .setRefreshToken(request.cookies.refreshToken)
                 .setBearerAuth(request.cookies.accessToken?.string)
                 .setReauthorizationToken(request.cookies.reauthorizationToken)
                 .eraseToAnyParserPrinter()
-
+            
         case .password(let password):
             switch password {
             case .reset:
                 break
-
+                
             case .change:
                 return router
-//                    .setAccessToken(request.cookies.accessToken)
-//                    .setRefreshToken(request.cookies.refreshToken)
                     .setBearerAuth(request.cookies.accessToken?.string)
                     .eraseToAnyParserPrinter()
             }
-
+            
         case .create, .delete, .logout, .reauthorize:
             return router
-//                .setAccessToken(request.cookies.accessToken)
-//                .setRefreshToken(request.cookies.refreshToken)
                 .setBearerAuth(request.cookies.accessToken?.string)
                 .eraseToAnyParserPrinter()
         }
-
+        
         return router.eraseToAnyParserPrinter()
     }
 }

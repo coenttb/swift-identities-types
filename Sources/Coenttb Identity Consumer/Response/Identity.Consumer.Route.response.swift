@@ -9,7 +9,7 @@ import Coenttb_Vapor
 import Coenttb_Web
 import Identities
 
-extension Identity.Consumer.API {
+extension Identity.Consumer.Route {
     public static func response(
         route: Identity.Consumer.Route
     ) async throws -> any AsyncResponseEncodable {

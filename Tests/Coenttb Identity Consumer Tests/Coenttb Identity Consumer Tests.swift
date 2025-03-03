@@ -23,47 +23,7 @@
 //    .dependency(\.identity.consumer.client, .liveTest)
 //)
 //struct IdentityConsumerTests {
-//    
-//    // Helper function for test app setup
-//    private func withTestConsumerApp(_ test: (Application) async throws -> ()) async throws {
-//        // Create a unique identifier for this test run
-//        let testId = UUID().uuidString.prefix(8).lowercased()
-//        print("🔵 Consumer Test starting with ID: \(testId)")
-//        
-//        let app = try await Application.make(.testing)
-//        
-//        try await withDependencies {
-//            $0.application = app
-//        } operation: {
-//            @Dependency(\.application) var application
-//            
-//            do {
-//                // Set up JWT for token handling
-//                let key = ES256PrivateKey()
-//                await application.jwt.keys.add(ecdsa: key)
-//                
-//                // Set up routes
-//                @Dependency(\.identity.consumer.router) var router
-//                application.mount(router, use: Identity.Consumer.API.response)
-//                
-//                // Add necessary middleware
-//                app.middleware.use(Identity.Consumer.TokenAuthenticator())
-//                
-//                print("🔵 Running consumer test with ID: \(testId)")
-//                try await test(app)
-//                print("🔵 Consumer test completed: \(testId)")
-//            }
-//            catch {
-//                print("🔴 Consumer test failed: \(testId) - Error: \(error)")
-//                try await application.asyncShutdown()
-//                throw error
-//            }
-//            
-//            print("🔵 Consumer test cleanup: \(testId)")
-//            try await app.asyncShutdown()
-//        }
-//    }
-//    
+//
 //    // Test authentication success flow
 //    @Test("Test authentication with credentials")
 //    func testAuthentication() async throws {

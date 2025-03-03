@@ -227,7 +227,7 @@ struct IdentityProviderTests {
                 identity: .authenticate(
                     .token(
                         .access(
-                            .init(token: accessToken.value)
+                            accessToken
                         )
                     )
                 )
@@ -263,19 +263,20 @@ struct IdentityProviderTests {
             let responseData = try loginResponse.content.decode(AuthResponseWrapper.self)
             
             // Get both tokens
-            let accessToken = responseData.data.accessToken.value
+            
             let refreshToken = responseData.data.refreshToken.value
             
             // First verify the access token works normally
             let initialVerifyResponse = try await app .test(
                 identity: .authenticate(
                     .token(
-                        .access(
-                            .init(token: accessToken)
-                        )
+                        .access(responseData.data.accessToken)
                     )
                 )
             )
+            
+            let accessToken = responseData.data.accessToken.value
+            
             #expect(initialVerifyResponse.status == .ok, "Initial access token should be valid")
             
             // Decode tokens to get their expiration times
