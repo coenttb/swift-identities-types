@@ -60,7 +60,7 @@ extension Identity.API.Authenticate {
     @dynamicMemberLookup
     public enum Token: Codable, Hashable, Sendable {
         /// Authenticates using a JWT access token
-        case access(BearerAuth)
+        case access(JWT.Token)
         
         /// Authenticates using a JWT refresh token to obtain a new access token
         case refresh(JWT.Token)
@@ -103,12 +103,28 @@ extension Identity.API.Authenticate {
                     OneOf {
                         URLRouting.Route(.case(Identity.API.Authenticate.Token.access)) {
                             Path.access
-                            BearerAuth.Router()
+                            OneOf {
+                                BearerAuth.Router().map(
+                                    .convert(
+                                        apply: { JWT.Token.init(value: $0.token) },
+                                        unapply: { .init(token: $0.value) }
+                                    )
+                                )
+                                Cookies {
+                                    Field("access_token", .utf8.data.json(JWT.Token.self))
+                                }
+                            }
                         }
 
                         URLRouting.Route(.case(Identity.API.Authenticate.Token.refresh)) {
                             Path.refresh
-                            Body(.json(JWT.Token.self))
+                            OneOf {
+                                Body(.json(JWT.Token.self))
+                                
+                                Cookies {
+                                    Field("refresh_token", .utf8.data.json(JWT.Token.self))
+                                }
+                            }
                         }
                     }
                 }
