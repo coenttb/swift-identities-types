@@ -72,7 +72,7 @@ extension Identity.Consumer.Configuration {
         public init(
             baseURL: URL,
             domain: String? = nil,
-            cookies: Identity.CookiesConfiguration,
+            cookies: Identity.CookiesConfiguration = .live,
             router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>,
             client: Identity.Consumer.Client,
             currentUserName: @escaping @Sendable () -> String?,
@@ -250,6 +250,7 @@ extension Identity.CookiesConfiguration {
     public static var live: Identity.CookiesConfiguration {
         
         @Dependency(\.identity.consumer.router) var router
+        @Dependency(\.identity.consumer.domain) var domain
         
         // We use a dummy 'token' because we only care about the path and not the payload.
         let path = router.url(for: .api(.authenticate(.token(.refresh(.init(value: "token")))))).path
@@ -258,7 +259,7 @@ extension Identity.CookiesConfiguration {
             accessToken: .init(
                 expires: 60 * 15, // 15 minutes
                 maxAge: 60 * 15,
-                domain: nil,
+                domain: domain,
                 isSecure: true,
                 isHTTPOnly: true,
                 sameSitePolicy: .strict
@@ -266,7 +267,7 @@ extension Identity.CookiesConfiguration {
             refreshToken: .init(
                 expires: 60 * 60 * 24 * 30, // 30 days
                 maxAge: 60 * 60 * 24 * 30,
-                domain: nil,
+                domain: domain,
                 path: path,
                 isSecure: true,
                 isHTTPOnly: true,
@@ -275,7 +276,7 @@ extension Identity.CookiesConfiguration {
             reauthorizationToken: .init(
                 expires: 60 * 5,
                 maxAge: 60 * 5,
-                domain: nil,
+                domain: domain,
                 isSecure: true,
                 isHTTPOnly: true,
                 sameSitePolicy: .strict
