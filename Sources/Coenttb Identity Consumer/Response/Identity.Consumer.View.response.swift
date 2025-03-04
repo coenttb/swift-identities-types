@@ -27,21 +27,14 @@ extension Identity.Consumer.View {
         @Dependency(\.identity.consumer.branding.favicons) var favicons
         @Dependency(\.identity.consumer.branding.logo) var logo
                 
-        @Dependency(\.identity.consumer.redirect.createVerificationSuccess) var createVerificationSuccessRedirect
-        @Dependency(\.identity.consumer.redirect.createProtected) var createProtectedRedirect
-        @Dependency(\.identity.consumer.redirect.loginSuccess) var loginSuccessRedirect
-        @Dependency(\.identity.consumer.redirect.loginProtected) var loginProtectedRedirect
-        @Dependency(\.identity.consumer.redirect.logoutSuccess) var logoutSuccessRedirect
-        @Dependency(\.identity.consumer.redirect.passwordResetSuccess) var passwordResetSuccessRedirect
-        @Dependency(\.identity.consumer.redirect.emailChangeConfirmSuccess) var emailChangeConfirmSuccessRedirect
+        @Dependency(\.identity.consumer.redirect) var redirect
+
         
         do {
             do {
                 try await Identity.Consumer.View.protect(
                     view: view,
-                    with: JWT.Token.Access.self,
-                    createProtectedRedirect: createProtectedRedirect(),
-                    loginProtectedRedirect: loginProtectedRedirect()
+                    with: JWT.Token.Access.self
                 )
             }
             catch {
@@ -50,13 +43,13 @@ extension Identity.Consumer.View {
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
                     
-                    return request.redirect(to: createProtectedRedirect().relativePath)
+                    return request.redirect(to: redirect.createProtected().relativePath)
                     
                 case .authenticate(.credentials):
                     @Dependency(\.request) var request
                     guard let request else { throw Abort.requestUnavailable }
                     
-                    return request.redirect(to: loginProtectedRedirect().relativePath)
+                    return request.redirect(to: redirect.loginProtected().relativePath)
                     
                 case .email(.change(.request)):
                     return accountDefaultContainer {
@@ -108,7 +101,7 @@ extension Identity.Consumer.View {
                 return accountDefaultContainer {
                     Identity.Consumer.View.Create.Verify(
                         verificationAction: router.url(for: .api(.create(.verify(.init())))),
-                        redirectURL: createVerificationSuccessRedirect()
+                        redirectURL: redirect.createVerificationSuccess()
                     )
                 }
             }
@@ -124,7 +117,7 @@ extension Identity.Consumer.View {
                         passwordResetHref: router.url(for: .view(.password(.reset(.request)))),
                         accountCreateHref: router.url(for: .view(.create(.request))),
                         loginFormAction: router.url(for: .api(.authenticate(.credentials(.init())))),
-                        loginSuccessRedirect: loginSuccessRedirect()
+                        loginSuccessRedirect: redirect.loginSuccess()
                     )
                 }
             }
@@ -167,7 +160,7 @@ extension Identity.Consumer.View {
                             token: confirm.token,
                             passwordResetAction: router.url(for: .api(.password(.reset(.confirm(.init()))))),
                             homeHref: homeHref(),
-                            redirect: passwordResetSuccessRedirect(),
+                            redirect: redirect.passwordResetSuccess(),
                             primaryColor: primaryColor
                         )
                     }
@@ -204,7 +197,7 @@ extension Identity.Consumer.View {
                     
                     return accountDefaultContainer {
                         Identity.Consumer.View.Email.Change.Confirm(
-                            redirect: emailChangeConfirmSuccessRedirect(),
+                            redirect: redirect.emailChangeConfirmSuccess(),
                             primaryColor: primaryColor
                         )
                     }

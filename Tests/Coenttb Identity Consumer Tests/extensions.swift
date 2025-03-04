@@ -15,6 +15,7 @@ import Testing
 import Vapor
 import VaporTesting
 import EmailAddress
+import Coenttb_Vapor_Testing
 
 private func withTestConsumerApp(_ test: (Application) async throws -> ()) async throws {
     // Create a unique identifier for this test run

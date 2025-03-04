@@ -16,6 +16,7 @@ import Vapor
 import Fluent
 import Testing
 import EmailAddress
+import Coenttb_Vapor_Testing
 
 func withTestApp(_ test: (Application) async throws -> ()) async throws {
     

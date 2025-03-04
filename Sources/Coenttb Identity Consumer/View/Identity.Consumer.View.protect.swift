@@ -12,9 +12,7 @@ import Identities
 extension Identity.Consumer.View {
     package static func protect<Authenticatable: Vapor.Authenticatable>(
         view: Identity.Consumer.View,
-        with type: Authenticatable.Type,
-        createProtectedRedirect: URL,
-        loginProtectedRedirect: URL
+        with type: Authenticatable.Type
     ) async throws {
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }

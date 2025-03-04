@@ -16,7 +16,7 @@ import Favicon
 import Vapor
 
 extension Identity.Consumer {
-    public struct Configuration:  Sendable {
+    public struct Configuration: Sendable {
         public var provider: Identity.Consumer.Configuration.Provider
         public var consumer: Identity.Consumer.Configuration.Consumer
         
@@ -188,19 +188,22 @@ extension Identity.Consumer.Configuration {
         public var accentColor: HTMLColor
         public var favicons: Favicons
         public var footer_links: [(TranslatedString, URL)]
+        public var titleForView: @Sendable (Identity.Consumer.View) -> TranslatedString
         
         public init(
             logo: Identity.Consumer.View.Logo,
             primaryColor: HTMLColor,
             accentColor: HTMLColor,
             favicons: Favicons,
-            footer_links: [(TranslatedString, URL)]
+            footer_links: [(TranslatedString, URL)],
+            titleForView: @Sendable @escaping (Identity.Consumer.View) -> TranslatedString = Self._title(for:)
         ) {
             self.logo = logo
             self.primaryColor = primaryColor
             self.accentColor = accentColor
             self.favicons = favicons
             self.footer_links = footer_links
+            self.titleForView = titleForView
         }
         
         public init(
@@ -209,13 +212,98 @@ extension Identity.Consumer.Configuration {
             accentColor: HTMLColor,
             favicons: Favicons,
             termsOfUse: URL?,
-            privacyStatement: URL?
+            privacyStatement: URL?,
+            titleForView: @Sendable @escaping (Identity.Consumer.View) -> TranslatedString = Self._title(for:)
         ) {
             self.logo = logo
             self.primaryColor = primaryColor
             self.accentColor = accentColor
             self.favicons = favicons
             self.footer_links = [termsOfUse.map { (String.terms_of_use, $0) }, privacyStatement.map { (String.privacyStatement, $0) } ].compactMap { $0 }
+            self.titleForView = titleForView
+        }
+    }
+}
+
+extension Identity.Consumer.Configuration.Branding {
+    public static func _title(for view: Identity.Consumer.View) -> TranslatedString {
+        switch view {
+        case .authenticate(let authenticate):
+            switch authenticate {
+            case .credentials:
+                return .init(
+                    dutch: "Inloggen",
+                    english: "Sign In"
+                )
+            }
+        case .create(let create):
+            switch create {
+            case .request:
+                return .init(
+                    dutch: "Account Aanmaken",
+                    english: "Create Account"
+                )
+            case .verify:
+                return .init(
+                    dutch: "Account Verifiëren",
+                    english: "Verify Account"
+                )
+            }
+        case .delete:
+            return .init(
+                dutch: "Account Verwijderen",
+                english: "Delete Account"
+            )
+        case .logout:
+            return .init(
+                dutch: "Uitloggen",
+                english: "Sign Out"
+            )
+        case .email(let email):
+            switch email {
+            case .change(let change):
+                switch change {
+                case .request:
+                    return .init(
+                        dutch: "E-mailadres Wijzigen",
+                        english: "Change Email Address"
+                    )
+                case .reauthorization:
+                    return .init(
+                        dutch: "Bevestig Identiteit",
+                        english: "Confirm Identity"
+                    )
+                case .confirm:
+                    return .init(
+                        dutch: "E-mail Bevestigen",
+                        english: "Confirm Email"
+                    )
+                }
+            }
+        case .password(let password):
+            switch password {
+            case .reset(let reset):
+                switch reset {
+                case .request:
+                    return .init(
+                        dutch: "Wachtwoord Herstellen",
+                        english: "Reset Password"
+                    )
+                case .confirm:
+                    return .init(
+                        dutch: "Nieuw Wachtwoord Instellen",
+                        english: "Set New Password"
+                    )
+                }
+            case .change(let change):
+                switch change {
+                case .request:
+                    return .init(
+                        dutch: "Wachtwoord Wijzigen",
+                        english: "Change Password"
+                    )
+                }
+            }
         }
     }
 }
