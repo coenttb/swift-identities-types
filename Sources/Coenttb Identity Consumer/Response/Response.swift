@@ -9,7 +9,6 @@ import Foundation
 import Coenttb_Vapor
 import Dependencies
 
-
 extension Vapor.Response {
     public func withTokens(
         for response: Identity.Authentication.Response

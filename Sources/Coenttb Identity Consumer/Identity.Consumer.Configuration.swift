@@ -20,7 +20,6 @@ extension Identity.Consumer {
         public var provider: Identity.Consumer.Configuration.Provider
         public var consumer: Identity.Consumer.Configuration.Consumer
         
-        
         public init(provider: Identity.Consumer.Configuration.Provider, consumer: Identity.Consumer.Configuration.Consumer) {
             self.provider = provider
             self.consumer = consumer
@@ -189,6 +188,7 @@ extension Identity.Consumer.Configuration {
         public var favicons: Favicons
         public var footer_links: [(TranslatedString, URL)]
         public var titleForView: @Sendable (Identity.Consumer.View) -> TranslatedString
+        public var descriptionForView: @Sendable (Identity.Consumer.View) -> TranslatedString
         
         public init(
             logo: Identity.Consumer.View.Logo,
@@ -196,7 +196,8 @@ extension Identity.Consumer.Configuration {
             accentColor: HTMLColor,
             favicons: Favicons,
             footer_links: [(TranslatedString, URL)],
-            titleForView: @Sendable @escaping (Identity.Consumer.View) -> TranslatedString = Self._title(for:)
+            titleForView: @Sendable @escaping (Identity.Consumer.View) -> TranslatedString = Self._title(for:),
+            descriptionForView: @Sendable @escaping (Identity.Consumer.View) -> TranslatedString = Self._description(for:)
         ) {
             self.logo = logo
             self.primaryColor = primaryColor
@@ -204,6 +205,7 @@ extension Identity.Consumer.Configuration {
             self.favicons = favicons
             self.footer_links = footer_links
             self.titleForView = titleForView
+            self.descriptionForView = descriptionForView
         }
         
         public init(
@@ -213,7 +215,8 @@ extension Identity.Consumer.Configuration {
             favicons: Favicons,
             termsOfUse: URL?,
             privacyStatement: URL?,
-            titleForView: @Sendable @escaping (Identity.Consumer.View) -> TranslatedString = Self._title(for:)
+            titleForView: @Sendable @escaping (Identity.Consumer.View) -> TranslatedString = Self._title(for:),
+            descriptionForView: @Sendable @escaping (Identity.Consumer.View) -> TranslatedString = Self._description(for:)
         ) {
             self.logo = logo
             self.primaryColor = primaryColor
@@ -221,7 +224,73 @@ extension Identity.Consumer.Configuration {
             self.favicons = favicons
             self.footer_links = [termsOfUse.map { (String.terms_of_use, $0) }, privacyStatement.map { (String.privacyStatement, $0) } ].compactMap { $0 }
             self.titleForView = titleForView
+            self.descriptionForView = descriptionForView
         }
+    }
+}
+
+extension Identity.Consumer.Configuration {
+    public struct Provider: Sendable {
+        public var baseURL: URL
+        public var domain: String?
+        public var router: AnyParserPrinter<URLRequestData, Identity.API>
+        
+        public init(
+            baseURL: URL,
+            domain: String?,
+            router: AnyParserPrinter<URLRequestData, Identity.API>
+        ) {
+            self.baseURL = baseURL
+            self.domain = domain
+            self.router = router.baseURL(baseURL.absoluteString).eraseToAnyParserPrinter()
+        }
+    }
+}
+
+extension Identity.Consumer.Configuration.Provider: TestDependencyKey {
+    public static let testValue: Self = .init(
+        baseURL: .init(string: "")!,
+        domain: nil,
+        router: Identity.API.Router().eraseToAnyParserPrinter()
+    )
+}
+
+extension Identity.CookiesConfiguration {
+    public static var live: Identity.CookiesConfiguration {
+        
+        @Dependency(\.identity.consumer.router) var router
+        @Dependency(\.identity.consumer.domain) var domain
+        
+        // We use a dummy 'token' because we only care about the path and not the payload.
+        let path = router.url(for: .api(.authenticate(.token(.refresh(.init(value: "token")))))).path
+        
+        return .init(
+            accessToken: .init(
+                expires: 60 * 15, // 15 minutes
+                maxAge: 60 * 15,
+                domain: domain,
+                isSecure: true,
+                isHTTPOnly: true,
+                sameSitePolicy: .strict
+            ),
+            refreshToken: .init(
+                expires: 60 * 60 * 24 * 30, // 30 days
+                maxAge: 60 * 60 * 24 * 30,
+                domain: domain,
+                path: path,
+                isSecure: true,
+                isHTTPOnly: true,
+                sameSitePolicy: .lax
+            ),
+            reauthorizationToken: .init(
+                expires: 60 * 5,
+                maxAge: 60 * 5,
+                domain: domain,
+                isSecure: true,
+                isHTTPOnly: true,
+                sameSitePolicy: .strict
+            )
+        )
     }
 }
 
@@ -308,68 +377,85 @@ extension Identity.Consumer.Configuration.Branding {
     }
 }
 
-extension Identity.Consumer.Configuration {
-    public struct Provider: Sendable {
-        public var baseURL: URL
-        public var domain: String?
-        public var router: AnyParserPrinter<URLRequestData, Identity.API>
-        
-        public init(
-            baseURL: URL,
-            domain: String?,
-            router: AnyParserPrinter<URLRequestData, Identity.API>
-        ) {
-            self.baseURL = baseURL
-            self.domain = domain
-            self.router = router.baseURL(baseURL.absoluteString).eraseToAnyParserPrinter()
+extension Identity.Consumer.Configuration.Branding {
+    public static func _description(for view: Identity.Consumer.View) -> TranslatedString {
+        switch view {
+        case .authenticate(let authenticate):
+            switch authenticate {
+            case .credentials:
+                return .init(
+                    dutch: "Voer je e-mailadres en wachtwoord in om toegang te krijgen tot je account.",
+                    english: "Enter your email address and password to access your account."
+                )
+            }
+        case .create(let create):
+            switch create {
+            case .request:
+                return .init(
+                    dutch: "Maak een nieuw account aan om van alle functies gebruik te maken.",
+                    english: "Create a new account to access all features."
+                )
+            case .verify:
+                return .init(
+                    dutch: "Voer de verificatiecode in die we naar je e-mailadres hebben gestuurd.",
+                    english: "Enter the verification code we've sent to your email address."
+                )
+            }
+        case .delete:
+            return .init(
+                dutch: "Je staat op het punt je account en alle bijbehorende gegevens permanent te verwijderen.",
+                english: "You're about to permanently delete your account and all associated data."
+            )
+        case .logout:
+            return .init(
+                dutch: "Je wordt uitgelogd van je huidige sessie.",
+                english: "You'll be signed out of your current session."
+            )
+        case .email(let email):
+            switch email {
+            case .change(let change):
+                switch change {
+                case .request:
+                    return .init(
+                        dutch: "Voer het nieuwe e-mailadres in dat je aan je account wilt koppelen.",
+                        english: "Enter the new email address you want to associate with your account."
+                    )
+                case .reauthorization:
+                    return .init(
+                        dutch: "Voor je veiligheid, bevestig je identiteit om wijzigingen aan te brengen.",
+                        english: "For your security, please confirm your identity to make changes."
+                    )
+                case .confirm:
+                    return .init(
+                        dutch: "Voer de verificatiecode in die we naar je nieuwe e-mailadres hebben gestuurd.",
+                        english: "Enter the verification code we've sent to your new email address."
+                    )
+                }
+            }
+        case .password(let password):
+            switch password {
+            case .reset(let reset):
+                switch reset {
+                case .request:
+                    return .init(
+                        dutch: "Voer je e-mailadres in om een link te ontvangen waarmee je je wachtwoord kunt herstellen.",
+                        english: "Enter your email address to receive a link to reset your password."
+                    )
+                case .confirm:
+                    return .init(
+                        dutch: "Stel een nieuw wachtwoord in voor je account.",
+                        english: "Set a new password for your account."
+                    )
+                }
+            case .change(let change):
+                switch change {
+                case .request:
+                    return .init(
+                        dutch: "Wijzig je huidige wachtwoord om de beveiliging van je account te verbeteren.",
+                        english: "Change your current password to improve your account security."
+                    )
+                }
+            }
         }
     }
 }
-
-extension Identity.Consumer.Configuration.Provider: TestDependencyKey {
-    public static let testValue: Self = .init(
-        baseURL: .init(string: "")!,
-        domain: nil,
-        router: Identity.API.Router().eraseToAnyParserPrinter()
-    )
-}
-
-extension Identity.CookiesConfiguration {
-    public static var live: Identity.CookiesConfiguration {
-        
-        @Dependency(\.identity.consumer.router) var router
-        @Dependency(\.identity.consumer.domain) var domain
-        
-        // We use a dummy 'token' because we only care about the path and not the payload.
-        let path = router.url(for: .api(.authenticate(.token(.refresh(.init(value: "token")))))).path
-        
-        return .init(
-            accessToken: .init(
-                expires: 60 * 15, // 15 minutes
-                maxAge: 60 * 15,
-                domain: domain,
-                isSecure: true,
-                isHTTPOnly: true,
-                sameSitePolicy: .strict
-            ),
-            refreshToken: .init(
-                expires: 60 * 60 * 24 * 30, // 30 days
-                maxAge: 60 * 60 * 24 * 30,
-                domain: domain,
-                path: path,
-                isSecure: true,
-                isHTTPOnly: true,
-                sameSitePolicy: .lax
-            ),
-            reauthorizationToken: .init(
-                expires: 60 * 5,
-                maxAge: 60 * 5,
-                domain: domain,
-                isSecure: true,
-                isHTTPOnly: true,
-                sameSitePolicy: .strict
-            )
-        )
-    }
-}
-

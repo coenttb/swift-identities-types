@@ -29,57 +29,57 @@ extension Identity {
     }
 }
 
-extension Identity.CookiesConfiguration: TestDependencyKey {
-    public static let testValue: Self = .init(
-        accessToken: {
-            var x: HTTPCookies.Configuration = .testValue
-            x.expires = 60 * 15
-            return x
-        }(),
-        refreshToken: {
-            var x: HTTPCookies.Configuration = .testValue
-            x.expires = 60 * 60 * 24 * 30
-            return x
-        }(),
-        reauthorizationToken: .testValue
-    )
-}
+//extension Identity.CookiesConfiguration: TestDependencyKey {
+//    public static let testValue: Self = .init(
+//        accessToken: {
+//            var x: HTTPCookies.Configuration = .testValue
+//            x.expires = 60 * 15
+//            return x
+//        }(),
+//        refreshToken: {
+//            var x: HTTPCookies.Configuration = .testValue
+//            x.expires = 60 * 60 * 24 * 30
+//            return x
+//        }(),
+//        reauthorizationToken: .testValue
+//    )
+//}
 
-extension Identity.CookiesConfiguration {
-    public static func development(
-        router: AnyParserPrinter<URLRequestData, Identity.API>
-    ) -> Self {
-        
-        let dummy = "-"
-        
-        return .init(
-            accessToken: .init(
-                expires: 60 * 15,
-                maxAge: 60 * 15,
-                domain: nil,
-                path: "/",
-                isSecure: false,
-                isHTTPOnly: true,
-                sameSitePolicy: .none  // Lax for local development across ports
-            ),
-            refreshToken: .init(
-                expires: 60 * 60 * 24 * 30,
-                maxAge: 60 * 60 * 24 * 30,
-                domain: nil,
-                path: router.url(for: .authenticate(.token(.refresh(.init(value: dummy))))).absoluteString,
-                isSecure: false,
-                isHTTPOnly: true,
-                sameSitePolicy: .none
-            ),
-            reauthorizationToken: .init(
-                expires: 60 * 5,
-                maxAge: 60 * 5,
-                domain: nil,
-                path: router.url(for: .reauthorize(.init(password: dummy))).absoluteString,
-                isSecure: false,
-                isHTTPOnly: true,
-                sameSitePolicy: .none
-            )
-        )
-    }
-}
+//extension Identity.CookiesConfiguration {
+//    public static func development(
+//        router: AnyParserPrinter<URLRequestData, Identity.API>
+//    ) -> Self {
+//        
+//        let dummy = "-"
+//        
+//        return .init(
+//            accessToken: .init(
+//                expires: 60 * 15,
+//                maxAge: 60 * 15,
+//                domain: nil,
+//                path: "/",
+//                isSecure: false,
+//                isHTTPOnly: true,
+//                sameSitePolicy: .none  // Lax for local development across ports
+//            ),
+//            refreshToken: .init(
+//                expires: 60 * 60 * 24 * 30,
+//                maxAge: 60 * 60 * 24 * 30,
+//                domain: nil,
+//                path: router.url(for: .authenticate(.token(.refresh(.init(value: dummy))))).absoluteString,
+//                isSecure: false,
+//                isHTTPOnly: true,
+//                sameSitePolicy: .none
+//            ),
+//            reauthorizationToken: .init(
+//                expires: 60 * 5,
+//                maxAge: 60 * 5,
+//                domain: nil,
+//                path: router.url(for: .reauthorize(.init(password: dummy))).absoluteString,
+//                isSecure: false,
+//                isHTTPOnly: true,
+//                sameSitePolicy: .none
+//            )
+//        )
+//    }
+//}

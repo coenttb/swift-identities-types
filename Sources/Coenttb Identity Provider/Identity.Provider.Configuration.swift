@@ -98,7 +98,7 @@ extension Identity.Provider.Configuration.Provider: TestDependencyKey {
         baseURL: .init(string: "/")!,
         domain: nil,
         issuer: nil,
-        cookies: .testValue,
+        cookies: .live,
         router: Identity.API.Router().eraseToAnyParserPrinter(),
         client: .testValue,
         rateLimiters: .init()

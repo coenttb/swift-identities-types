@@ -72,9 +72,11 @@ extension Identity.Consumer.View {
         func accountDefaultContainer<Content: HTML>(
             @HTMLBuilder _ content: @escaping () -> Content
         ) -> Identity.Consumer.HTMLDocument<_HTMLTuple<HTMLInlineStyle<Identity.Consumer.View.Logo>, Content>> {
-            Identity.Consumer.HTMLDocument(
+            @Dependency(\.identity.consumer.branding.titleForView) var titleForView
+            
+            return Identity.Consumer.HTMLDocument(
                 view: view,
-                title: { _ in "" },
+                title: { titleForView($0).description },
                 description: { _ in "" },
                 body: {
                     logo

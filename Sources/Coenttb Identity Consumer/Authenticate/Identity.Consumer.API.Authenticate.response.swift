@@ -37,8 +37,10 @@ extension Identity.Consumer.API.Authenticate {
                     
                 case .refresh(let refresh):
                     do {
-                        return try await Response.success(true)
-                            .withTokens(for: client.authenticate.token.refresh(token: refresh.token))
+                        let identityAuthenticationResponse = try await client.authenticate.token.refresh(token: refresh.token)
+                        
+                        return Response.success(true)
+                            .withTokens(for: identityAuthenticationResponse)
                     } catch {
                         print("Failed in refresh token case with error:", error)
                         throw Abort(.internalServerError, reason: "Failed to authenticate account: \(error)")
@@ -47,8 +49,11 @@ extension Identity.Consumer.API.Authenticate {
 
             case .credentials(let credentials):
                 do {
-                    return try await Response.success(true)
-                        .withTokens(for: client.authenticate.credentials(credentials))
+                    
+                    let identityAuthenticationResponse = try await client.authenticate.credentials(credentials)
+                                    
+                    return Response.success(true)
+                        .withTokens(for: identityAuthenticationResponse)
                 } catch {
                     print("Failed in credentials case with error:", error)
                     throw Abort(.internalServerError, reason: "Failed to authenticate account: \(error)")
@@ -56,8 +61,10 @@ extension Identity.Consumer.API.Authenticate {
                 
             case .apiKey(let apiKey):
                 do {
-                    return try await Response.success(true)
-                        .withTokens(for: client.authenticate.apiKey(apiKey: apiKey.token))
+                    let identityAuthenticationResponse = try await client.authenticate.apiKey(apiKey: apiKey.token)
+                    
+                    return Response.success(true)
+                        .withTokens(for: identityAuthenticationResponse)
                 } catch {
                     print("Failed in API case with error:", error)
                     throw Abort(.internalServerError, reason: "Failed to authenticate account: \(error)")
