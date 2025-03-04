@@ -9,27 +9,60 @@ import Foundation
 import URLRouting
 import Vapor
 
-extension URLRequest {
-    /// Sets or removes the Authorization header with a Bearer token
-    /// - Parameter token: The bearer token to be used for authentication. If nil, removes the Authorization header
-    /// - Returns: A new URLRequest instance with the Authorization header set or removed
-    public mutating func setBearerToken(_ token: String?) {
-        if let token {
-            setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        } else {
-            setValue(nil, forHTTPHeaderField: "Authorization")
+//extension URLRequest {
+//    /// Sets or removes the Authorization header with a Bearer token
+//    /// - Parameter token: The bearer token to be used for authentication. If nil, removes the Authorization header
+//    /// - Returns: A new URLRequest instance with the Authorization header set or removed
+//    public mutating func setBearerToken(_ token: String?) {
+//        if let token {
+//            setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+//        } else {
+//            setValue(nil, forHTTPHeaderField: "Authorization")
+//        }
+//    }
+//    
+//    /// Sets the refresh token as a cookie
+//    /// - Parameter token: The refresh token to be set as a cookie. If nil, removes the refresh_token cookie
+//    public mutating func setRefreshTokenCookie(_ token: String?) {
+//        if let token {
+//            setValue("refresh_token=\(token)", forHTTPHeaderField: "Cookie")
+//        } else {
+//            setValue(nil, forHTTPHeaderField: "Cookie")
+//        }
+//    }
+//}
+
+extension HTTPHeaders {
+    /// Access or set the `Reauthorization: Bearer: ...` header.
+    public var reauthorizationToken: BearerAuthorization? {
+        get {
+            guard let string = self.first(name: .reauthorization) else {
+                return nil
+            }
+
+            let headerParts = string.split(separator: " ")
+            guard headerParts.count == 2 else {
+                return nil
+            }
+            guard headerParts[0].lowercased() == "bearer" else {
+                return nil
+            }
+            return .init(token: String(headerParts[1]))
+        }
+        set {
+            if let bearer = newValue {
+                replaceOrAdd(name: .reauthorization, value: "Bearer \(bearer.token)")
+            } else {
+                remove(name: .reauthorization)
+            }
         }
     }
-    
-    /// Sets the refresh token as a cookie
-    /// - Parameter token: The refresh token to be set as a cookie. If nil, removes the refresh_token cookie
-    public mutating func setRefreshTokenCookie(_ token: String?) {
-        if let token {
-            setValue("refresh_token=\(token)", forHTTPHeaderField: "Cookie")
-        } else {
-            setValue(nil, forHTTPHeaderField: "Cookie")
-        }
-    }
+}
+
+// Extend HTTPHeaderName to include reauthorization
+extension HTTPHeaders.Name {
+    /// The "Reauthorization" header
+    public static let reauthorization: HTTPHeaders.Name = "Reauthorization"
 }
 
 extension ParserPrinter where Input == URLRequestData {
@@ -56,29 +89,36 @@ extension ParserPrinter where Input == URLRequestData {
         else { return self.baseRequestData(.init()) }
         return self.cookie(name, value)
     }
-    
-    /// Sets the access token cookie
-    /// - Parameter token: Optional access token value
-    /// - Returns: Modified BaseURLPrinter with access_token cookie
-    @inlinable
-    public func setAccessToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
-        return self.cookie("access_token", token)
-    }
-    
-    /// Sets the refresh token cookie
-    /// - Parameter token: Optional refresh token value
-    /// - Returns: Modified BaseURLPrinter with refresh_token cookie
-    @inlinable
-    public func setRefreshToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
-        return self.cookie("refresh_token", token)
-    }
-    
-    /// Sets the reauthorization token cookie
+//    
+//    /// Sets the access token cookie
+//    /// - Parameter token: Optional access token value
+//    /// - Returns: Modified BaseURLPrinter with access_token cookie
+//    @inlinable
+//    public func setAccessToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
+//        return self.cookie("access_token", token)
+//    }
+//    
+//    /// Sets the refresh token cookie
+//    /// - Parameter token: Optional refresh token value
+//    /// - Returns: Modified BaseURLPrinter with refresh_token cookie
+//    @inlinable
+//    public func setRefreshToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
+//        return self.cookie("refresh_token", token)
+//    }
+//    
+    /// Sets the reauthorization token header
     /// - Parameter token: Optional reauthorization token value
-    /// - Returns: Modified BaseURLPrinter with reauthorization_token cookie
+    /// - Returns: Modified BaseURLPrinter with Reauthorization header
     @inlinable
-    public func setReauthorizationToken(_ token: HTTPCookies.Value?) -> BaseURLPrinter<Self> {
-        return self.cookie("reauthorization_token", token)
+    public func setReauthorizationToken(_ token: String?) -> BaseURLPrinter<Self> {
+        return transform { urlRequestData in
+            if let token = token {
+                var data = urlRequestData
+                data.headers[HTTPHeaders.Name.reauthorization.description] = ["Bearer \(token)"][...].map { Substring($0) }[...]
+                return data
+            }
+            return urlRequestData
+        }
     }
     
     /// Sets multiple cookies at once

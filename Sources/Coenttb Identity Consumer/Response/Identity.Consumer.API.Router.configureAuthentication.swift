@@ -30,7 +30,6 @@ extension Identity.Consumer.API.Router {
                 return router
                     .setBearerAuth(request.cookies.accessToken?.string)
                     .eraseToAnyParserPrinter()
-                
             case .apiKey:
                 break
                 
@@ -39,7 +38,7 @@ extension Identity.Consumer.API.Router {
         case .email:
             return router
                 .setBearerAuth(request.cookies.accessToken?.string)
-                .setReauthorizationToken(request.cookies.reauthorizationToken)
+                .setReauthorizationToken(request.cookies.reauthorizationToken?.string)
                 .eraseToAnyParserPrinter()
             
         case .password(let password):

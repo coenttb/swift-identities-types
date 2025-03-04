@@ -18,7 +18,6 @@ extension Identity.API {
             switch authenticate {
             case .credentials, .token, .apiKey:
                 break
-
             }
 
         case .create:
@@ -51,9 +50,7 @@ extension Identity.API {
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
                 try request.auth.require(type)
-
             }
-
         }
     }
 }

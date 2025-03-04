@@ -58,7 +58,7 @@ extension JWT.Token.Access {
      * in the format "UUID:email" to ensure both pieces of information are preserved.
      */
     package init(identity: Database.Identity) throws {
-        @Dependency(\.identity.provider.cookies.accessToken) var config
+        @Dependency(\.identity.provider.tokens.accessToken) var config
         @Dependency(\.date) var date
 
         let currentTime = date()
@@ -95,7 +95,7 @@ extension JWT.Token.Refresh {
      */
     package init(identity: Database.Identity) throws {
         @Dependency(\.uuid) var uuid
-        @Dependency(\.identity.provider.cookies.refreshToken) var config
+        @Dependency(\.identity.provider.tokens.refreshToken) var config
         @Dependency(\.date) var date
 
         
@@ -136,7 +136,7 @@ extension JWT.Token.Reauthorization {
     ) throws {
         @Dependency(\.date) var date
         @Dependency(\.uuid) var uuid
-        @Dependency(\.identity.provider.cookies.reauthorizationToken) var config
+        @Dependency(\.identity.provider.tokens.reauthorizationToken) var config
         @Dependency(\.identity.provider.issuer) var issuer
         
         let currentTime = date()

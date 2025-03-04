@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  coenttb-web
+//  coenttb-identities
 //
 //  Created by Coen ten Thije Boonkkamp on 12/09/2024.
 //
@@ -25,7 +25,7 @@ extension Identity.Provider.Client.Email {
                     do {
                         @Dependency(\.request) var request
                         guard let request else { throw Abort.requestUnavailable }
-                        guard let token = request.cookies.reauthorizationToken?.string
+                        guard let token = request.headers.reauthorizationToken?.token
                         else {
                             return .requiresReauthentication
                         }

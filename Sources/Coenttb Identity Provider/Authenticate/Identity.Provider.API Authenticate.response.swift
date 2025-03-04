@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  coenttb-web
+//  coenttb-identities
 //
 //  Created by Coen ten Thije Boonkkamp on 10/09/2024.
 //
@@ -19,8 +19,8 @@ extension Identity.Provider.API.Authenticate {
 
         switch authenticate {
         case .credentials(let credentials):
-            let data = try await client.authenticate.credentials(credentials)
-            return Response.success(true, data: data)
+            let identityAuthenticationResponse = try await client.authenticate.credentials(credentials)
+            return Response.success(true, data: identityAuthenticationResponse)
 
         case .token(let token):
             switch token {
@@ -29,12 +29,12 @@ extension Identity.Provider.API.Authenticate {
                 return Response.success(true)
 
             case .refresh(let refresh):
-                let data = try await client.authenticate.token.refresh(refresh)
-                return Response.success(true, data: data)
+                let identityAuthenticationResponse = try await client.authenticate.token.refresh(refresh)
+                return Response.success(true, data: identityAuthenticationResponse)
             }
         case .apiKey(let apiKey):
-            let data = try await client.authenticate.apiKey(apiKey)
-            return Response.success(true, data: data)
+            let identityAuthenticationResponse = try await client.authenticate.apiKey(apiKey)
+            return Response.success(true, data: identityAuthenticationResponse)
 
         }
     }

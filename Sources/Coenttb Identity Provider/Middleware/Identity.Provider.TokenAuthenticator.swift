@@ -45,23 +45,23 @@ extension Identity.Provider {
                 }
                 
                 
-                if let accessToken = request.cookies.accessToken?.string {
-                    do {
-                        _ = try await client.authenticate.token.access(token: accessToken)
-                        return try await next.respond(to: request)
-                    } catch {
-                        
-                    }
-                }
-                
-                if let refreshToken = request.cookies.refreshToken?.string {
-                    do {
-                        _ = try await client.authenticate.token.refresh(token: refreshToken)
-                        return try await next.respond(to: request)
-                    } catch {
-                        
-                    }
-                }
+//                if let accessToken = request.cookies.accessToken?.string {
+//                    do {
+//                        _ = try await client.authenticate.token.access(token: accessToken)
+//                        return try await next.respond(to: request)
+//                    } catch {
+//                        
+//                    }
+//                }
+//                
+//                if let refreshToken = request.cookies.refreshToken?.string {
+//                    do {
+//                        _ = try await client.authenticate.token.refresh(token: refreshToken)
+//                        return try await next.respond(to: request)
+//                    } catch {
+//                        
+//                    }
+//                }
                 return try await next.respond(to: request)
             }
         }

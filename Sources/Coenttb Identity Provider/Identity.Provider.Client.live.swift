@@ -1,13 +1,6 @@
 //
 //  File.swift
-//  coenttb-web
-//
-//  Created by Coen ten Thije Boonkkamp on 16/10/2024.
-//
-
-//
-//  File.swift
-//  coenttb-web
+//  coenttb-identities
 //
 //  Created by Coen ten Thije Boonkkamp on 12/09/2024.
 //
@@ -55,7 +48,6 @@ extension Identity.Provider.Client {
                     let payload = try JWT.Token.Reauthorization.init(identity: identity)
                     
                     @Dependency(\.application) var application
-                    @Dependency(\.identity.provider.cookies.reauthorizationToken) var config
                     
                     return try await .init(
                         value: application.jwt.keys.sign(payload)
