@@ -71,7 +71,7 @@ extension Identity.Consumer.Configuration {
         public init(
             baseURL: URL,
             domain: String? = nil,
-            cookies: Identity.CookiesConfiguration = .live,
+            cookies: Identity.CookiesConfiguration,
             router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>,
             client: Identity.Consumer.Client,
             currentUserName: @escaping @Sendable () -> String?,
@@ -256,10 +256,10 @@ extension Identity.Consumer.Configuration.Provider: TestDependencyKey {
 }
 
 extension Identity.CookiesConfiguration {
-    public static var live: Identity.CookiesConfiguration {
-        
-        @Dependency(\.identity.consumer.router) var router
-        @Dependency(\.identity.consumer.domain) var domain
+    public static func live(
+        _ router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>,
+        domain: String?
+    ) -> Identity.CookiesConfiguration {
         
         // We use a dummy 'token' because we only care about the path and not the payload.
         let path = router.url(for: .api(.authenticate(.token(.refresh(.init(value: "token")))))).path
