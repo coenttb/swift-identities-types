@@ -7,7 +7,7 @@
 
 import Foundation
 import URLRouting
-import Vapor
+import Coenttb_Vapor
 
 //extension URLRequest {
 //    /// Sets or removes the Authorization header with a Bearer token
@@ -59,11 +59,7 @@ extension HTTPHeaders {
     }
 }
 
-// Extend HTTPHeaderName to include reauthorization
-extension HTTPHeaders.Name {
-    /// The "Reauthorization" header
-    public static let reauthorization: HTTPHeaders.Name = "Reauthorization"
-}
+
 
 extension ParserPrinter where Input == URLRequestData {
     /// Sets a cookie with the given name and value

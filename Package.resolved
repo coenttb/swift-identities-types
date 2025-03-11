@@ -1,5 +1,5 @@
 {
-  "originHash" : "a48741090ead9285780a835af999d1b4f86a3d3057f9092aea0d4088176d4a18",
+  "originHash" : "dbcb95ab6b7540a4508669763e4e952df0e9cac2e88b55a02936038cedfcdbe7",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -34,7 +34,7 @@
       "location" : "https://github.com/coenttb/coenttb-html",
       "state" : {
         "branch" : "main",
-        "revision" : "3896deb56cba616c3465eca7030f7818981d3659"
+        "revision" : "091bf9130f516607e8d3bb3b1e91b86c21c6695a"
       }
     },
     {
@@ -61,7 +61,7 @@
       "location" : "https://github.com/coenttb/coenttb-server-vapor",
       "state" : {
         "branch" : "main",
-        "revision" : "996bcc075b2ecb5c45988798d0abc204fe522510"
+        "revision" : "0a91252ef7423d2cbdd7ca1691bcb1ca9a812473"
       }
     },
     {
@@ -348,8 +348,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "45305d32cfb830faebcaa9a7aea66ad342637518",
-        "version" : "3.11.1"
+        "revision" : "a98e4be0dd9f0377a818f2198a2bc87bbd2bfcea",
+        "version" : "3.11.2"
       }
     },
     {
@@ -373,10 +373,10 @@
     {
       "identity" : "swift-dependencies",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/swift-dependencies",
+      "location" : "https://github.com/pointfreeco/swift-dependencies.git",
       "state" : {
-        "revision" : "121a428c505c01c4ce02d5ada1c8fc3da93afce9",
-        "version" : "1.8.0"
+        "revision" : "ec2862d1364536fc22ec56a3094e7a034bbc7da8",
+        "version" : "1.8.1"
       }
     },
     {
@@ -412,7 +412,7 @@
       "location" : "https://github.com/coenttb/swift-html-to-pdf.git",
       "state" : {
         "branch" : "main",
-        "revision" : "142d9e9d7cb817e73f691428e00c6f465b821b21"
+        "revision" : "445d920c28b4b62d3208763511794253fd7c9e15"
       }
     },
     {
@@ -448,7 +448,7 @@
       "location" : "https://github.com/coenttb/swift-language.git",
       "state" : {
         "branch" : "main",
-        "revision" : "63b455da4844a701663dd91bb681bf05a536c92f"
+        "revision" : "c47dab7ce0d7c678f699d48ce0bb623bc6138ee8"
       }
     },
     {
@@ -528,8 +528,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-numerics.git",
       "state" : {
-        "revision" : "0a5bc04095a675662cf24757cc0640aa2204253b",
-        "version" : "1.0.2"
+        "revision" : "e0ec0f5f3af6f3e4d5e7a19d2af26b481acb6ba8",
+        "version" : "1.0.3"
       }
     },
     {
