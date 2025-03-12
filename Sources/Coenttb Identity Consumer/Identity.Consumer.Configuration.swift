@@ -42,7 +42,22 @@ extension DependencyValues {
 }
 
 extension Identity.Consumer.Configuration.Consumer: TestDependencyKey {
-    public static let testValue: Self = { fatalError() }()
+    public static let testValue: Self = .init(
+        baseURL: .init(string: "/")!,
+        cookies: .init(accessToken: .testValue, refreshToken: .testValue, reauthorizationToken: .testValue),
+        router: Identity.Consumer.Route.Router().eraseToAnyParserPrinter(),
+        client: .testValue,
+        currentUserName: { nil },
+        branding: .init(
+            logo: .init(logo: .warning, href: .init(string: "/")!),
+            primaryColor: .black,
+            accentColor: .white,
+            favicons: .init(icon: .init(lightMode: .init(string: "/")!, darkMode: .init(string: "/")!), apple_touch_icon: "", manifest: "", maskIcon: ""),
+            footer_links: []
+        ),
+        navigation: .init(home: { .init(string: "/")! }),
+        redirect: .init()
+    )
 }
 
 extension Identity.Consumer.Configuration {
