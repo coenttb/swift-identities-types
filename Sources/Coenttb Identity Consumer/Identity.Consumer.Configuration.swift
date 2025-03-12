@@ -41,7 +41,7 @@ extension DependencyValues {
 }
 
 extension Identity.Consumer.Configuration.Consumer: TestDependencyKey {
-    public static let testValue: Self = .init(
+    public static let testValue: Self = .live(
         baseURL: .init(string: "/")!,
         cookies: .init(accessToken: .testValue, refreshToken: .testValue, reauthorizationToken: .testValue),
         router: Identity.Consumer.Route.Router().eraseToAnyParserPrinter(),
@@ -55,7 +55,7 @@ extension Identity.Consumer.Configuration.Consumer: TestDependencyKey {
             footer_links: []
         ),
         navigation: .init(home: { .init(string: "/")! }),
-        redirect: .init()
+        redirect: .live()
     )
 }
 
@@ -84,37 +84,69 @@ extension Identity.Consumer.Configuration {
         
         public init(
             baseURL: URL,
-            domain: String? = nil,
+            domain: String?,
             cookies: Identity.CookiesConfiguration,
             router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>,
             client: Identity.Consumer.Client,
-            currentUserName: @escaping @Sendable () -> String?,
-            canonicalHref: @escaping @Sendable (Identity.Consumer.View) -> URL? = {
-                @Dependency(\.identity.consumer.router) var router
-                return router.url(for: .view($0))
-            },
-            hreflang: @escaping @Sendable (Identity.Consumer.View, Languages.Language) -> URL = { view, _ in
-                @Dependency(\.identity.consumer.router) var router
-                return router.url(for: .view(view))
-            },
+            currentUserName: @Sendable @escaping () -> String?,
+            canonicalHref: @Sendable @escaping (Identity.Consumer.View) -> URL?,
+            hreflang: @Sendable @escaping (Identity.Consumer.View, Languages.Language) -> URL,
             branding: Branding,
             navigation: Navigation,
             redirect: Identity.Consumer.Configuration.Redirect,
-            rateLimiters: RateLimiters = .init()
+            rateLimiters: RateLimiters
         ) {
             self.baseURL = baseURL
-            self.canonicalHref = canonicalHref
             self.domain = domain
             self.cookies = cookies
             self.router = router
             self.client = client
             self.currentUserName = currentUserName
+            self.canonicalHref = canonicalHref
             self.hreflang = hreflang
             self.branding = branding
             self.navigation = navigation
             self.redirect = redirect
             self.rateLimiters = rateLimiters
         }
+    }
+}
+
+extension Identity.Consumer.Configuration.Consumer {
+    public static func live(
+        baseURL: URL,
+        domain: String? = nil,
+        cookies: Identity.CookiesConfiguration,
+        router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>,
+        client: Identity.Consumer.Client,
+        currentUserName: @escaping @Sendable () -> String?,
+        canonicalHref: @escaping @Sendable (Identity.Consumer.View) -> URL? = {
+            @Dependency(\.identity.consumer.router) var router
+            return router.url(for: .view($0))
+        },
+        hreflang: @escaping @Sendable (Identity.Consumer.View, Languages.Language) -> URL = { view, _ in
+            @Dependency(\.identity.consumer.router) var router
+            return router.url(for: .view(view))
+        },
+        branding: Identity.Consumer.Configuration.Branding,
+        navigation: Identity.Consumer.Configuration.Navigation,
+        redirect: Identity.Consumer.Configuration.Redirect,
+        rateLimiters: RateLimiters = .init()
+    ) -> Self {
+        .init(
+            baseURL: baseURL,
+            domain: domain,
+            cookies: cookies,
+            router: router,
+            client: client,
+            currentUserName: currentUserName,
+            canonicalHref: canonicalHref,
+            hreflang: hreflang,
+            branding: branding,
+            navigation: navigation,
+            redirect: redirect,
+            rateLimiters: rateLimiters
+        )
     }
 }
 
@@ -129,33 +161,13 @@ extension Identity.Consumer.Configuration {
         public var createVerificationSuccess: @Sendable () -> URL
         
         public init(
-            createProtected: @escaping @Sendable () -> URL = {
-                @Dependency(\.identity.consumer.router) var router
-                return URL(string: "/")!
-            },
-            createVerificationSuccess: @escaping @Sendable () -> URL = {
-                @Dependency(\.identity.consumer.router) var router
-                return router.url(for: .view(.login))
-            },
-            loginProtected: @escaping @Sendable () -> URL = {
-                return URL(string: "/")!
-            },
-            logoutSuccess: @escaping @Sendable () -> URL = {
-                @Dependency(\.identity.consumer.router) var router
-                return router.url(for: .view(.login))
-            },
-            loginSuccess: @escaping @Sendable () -> URL = {
-                @Dependency(\.identity.consumer.router) var router
-                return URL(string: "/")!
-            },
-            passwordResetSuccess: @escaping @Sendable () -> URL = {
-                @Dependency(\.identity.consumer.router) var router
-                return router.url(for: .view(.login))
-            },
-            emailChangeConfirmSuccess: @escaping @Sendable () -> URL = {
-                @Dependency(\.identity.consumer.router) var router
-                return router.url(for: .view(.login))
-            }
+            createProtected: @escaping @Sendable () -> URL,
+            createVerificationSuccess: @escaping @Sendable () -> URL,
+            loginProtected: @escaping @Sendable () -> URL,
+            logoutSuccess: @escaping @Sendable () -> URL,
+            loginSuccess: @escaping @Sendable () -> URL,
+            passwordResetSuccess: @escaping @Sendable () -> URL,
+            emailChangeConfirmSuccess: @escaping @Sendable () -> URL
         ) {
             self.createProtected = createProtected
             self.loginProtected = loginProtected
@@ -165,6 +177,50 @@ extension Identity.Consumer.Configuration {
             self.emailChangeConfirmSuccess = emailChangeConfirmSuccess
             self.createVerificationSuccess = createVerificationSuccess
         }
+    }
+}
+
+extension Identity.Consumer.Configuration.Redirect {
+    public static func live(
+        createProtected: @escaping @Sendable () -> URL = {
+            @Dependency(\.identity.consumer.router) var router
+            return URL(string: "/")!
+        },
+        createVerificationSuccess: @escaping @Sendable () -> URL = {
+            @Dependency(\.identity.consumer.router) var router
+            return router.url(for: .view(.login))
+        },
+        loginProtected: @escaping @Sendable () -> URL = {
+            return URL(string: "/")!
+        },
+        logoutSuccess: @escaping @Sendable () -> URL = {
+            @Dependency(\.identity.consumer.router) var router
+            return router.url(for: .view(.login))
+        },
+        loginSuccess: @escaping @Sendable () -> URL = {
+            @Dependency(\.identity.consumer.router) var router
+            return URL(string: "/")!
+        },
+        passwordResetSuccess: @escaping @Sendable () -> URL = {
+            @Dependency(\.identity.consumer.router) var router
+            return router.url(for: .view(.login))
+        },
+        emailChangeConfirmSuccess: @escaping @Sendable () -> URL = {
+            @Dependency(\.identity.consumer.router) var router
+            return router.url(for: .view(.login))
+        }
+    ) -> Self {
+        .init(
+            createProtected: createProtected,
+            createVerificationSuccess: createVerificationSuccess,
+            loginProtected: loginProtected,
+            logoutSuccess: logoutSuccess,
+            loginSuccess: loginSuccess,
+            passwordResetSuccess: passwordResetSuccess,
+            emailChangeConfirmSuccess: emailChangeConfirmSuccess
+        )
+
+
     }
 }
 
