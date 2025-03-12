@@ -4,12 +4,10 @@
 //
 //  Created by Coen ten Thije Boonkkamp on 19/02/2025.
 //
-#if DEBUG
 
 import Foundation
 import Dependencies
 import EmailAddress
-
 import Foundation
 import Dependencies
 import EmailAddress
@@ -251,5 +249,3 @@ extension Identity.Client.TestDatabase: TestDependencyKey {
     package static var testValue: Identity.Client.TestDatabase = .init()
     package static var testValue2: Identity.Client.TestDatabase = .init()
 }
-
-#endif
