@@ -16,7 +16,7 @@
       "location" : "https://github.com/coenttb/coenttb-html",
       "state" : {
         "branch" : "main",
-        "revision" : "3896deb56cba616c3465eca7030f7818981d3659"
+        "revision" : "533822b2acf7ce2748abf1ec37ddfe21cb1f2e6f"
       }
     },
     {
@@ -25,7 +25,7 @@
       "location" : "https://github.com/coenttb/coenttb-web",
       "state" : {
         "branch" : "main",
-        "revision" : "170f62623f2a5537735b30b98fe9731907b1c942"
+        "revision" : "79622fa15b1655ec5e6fc67f27211fb7ccc65231"
       }
     },
     {
@@ -43,7 +43,7 @@
       "location" : "https://github.com/coenttb/pointfree-html.git",
       "state" : {
         "branch" : "main",
-        "revision" : "f9f34189a23da8c443f311ab56c8f7c8c384aa07"
+        "revision" : "2c355cdab5288b91554c81258e8dd4d011a4b64e"
       }
     },
     {
@@ -115,7 +115,7 @@
       "location" : "https://github.com/coenttb/swift-css.git",
       "state" : {
         "branch" : "main",
-        "revision" : "29fea42c6b57178e4d3be680ca0e15241df24498"
+        "revision" : "fce32749fbe3ff7d2df9055f0179cd19e25749da"
       }
     },
     {
@@ -132,8 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-dependencies",
       "state" : {
-        "revision" : "121a428c505c01c4ce02d5ada1c8fc3da93afce9",
-        "version" : "1.8.0"
+        "revision" : "ec2862d1364536fc22ec56a3094e7a034bbc7da8",
+        "version" : "1.8.1"
       }
     },
     {
@@ -166,10 +166,10 @@
     {
       "identity" : "swift-html",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/coenttb/swift-html.git",
+      "location" : "https://github.com/coenttb/swift-html",
       "state" : {
         "branch" : "main",
-        "revision" : "977162ee3acb9334c5e0b6ac01a16682c343355f"
+        "revision" : "be9f6815273daf9203f22dc1a85c6120b2a85ca5"
       }
     },
     {
@@ -178,7 +178,7 @@
       "location" : "https://github.com/coenttb/swift-html-to-pdf.git",
       "state" : {
         "branch" : "main",
-        "revision" : "142d9e9d7cb817e73f691428e00c6f465b821b21"
+        "revision" : "445d920c28b4b62d3208763511794253fd7c9e15"
       }
     },
     {
@@ -187,7 +187,7 @@
       "location" : "https://github.com/coenttb/swift-language.git",
       "state" : {
         "branch" : "main",
-        "revision" : "63b455da4844a701663dd91bb681bf05a536c92f"
+        "revision" : "c47dab7ce0d7c678f699d48ce0bb623bc6138ee8"
       }
     },
     {
