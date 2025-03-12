@@ -98,9 +98,9 @@ public struct RateLimiters: Sendable {
     )
     
     public init(
-        credentials: RateLimiter<String>?,
-        tokenAccess: RateLimiter<String>?,
-        tokenRefresh: RateLimiter<String>?
+        credentials: RateLimiter<String>? = nil,
+        tokenAccess: RateLimiter<String>? = nil,
+        tokenRefresh: RateLimiter<String>? = nil
     ) {
         if let credentials {
             self.credentials = credentials
