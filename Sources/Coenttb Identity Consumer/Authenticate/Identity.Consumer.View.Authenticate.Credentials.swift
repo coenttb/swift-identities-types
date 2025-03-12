@@ -74,7 +74,7 @@ extension Identity.Consumer.View.Authenticate {
                             ) {
                                 String.continue.capitalizingFirstLetter()
                             }
-                            .color(.primary.reverse())
+                            .color(.text.primary.reverse())
                             .type(.submit)
                             .width(100.percent)
                             .justifyContent(.center)

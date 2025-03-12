@@ -173,13 +173,13 @@ extension Email {
                             )
                         }
                         .fontSize(.footnote)
-                        .color(.secondary)
+                        .color(.text.secondary)
                     }
                     .padding(vertical: .small, horizontal: .medium)
                 }
             }
         }
-            .backgroundColor(.primary.reverse())
+            .backgroundColor(.background.primary.reverse())
 
         let bytes: ContiguousArray<UInt8> = html.render()
         let string: String = String(decoding: bytes, as: UTF8.self)
@@ -241,7 +241,7 @@ extension Email {
                                 english: "Verify email address"
                             )
                         }
-                        .color(.primary.reverse())
+                        .color(.text.primary.reverse())
                         .href(emailChangeConfirmationRequest.verificationURL.absoluteString)
                         .padding(bottom: Length.medium)
 
@@ -264,13 +264,13 @@ extension Email {
                             )
                         }
                         .fontSize(.footnote)
-                        .color(.secondary)
+                        .color(.text.secondary)
                     }
                     .padding(vertical: .small, horizontal: .medium)
                 }
             }
         }
-            .backgroundColor(.primary.reverse())
+            .backgroundColor(.background.primary.reverse())
 
         let bytes: ContiguousArray<UInt8> = html.render()
         let string: String = String(decoding: bytes, as: UTF8.self)
@@ -341,13 +341,13 @@ extension Email {
                                 )
                             }
                             .fontSize(.footnote)
-                            .color(.secondary)
+                            .color(.text.secondary)
                         }
                         .padding(vertical: .small, horizontal: .medium)
                     }
                 }
             }
-                .backgroundColor(.primary.reverse())
+                .backgroundColor(.background.primary.reverse())
 
             let bytes: ContiguousArray<UInt8> = html.render()
             let string: String = String(decoding: bytes, as: UTF8.self)
@@ -410,13 +410,13 @@ extension Email {
                                 )
                             }
                             .fontSize(.footnote)
-                            .color(.secondary)
+                            .color(.text.secondary)
                         }
                         .padding(vertical: .small, horizontal: .medium)
                     }
                 }
             }
-                .backgroundColor(.primary.reverse())
+                .backgroundColor(.background.primary.reverse())
 
             let bytes: ContiguousArray<UInt8> = html.render()
             let string: String = String(decoding: bytes, as: UTF8.self)

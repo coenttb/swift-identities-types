@@ -69,7 +69,7 @@ extension Identity.Consumer.View.Create {
                         ) {
                             String.continue.capitalizingFirstLetter()
                         }
-                        .color(.primary.reverse())
+                        .color(.text.primary.reverse())
                         .type(.submit)
                         .width(100.percent)
                         .justifyContent(.center)
@@ -343,7 +343,7 @@ extension Identity.Creation {
                             english: "Click here if you are not redirected automatically"
                         )
                     }
-                    .linkColor(.primary)
+                    .linkColor(.text.primary)
                 }
                 .textAlign(.center)
                 .alignItems(.center)

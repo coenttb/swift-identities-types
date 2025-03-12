@@ -35,7 +35,7 @@ extension Identity.Consumer.View.Email.Change {
                     }
                     .fontSize(.body)
                     .textAlign(.center)
-                    .color(.primary)
+                    .color(.text.primary)
                     .margin(bottom: .medium)
 
                     Paragraph {
@@ -46,7 +46,7 @@ extension Identity.Consumer.View.Email.Change {
                     }
                     .fontSize(.secondary)
                     .textAlign(.center)
-                    .color(.secondary)
+                    .color(.text.secondary)
                     .margin(bottom: .large)
 
                     Link(

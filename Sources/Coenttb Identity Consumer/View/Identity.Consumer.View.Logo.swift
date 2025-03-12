@@ -24,7 +24,7 @@ extension Identity.Consumer.View {
                 Link(href: href.relativePath) {
                     logo
                 }
-                .linkColor(.primary)
+                .linkColor(.text.primary)
                 .display(.inlineBlock)
                 .margin(horizontal: .auto)
             }

@@ -54,7 +54,7 @@ extension Email {
                                 english: "Verify email address"
                             )
                         }
-                        .color(.primary.reverse())
+                        .color(.text.primary.reverse())
                         .href(verificationUrl.absoluteString)
                         .padding(bottom: Length.medium)
 
@@ -78,13 +78,13 @@ extension Email {
                             )
                         }
                         .fontSize(.footnote)
-                        .color(.secondary)
+                        .color(.text.secondary)
                     }
                     .padding(vertical: .small, horizontal: .medium)
                 }
             }
         }
-            .backgroundColor(.primary.reverse())
+            .backgroundColor(.background.primary.reverse())
 
         let subjectAdd = TranslatedString(
             dutch: "Verifieer je e-mailadres",

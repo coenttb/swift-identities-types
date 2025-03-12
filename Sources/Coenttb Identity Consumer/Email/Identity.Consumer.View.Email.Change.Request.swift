@@ -39,7 +39,7 @@ extension Identity.Consumer.View.Email.Change {
                     }
                     .fontSize(.secondary)
                     .textAlign(.center)
-                    .color(.secondary)
+                    .color(.text.secondary)
 
                     form {
                         VStack {
@@ -57,7 +57,7 @@ extension Identity.Consumer.View.Email.Change {
                                     english: "Submit Request"
                                 )
                             }
-                            .color(.primary.reverse())
+                            .color(.text.primary.reverse())
                             .type(.submit)
                             .width(100.percent)
                             .justifyContent(.center)

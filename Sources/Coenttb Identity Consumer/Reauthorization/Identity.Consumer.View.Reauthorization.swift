@@ -70,7 +70,7 @@ extension Identity.Consumer.View {
                                         ) {
                                             String.continue.capitalizingFirstLetter()
                                         }
-                                        .color(.primary.reverse())
+                                        .color(.text.primary.reverse())
                                         .type(.submit)
                                         .width(100.percent)
                                         .justifyContent(.center)

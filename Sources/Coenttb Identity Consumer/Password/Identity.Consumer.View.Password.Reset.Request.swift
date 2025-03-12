@@ -39,7 +39,7 @@ extension Identity.Consumer.View.Password.Reset {
                     }
                     .fontSize(.secondary)
                     .textAlign(.center)
-                    .color(.secondary)
+                    .color(.text.secondary)
 
                     form {
                         VStack {
@@ -57,7 +57,7 @@ extension Identity.Consumer.View.Password.Reset {
                                     english: "Send Reset Link"
                                 )
                             }
-                            .color(.primary.reverse())
+                            .color(.text.primary.reverse())
                             .type(.submit)
                             .width(100.percent)
                             .justifyContent(.center)
@@ -233,7 +233,7 @@ extension Identity.Consumer.View.Password.Reset {
                     }
                     .fontSize(.secondary)
                     .textAlign(.center)
-                    .color(.secondary)
+                    .color(.text.secondary)
 
                     form {
                         VStack {
@@ -249,7 +249,7 @@ extension Identity.Consumer.View.Password.Reset {
                             ) {
                                 String.continue.capitalizingFirstLetter()
                             }
-                            .color(.primary.reverse())
+                            .color(.text.primary.reverse())
                             .type(.submit)
                             .width(100.percent)
                             .justifyContent(.center)
@@ -365,7 +365,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
                     }
                     .fontSize(.body)
                     .textAlign(.center)
-                    .color(.primary)
+                    .color(.text.primary)
                     .margin(bottom: .medium)
 
                     Paragraph {
@@ -376,7 +376,7 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
                     }
                     .fontSize(.secondary)
                     .textAlign(.center)
-                    .color(.secondary)
+                    .color(.text.secondary)
                     .margin(bottom: .large)
 
                     Link(
