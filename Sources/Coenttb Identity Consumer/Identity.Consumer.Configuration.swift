@@ -249,7 +249,7 @@ extension Identity.Consumer.Configuration {
 
 extension Identity.Consumer.Configuration.Provider: TestDependencyKey {
     public static let testValue: Self = .init(
-        baseURL: .init(string: "")!,
+        baseURL: .init(string: "/")!,
         domain: nil,
         router: Identity.API.Router().eraseToAnyParserPrinter()
     )
