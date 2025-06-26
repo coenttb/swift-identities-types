@@ -21,10 +21,10 @@ extension Target.Dependency {
     static var coenttbVapor: Self { .product(name: "Coenttb Vapor", package: "coenttb-server-vapor") }
     static var coenttbVaporTesting: Self { .product(name: "Coenttb Vapor Testing", package: "coenttb-server-vapor") }
     static var coenttbWeb: Self { .product(name: "Coenttb Web", package: "coenttb-web") }
+    static var mailgun: Self { .product(name: "Mailgun", package: "coenttb-mailgun") }
     static var identities: Self { .product(name: "Identities", package: "swift-identities") }
     static var dependenciesMacros: Self { .product(name: "DependenciesMacros", package: "swift-dependencies") }
     static var dependenciesTestSupport: Self { .product(name: "DependenciesTestSupport", package: "swift-dependencies") }
-    static var mailgun: Self { .product(name: "Mailgun", package: "coenttb-mailgun") }
     static var fluentSqlLite: Self { .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver") }
     static var vaporJWT: Self { .product(name: "JWT", package: "jwt") }
 }

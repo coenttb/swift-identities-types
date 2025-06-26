@@ -30,28 +30,41 @@ extension Identity.Consumer.View.Password.Change {
         package  var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "Voer uw huidige wachtwoord en uw nieuwe wachtwoord in.",
                             english: "Enter your current password and your new password."
                         )
                     }
-                    .fontSize(.secondary)
+                    .font(.body(.small))
                     .textAlign(.center)
                     .color(.text.secondary)
 
-                    form {
+                    form(
+                        action: .init(self.formActionURL.relativePath),
+                        method: .post
+                    ) {
                         VStack {
-                            Input.default(Identity.Password.Change.Request.CodingKeys.currentPassword)
-                                .type(.password)
-                                .placeholder(TranslatedString(dutch: "Huidig wachtwoord", english: "Current password").description)
-
-                            Input.default(Identity.Password.Change.Request.CodingKeys.newPassword)
-                                .type(.password)
-                                .placeholder(TranslatedString(dutch: "Nieuw wachtwoord", english: "New password").description)
+                            Input(
+                                codingKey: Identity.Password.Change.Request.CodingKeys.currentPassword,
+                                type: .password(
+                                    .init(
+                                        placeholder: .init(TranslatedString(dutch: "Huidig wachtwoord", english: "Current password").description)
+                                    )
+                                )
+                            )
+                            
+                            Input(
+                                codingKey: Identity.Password.Change.Request.CodingKeys.newPassword,
+                                type: .password(
+                                    .init(
+                                        placeholder: .init(TranslatedString(dutch: "Nieuw wachtwoord", english: "New password").description)
+                                    )
+                                )
+                            )
 
                             Button(
-                                tag: button,
+                                button: .init(type: .submit),
                                 background: self.primaryColor
                             ) {
                                 TranslatedString(
@@ -60,30 +73,26 @@ extension Identity.Consumer.View.Password.Change {
                                 )
                             }
                             .color(.text.primary.reverse())
-                            .type(.submit)
-                            .width(100.percent)
+                            .width(.percent(100))
                             .justifyContent(.center)
 
-                            Link(
+                            Link(href: .init(redirectOnSuccess.relativePath)) {
                                 TranslatedString(
                                     dutch: "Terug naar home",
                                     english: "Back to Home"
-                                ).description,
-                                href: redirectOnSuccess.relativePath
-                            )
+                                ).description
+                            }
                             .linkColor(self.primaryColor)
                             .fontWeight(.medium)
-                            .fontSize(.secondary)
+                            .font(.body(.small))
                             .textAlign(.center)
                         }
                     }
                     .id("form-change-password")
-                    .method(.post)
-                    .action(self.formActionURL.relativePath)
                 }
-                .width(100.percent)
-                .maxWidth(20.rem)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20))
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
             } title: {
                 Header(3) {
@@ -152,38 +161,37 @@ extension Identity.Consumer.View.Password.Change.Request {
         package  var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "Uw wachtwoord is succesvol gewijzigd.",
                             english: "Your password has been successfully changed."
                         )
                     }
                     .textAlign(.center)
-                    .margin(bottom: 1.rem)
+                    .margin(bottom: .rem(1))
 
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "U kunt nu inloggen met uw nieuwe wachtwoord.",
                             english: "You can now log in with your new password."
                         )
                     }
                     .textAlign(.center)
-                    .margin(bottom: 2.rem)
+                    .margin(bottom: .rem(2))
 
-                    Link(
+                    Link(href: .init(redirectOnSuccess.relativePath)) {
                         TranslatedString(
                             dutch: "Terug naar home",
                             english: "Back to Home"
-                        ).description,
-                        href: redirectOnSuccess.relativePath
-                    )
+                        ).description
+                    }
                     .linkColor(self.primaryColor)
                 }
                 .textAlign(.center)
                 .alignItems(.center)
-                .width(100.percent)
-                .maxWidth(20.rem)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20))
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
             } title: {
                 Header(3) {

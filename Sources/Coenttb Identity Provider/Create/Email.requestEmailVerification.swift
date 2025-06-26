@@ -36,29 +36,38 @@ extension Email {
                             )
                         }
 
-                        Paragraph {
+                        CoenttbHTML.Paragraph {
                             TranslatedString(
                                 dutch: "Om de setup van je \(businessName) account te voltooien, bevestig alsjeblieft dat dit je e-mailadres is.",
                                 english: "To continue setting up your \(businessName) account, please verify that this is your email address."
                             )
                         }
-                        .padding(bottom: .extraSmall)
-                        .fontSize(.body)
+                        .padding(.bottom(.extraSmall))
+                        .font(.body(.regular))
 
-                        Button(
-                            tag: a,
-                            background: primaryColor
-                        ) {
+                        Link(href: .init(verificationUrl.absoluteString)) {
                             TranslatedString(
                                 dutch: "Verifieer e-mailadres",
                                 english: "Verify email address"
                             )
                         }
                         .color(.text.primary.reverse())
-                        .href(verificationUrl.absoluteString)
-                        .padding(bottom: Length.medium)
+                        .padding(bottom: .medium)
+                        
+//                        Button(
+//                            tag: a,
+//                            background: primaryColor
+//                        ) {
+//                            TranslatedString(
+//                                dutch: "Verifieer e-mailadres",
+//                                english: "Verify email address"
+//                            )
+//                        }
+//                        .color(.text.primary.reverse())
+//                        .href(verificationUrl.absoluteString)
+//                        .padding(bottom: Length.medium)
 
-                        Paragraph(.small) {
+                        CoenttbHTML.Paragraph(.small) {
 
                             TranslatedString(
                                 dutch: "Om veiligheidsredenen verloopt deze verificatielink binnen 24 uur. ",
@@ -77,10 +86,13 @@ extension Email {
                                 english: "For help, contact us at \(supportEmail)."
                             )
                         }
-                        .fontSize(.footnote)
+                        .font(.footnote)
                         .color(.text.secondary)
                     }
-                    .padding(vertical: .small, horizontal: .medium)
+                    .padding(
+                        vertical: .length(.small),
+                        horizontal: .length(.small)
+                    )
                 }
             }
         }

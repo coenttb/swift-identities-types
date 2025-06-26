@@ -80,7 +80,7 @@ extension Identity.Consumer.View {
                 description: { _ in "" },
                 body: {
                     logo
-                        .margin(top: .medium)
+                        .marginTop(.length(.medium))
                     
                     content()
                 }

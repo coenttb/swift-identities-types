@@ -12,7 +12,7 @@ import Identities
 extension Identity.Consumer {
     package struct HTMLDocument<
         Body: HTML
-    >: Coenttb_Web.HTMLDocument {
+    >: HTMLDocumentProtocol {
         let view: Identity.Consumer.View
         let title: (Identity.Consumer.View) -> String
         let description: (Identity.Consumer.View) -> String

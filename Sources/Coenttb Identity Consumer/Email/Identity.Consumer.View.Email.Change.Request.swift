@@ -14,7 +14,7 @@ extension Identity.Consumer.View.Email.Change {
         let formActionURL: URL
         let homeHref: URL
         let primaryColor: HTMLColor
-
+        
         package init(
             formActionURL: URL,
             homeHref: URL,
@@ -24,32 +24,41 @@ extension Identity.Consumer.View.Email.Change {
             self.homeHref = homeHref
             self.primaryColor = primaryColor
         }
-
+        
         private static var pagemodule_request_email_change_id: String { "pagemodule_request_email_change_id" }
         private static var form_id: String { "form-request-email-change" }
-
+        
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "Voer uw nieuwe e-mailadres in. We sturen een email naar beide e-mailadressen.",
                             english: "Enter your new email address. We'll send an email to both email addresses."
                         )
                     }
-                    .fontSize(.secondary)
+                    .font(.body(.small))
                     .textAlign(.center)
                     .color(.text.secondary)
-
-                    form {
+                    
+                    form(
+                        action: .init(self.formActionURL.relativePath),
+                        method: .post
+                    ) {
                         VStack {
-                            Input.default(Identity.Email.Change.Request.CodingKeys.newEmail)
-                                .type(.email)
-                                .placeholder("New Email")
-                                .focusOnPageLoad()
-
+                            Input(
+                                codingKey: Identity.Email.Change.Request.CodingKeys.newEmail,
+                                type: .email(
+                                    .init(
+                                        placeholder: .init(value: "New Email")
+                                    )
+                                )
+                            )
+                            .focusOnPageLoad()
+                            
                             Button(
-                                tag: button,
+                                //                                tag: button,
+                                button: .init(type: .submit),
                                 background: self.primaryColor
                             ) {
                                 TranslatedString(
@@ -58,30 +67,27 @@ extension Identity.Consumer.View.Email.Change {
                                 )
                             }
                             .color(.text.primary.reverse())
-                            .type(.submit)
-                            .width(100.percent)
+                            .width(.percent(100))
                             .justifyContent(.center)
-
+                            
                             Link(
                                 TranslatedString(
                                     dutch: "Terug naar home",
                                     english: "Back to Home"
                                 ).description,
-                                href: homeHref.relativePath
+                                href: .init(homeHref.relativePath)
                             )
                             .linkColor(self.primaryColor)
                             .fontWeight(.medium)
-                            .fontSize(.secondary)
+                            .font(.body(.small))
                             .textAlign(.center)
                         }
                     }
                     .id(Self.form_id)
-                    .method(.post)
-                    .action(self.formActionURL.relativePath)
                 }
-                .width(100.percent)
-                .maxWidth(20.rem)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20))
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
             } title: {
                 Header(3) {
@@ -94,7 +100,7 @@ extension Identity.Consumer.View.Email.Change {
                 .textAlign(.center)
             }
             .id(Self.pagemodule_request_email_change_id)
-
+            
             script {#"""
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.getElementById('\#(Self.form_id)');
@@ -104,17 +110,17 @@ extension Identity.Consumer.View.Email.Change {
                 errorContainer.style.marginTop = '10px';
                 errorContainer.style.display = 'none';
                 form.appendChild(errorContainer);
-
+            
                 form.addEventListener('submit', async function(event) {
                     event.preventDefault();
                     errorContainer.style.display = 'none';
                     errorContainer.textContent = '';
-
+            
                     const formData = new FormData(form);
                     const newEmail = formData.get('\#(Identity.Email.Change.Request.CodingKeys.newEmail.rawValue)');
-
+            
                     const emailRegex = new RegExp("\#(String.emailRegularExpression)", "i");
-
+            
                     if (!emailRegex.test(newEmail)) {
                         displayError('\#(TranslatedString(
                             dutch: "Voer een geldig e-mailadres in.",
@@ -122,7 +128,7 @@ extension Identity.Consumer.View.Email.Change {
                         ))');
                         return;
                     }
-
+            
                     try {
                         const response = await fetch(form.action, {
                             method: form.method,
@@ -132,10 +138,10 @@ extension Identity.Consumer.View.Email.Change {
                             },
                             body: new URLSearchParams(formData).toString()
                         });
-
+            
                         const data = await response.json();
-
-
+            
+            
                         if (data.success) {
                             const pageModule = document.getElementById("\#(Self.pagemodule_request_email_change_id)");
                             pageModule.outerHTML = `\#(html: Identity.Consumer.View.Email.Change.Request.ReceiptConfirmation(homeHref: self.homeHref, primaryColor: self.primaryColor))`;
@@ -150,7 +156,7 @@ extension Identity.Consumer.View.Email.Change {
                         displayError(error.message);
                     }
                 });
-
+            
                 function displayError(message) {
                     errorContainer.textContent = message;
                     errorContainer.style.display = 'block';
@@ -173,7 +179,7 @@ extension Identity.Consumer.View.Email.Change.Request {
     package struct ReceiptConfirmation: HTML {
         let homeHref: URL
         let primaryColor: HTMLColor
-
+        
         package init(
             homeHref: URL,
             primaryColor: HTMLColor
@@ -181,42 +187,42 @@ extension Identity.Consumer.View.Email.Change.Request {
             self.homeHref = homeHref
             self.primaryColor = primaryColor
         }
-
+        
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "We hebben een bevestigingsmail gestuurd naar beide e-mailadressen.",
                             english: "We've sent a confirmation email to both email addresses."
                         )
                     }
                     .textAlign(.center)
-                    .margin(bottom: 1.rem)
-
-                    Paragraph {
+                    .margin(bottom: .rem(1))
+                    
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "Volg de instructies in de e-mails om de wijziging te voltooien.",
                             english: "Follow the instructions in the emails to complete the change."
                         )
                     }
                     .textAlign(.center)
-                    .margin(bottom: 2.rem)
-
+                    .margin(bottom: .rem(2))
+                    
                     Link(
                         TranslatedString(
                             dutch: "Terug naar home",
                             english: "Back to Home"
                         ).description,
-                        href: homeHref.relativePath
+                        href: .init(homeHref.relativePath)
                     )
                     .linkColor(self.primaryColor)
                 }
                 .textAlign(.center)
                 .alignItems(.center)
-                .width(100.percent)
-                .maxWidth(20.rem)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20))
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
             } title: {
                 Header(3) {

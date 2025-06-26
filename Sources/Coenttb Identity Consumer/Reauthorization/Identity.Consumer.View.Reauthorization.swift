@@ -50,29 +50,38 @@ extension Identity.Consumer.View {
                             **\(currentUserName)**.
                             """ }
 
-                            form {
+                            form(
+                                action: .init(confirmFormAction.relativePath),
+                                method: .post
+                            ) {
                                 VStack {
-                                    Input.default(self.codingKey)
-                                        .type(.password)
-                                        .placeholder(String.password.capitalizingFirstLetter().description)
+                                    
+                                    Input(
+                                        codingKey: self.codingKey,
+                                        type: .password(
+                                            .init(placeholder: .init(String.password.capitalizingFirstLetter().description))
+                                        )
+                                    )
+                                    
 
-                                    Link(href: passwordResetHref.relativePath) {
+                                    Link(href: .init(passwordResetHref.relativePath)) {
                                         String.forgot_password.capitalizingFirstLetter().questionmark
                                     }
                                     .linkColor(primaryColor)
-                                    .fontSize(.secondary)
+                                    .font(.body(.small))
                                     .display(.inlineBlock)
 
                                     VStack {
                                         Button(
-                                            tag: button,
+                                            button: .init(
+                                                type: .submit
+                                            ),
                                             background: primaryColor
                                         ) {
                                             String.continue.capitalizingFirstLetter()
                                         }
                                         .color(.text.primary.reverse())
-                                        .type(.submit)
-                                        .width(100.percent)
+                                        .width(.percent(100))
                                         .justifyContent(.center)
 
     //                                    div {
@@ -92,20 +101,18 @@ extension Identity.Consumer.View {
                                 }
                             }
                             .id("form-confirm-access")
-                            .method(.post)
-                            .action(confirmFormAction.relativePath)
-                            .width(100.percent)
-                            .maxWidth(20.rem)
-                            .maxWidth(24.rem, media: .mobile)
+                            .width(.percent(100))
+                            .maxWidth(.rem(20))
+                            .maxWidth(.rem(24), media: .mobile)
                             .margin(horizontal: .auto)
                         }
-                        .width(100.percent)
-                        .maxWidth(20.rem)
-                        .maxWidth(24.rem, media: .mobile)
-                        .margin(horizontal: .auto)
+                        .width(.percent(100))
+                        .maxWidth(.rem(20))
+                        .maxWidth(.rem(24), media: .mobile)
+                        .margin(vertical: nil, horizontal: .auto)
 
                     }
-                    .width(100.percent)
+                    .width(.percent(100))
 
                 } title: {
                     Header(3) {
@@ -184,7 +191,7 @@ import SwiftUI
 )
 
 #Preview {
-    HTMLPreview.modern {
+    HTMLDocument.modern {
         confirmAccess
     }
 }

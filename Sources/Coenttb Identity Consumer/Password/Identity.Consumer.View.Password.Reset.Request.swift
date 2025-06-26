@@ -31,25 +31,33 @@ extension Identity.Consumer.View.Password.Reset {
             PageModule(theme: .login) {
 
                 VStack {
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "Voer uw e-mailadres in en we sturen u een link om uw wachtwoord opnieuw in te stellen.",
                             english: "Enter your email address and we will send you a link to reset your password."
                         )
                     }
-                    .fontSize(.secondary)
+                    .font(.body(.small))
                     .textAlign(.center)
                     .color(.text.secondary)
 
-                    form {
+                    form(
+                        action: .init(self.formActionURL.relativePath),
+                        method: .post
+                    ) {
                         VStack {
-                            Input.default(Identity.Password.Reset.Request.CodingKeys.email)
-                                .type(.email)
-                                .placeholder("Email")
-                                .focusOnPageLoad()
+                            Input(
+                                codingKey: Identity.Password.Reset.Request.CodingKeys.email,
+                                type: .email(
+                                    .init(
+                                        placeholder: .init("Email")
+                                    )
+                                )
+                            )
+                            .focusOnPageLoad()
 
                             Button(
-                                tag: button,
+                                button: .init(type: .submit),
                                 background: self.primaryColor
                             ) {
                                 TranslatedString(
@@ -58,30 +66,26 @@ extension Identity.Consumer.View.Password.Reset {
                                 )
                             }
                             .color(.text.primary.reverse())
-                            .type(.submit)
-                            .width(100.percent)
+                            .width(.percent(100))
                             .justifyContent(.center)
 
-                            Link(
+                            Link(href: .init(homeHref.relativePath)) {
                                 TranslatedString(
                                     dutch: "Terug naar home",
                                     english: "Back to Home"
-                                ).description,
-                                href: homeHref.relativePath
-                            )
+                                ).description
+                            }
                             .linkColor(self.primaryColor)
                             .fontWeight(.medium)
-                            .fontSize(.secondary)
+                            .font(.body(.small))
                             .textAlign(.center)
                         }
                     }
                     .id("form-forgot-password")
-                    .method(.post)
-                    .action(self.formActionURL.relativePath)
                 }
-                .width(100.percent)
-                .maxWidth(20.rem)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20))
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
             } title: {
                 Header(3) {
@@ -150,38 +154,37 @@ extension Identity.Consumer.View.Password.Reset.Request {
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "We hebben een e-mail verstuurd met instructies om uw wachtwoord opnieuw in te stellen.",
                             english: "We've sent an email with instructions to reset your password."
                         )
                     }
                     .textAlign(.center)
-                    .margin(bottom: 1.rem)
+                    .margin(bottom: .rem(1))
 
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "Als u de e-mail niet binnen enkele minuten ontvangt, controleer dan uw spam-folder.",
                             english: "If you don't receive the email within a few minutes, please check your spam folder."
                         )
                     }
                     .textAlign(.center)
-                    .margin(bottom: 2.rem)
+                    .margin(bottom: .rem(2))
 
-                    Link(
+                    Link(href: .init(homeHref.relativePath)) {
                         TranslatedString(
                             dutch: "Terug naar home",
                             english: "Back to Home"
-                        ).description,
-                        href: homeHref.relativePath
-                    )
+                        ).description
+                    }
                     .linkColor(self.primaryColor)
                 }
                 .textAlign(.center)
                 .alignItems(.center)
-                .width(100.percent)
-                .maxWidth(20.rem)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20))
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
             } title: {
                 Header(3) {
@@ -225,55 +228,59 @@ extension Identity.Consumer.View.Password.Reset {
             PageModule(theme: .login) {
 
                 VStack {
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "Vul je nieuwe wachtwoord in.",
                             english: "Enter your new password."
                         )
                     }
-                    .fontSize(.secondary)
+                    .font(.body(.small))
                     .textAlign(.center)
                     .color(.text.secondary)
 
-                    form {
+                    form(
+                        action: .init(self.passwordResetAction.relativePath),
+                        method: .post
+                    ) {
                         VStack {
-
-                            Input.default(Identity.Password.Reset.Confirm.CodingKeys.newPassword)
-                                .type(.password)
-                                .placeholder(String.password.capitalizingFirstLetter().description)
-                                .focusOnPageLoad()
+                            Input(
+                                codingKey: Identity.Password.Reset.Confirm.CodingKeys.newPassword,
+                                type: .password(
+                                    .init(
+                                        placeholder: .init(String.password.capitalizingFirstLetter().description)
+                                    )
+                                )
+                            )
+                            .focusOnPageLoad()
+                                
 
                             Button(
-                                tag: button,
+                                button: .init(type: .submit),
                                 background: self.primaryColor
                             ) {
                                 String.continue.capitalizingFirstLetter()
                             }
                             .color(.text.primary.reverse())
-                            .type(.submit)
-                            .width(100.percent)
+                            .width(.percent(100))
                             .justifyContent(.center)
 
-                            Link(
+                            Link(href: .init(homeHref.relativePath)) {
                                 TranslatedString(
                                     dutch: "Terug naar de homepagina",
                                     english: "Back to home"
-                                ).description,
-                                href: homeHref.relativePath
-                            )
+                                ).description
+                            }
                             .linkColor(self.primaryColor)
                             .fontWeight(.medium)
-                            .fontSize(.secondary)
+                            .font(.body(.small))
                             .textAlign(.center)
                         }
                     }
                     .id("form-password-reset")
-                    .method(.post)
-                    .action(self.passwordResetAction.relativePath)
                 }
-                .width(100.percent)
-                .maxWidth(20.rem)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20))
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
             } title: {
                 Header(3) {
@@ -357,24 +364,24 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "Je wachtwoord is succesvol gewijzigd.",
                             english: "Your password has been successfully changed."
                         )
                     }
-                    .fontSize(.body)
+                    .font(.body)
                     .textAlign(.center)
                     .color(.text.primary)
                     .margin(bottom: .medium)
 
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "Je wordt nu doorgestuurd naar de inlogpagina.",
                             english: "You will now be redirected to the login page."
                         )
                     }
-                    .fontSize(.secondary)
+                    .font(.body(.small))
                     .textAlign(.center)
                     .color(.text.secondary)
                     .margin(bottom: .large)
@@ -384,16 +391,16 @@ extension Identity.Consumer.View.Password.Reset.Confirm {
                             dutch: "Klik hier als je niet automatisch wordt doorgestuurd",
                             english: "Click here if you are not automatically redirected"
                         ).description,
-                        href: redirect.relativePath
+                        href: .init(redirect.relativePath)
                     )
                     .linkColor(self.primaryColor)
+                    .font(.body(.small))
                     .fontWeight(.medium)
-                    .fontSize(.secondary)
                     .textAlign(.center)
                 }
-                .width(100.percent)
-                .maxWidth(20.rem)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20))
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
             } title: {
                 Header(3) {

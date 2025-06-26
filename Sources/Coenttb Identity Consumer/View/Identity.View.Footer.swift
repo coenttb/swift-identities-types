@@ -23,24 +23,24 @@ extension Identity.Consumer.View {
                         HTMLForEach(Array(links.enumerated())) { index, link in
                             if index > 0 {
                                 div { "|" }
-                                    .width(1.rem)
+                                    .width(.rem(1))
                                     .textAlign(.center)
-                                    .padding(.horizontal(0.5.rem))
+                                    .padding(vertical: nil, horizontal: .rem(0.5))
                             }
                             
                             Link(link.0.capitalizingFirstLetter().description,
-                                 href: link.1.absoluteString)
+                                 href: .init(link.1.absoluteString))
                                 .inlineStyle("flex", "1")
                                 .textAlign(links.count == 1 ? .center :
                                          index == 0 ? .right : .left)
                         }
                     }
-                    .maxWidth(800.px)
+                    .maxWidth(.px(800))
                     .margin(horizontal: .auto)
-                    .padding(1.rem)
+                    .padding(.rem(1))
                 }
             }
-            .fontSize(.secondary)
+            .font(.body(.small))
             .color(.gray600)
             .fontWeight(.light)
         }

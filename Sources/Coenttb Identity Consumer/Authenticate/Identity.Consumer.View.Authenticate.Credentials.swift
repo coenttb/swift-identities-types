@@ -49,44 +49,84 @@ extension Identity.Consumer.View.Authenticate {
         package var body: some HTML {
 
             PageModule(theme: .login) {
-                form {
+                form(
+                    action: .init(loginFormAction.relativePath),
+                    method: .post
+                ) {
                     VStack {
-                        Input.default(Identity.Authentication.Credentials.CodingKeys.username)
-                            .type(.email)
-                            .placeholder(String.email.capitalizingFirstLetter().description)
-                            .focusOnPageLoad()
+                        Input(
+                            codingKey: Identity.Authentication.Credentials.CodingKeys.username,
+                            type: .email(
+                                .init(
+//                                    value: <#T##Value<String>?#>,
+//                                    maxlength: <#T##Maxlength?#>,
+//                                    minlength: <#T##Minlength?#>,
+//                                    required: <#T##Required?#>,
+//                                    multiple: <#T##Multiple?#>,
+//                                    pattern: <#T##Pattern?#>,
+                                    placeholder: .init(String.email.capitalizingFirstLetter().description),
+//                                    readonly: <#T##Readonly?#>,
+//                                    size: <#T##Size?#>
+                                )
+                            )
+                        )
+                        .focusOnPageLoad()
+                        
+                        Input(
+                            codingKey: Identity.Authentication.Credentials.CodingKeys.password,
+                            type: .password(
+                                .init(
+//                                    value: <#T##Value<String>?#>,
+//                                    maxlength: <#T##Maxlength?#>,
+//                                    minlength: <#T##Minlength?#>,
+//                                    pattern: <#T##Pattern?#>,
+                                    placeholder: .init(String.password.capitalizingFirstLetter().description),
+//                                    readonly: <#T##Readonly?#>,
+//                                    size: <#T##Size?#>,
+//                                    autocomplete: <#T##Autocomplete?#>,
+//                                    required: <#T##Required?#>
+                                )
+                            )
+                        )
+                        
+//                        Input.default(Identity.Authentication.Credentials.CodingKeys.username)
+//                            .type(.email)
+//                            .placeholder(String.email.capitalizingFirstLetter().description)
+//                            .focusOnPageLoad()
 
-                        Input.default(Identity.Authentication.Credentials.CodingKeys.password)
-                            .type(.password)
-                            .placeholder(String.password.capitalizingFirstLetter().description)
+//                        Input.default(Identity.Authentication.Credentials.CodingKeys.password)
+//                            .type(.password)
+//                            .placeholder(String.password.capitalizingFirstLetter().description)
 
-                        Link(href: passwordResetHref.relativePath) {
+                        Link(href: .init(passwordResetHref.relativePath)) {
                             String.forgot_password.capitalizingFirstLetter().questionmark
                         }
                         .linkColor(primaryColor)
-                        .fontSize(.secondary)
+                        .font(.body(.small))
                         .display(.inlineBlock)
 
                         VStack {
                             Button(
-                                tag: button,
+//                                tag: button,
+                                button: .init(
+                                    type: .submit
+                                ),
                                 background: primaryColor
                             ) {
                                 String.continue.capitalizingFirstLetter()
                             }
                             .color(.text.primary.reverse())
-                            .type(.submit)
-                            .width(100.percent)
+                            .width(.percent(100))
                             .justifyContent(.center)
 
                             div {
                                 HTMLText("\(String.dont_have_an_account.capitalizingFirstLetter().questionmark) ")
-                                Link(href: accountCreateHref.relativePath) {
+                                Link(href: .init(accountCreateHref.relativePath)) {
                                     String.signup.capitalizingFirstLetter()
                                 }
                                 .linkColor(primaryColor)
                             }
-                            .fontSize(.secondary)
+                            .font(.body(.small))
                         }
                         .flexContainer(
                             justification: .center,
@@ -96,11 +136,9 @@ extension Identity.Consumer.View.Authenticate {
                     }
                 }
                 .id(Self.form_id)
-                .method(.post)
-                .action(loginFormAction.relativePath)
-                .width(100.percent)
-                .maxWidth(20.rem)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20))
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
             } title: {
                 Header(3) {
@@ -165,10 +203,10 @@ extension Identity.Consumer.View.Authenticate {
 extension PageModule.Theme {
     static var login: Self {
         Self(
-            topMargin: 10.rem,
-            bottomMargin: 4.rem,
-            leftRightMargin: 2.rem,
-            leftRightMarginDesktop: 3.rem,
+            topMargin: .rem(10),
+            bottomMargin: .rem(4),
+            leftRightMargin: .rem(2),
+            leftRightMarginDesktop: .rem(3),
             itemAlignment: .center
         )
     }

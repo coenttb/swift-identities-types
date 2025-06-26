@@ -113,29 +113,38 @@ extension Email {
                             )
                         }
 
-                        Paragraph {
+                        CoenttbHTML.Paragraph {
                             TranslatedString(
                                 dutch: "We hebben een verzoek ontvangen om het wachtwoord voor je \(business.name) account te resetten. Klik op de onderstaande knop om je wachtwoord te wijzigen.",
                                 english: "We received a request to reset the password for your \(business.name) account. Click the button below to change your password."
                             )
                         }
                         .padding(bottom: .extraSmall)
-                        .fontSize(.body)
+                        .font(.body)
 
-                        Button(
-                            tag: a,
-                            background: business.primaryColor
-                        ) {
+                        Link(href: .init(passwordResetRequest.resetUrl.absoluteString)) {
                             TranslatedString(
                                 dutch: "Reset wachtwoord",
                                 english: "Reset password"
                             )
                         }
                         .color(.text.primary.reverse())
-                        .href(passwordResetRequest.resetUrl.absoluteString)
-                        .padding(bottom: Length.medium)
+                        .padding(bottom: .medium)
+                        
+//                        Button(
+//                            tag: a,
+//                            background: business.primaryColor
+//                        ) {
+//                            TranslatedString(
+//                                dutch: "Reset wachtwoord",
+//                                english: "Reset password"
+//                            )
+//                        }
+//                        .color(.text.primary.reverse())
+//                        .href(passwordResetRequest.resetUrl.absoluteString)
+//                        .padding(bottom: Length.medium)
 
-                        Paragraph(.small) {
+                        CoenttbHTML.Paragraph(.small) {
                             TranslatedString(
                                 dutch: "Om veiligheidsredenen verloopt deze link binnen 1 uur. ",
                                 english: "This link will expire in 1 hour for security reasons. "
@@ -153,7 +162,7 @@ extension Email {
                                 english: "For help, contact us at \(business.supportEmail)."
                             )
                         }
-                        .fontSize(.footnote)
+                        .font(.footnote)
                         .color(.text.secondary)
                     }
                     .padding(vertical: .small, horizontal: .medium)
@@ -201,31 +210,31 @@ extension Email {
                             )
                         }
 
-                        Paragraph {
+                        CoenttbHTML.Paragraph {
                             TranslatedString(
                                 dutch: "We bevestigen dat je wachtwoord voor je \(business.name) account succesvol is gereset.",
                                 english: "We confirm that the password for your \(business.name) account has been successfully reset."
                             )
                         }
                         .padding(bottom: .extraSmall)
-                        .fontSize(.body)
+                        .font(.body)
 
-                        Paragraph {
+                        CoenttbHTML.Paragraph {
                             TranslatedString(
                                 dutch: "Je kunt nu inloggen met je nieuwe wachtwoord.",
                                 english: "You can now log in using your new password."
                             )
                         }
                         .padding(bottom: .extraSmall)
-                        .fontSize(.body)
+                        .font(.body)
 
-                        Paragraph(.small) {
+                        CoenttbHTML.Paragraph(.small) {
                             TranslatedString(
                                 dutch: "Als je deze wijziging niet hebt aangevraagd, neem dan onmiddellijk contact op met ons via \(business.supportEmail) om je account te beveiligen.",
                                 english: "If you didn't request this change, please contact us immediately at \(business.supportEmail) to secure your account."
                             )
                         }
-                        .fontSize(.footnote)
+                        .font(.footnote)
                         .color(.text.secondary)
                     }
                     .padding(vertical: .small, horizontal: .medium)
@@ -273,31 +282,31 @@ extension Email {
                             )
                         }
 
-                        Paragraph {
+                        CoenttbHTML.Paragraph {
                             TranslatedString(
                                 dutch: "We willen je informeren dat het wachtwoord voor je \(business.name) account zojuist is gewijzigd.",
                                 english: "We're writing to inform you that the password for your \(business.name) account has just been changed."
                             )
                         }
                         .padding(bottom: .extraSmall)
-                        .fontSize(.body)
+                        .font(.body)
 
-                        Paragraph {
+                        CoenttbHTML.Paragraph {
                             TranslatedString(
                                 dutch: "Als je deze wijziging hebt aangevraagd, kun je deze e-mail als bevestiging beschouwen.",
                                 english: "If you requested this change, please consider this email as confirmation."
                             )
                         }
                         .padding(bottom: .extraSmall)
-                        .fontSize(.body)
+                        .font(.body)
 
-                        Paragraph(.small) {
+                        CoenttbHTML.Paragraph(.small) {
                             TranslatedString(
                                 dutch: "Als je deze wijziging niet hebt aangevraagd, neem dan onmiddellijk contact op met ons via \(business.supportEmail) om je account te beveiligen.",
                                 english: "If you didn't request this change, please contact us immediately at \(business.supportEmail) to secure your account."
                             )
                         }
-                        .fontSize(.footnote)
+                        .font(.footnote)
                         .color(.text.secondary)
                     }
                     .padding(vertical: .small, horizontal: .medium)

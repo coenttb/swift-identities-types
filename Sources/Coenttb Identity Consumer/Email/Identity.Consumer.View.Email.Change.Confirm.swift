@@ -27,43 +27,42 @@ extension Identity.Consumer.View.Email.Change {
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "Je e-mailadres is succesvol gewijzigd.",
                             english: "Your email address has been successfully changed."
                         )
                     }
-                    .fontSize(.body)
+                    .font(.body)
                     .textAlign(.center)
                     .color(.text.primary)
                     .margin(bottom: .medium)
 
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "Je wordt nu doorgestuurd naar je account pagina.",
                             english: "You will now be redirected to your account page."
                         )
                     }
-                    .fontSize(.secondary)
+                    .font(.body(.small))
                     .textAlign(.center)
                     .color(.text.secondary)
                     .margin(bottom: .large)
 
-                    Link(
+                    Link(href: .init(redirect.relativePath)) {
                         TranslatedString(
                             dutch: "Klik hier als je niet automatisch wordt doorgestuurd",
                             english: "Click here if you are not automatically redirected"
-                        ).description,
-                        href: redirect.relativePath
-                    )
+                        ).description
+                    }
                     .linkColor(self.primaryColor)
                     .fontWeight(.medium)
-                    .fontSize(.secondary)
+                    .font(.body(.small))
                     .textAlign(.center)
                 }
-                .width(100.percent)
-                .maxWidth(20.rem)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20))
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
             } title: {
                 Header(3) {

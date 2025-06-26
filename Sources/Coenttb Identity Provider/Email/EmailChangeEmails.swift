@@ -148,31 +148,31 @@ extension Email {
                             )
                         }
 
-                        Paragraph {
+                        CoenttbHTML.Paragraph {
                             TranslatedString(
                                 dutch: "We hebben een verzoek ontvangen om het e-mailadres voor je \(business.name) account te wijzigen van \(emailChangeRequestNotification.currentEmail) naar \(emailChangeRequestNotification.newEmail).",
                                 english: "We received a request to change the email address for your \(business.name) account from \(emailChangeRequestNotification.currentEmail) to \(emailChangeRequestNotification.newEmail)."
                             )
                         }
                         .padding(bottom: .extraSmall)
-                        .fontSize(.body)
+                        .font(.body)
 
-                        Paragraph {
+                        CoenttbHTML.Paragraph {
                             TranslatedString(
                                 dutch: "Als je dit verzoek hebt gedaan, hoef je verder niets te doen. De wijziging wordt binnenkort doorgevoerd.",
                                 english: "If you made this request, no further action is needed. The change will be processed shortly."
                             )
                         }
                         .padding(bottom: .extraSmall)
-                        .fontSize(.body)
+                        .font(.body)
 
-                        Paragraph(.small) {
+                        CoenttbHTML.Paragraph(.small) {
                             TranslatedString(
                                 dutch: "Als je dit verzoek niet hebt gedaan, neem dan onmiddellijk contact op met ons via \(business.supportEmail) om je account te beveiligen.",
                                 english: "If you didn't request this change, please contact us immediately at \(business.supportEmail) to secure your account."
                             )
                         }
-                        .fontSize(.footnote)
+                        .font(.footnote)
                         .color(.text.secondary)
                     }
                     .padding(vertical: .small, horizontal: .medium)
@@ -223,29 +223,38 @@ extension Email {
                             )
                         }
 
-                        Paragraph {
+                        CoenttbHTML.Paragraph {
                             TranslatedString(
                                 dutch: "We hebben een verzoek ontvangen om het e-mailadres voor je \(business.name) account te wijzigen. Klik op de onderstaande knop om je nieuwe e-mailadres te verifiëren.",
                                 english: "We received a request to change the email address for your \(business.name) account. Click the button below to verify your new email address."
                             )
                         }
                         .padding(bottom: .extraSmall)
-                        .fontSize(.body)
+                        .font(.body)
 
-                        Button(
-                            tag: a,
-                            background: business.primaryColor
-                        ) {
+                        Link(href: .init(value: emailChangeConfirmationRequest.verificationURL.absoluteString)) {
                             TranslatedString(
                                 dutch: "Verifieer e-mailadres",
                                 english: "Verify email address"
                             )
                         }
                         .color(.text.primary.reverse())
-                        .href(emailChangeConfirmationRequest.verificationURL.absoluteString)
-                        .padding(bottom: Length.medium)
+                        .padding(bottom: .medium)
+                        
+//                        Button(
+//                            tag: a,
+//                            background: business.primaryColor
+//                        ) {
+//                            TranslatedString(
+//                                dutch: "Verifieer e-mailadres",
+//                                english: "Verify email address"
+//                            )
+//                        }
+//                        .color(.text.primary.reverse())
+//                        .href(emailChangeConfirmationRequest.verificationURL.absoluteString)
+//                        .padding(bottom: Length.medium)
 
-                        Paragraph(.small) {
+                        CoenttbHTML.Paragraph(.small) {
                             TranslatedString(
                                 dutch: "Deze link verloopt binnen 1 uur om veiligheidsredenen.",
                                 english: "This link will expire in 1 hour for security reasons."
@@ -263,7 +272,7 @@ extension Email {
                                 english: "For help, contact us at \(business.supportEmail)."
                             )
                         }
-                        .fontSize(.footnote)
+                        .font(.footnote)
                         .color(.text.secondary)
                     }
                     .padding(vertical: .small, horizontal: .medium)
@@ -316,31 +325,31 @@ extension Email {
                                 )
                             }
 
-                            Paragraph {
+                            CoenttbHTML.Paragraph {
                                 TranslatedString(
                                     dutch: "We willen je informeren dat het e-mailadres voor je \(business.name) account is gewijzigd van \(notification.currentEmail.rawValue) naar \(notification.newEmail.rawValue).",
                                     english: "We're informing you that the email address for your \(business.name) account has been changed from \(notification.currentEmail.rawValue) to \(notification.newEmail.rawValue)."
                                 )
                             }
                             .padding(bottom: .extraSmall)
-                            .fontSize(.body)
+                            .font(.body)
 
-                            Paragraph {
+                            CoenttbHTML.Paragraph {
                                 TranslatedString(
                                     dutch: "Als je deze wijziging hebt aangevraagd, kun je deze e-mail als bevestiging beschouwen. Je kunt nu inloggen met je nieuwe e-mailadres.",
                                     english: "If you requested this change, please consider this email as confirmation. You can now log in using your new email address."
                                 )
                             }
                             .padding(bottom: .extraSmall)
-                            .fontSize(.body)
+                            .font(.body)
 
-                            Paragraph(.small) {
+                            CoenttbHTML.Paragraph(.small) {
                                 TranslatedString(
                                     dutch: "Als je deze wijziging niet hebt aangevraagd, neem dan onmiddellijk contact op met ons via \(business.supportEmail) om je account te beveiligen.",
                                     english: "If you didn't request this change, please contact us immediately at \(business.supportEmail) to secure your account."
                                 )
                             }
-                            .fontSize(.footnote)
+                            .font(.footnote)
                             .color(.text.secondary)
                         }
                         .padding(vertical: .small, horizontal: .medium)
@@ -385,31 +394,31 @@ extension Email {
                                 )
                             }
 
-                            Paragraph {
+                            CoenttbHTML.Paragraph {
                                 TranslatedString(
                                     dutch: "Welkom! We bevestigen dat dit e-mailadres (\(notification.newEmail.rawValue)) nu is gekoppeld aan je \(business.name) account. Je vorige e-mailadres was \(notification.currentEmail.rawValue).",
                                     english: "Welcome! We confirm that this email address (\(notification.newEmail.rawValue)) is now associated with your \(business.name) account. Your previous email address was \(notification.currentEmail.rawValue)."
                                 )
                             }
                             .padding(bottom: .extraSmall)
-                            .fontSize(.body)
+                            .font(.body)
 
-                            Paragraph {
+                            CoenttbHTML.Paragraph {
                                 TranslatedString(
                                     dutch: "Je kunt nu inloggen op je account met dit nieuwe e-mailadres. Al je accountgegevens en voorkeuren blijven ongewijzigd.",
                                     english: "You can now log in to your account using this new email address. All your account details and preferences remain unchanged."
                                 )
                             }
                             .padding(bottom: .extraSmall)
-                            .fontSize(.body)
+                            .font(.body)
 
-                            Paragraph(.small) {
+                            CoenttbHTML.Paragraph(.small) {
                                 TranslatedString(
                                     dutch: "Als je deze wijziging niet hebt aangevraagd of als je vragen hebt, neem dan contact op met ons via \(business.supportEmail).",
                                     english: "If you didn't request this change or if you have any questions, please contact us at \(business.supportEmail)."
                                 )
                             }
-                            .fontSize(.footnote)
+                            .font(.footnote)
                             .color(.text.secondary)
                         }
                         .padding(vertical: .small, horizontal: .medium)

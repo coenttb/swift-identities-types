@@ -21,7 +21,7 @@ extension Identity.Consumer.View {
 
         public var body: some HTML {
             VStack {
-                Link(href: href.relativePath) {
+                Link(href: .init(href.relativePath)) {
                     logo
                 }
                 .linkColor(.text.primary)

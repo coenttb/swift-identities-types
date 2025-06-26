@@ -52,45 +52,55 @@ extension Identity.Consumer.View.Create {
         
         package var body: some HTML {
             PageModule(theme: .login) {
-                form {
+                form(
+                    action: .init(createFormAction.relativePath),
+                    method: .post
+                ) {
                     VStack {
-                        Input.default(Identity.Creation.Request.CodingKeys.email)
-                            .type(.email)
-                            .placeholder(String.email.description)
-                            .focusOnPageLoad()
+                        Input(
+                            codingKey: Identity.Creation.Request.CodingKeys.email,
+                            type: .email(
+                                .init(placeholder: "String.email.description")
+                            )
+                        )
+                        .focusOnPageLoad()
                         
-                        Input.default(Identity.Creation.Request.CodingKeys.password)
-                            .type(.password)
-                            .placeholder(String.password.description)
+                        Input(
+                            codingKey: Identity.Creation.Request.CodingKeys.password,
+                            type: .password(
+                                .init(
+                                    placeholder: .init(String.password.description)
+                                )
+                            )
+                        )
+                        
                         
                         Button(
-                            tag: button,
+//                            tag: button,
+                            button: .init(type: .submit),
                             background: primaryColor
                         ) {
                             String.continue.capitalizingFirstLetter()
                         }
                         .color(.text.primary.reverse())
-                        .type(.submit)
-                        .width(100.percent)
+                        .width(.percent(100))
                         .justifyContent(.center)
                         
                         div {
                             HTMLText("\(String.already_have_an_account.capitalizingFirstLetter().questionmark) ")
-                            Link(href: loginHref.relativePath) {
+                            Link(href: .init(loginHref.relativePath)) {
                                 String.login.capitalizingFirstLetter()
                             }
                             .linkColor(primaryColor)
                         }
-                        .fontSize(.secondary)
+                        .font(.body(.small))
                         .textAlign(.center)
                     }
                 }
                 .id("form-create-identity")
-                .method(.post)
-                .action(createFormAction.relativePath)
-                .width(100.percent)
-                .maxWidth(20.rem, media: .desktop)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20), media: .desktop)
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
             } title: {
                 Header(3) {
@@ -170,7 +180,7 @@ extension Identity.Consumer.View.Create.Request {
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         [
                             String.your_account_creation_request_has_been_received,
                             String.please_check_your_email_to_complete_the_process
@@ -181,7 +191,7 @@ extension Identity.Consumer.View.Create.Request {
                         
                     }
                     .textAlign(.center)
-                    .margin(bottom: 2.rem)
+                    .margin(bottom: .rem(2))
                     
                     //                div {
                     //                    HTMLText("\(String.already_have_an_account.capitalizingFirstLetter().questionmark) ")
@@ -193,9 +203,9 @@ extension Identity.Consumer.View.Create.Request {
                     //                .fontSize(.secondary)
                     //                .textAlign(.center)
                 }
-                .width(100.percent)
-                .maxWidth(20.rem, media: .desktop)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20), media: .desktop)
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
             } title: {
                 Header(3) {
@@ -226,7 +236,7 @@ extension Identity.Consumer.View.Create {
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack(alignment: .center) {
-                    div()
+                    div() {}
                         .id("spinner")
                     h2 { "message" }
                         .id("message")
@@ -235,9 +245,9 @@ extension Identity.Consumer.View.Create {
                 .alignItems(.center)
                 .textAlign(.start, media: .mobile)
                 .alignItems(.leading, media: .mobile)
-                .width(100.percent)
-                .maxWidth(20.rem)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20))
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
                 
             } title: {
@@ -319,25 +329,25 @@ extension Identity.Creation {
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack(alignment: .center) {
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "Uw account is succesvol geverifieerd!",
                             english: "Your account has been successfully verified!"
                         )
                     }
                     .textAlign(.center)
-                    .margin(bottom: 1.rem)
+                    .margin(bottom: .rem(1))
                     
-                    Paragraph {
+                    CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "U wordt over 5 seconden doorgestuurd naar de inlogpagina.",
                             english: "You will be redirected to the login page in 5 seconds."
                         )
                     }
                     .textAlign(.center)
-                    .margin(bottom: 2.rem)
+                    .margin(bottom: .rem(2))
                     
-                    Link(href: redirectURL.relativePath) {
+                    Link(href: .init(redirectURL.relativePath)) {
                         TranslatedString(
                             dutch: "Klik hier als u niet automatisch wordt doorgestuurd",
                             english: "Click here if you are not redirected automatically"
@@ -347,9 +357,9 @@ extension Identity.Creation {
                 }
                 .textAlign(.center)
                 .alignItems(.center)
-                .width(100.percent)
-                .maxWidth(20.rem)
-                .maxWidth(24.rem, media: .mobile)
+                .width(.percent(100))
+                .maxWidth(.rem(20))
+                .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
             } title: {
                 Header(3) {
