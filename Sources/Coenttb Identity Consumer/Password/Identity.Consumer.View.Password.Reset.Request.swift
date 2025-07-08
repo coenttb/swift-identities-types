@@ -117,7 +117,7 @@ extension Identity.Consumer.View.Password.Reset {
                         const data = await response.json();
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_forgot_password_id)");
-                            pageModule.outerHTML = `\(html: Identity.Consumer.View.Password.Reset.Request.ConfirmReceipt(homeHref: self.homeHref, primaryColor: self.primaryColor))`;
+                            pageModule.outerHTML = \(html: Identity.Consumer.View.Password.Reset.Request.ConfirmReceipt(homeHref: self.homeHref, primaryColor: self.primaryColor));
                         } else {
                             throw new Error(data.message || '\(TranslatedString(
                                 dutch: "Verzoek om wachtwoord te resetten mislukt",
@@ -325,7 +325,7 @@ extension Identity.Consumer.View.Password.Reset {
 
                            if (data.success) {
                                const pageModule = document.getElementById("\(Self.passwordResetId)");
-                               pageModule.outerHTML = `\(html: Identity.Consumer.View.Password.Reset.Confirm.Confirm(redirect: self.redirect, primaryColor: self.primaryColor))`;
+                               pageModule.outerHTML = \(html: Identity.Consumer.View.Password.Reset.Confirm.Confirm(redirect: self.redirect, primaryColor: self.primaryColor));
                            } else {
                                throw new Error(data.message || '\(TranslatedString(
                                    dutch: "Verzoek om wachtwoord te resetten mislukt",

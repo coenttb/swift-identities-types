@@ -143,7 +143,7 @@ extension Identity.Consumer.View.Create {
             
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_create_identity)");
-                            pageModule.outerHTML = "\(html: Identity.Consumer.View.Create.Request.ConfirmReceipt(primaryColor: primaryColor, loginHref: loginHref))";
+                            pageModule.outerHTML = \(html: Identity.Consumer.View.Create.Request.ConfirmReceipt(primaryColor: primaryColor, loginHref: loginHref));
                         } else {
                             throw new Error(data.message || 'Account creation failed');
                         }
@@ -293,7 +293,7 @@ extension Identity.Consumer.View.Create {
             
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_verify_id)");
-                            pageModule.outerHTML = "\(html: Identity.Creation.VerifyConfirmation(redirectURL: redirectURL))";
+                            pageModule.outerHTML = \(html: Identity.Creation.VerifyConfirmation(redirectURL: redirectURL));
                             setTimeout(() => { window.location.href = '\(redirectURL.absoluteString)'; }, 5000);
             
                         } else {

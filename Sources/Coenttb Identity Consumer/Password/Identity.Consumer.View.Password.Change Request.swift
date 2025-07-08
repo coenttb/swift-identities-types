@@ -124,7 +124,7 @@ extension Identity.Consumer.View.Password.Change {
                         const data = await response.json();
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_change_password_id)");
-                            pageModule.outerHTML = `\(html: Identity.Consumer.View.Password.Change.Request.Confirmation(redirectOnSuccess: self.redirectOnSuccess, primaryColor: self.primaryColor))`;
+                            pageModule.outerHTML = \(html: Identity.Consumer.View.Password.Change.Request.Confirmation(redirectOnSuccess: self.redirectOnSuccess, primaryColor: self.primaryColor));
                         } else {
                             throw new Error(data.message || '\(TranslatedString(
                                 dutch: "Wachtwoord wijzigen mislukt",
