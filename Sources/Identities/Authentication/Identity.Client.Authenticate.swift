@@ -45,7 +45,7 @@ extension Identity.Client {
         ) async throws -> Identity.Authentication.Response
 
         /// Token-based authentication operations.
-        public var token: Identity.Client.Authenticate.Token
+        public var token: Identity.Client.Authenticate.Token = .init()
 
         /// Authenticates a user with an API key.
         ///

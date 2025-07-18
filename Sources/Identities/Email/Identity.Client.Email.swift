@@ -30,7 +30,7 @@ extension Identity.Client {
    @DependencyClient
    public struct Email: @unchecked Sendable {
        /// Interface for email change operations.
-       public var change: Identity.Client.Email.Change
+       public var change: Identity.Client.Email.Change = .init()
 
        public init(change: Identity.Client.Email.Change) {
            self.change = change
