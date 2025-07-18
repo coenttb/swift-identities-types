@@ -17,7 +17,7 @@ extension RateLimiter {
             self.recordSuccess = { await limiter.recordSuccess(key) }
             self.recordFailure = { await limiter.recordFailure(key) }
         }
-        
+
         // For handling multiple rate limit keys 
         init(successAction: @escaping () async -> Void, failureAction: @escaping () async -> Void) {
             self.recordSuccess = successAction
@@ -39,7 +39,7 @@ extension RateLimiter.Client {
             failureAction: { }
         )
     }
-    
+
     static func + (
         lhs: Self,
         rhs: Self
@@ -96,7 +96,7 @@ public struct RateLimiters: Sendable {
             }
         }
     )
-    
+
     public init(
         credentials: RateLimiter<String>? = nil,
         tokenAccess: RateLimiter<String>? = nil,
@@ -105,11 +105,11 @@ public struct RateLimiters: Sendable {
         if let credentials {
             self.credentials = credentials
         }
-        
+
         if let tokenAccess {
             self.tokenAccess = tokenAccess
         }
-        
+
         if let tokenRefresh {
             self.tokenRefresh = tokenRefresh
         }

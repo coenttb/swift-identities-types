@@ -14,7 +14,7 @@ extension Identity.Consumer.View.Email.Change {
         let formActionURL: URL
         let homeHref: URL
         let primaryColor: HTMLColor
-        
+
         package init(
             formActionURL: URL,
             homeHref: URL,
@@ -24,10 +24,10 @@ extension Identity.Consumer.View.Email.Change {
             self.homeHref = homeHref
             self.primaryColor = primaryColor
         }
-        
+
         private static var pagemodule_request_email_change_id: String { "pagemodule_request_email_change_id" }
         private static var form_id: String { "form-request-email-change" }
-        
+
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
@@ -40,7 +40,7 @@ extension Identity.Consumer.View.Email.Change {
                     .font(.body(.small))
                     .textAlign(.center)
                     .color(.text.secondary)
-                    
+
                     form(
                         action: .init(self.formActionURL.relativePath),
                         method: .post
@@ -55,7 +55,7 @@ extension Identity.Consumer.View.Email.Change {
                                 )
                             )
                             .focusOnPageLoad()
-                            
+
                             Button(
                                 //                                tag: button,
                                 button: .init(type: .submit),
@@ -69,7 +69,7 @@ extension Identity.Consumer.View.Email.Change {
                             .color(.text.primary.reverse())
                             .width(.percent(100))
                             .justifyContent(.center)
-                            
+
                             Link(
                                 TranslatedString(
                                     dutch: "Terug naar home",
@@ -100,7 +100,7 @@ extension Identity.Consumer.View.Email.Change {
                 .textAlign(.center)
             }
             .id(Self.pagemodule_request_email_change_id)
-            
+
             script {#"""
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.getElementById('\#(Self.form_id)');
@@ -110,17 +110,17 @@ extension Identity.Consumer.View.Email.Change {
                 errorContainer.style.marginTop = '10px';
                 errorContainer.style.display = 'none';
                 form.appendChild(errorContainer);
-            
+
                 form.addEventListener('submit', async function(event) {
                     event.preventDefault();
                     errorContainer.style.display = 'none';
                     errorContainer.textContent = '';
-            
+
                     const formData = new FormData(form);
                     const newEmail = formData.get('\#(Identity.Email.Change.Request.CodingKeys.newEmail.rawValue)');
-            
+
                     const emailRegex = new RegExp("\#(String.emailRegularExpression)", "i");
-            
+
                     if (!emailRegex.test(newEmail)) {
                         displayError('\#(TranslatedString(
                             dutch: "Voer een geldig e-mailadres in.",
@@ -128,7 +128,7 @@ extension Identity.Consumer.View.Email.Change {
                         ))');
                         return;
                     }
-            
+
                     try {
                         const response = await fetch(form.action, {
                             method: form.method,
@@ -138,10 +138,10 @@ extension Identity.Consumer.View.Email.Change {
                             },
                             body: new URLSearchParams(formData).toString()
                         });
-            
+
                         const data = await response.json();
-            
-            
+
+
                         if (data.success) {
                             const pageModule = document.getElementById("\#(Self.pagemodule_request_email_change_id)");
                             pageModule.outerHTML = `\#(html: Identity.Consumer.View.Email.Change.Request.ReceiptConfirmation(homeHref: self.homeHref, primaryColor: self.primaryColor))`;
@@ -156,7 +156,7 @@ extension Identity.Consumer.View.Email.Change {
                         displayError(error.message);
                     }
                 });
-            
+
                 function displayError(message) {
                     errorContainer.textContent = message;
                     errorContainer.style.display = 'block';
@@ -179,7 +179,7 @@ extension Identity.Consumer.View.Email.Change.Request {
     package struct ReceiptConfirmation: HTML {
         let homeHref: URL
         let primaryColor: HTMLColor
-        
+
         package init(
             homeHref: URL,
             primaryColor: HTMLColor
@@ -187,7 +187,7 @@ extension Identity.Consumer.View.Email.Change.Request {
             self.homeHref = homeHref
             self.primaryColor = primaryColor
         }
-        
+
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
@@ -199,7 +199,7 @@ extension Identity.Consumer.View.Email.Change.Request {
                     }
                     .textAlign(.center)
                     .margin(bottom: .rem(1))
-                    
+
                     CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "Volg de instructies in de e-mails om de wijziging te voltooien.",
@@ -208,7 +208,7 @@ extension Identity.Consumer.View.Email.Change.Request {
                     }
                     .textAlign(.center)
                     .margin(bottom: .rem(2))
-                    
+
                     Link(
                         TranslatedString(
                             dutch: "Terug naar home",

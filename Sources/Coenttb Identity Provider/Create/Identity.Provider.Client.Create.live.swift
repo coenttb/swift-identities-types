@@ -17,13 +17,13 @@ extension Identity.Provider.Client.Create {
     ) -> Self {
         @Dependency(\.logger) var logger
         @Dependency(\.database) var database
-        
+
         return .init(
             request: { email, password in
                 do {
                     try validatePassword(password)
                     let email = try EmailAddress(email)
-                                    
+
                     let verificationToken = try await database.transaction { database in
                         guard try await Database.Identity
                             .query(on: database)
@@ -52,7 +52,7 @@ extension Identity.Provider.Client.Create {
                         try await verificationToken.save(on: database)
                         return verificationToken.value
                     }
-                    
+
                     @Dependency(\.fireAndForget) var fireAndForget
                     await fireAndForget {
                         try await sendVerificationEmail(email, verificationToken)
@@ -78,7 +78,7 @@ extension Identity.Provider.Client.Create {
                             try await identityToken.delete(on: database)
                             throw Abort(.gone, reason: "Token has expired")
                         }
-                        
+
                         let email = try EmailAddress(email)
 
                         guard identityToken.identity.email == email.rawValue
@@ -92,7 +92,7 @@ extension Identity.Provider.Client.Create {
                         try await identityToken.identity.save(on: database)
 
                         try await identityToken.delete(on: database)
-                        
+
                         @Dependency(\.fireAndForget) var fireAndForget
                         await fireAndForget {
                             try await onIdentityCreationSuccess((identityId, identityToken.identity.emailAddress))

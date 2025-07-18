@@ -70,7 +70,7 @@ let package = Package(
                 .dependenciesMacros,
                 .coenttbIdentityShared,
                 .coenttbVapor,
-                .vaporJWT   
+                .vaporJWT
             ]
         ),
         .target(
@@ -92,7 +92,7 @@ let package = Package(
                 .coenttbIdentityConsumer,
                 .coenttbIdentityProvider,
                 .dependenciesTestSupport,
-                .coenttbVaporTesting,
+                .coenttbVaporTesting
             ]
         ),
         .testTarget(
@@ -101,7 +101,7 @@ let package = Package(
                 .coenttbIdentityProvider,
                 .dependenciesTestSupport,
                 .fluentSqlLite,
-                .coenttbVaporTesting,
+                .coenttbVaporTesting
             ]
         )
     ],

@@ -11,16 +11,15 @@ import Coenttb_Web
 import Dependencies
 import EmailAddress
 import Identities
-import Identities
 import JWT
 import RateLimiter
 
 extension Identity.Consumer.Client.Email {
     package static func live(
-        
+
     ) -> Self {
         @Dependency(\.identity.consumer.client) var client
-        
+
         return Identity.Consumer.Client.Email(
             change: .init(
                 request: { newEmail in
@@ -40,7 +39,7 @@ extension Identity.Consumer.Client.Email {
                             for: .email(.change(.confirm(.init(token: token)))),
                             decodingTo: Identity.Email.Change.Confirmation.Response.self
                         )
-                        
+
                     } catch {
                         throw Abort(.internalServerError)
                     }

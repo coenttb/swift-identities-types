@@ -30,26 +30,26 @@ extension Identity.Client {
         refreshToken: (Vapor.Request) -> String?,
         expirationBuffer: TimeInterval = 300
     ) async throws -> Identity.Authentication.Response {
-        
+
         @Dependency(\.request) var request
         guard let request else { throw Abort.requestUnavailable }
-        
+
         @Dependency(\.date) var date
-        
+
         // First, try to use the access token if available
         if let accessToken = accessToken {
             do {
                 // Validate the access token
                 try await authenticate.token.access(token: accessToken)
-                
+
                 // Check if token is near expiration and needs refresh
                 guard let currentToken = request.auth.get(JWT.Token.Access.self)
                 else { throw Identity.Client.Authenticate.Error.unauthorizedAccess }
-                
+
                 // Ensure we have a refresh token for potential refresh
                 guard let refreshToken = refreshToken(request)
                 else { throw Identity.Client.Authenticate.Error.noTokensAvailable }
-                
+
                 // If token is NOT near expiration, return existing tokens
                 guard date().addingTimeInterval(expirationBuffer) < currentToken.expiration.value
                 else {
@@ -62,7 +62,7 @@ extension Identity.Client {
                     accessToken: .init(stringLiteral: accessToken),
                     refreshToken: .init(stringLiteral: refreshToken)
                 )
-                
+
             } catch let error as Identity.Client.Authenticate.Error {
                 // Propagate specific authentication errors
                 throw error
@@ -71,7 +71,7 @@ extension Identity.Client {
                 // Let it continue to the refresh token flow below
             }
         }
-        
+
         // If we get here, either there was no access token or it failed validation
         // Try to use refresh token
         if let refreshTokenValue = refreshToken(request) {
@@ -82,7 +82,7 @@ extension Identity.Client {
                 throw error
             }
         }
-        
+
         // No tokens available
         throw Identity.Client.Authenticate.Error.noTokensAvailable
     }

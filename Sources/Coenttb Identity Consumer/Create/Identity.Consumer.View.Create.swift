@@ -14,7 +14,7 @@ extension Identity.Consumer.View.Create {
         case request(Identity.Consumer.View.Create.Request)
         case requestConfirmReceipt(Identity.Consumer.View.Create.Request.ConfirmReceipt)
         case verify(Identity.Consumer.View.Create.Verify)
-        
+
         package var body: some HTML {
             switch self {
             case .request(let request):
@@ -30,12 +30,12 @@ extension Identity.Consumer.View.Create {
 
 extension Identity.Consumer.View.Create {
     package struct Request: HTML {
-        
+
         let primaryColor: HTMLColor
         let loginHref: URL
         let accountCreateHref: URL
         let createFormAction: URL
-        
+
         package init(
             primaryColor: HTMLColor,
             loginHref: URL,
@@ -47,9 +47,9 @@ extension Identity.Consumer.View.Create {
             self.accountCreateHref = accountCreateHref
             self.createFormAction = createFormAction
         }
-        
+
         private static let pagemodule_create_identity: String = "pagemodule-create-identity"
-        
+
         package var body: some HTML {
             PageModule(theme: .login) {
                 form(
@@ -64,7 +64,7 @@ extension Identity.Consumer.View.Create {
                             )
                         )
                         .focusOnPageLoad()
-                        
+
                         Input(
                             codingKey: Identity.Creation.Request.CodingKeys.password,
                             type: .password(
@@ -73,8 +73,7 @@ extension Identity.Consumer.View.Create {
                                 )
                             )
                         )
-                        
-                        
+
                         Button(
 //                            tag: button,
                             button: .init(type: .submit),
@@ -85,7 +84,7 @@ extension Identity.Consumer.View.Create {
                         .color(.text.primary.reverse())
                         .width(.percent(100))
                         .justifyContent(.center)
-                        
+
                         div {
                             HTMLText("\(String.already_have_an_account.capitalizingFirstLetter().questionmark) ")
                             Link(href: .init(loginHref.relativePath)) {
@@ -110,18 +109,18 @@ extension Identity.Consumer.View.Create {
                 .textAlign(.center)
             }
             .id(Self.pagemodule_create_identity)
-            
+
             script {"""
             document.addEventListener('DOMContentLoaded', function() {
                 const form = document.getElementById("form-create-identity");
-            
+
                 form.addEventListener('submit', async function(event) {
                     event.preventDefault();
-            
+
                     const formData = new FormData(form);
                     const email = formData.get('\(Identity.Creation.Request.CodingKeys.email.rawValue)');
                     const password = formData.get('\(Identity.Creation.Request.CodingKeys.password.rawValue)');
-            
+
                     try {
                         const response = await fetch(form.action, {
                             method: form.method,
@@ -134,13 +133,13 @@ extension Identity.Consumer.View.Create {
                                  \(Identity.Creation.Request.CodingKeys.password.rawValue): password
                             }).toString()
                         });
-            
+
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
-            
+
                         const data = await response.json();
-            
+
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_create_identity)");
                             pageModule.outerHTML = \(html: Identity.Consumer.View.Create.Request.ConfirmReceipt(primaryColor: primaryColor, loginHref: loginHref));
@@ -165,10 +164,10 @@ extension Identity.Consumer.View.Create {
 
 extension Identity.Consumer.View.Create.Request {
     package struct ConfirmReceipt: HTML {
-        
+
         let primaryColor: HTMLColor
         let loginHref: URL
-        
+
         package init(
             primaryColor: HTMLColor,
             loginHref: URL
@@ -176,7 +175,7 @@ extension Identity.Consumer.View.Create.Request {
             self.primaryColor = primaryColor
             self.loginHref = loginHref
         }
-        
+
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack {
@@ -188,11 +187,11 @@ extension Identity.Consumer.View.Create.Request {
                             .map(\.period)
                             .map { $0.capitalizingFirstLetter() }
                             .joined(separator: " ")
-                        
+
                     }
                     .textAlign(.center)
                     .margin(bottom: .rem(2))
-                    
+
                     //                div {
                     //                    HTMLText("\(String.already_have_an_account.capitalizingFirstLetter().questionmark) ")
                     //                    Link(href: loginHref.relativePath) {
@@ -222,7 +221,7 @@ extension Identity.Consumer.View.Create {
     package struct Verify: HTML {
         let verificationAction: URL
         let redirectURL: URL
-        
+
         package init(
             verificationAction: URL,
             redirectURL: URL
@@ -230,13 +229,13 @@ extension Identity.Consumer.View.Create {
             self.verificationAction = verificationAction
             self.redirectURL = redirectURL
         }
-        
+
         private static let pagemodule_verify_id: String = "pagemodule_verify_id"
-        
+
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack(alignment: .center) {
-                    div() {}
+                    div {}
                         .id("spinner")
                     h2 { "message" }
                         .id("message")
@@ -249,7 +248,7 @@ extension Identity.Consumer.View.Create {
                 .maxWidth(.rem(20))
                 .maxWidth(.rem(24), media: .mobile)
                 .margin(horizontal: .auto)
-                
+
             } title: {
                 Header(3) {
                     TranslatedString(
@@ -261,20 +260,20 @@ extension Identity.Consumer.View.Create {
                 .textAlign(.center)
             }
             .id(Self.pagemodule_verify_id)
-            
+
             script {"""
                 document.addEventListener('DOMContentLoaded', function() {
                     const urlParams = new URLSearchParams(window.location.search);
                     const token = urlParams.get('token');
                     const email = urlParams.get('email');
-            
+
                     if (token && email) {
                         verifyEmail(token, email);
                     } else {
                         showMessage('Error: No verification token or email found.', false);
                     }
                 });
-            
+
                 async function verifyEmail(token, email) {
                     try {
                         const response = await fetch('\(verificationAction.absoluteString)', {
@@ -288,14 +287,14 @@ extension Identity.Consumer.View.Create {
                                 email: email
                             }).toString()
                         });
-                        
+
                         const data = await response.json();
-            
+
                         if (data.success) {
                             const pageModule = document.getElementById("\(Self.pagemodule_verify_id)");
                             pageModule.outerHTML = \(html: Identity.Creation.VerifyConfirmation(redirectURL: redirectURL));
                             setTimeout(() => { window.location.href = '\(redirectURL.absoluteString)'; }, 5000);
-            
+
                         } else {
                             console.log(data)
                             throw new Error(data.message || 'Account creation failed');
@@ -305,7 +304,7 @@ extension Identity.Consumer.View.Create {
                         showMessage('An error occurred during verification. Please try again later.', false);
                     }
                 }
-            
+
                 function showMessage(message, isSuccess) {
                     const messageElement = document.getElementById('message');
                     const spinnerElement = document.getElementById('spinner');
@@ -321,11 +320,11 @@ extension Identity.Consumer.View.Create {
 extension Identity.Creation {
     package struct VerifyConfirmation: HTML {
         let redirectURL: URL
-        
+
         package init(redirectURL: URL) {
             self.redirectURL = redirectURL
         }
-        
+
         package var body: some HTML {
             PageModule(theme: .login) {
                 VStack(alignment: .center) {
@@ -337,7 +336,7 @@ extension Identity.Creation {
                     }
                     .textAlign(.center)
                     .margin(bottom: .rem(1))
-                    
+
                     CoenttbHTML.Paragraph {
                         TranslatedString(
                             dutch: "U wordt over 5 seconden doorgestuurd naar de inlogpagina.",
@@ -346,7 +345,7 @@ extension Identity.Creation {
                     }
                     .textAlign(.center)
                     .margin(bottom: .rem(2))
-                    
+
                     Link(href: .init(redirectURL.relativePath)) {
                         TranslatedString(
                             dutch: "Klik hier als u niet automatisch wordt doorgestuurd",

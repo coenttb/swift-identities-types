@@ -17,16 +17,16 @@ extension Identity.Provider.Client.Password {
     ) -> Self {
         @Dependency(\.database) var database
         @Dependency(\.logger) var logger
-        
+
         return .init(
             reset: .init(
                 request: { email in
                     let email = try EmailAddress(email)
-                    
+
                     let identity = try await Database.Identity.get(by: .email(email), on: database)
-                        
+
                     let resetToken = try await database.transaction { database in
-                        
+
                         guard let identityId = identity.id
                         else { throw Abort(.internalServerError, reason: "Invalid identity state") }
 
@@ -37,18 +37,18 @@ extension Identity.Provider.Client.Password {
                             .delete()
 
                         @Dependency(\.date) var date
-                        
+
                         let resetToken = try identity.generateToken(
                             type: .passwordReset,
                             validUntil: date().addingTimeInterval(3600)
                         )
 
                         try await resetToken.save(on: database)
-                        
+
                         return resetToken.value
 
                     }
-                    
+
                     @Dependency(\.fireAndForget) var fireAndForget
                     await fireAndForget {
                         try await sendPasswordResetEmail(email, resetToken)
@@ -68,7 +68,7 @@ extension Identity.Provider.Client.Password {
                                 .with(\.$identity)
                                 .first()
                             else { throw ValidationError.invalidToken }
-                            
+
                             @Dependency(\.date) var date
 
                             guard resetToken.validUntil > date()
@@ -87,14 +87,14 @@ extension Identity.Provider.Client.Password {
 
                             return resetToken.identity.emailAddress
                         }
-                        
+
                         @Dependency(\.fireAndForget) var fireAndForget
                         await fireAndForget {
                             try await sendPasswordChangeNotification(emailAddress)
                         }
 
                         logger.notice("Password reset successful for email: \(emailAddress)")
-                        
+
                     } catch {
                         logger.error("Error in resetPassword: \(String(describing: error))")
                         throw error

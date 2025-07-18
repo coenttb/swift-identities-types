@@ -17,14 +17,14 @@ extension Identity.Consumer {
         let title: (Identity.Consumer.View) -> String
         let description: (Identity.Consumer.View) -> String
         let _body: Body
-        
+
         @Dependency(\.identity.consumer.branding.primaryColor) var primaryColor
         @Dependency(\.identity.consumer.branding.accentColor) var accentColor
         @Dependency(\.identity.consumer.branding.favicons) var favicons
         @Dependency(\.identity.consumer.canonicalHref) var canonicalHref
         @Dependency(\.identity.consumer.hreflang) var hreflang
         @Dependency(\.identity.consumer.branding.footer_links) var footer_links
-        
+
         package init(
             view: Identity.Consumer.View,
             title: @escaping (Identity.Consumer.View) -> String,

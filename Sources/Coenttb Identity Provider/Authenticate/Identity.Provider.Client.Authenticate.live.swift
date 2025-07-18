@@ -25,12 +25,12 @@ extension Identity.Provider.Client.Authenticate {
     package static func live(
     ) -> Self {
         @Dependency(\.logger) var logger
-        
+
         return .init(
             credentials: { username, password in
-                
+
                 let email: EmailAddress = try .init(username)
-                
+
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
 
@@ -50,9 +50,9 @@ extension Identity.Provider.Client.Authenticate {
                     }
 
                     let response: Identity.Authentication.Response = try await .init(identity)
-                    
+
                     @Dependency(\.date) var date
-                    
+
                     identity.lastLoginAt = date()
                     try await identity.save(on: request.db)
 
@@ -80,12 +80,12 @@ extension Identity.Provider.Client.Authenticate {
                         )
 
                         print("payload", payload)
-                        
+
                         let identity = try await Database.Identity.get(by: .id(payload.identityId), on: request.db)
-                        
+
                         guard identity.emailAddress == payload.emailAddress
                         else { throw Abort(.unauthorized, reason: "Identity details have changed") }
-                        
+
                         @Dependency(\.date) var date
 
                         identity.lastLoginAt = date()
@@ -128,12 +128,10 @@ extension Identity.Provider.Client.Authenticate {
 
                         return response
 
-                    }
-                    catch let error as JWTError {
+                    } catch let error as JWTError {
                         logger.warning("Refresh token verification failed: \(error.localizedDescription)")
                         throw Abort(.unauthorized, reason: "Invalid refresh token")
-                    }
-                    catch {
+                    } catch {
                         logger.error("Unexpected error during refresh token verification: \(error.localizedDescription)")
                         throw Abort(.internalServerError, reason: "Unexpected error during refresh token verification")
                     }
@@ -162,13 +160,13 @@ extension Identity.Provider.Client.Authenticate {
                         try await apiKey.save(on: request.db)
                         throw Abort(.unauthorized, reason: "API key has expired")
                     }
-                    
+
                     let identity = apiKey.identity
 
                     let response: Identity.Authentication.Response = try await .init(identity)
 
                     @Dependency(\.date) var date
-                    
+
                     identity.lastLoginAt = date()
                     try await identity.save(on: request.db)
 

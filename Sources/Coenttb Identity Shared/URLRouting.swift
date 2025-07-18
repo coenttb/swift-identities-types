@@ -5,11 +5,11 @@
 //  Created by Coen ten Thije Boonkkamp on 03/03/2025.
 //
 
+import Coenttb_Vapor
 import Foundation
 import URLRouting
-import Coenttb_Vapor
 
-//extension URLRequest {
+// extension URLRequest {
 //    /// Sets or removes the Authorization header with a Bearer token
 //    /// - Parameter token: The bearer token to be used for authentication. If nil, removes the Authorization header
 //    /// - Returns: A new URLRequest instance with the Authorization header set or removed
@@ -30,7 +30,7 @@ import Coenttb_Vapor
 //            setValue(nil, forHTTPHeaderField: "Cookie")
 //        }
 //    }
-//}
+// }
 
 extension HTTPHeaders {
     /// Access or set the `Reauthorization: Bearer: ...` header.
@@ -59,8 +59,6 @@ extension HTTPHeaders {
     }
 }
 
-
-
 extension ParserPrinter where Input == URLRequestData {
     /// Sets a cookie with the given name and value
     /// - Parameters:
@@ -73,7 +71,7 @@ extension ParserPrinter where Input == URLRequestData {
         requestData.headers["cookie", default: []].append("\(name)=\(value.string)"[...])
         return self.baseRequestData(requestData)
     }
-    
+
     /// Sets a cookie with the given name and optional value
     /// - Parameters:
     ///   - name: Cookie name
@@ -116,7 +114,7 @@ extension ParserPrinter where Input == URLRequestData {
             return urlRequestData
         }
     }
-    
+
     /// Sets multiple cookies at once
     /// - Parameter cookies: Dictionary mapping cookie names to values
     /// - Returns: Modified BaseURLPrinter with all cookies set

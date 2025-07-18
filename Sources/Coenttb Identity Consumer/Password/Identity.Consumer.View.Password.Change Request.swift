@@ -53,7 +53,7 @@ extension Identity.Consumer.View.Password.Change {
                                     )
                                 )
                             )
-                            
+
                             Input(
                                 codingKey: Identity.Password.Change.Request.CodingKeys.newPassword,
                                 type: .password(

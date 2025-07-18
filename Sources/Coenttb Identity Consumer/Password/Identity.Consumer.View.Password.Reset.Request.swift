@@ -252,7 +252,6 @@ extension Identity.Consumer.View.Password.Reset {
                                 )
                             )
                             .focusOnPageLoad()
-                                
 
                             Button(
                                 button: .init(type: .submit),

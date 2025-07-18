@@ -16,7 +16,7 @@ extension Identity.Provider {
         private let tokenAuthenticator: TokenAuthenticator
         private let apiKeyAuthenticator: ApiKeyAuthenticator
         private let credentialsAuthenticator: CredentialsAuthenticator
-        
+
         public init(
             tokenAuthenticator: TokenAuthenticator = .init(),
             apiKeyAuthenticator: ApiKeyAuthenticator = .init(),
@@ -26,7 +26,7 @@ extension Identity.Provider {
             self.apiKeyAuthenticator = apiKeyAuthenticator
             self.credentialsAuthenticator = credentialsAuthenticator
         }
-        
+
         public func respond(
             to request: Request,
             chainingTo next: AsyncResponder
@@ -38,25 +38,25 @@ extension Identity.Provider {
                     let tokenResponse = try await tokenAuthenticator.respond(to: request, chainingTo: next)
                     return tokenResponse
                 } catch {
-                    
+
                 }
-     
+
                 do {
                     if let bearerAuth = request.headers.bearerAuthorization {
                         try await apiKeyAuthenticator.authenticate(bearer: bearerAuth, for: request)
                         return try await next.respond(to: request)
                     }
                 } catch {
-                    
+
                 }
-                
+
                 do {
                     if let basicAuth = request.headers.basicAuthorization {
                         try await credentialsAuthenticator.authenticate(basic: basicAuth, for: request)
                         return try await next.respond(to: request)
                     }
                 } catch {
-                    
+
                 }
 
                 return try await next.respond(to: request)

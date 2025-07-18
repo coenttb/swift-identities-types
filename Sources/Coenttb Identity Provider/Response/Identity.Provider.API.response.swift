@@ -14,14 +14,14 @@ extension Identity.Provider.API {
     public static func response(
         api: Identity.Provider.API
     ) async throws -> Response {
-        
+
         @Dependency(\.identity.provider.rateLimiters) var rateLimiters
-        
+
         let rateLimitClient = try await Identity.API.rateLimit(
             api: api,
             rateLimiter: rateLimiters
         )
-        
+
         // Then check protection
         do {
             try Identity.API.protect(api: api, with: Database.Identity.self)
@@ -29,7 +29,7 @@ extension Identity.Provider.API {
             await rateLimitClient.recordFailure()
             throw error
         }
-        
+
         switch api {
         case .authenticate(let authenticate):
             do {

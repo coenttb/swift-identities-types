@@ -114,7 +114,7 @@ extension Database.Identity.Token {
 
         @Dependency(\.date) var date
         let currentDate = date()
-        
+
         let rotationInterval: TimeInterval = 7 * 24 * 3600 // 7 days
         if currentDate.timeIntervalSince(self.createdAt ?? currentDate) > rotationInterval {
             try await self.delete(on: db)
@@ -167,7 +167,7 @@ extension Database.Identity {
 
     package func canGenerateToken(on db: Fluent.Database) async throws -> Bool {
         @Dependency(\.date) var date
-        
+
         let recentTokens = try await Database.Identity.Token.query(on: db)
             .filter(\.$identity.$id == self.id!)
             .filter(\.$createdAt >= date().addingTimeInterval(-Self.tokenGenerationWindow))

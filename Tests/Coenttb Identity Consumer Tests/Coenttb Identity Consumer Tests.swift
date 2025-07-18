@@ -1,28 +1,28 @@
 ////  Coenttb_Identity_Consumer_Tests.swift
 //
-//import Coenttb_Identity_Consumer
-//import Coenttb_Identity_Shared
-//import Coenttb_Web
-//import DependenciesTestSupport
-//import Foundation
-//import JWT
-//import Testing
-//import Vapor
-//import VaporTesting
-//import EmailAddress
+// import Coenttb_Identity_Consumer
+// import Coenttb_Identity_Shared
+// import Coenttb_Web
+// import DependenciesTestSupport
+// import Foundation
+// import JWT
+// import Testing
+// import Vapor
+// import VaporTesting
+// import EmailAddress
 //
 //// Mock client implementation for testing
-//extension Identity.Consumer.Client {
+// extension Identity.Consumer.Client {
 //    static let liveTest: Self = .live()
-//}
+// }
 //
-//@Suite(
+// @Suite(
 //    "Identity Consumer Tests",
 //    .dependency(\.uuid, .incrementing),
 //    .dependency(\.date, .init(Date.init)),
 //    .dependency(\.identity.consumer.client, .liveTest)
-//)
-//struct IdentityConsumerTests {
+// )
+// struct IdentityConsumerTests {
 //
 //    // Test authentication success flow
 //    @Test("Test authentication with credentials")
@@ -495,20 +495,20 @@
 //            #expect(reauthorizationCookie != nil, "Expected reauthorization token cookie to be set")
 //        }
 //    }
-//}
+// }
 //
 //// Helper extension for test app
-//extension TestingHTTPRequest {
+// extension TestingHTTPRequest {
 //    init(identity route: Identity.API) throws {
 //        @Dependency(\.identity.consumer.router) var router
 //        
 //        let urlRequestData = try router.print(route)
 //        try self.init(urlRequestData)
 //    }
-//}
+// }
 //
-//extension Application {
+// extension Application {
 //    func test(identity route: Identity.API) async throws -> TestingHTTPResponse {
 //        try await self.testing().performTest(request: .init(identity: route))
 //    }
-//}
+// }

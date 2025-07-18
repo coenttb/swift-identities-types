@@ -5,17 +5,17 @@
 //  Created by Coen ten Thije Boonkkamp on 17/02/2025.
 //
 
-import Foundation
 import Coenttb_Vapor
 import Dependencies
+import Foundation
 
 extension Vapor.Response {
     public func withTokens(
         for response: Identity.Authentication.Response
     ) -> Vapor.Response {
-       
+
         self.cookies.setTokens(for: response)
-        
+
         return self
     }
 }

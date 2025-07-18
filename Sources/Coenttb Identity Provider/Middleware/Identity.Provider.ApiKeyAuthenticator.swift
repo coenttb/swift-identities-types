@@ -10,11 +10,11 @@ extension Identity.Provider {
     public struct ApiKeyAuthenticator: AsyncBearerAuthenticator {
 
         public init(
-            
+
         ) {
-            
+
         }
-        
+
         @Dependency(\.identity.provider.client) var client
 
         public func authenticate(
@@ -31,7 +31,7 @@ extension Identity.Provider {
                         _ = try await client.authenticate.apiKey(bearer.token)
                     }
                 } catch {
-                    
+
                 }
             }
         }

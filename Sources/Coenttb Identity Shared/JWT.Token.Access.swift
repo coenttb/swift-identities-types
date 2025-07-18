@@ -2,8 +2,8 @@ import Dependencies
 import EmailAddress
 import Foundation
 import JWT
-import Vapor
 import SwiftWeb
+import Vapor
 
 extension JWT.Token {
     public struct Access: Codable, Sendable {
@@ -11,7 +11,7 @@ extension JWT.Token {
         public var expiration: ExpirationClaim
         public var issuedAt: IssuedAtClaim
         public var subject: SubjectClaim
-        
+
         package init(
             expiration: ExpirationClaim,
             issuedAt: IssuedAtClaim,
@@ -22,7 +22,7 @@ extension JWT.Token {
             self.issuedAt = issuedAt
             self.subject = SubjectClaim(value: "\(identityId.uuidString):\(email.rawValue)")
         }
-        
+
         enum CodingKeys: String, CodingKey {
             case expiration = "exp"
             case issuedAt = "iat"
@@ -48,7 +48,7 @@ extension JWT.Token.Access {
             subject.value = "\(newValue.uuidString):\(email)"
         }
     }
-    
+
     public var emailAddress: EmailAddress {
         get {
             let components = subject.value.components(separatedBy: ":")

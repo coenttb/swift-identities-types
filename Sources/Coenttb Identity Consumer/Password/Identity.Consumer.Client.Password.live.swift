@@ -11,17 +11,16 @@ import Coenttb_Web
 import Dependencies
 import EmailAddress
 import Identities
-import Identities
 import JWT
 import RateLimiter
 
 extension Identity.Consumer.Client.Password {
     package static func live(
-        
+
     ) -> Self {
-        
+
         @Dependency(\.identity.consumer.client) var client
-        
+
         return .init(
             reset: .init(
                 request: { email in

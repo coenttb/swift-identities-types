@@ -9,14 +9,14 @@ import Coenttb_Identity_Provider
 import Coenttb_Identity_Shared
 import Coenttb_Web
 import DependenciesTestSupport
+import EmailAddress
+import FluentSQLiteDriver
 import Foundation
+import JWT
 import Mailgun
 import Testing
-import JWT
 import Vapor
 import VaporTesting
-import FluentSQLiteDriver
-import EmailAddress
 
 @Suite(
     "Identity Provider Ratelimit Tests",
@@ -29,7 +29,7 @@ struct IdentityProviderRatelimitTests {
     func testCredentialRateLimiting() async throws {
         try await withTestApp { app in
             let (testEmail, testPassword) = try await setupMockIdentity(app: app)
-            
+
             // Make requests up to the rate limit (4 requests allowed after setup)
             for i in 1...4 {
                 let response = try await app.test(
@@ -69,7 +69,7 @@ struct IdentityProviderRatelimitTests {
     func testAccountCreationRateLimiting() async throws {
         try await withTestApp { app in
             let baseEmail = "test\(UUID())@example.com"
-            
+
             // Make requests up to limit from same IP
             for i in 1...5 {
                 let email = "\(i)-\(baseEmail)"
@@ -129,7 +129,7 @@ struct IdentityProviderRatelimitTests {
             @Dependency(\.date) var date
             let currentTime = date()
             let advancedTime = currentTime.addingTimeInterval(61) // Advance >1 minute
-            
+
             try await withDependencies {
                 $0.date = .init { advancedTime }
             } operation: {

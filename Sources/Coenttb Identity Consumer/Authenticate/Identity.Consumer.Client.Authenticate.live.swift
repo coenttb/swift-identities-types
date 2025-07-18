@@ -11,16 +11,15 @@ import Coenttb_Web
 import Dependencies
 import EmailAddress
 import Identities
-import Identities
 import JWT
 import RateLimiter
 
 extension Identity.Consumer.Client.Authenticate {
     package static func live(
-        
+
     ) -> Self {
         @Dependency(\.identity.consumer.client) var client
-        
+
         return .init(
             credentials: { username, password in
                 do {
@@ -39,8 +38,7 @@ extension Identity.Consumer.Client.Authenticate {
                     request.auth.login(accessToken)
 
                     return response
-                }
-                catch {
+                } catch {
                     if let jwtError = error as? JWTError {
                         print("JWT specific error:", jwtError)
                     }
@@ -64,19 +62,19 @@ extension Identity.Consumer.Client.Authenticate {
 
                         @Dependency(\.request) var request
                         guard let request else { throw Abort.requestUnavailable }
-                        
+
                         let newAccessToken = try await request.jwt.verify(
                             response.accessToken.value,
                             as: JWT.Token.Access.self
                         )
-                        
+
                         request.auth.login(newAccessToken)
-                        
+
                         return response
-                        
+
                     } catch {
                         @Dependency(\.logger) var logger
-                        
+
                         if let jwtError = error as? JWTError {
                             logger.warning("Refresh token verification failed with JWT error: \(jwtError.localizedDescription)")
                         } else if let abort = error as? Abort {
@@ -84,12 +82,12 @@ extension Identity.Consumer.Client.Authenticate {
                         } else {
                             logger.warning("Refresh token verification failed with error: \(error.localizedDescription)")
                         }
-                        
+
                         // Re-throw with more specific status if available
                         if let abort = error as? Abort {
                             throw abort
                         }
-                        
+
                         throw Abort(.unauthorized, reason: "Failed to refresh token")
                     }
                 }
@@ -107,4 +105,3 @@ extension Identity.Consumer.Client.Authenticate {
         )
     }
 }
-

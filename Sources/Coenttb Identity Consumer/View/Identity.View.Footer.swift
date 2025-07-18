@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 15/09/2024.
 //
 
-import Foundation
 import Coenttb_Web
+import Foundation
 
 extension Identity.Consumer.View {
     public struct Footer: HTML {
@@ -15,7 +15,7 @@ extension Identity.Consumer.View {
         public init(links: [(TranslatedString, URL)]) {
             self.links = links
         }
-        
+
         public var body: some HTML {
             footer {
                 if !links.isEmpty {
@@ -27,7 +27,7 @@ extension Identity.Consumer.View {
                                     .textAlign(.center)
                                     .padding(vertical: nil, horizontal: .rem(0.5))
                             }
-                            
+
                             Link(link.0.capitalizingFirstLetter().description,
                                  href: .init(link.1.absoluteString))
                                 .inlineStyle("flex", "1")
@@ -50,15 +50,15 @@ extension Identity.Consumer.View {
 extension Identity.Consumer.View.Footer {
     public init(termsOfUse: URL?, privacyStatement: URL?) {
         var links: [(TranslatedString, URL)] = []
-        
+
         if let termsOfUse {
             links.append((String.terms_of_use, termsOfUse))
         }
-        
+
         if let privacyStatement {
             links.append((String.privacyStatement, privacyStatement))
         }
-        
+
         self.init(links: links)
     }
 }

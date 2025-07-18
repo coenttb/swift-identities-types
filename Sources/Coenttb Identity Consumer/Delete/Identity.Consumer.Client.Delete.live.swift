@@ -11,13 +11,12 @@ import Coenttb_Web
 import Dependencies
 import EmailAddress
 import Identities
-import Identities
 import JWT
 import RateLimiter
 
 extension Identity.Consumer.Client.Delete {
     package static func live(
-        
+
     ) -> Self {
         @Dependency(\.identity.consumer.client) var client
         return .init(

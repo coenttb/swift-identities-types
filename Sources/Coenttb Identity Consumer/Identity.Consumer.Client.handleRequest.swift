@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 13/02/2025.
 //
 
-import Foundation
 import Coenttb_Web
+import Foundation
 
 extension Identity.Consumer.Client {
     @_disfavoredOverload
@@ -20,9 +20,9 @@ extension Identity.Consumer.Client {
     ) async throws -> ResponseType {
 
         @Dependency(URLRequest.Handler.self) var handler
-        
+
         let request = try self.makeRequest(route)
-        
+
         return try await handler(
             for: request,
             decodingTo: type,
@@ -43,9 +43,9 @@ extension Identity.Consumer.Client {
         column: UInt = #column
     ) async throws {
         let request = try makeRequest(route)
-        
+
         @Dependency(URLRequest.Handler.self) var handler
-        
+
         try await handler(for: request)
     }
 }
@@ -58,9 +58,9 @@ extension Identity.Consumer.Client {
 
 extension Identity.Consumer.Client {
     package static func makeRequest(_ route: Identity.Consumer.API) throws -> URLRequest {
-        
+
         @Dependency(\.identity.provider.router) var router
-        
+
         do {
             guard let request = try URLRequest(
                 data: router
@@ -68,7 +68,7 @@ extension Identity.Consumer.Client {
                     .print(route)
             )
             else { throw Identity.Consumer.Client.Error.requestError }
-            
+
             return request
         } catch {
             throw Identity.Consumer.Client.Error.printError

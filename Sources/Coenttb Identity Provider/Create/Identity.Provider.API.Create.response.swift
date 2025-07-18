@@ -23,8 +23,7 @@ extension Identity.Provider.API.Create {
             do {
                 try await client.create.request(request)
                 return Response.success(true)
-            }
-            catch {
+            } catch {
                 throw error
             }
 //            catch let error as Abort where error.status == .tooManyRequests {

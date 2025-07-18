@@ -30,7 +30,7 @@ extension Identity.Provider {
                     _ = try await client.authenticate.credentials(username: basic.username, password: basic.password)
                 }
             } catch {
-                
+
             }
         }
     }

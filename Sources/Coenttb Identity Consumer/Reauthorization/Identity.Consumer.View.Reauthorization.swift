@@ -8,8 +8,6 @@
 import Coenttb_Web
 import Foundation
 import Identities
-import Identities
-
 extension Identity.Consumer.View {
     package struct Reauthorize<CodingKey: RawRepresentable>: HTML where CodingKey.RawValue == String {
         let codingKey: CodingKey
@@ -55,14 +53,13 @@ extension Identity.Consumer.View {
                                 method: .post
                             ) {
                                 VStack {
-                                    
+
                                     Input(
                                         codingKey: self.codingKey,
                                         type: .password(
                                             .init(placeholder: .init(String.password.capitalizingFirstLetter().description))
                                         )
                                     )
-                                    
 
                                     Link(href: .init(passwordResetHref.relativePath)) {
                                         String.forgot_password.capitalizingFirstLetter().questionmark

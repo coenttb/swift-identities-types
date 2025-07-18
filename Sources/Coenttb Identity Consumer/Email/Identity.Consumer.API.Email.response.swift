@@ -15,7 +15,7 @@ extension Identity.Consumer.API.Email.Change {
         email: Identity.Consumer.API.Email
     ) async throws -> Response {
         @Dependency(\.identity.consumer.client) var client
-        
+
         switch email {
         case .change(let change):
             switch change {
@@ -25,7 +25,7 @@ extension Identity.Consumer.API.Email.Change {
                     switch data {
                     case .success:
                         return Response.success(true)
-                        
+
                     case .requiresReauthentication:
                         return Response.success(false, message: "Requires reauthorization")
                     }
@@ -36,7 +36,7 @@ extension Identity.Consumer.API.Email.Change {
             case .confirm(let confirm):
                 do {
                     let identityEmailChangeConfirmResponse = try await client.email.change.confirm(confirm)
-                    
+
                     return Response.success(true)
                         .withTokens(for: identityEmailChangeConfirmResponse)
                 } catch {

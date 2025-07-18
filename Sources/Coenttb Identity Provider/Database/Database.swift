@@ -54,7 +54,7 @@ extension Database {
 
             return migrations
         }()
-        
+
         public func prepare(on database: Fluent.Database) async throws {
             for migration in Self.migrations {
                 do {
@@ -65,10 +65,10 @@ extension Database {
                 }
             }
         }
-        
+
         public func revert(on database: Fluent.Database) async throws {
             var errors: [Error] = []
-            
+
             for migration in Self.migrations.reversed() {
                 do {
                     try await migration.revert(on: database)
@@ -81,7 +81,7 @@ extension Database {
                     errors.append(error)
                 }
             }
-            
+
             if !errors.isEmpty {
                 throw MigrationError.multipleMigrationsFailed(errors)
             }
@@ -95,4 +95,3 @@ extension Database {
         case multipleMigrationsFailed([Error])
     }
 }
-

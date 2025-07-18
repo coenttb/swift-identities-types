@@ -53,7 +53,7 @@ extension Email {
                         }
                         .color(.text.primary.reverse())
                         .padding(bottom: .medium)
-                        
+
 //                        Button(
 //                            tag: a,
 //                            background: primaryColor

@@ -7,53 +7,49 @@
 
 import Coenttb_Identity_Consumer
 import Coenttb_Identity_Shared
+import Coenttb_Vapor_Testing
 import Coenttb_Web
 import DependenciesTestSupport
+import EmailAddress
 import Foundation
 import JWT
 import Testing
 import Vapor
 import VaporTesting
-import EmailAddress
-import Coenttb_Vapor_Testing
 
-private func withTestConsumerApp(_ test: (Application) async throws -> ()) async throws {
+private func withTestConsumerApp(_ test: (Application) async throws -> Void) async throws {
     // Create a unique identifier for this test run
     let testId = UUID().uuidString.prefix(8).lowercased()
     print("🔵 Consumer Test starting with ID: \(testId)")
-    
+
     let app = try await Application.make(.testing)
-    
+
     try await withDependencies {
         $0.application = app
     } operation: {
         @Dependency(\.application) var application
-        
+
         do {
             // Set up JWT for token handling
             let key = ES256PrivateKey()
             await application.jwt.keys.add(ecdsa: key)
-            
-            
+
             // Add necessary middleware
             app.middleware.use(Identity.Consumer.Middleware())
-            
+
             // Set up routes
             @Dependency(\.identity.consumer.router) var router
             application.mount(router, use: Identity.Consumer.Route.response)
-            
-        
-            
+
             print("🔵 Running consumer test with ID: \(testId)")
             try await test(app)
             print("🔵 Consumer test completed: \(testId)")
-        }
-        catch {
+        } catch {
             print("🔴 Consumer test failed: \(testId) - Error: \(error)")
             try await application.asyncShutdown()
             throw error
         }
-        
+
         print("🔵 Consumer test cleanup: \(testId)")
         try await app.asyncShutdown()
     }
@@ -64,12 +60,11 @@ extension TestingHTTPRequest {
         _ route: Identity.API
     ) throws {
         @Dependency(\.identity.provider.router) var router
-        
+
         let urlRequestData = try router.print(route)
         try self.init(urlRequestData)
     }
 }
-
 
 extension Application {
     package func test(identity route: Identity.API) async throws -> TestingHTTPResponse {

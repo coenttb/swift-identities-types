@@ -13,9 +13,9 @@ import JWT
 extension Identity.Consumer {
     public struct TokenAuthenticator: AsyncMiddleware {
         public init() {}
-        
+
         @Dependency(\.identity.consumer.client) var client
-        
+
         public func respond(to request: Request, chainingTo next: AsyncResponder) async throws -> Response {
             return try await withDependencies {
                 $0.request = request
@@ -25,9 +25,9 @@ extension Identity.Consumer {
                         accessToken: request.cookies.accessToken?.string,
                         refreshToken: \.cookies.refreshToken?.string
                     )
-                    
+
                     let response = try await next.respond(to: request)
-                    
+
                     return response
                         .withTokens(for: identityAuthenticationResponse)
                 } catch {
@@ -39,5 +39,3 @@ extension Identity.Consumer {
         }
     }
 }
-
-

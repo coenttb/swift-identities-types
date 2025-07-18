@@ -12,7 +12,7 @@ extension Identity.API {
         api: Identity.API,
         with type: Authenticatable.Type
     ) throws {
-        
+
         switch api {
         case .authenticate(let authenticate):
             switch authenticate {

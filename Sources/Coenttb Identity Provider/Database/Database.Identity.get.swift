@@ -5,6 +5,7 @@
 //  Created by Coen ten Thije Boonkkamp on 01/02/2025.
 //
 
+import Coenttb_Fluent
 import Coenttb_Server
 import Coenttb_Vapor
 import Coenttb_Web
@@ -12,7 +13,6 @@ import Fluent
 @preconcurrency import FluentKit
 import Foundation
 import Identities
-import Coenttb_Fluent
 
 extension Database.Identity {
     public enum Get {
@@ -60,10 +60,10 @@ extension Database.Identity {
 
             guard let identity = request.auth.get(Database.Identity.self)
             else { throw Abort(.unauthorized, reason: "Not authenticated") }
-            
+
             guard let id = identity.id
             else { throw Abort(.internalServerError, reason: "Invalid identity state") }
-            
+
             return try await Database.Identity.get(by: .id(id), on: database)
         }
     }

@@ -79,8 +79,6 @@ extension Database {
     }
 }
 
-
-
 extension Database.Identity {
     package enum Migration {
         package struct Create: AsyncMigration {

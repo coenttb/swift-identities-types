@@ -17,7 +17,7 @@ extension Identity.Provider.Client.Delete {
     ) -> Self {
         @Dependency(\.database) var database
         @Dependency(\.logger) var logger
-        
+
         return .init(
             request: { reauthToken in
                 let identity = try await Database.Identity.get(by: .auth, on: database)
@@ -46,7 +46,7 @@ extension Identity.Provider.Client.Delete {
                     try await deletion.save(on: database)
                     logger.notice("Deletion requested for user \(String(describing: identity.id))")
                 }
-                
+
                 @Dependency(\.fireAndForget) var fireAndForget
                 await fireAndForget {
                     try await sendDeletionRequestNotification(identity.emailAddress)
@@ -75,24 +75,24 @@ extension Identity.Provider.Client.Delete {
                         let deletion = identity.deletion,
                         deletion.state == .pending,
                         let deletionRequestedAt = deletion.requestedAt
-                    
+
                     else { throw Abort(.badRequest, reason: "User is not pending deletion") }
 
                     // Check grace period
                     let gracePeriod: TimeInterval = 7 * 24 * 60 * 60 // 7 days
-                    
+
                     @Dependency(\.date) var date
-                    
+
                     guard date().timeIntervalSince(deletionRequestedAt) >= gracePeriod
                     else { throw Abort(.badRequest, reason: "Grace period has not yet expired") }
 
                     // Update user state
                     identity.deletion?.state = .deleted
                     try await identity.save(on: database)
-                    
+
                     logger.notice("Identity \(String(describing: identity.id)) marked as deleted")
                 }
-                
+
                 @Dependency(\.fireAndForget) var fireAndForget
                 await fireAndForget {
                     try await sendDeletionConfirmationNotification(identity.emailAddress)

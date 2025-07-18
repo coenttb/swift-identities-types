@@ -34,11 +34,11 @@ extension Identity.Consumer.API.Authenticate {
                         print("Failed in access token case with error:", error)
                         throw Abort(.internalServerError, reason: "Failed to authenticate account: \(error)")
                     }
-                    
+
                 case .refresh(let refresh):
                     do {
                         let identityAuthenticationResponse = try await client.authenticate.token.refresh(token: refresh.token)
-                        
+
                         return Response.success(true)
                             .withTokens(for: identityAuthenticationResponse)
                     } catch {
@@ -49,20 +49,20 @@ extension Identity.Consumer.API.Authenticate {
 
             case .credentials(let credentials):
                 do {
-                    
+
                     let identityAuthenticationResponse = try await client.authenticate.credentials(credentials)
-                                    
+
                     return Response.success(true)
                         .withTokens(for: identityAuthenticationResponse)
                 } catch {
                     print("Failed in credentials case with error:", error)
                     throw Abort(.internalServerError, reason: "Failed to authenticate account: \(error)")
                 }
-                
+
             case .apiKey(let apiKey):
                 do {
                     let identityAuthenticationResponse = try await client.authenticate.apiKey(apiKey: apiKey.token)
-                    
+
                     return Response.success(true)
                         .withTokens(for: identityAuthenticationResponse)
                 } catch {

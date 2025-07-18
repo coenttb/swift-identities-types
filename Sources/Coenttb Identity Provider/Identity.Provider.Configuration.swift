@@ -5,17 +5,16 @@
 //  Created by Coen ten Thije Boonkkamp on 17/02/2025.
 //
 
-import Foundation
+import Coenttb_Identity_Shared
 import Dependencies
-import Identities
+import Foundation
 import Identities
 import URLRouting
-import Coenttb_Identity_Shared
 
 extension Identity.Provider {
-    public struct Configuration:  Sendable {
+    public struct Configuration: Sendable {
         public var provider: Identity.Provider.Configuration.Provider
-        
+
         public init(provider: Identity.Provider.Configuration.Provider) {
             self.provider = provider
         }
@@ -31,7 +30,7 @@ extension Identity.Provider.Configuration {
         public var router: AnyParserPrinter<URLRequestData, Identity.API>
         public var client: Identity.Provider.Client
         public var rateLimiters: RateLimiters
-        
+
         public init(
             baseURL: URL,
             domain: String?,
@@ -52,7 +51,6 @@ extension Identity.Provider.Configuration {
     }
 }
 
-
 extension Identity.Provider.Configuration: TestDependencyKey {
     public static let testValue: Self = .init(provider: .testValue)
 }
@@ -66,10 +64,10 @@ extension DependencyValues {
 
 extension Identity.Provider.Configuration.Provider: TestDependencyKey {
     public static var testValue: Self {
-        
+
         let router = Identity.API.Router().eraseToAnyParserPrinter()
         let domain: String? = nil
-        
+
         return .init(
             baseURL: .init(string: "/")!,
             domain: domain,
@@ -87,7 +85,7 @@ extension Identity.Provider.Configuration {
         public var accessToken: Identity.Provider.Configuration.AccessToken
         public var refreshToken: Identity.Provider.Configuration.RefreshToken
         public var reauthorizationToken: Identity.Provider.Configuration.ReauthorizationToken
-        
+
         public init(
             accessToken: Identity.Provider.Configuration.AccessToken,
             refreshToken: Identity.Provider.Configuration.RefreshToken,
@@ -103,14 +101,14 @@ extension Identity.Provider.Configuration {
 extension Identity.Provider.Configuration {
     public struct Token: Sendable, Hashable {
         public var expires: TimeInterval
-        
+
         public init(
             expires: TimeInterval
         ) {
             self.expires = expires
         }
     }
-    
+
     public typealias AccessToken = Token
     public typealias RefreshToken = Token
     public typealias ReauthorizationToken = Token

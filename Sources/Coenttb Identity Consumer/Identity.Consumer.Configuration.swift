@@ -5,20 +5,20 @@
 //  Created by Coen ten Thije Boonkkamp on 14/02/2025.
 //
 
-import Foundation
-import Dependencies
-import Identities
 import Coenttb_Identity_Shared
-import URLRouting
 import Coenttb_Web
+import Dependencies
 import Favicon
+import Foundation
+import Identities
+import URLRouting
 import Vapor
 
 extension Identity.Consumer {
     public struct Configuration: Sendable {
         public var provider: Identity.Consumer.Configuration.Provider
         public var consumer: Identity.Consumer.Configuration.Consumer
-        
+
         public init(provider: Identity.Consumer.Configuration.Provider, consumer: Identity.Consumer.Configuration.Consumer) {
             self.provider = provider
             self.consumer = consumer
@@ -62,7 +62,7 @@ extension Identity.Consumer.Configuration.Consumer: TestDependencyKey {
 extension Identity.Consumer.Configuration {
     public struct Consumer: Sendable {
         public var baseURL: URL
-        
+
         public var domain: String?
         public var cookies: Identity.CookiesConfiguration
         public var router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route> {
@@ -70,18 +70,18 @@ extension Identity.Consumer.Configuration {
                 self.router = router.baseURL(self.baseURL.absoluteString).eraseToAnyParserPrinter()
             }
         }
-        
+
         public var client: Identity.Consumer.Client
-        
+
         public var currentUserName: @Sendable () -> String?
         public var canonicalHref: @Sendable (Identity.Consumer.View) -> URL?
         public var hreflang: @Sendable (Identity.Consumer.View, Languages.Language) -> URL
-        
+
         public var branding: Branding
         public var navigation: Navigation
         public var redirect: Identity.Consumer.Configuration.Redirect
         public var rateLimiters: RateLimiters
-        
+
         public init(
             baseURL: URL,
             domain: String?,
@@ -159,7 +159,7 @@ extension Identity.Consumer.Configuration {
         public var passwordResetSuccess: @Sendable () -> URL
         public var emailChangeConfirmSuccess: @Sendable () -> URL
         public var createVerificationSuccess: @Sendable () -> URL
-        
+
         public init(
             createProtected: @escaping @Sendable () -> URL,
             createVerificationSuccess: @escaping @Sendable () -> URL,
@@ -220,14 +220,13 @@ extension Identity.Consumer.Configuration.Redirect {
             emailChangeConfirmSuccess: emailChangeConfirmSuccess
         )
 
-
     }
 }
 
 extension Identity.Consumer.Configuration.Redirect {
     public static func toHome() -> Self {
         @Dependency(\.identity.consumer.navigation.home) var home
-        
+
         return .init(
             createProtected: home,
             createVerificationSuccess: home,
@@ -239,17 +238,17 @@ extension Identity.Consumer.Configuration.Redirect {
         )
     }
 }
- 
+
 extension Identity.Consumer.Configuration {
     public struct Navigation: Sendable {
         public var home: @Sendable () -> URL
-        
+
         public init(home: @escaping @Sendable () -> URL) {
             self.home = home
         }
     }
 }
- 
+
 extension Identity.Consumer.Configuration {
     public struct Branding: Sendable {
         public var logo: Identity.Consumer.View.Logo
@@ -259,7 +258,7 @@ extension Identity.Consumer.Configuration {
         public var footer_links: [(TranslatedString, URL)]
         public var titleForView: @Sendable (Identity.Consumer.View) -> TranslatedString
         public var descriptionForView: @Sendable (Identity.Consumer.View) -> TranslatedString
-        
+
         public init(
             logo: Identity.Consumer.View.Logo,
             primaryColor: HTMLColor,
@@ -277,7 +276,7 @@ extension Identity.Consumer.Configuration {
             self.titleForView = titleForView
             self.descriptionForView = descriptionForView
         }
-        
+
         public init(
             logo: Identity.Consumer.View.Logo,
             primaryColor: HTMLColor,
@@ -304,7 +303,7 @@ extension Identity.Consumer.Configuration {
         public var baseURL: URL
         public var domain: String?
         public var router: AnyParserPrinter<URLRequestData, Identity.API>
-        
+
         public init(
             baseURL: URL,
             domain: String?,
@@ -330,10 +329,10 @@ extension Identity.CookiesConfiguration {
         _ router: AnyParserPrinter<URLRequestData, Identity.Consumer.Route>,
         domain: String?
     ) -> Identity.CookiesConfiguration {
-        
+
         // We use a dummy 'token' because we only care about the path and not the payload.
         let path = router.url(for: .api(.authenticate(.token(.refresh(.init(value: "token")))))).path
-        
+
         return .init(
             accessToken: .init(
                 expires: 60 * 15, // 15 minutes

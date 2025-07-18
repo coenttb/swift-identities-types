@@ -11,30 +11,27 @@ import Coenttb_Web
 import Dependencies
 import EmailAddress
 import Identities
-import Identities
 import JWT
 import RateLimiter
 
 extension Identity.Consumer.Client.Create {
     package static func live(
-        
+
     ) -> Self {
         @Dependency(\.identity.consumer.client) var client
-        
+
         return .init(
             request: { email, password in
                 do {
                     try await client.handleRequest(for: .create(.request(.init(email: email, password: password))))
-                }
-                catch {
+                } catch {
                     throw Abort(.internalServerError)
                 }
             },
             verify: { email, token in
                 do {
                     try await client.handleRequest(for: .create(.verify(.init(token: token, email: email))))
-                }
-                catch {
+                } catch {
                     throw Abort(.internalServerError)
                 }
             }

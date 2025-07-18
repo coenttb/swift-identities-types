@@ -39,4 +39,3 @@ extension Identity.Provider.API.Authenticate {
         }
     }
 }
-

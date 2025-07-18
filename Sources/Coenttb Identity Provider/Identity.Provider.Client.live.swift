@@ -25,34 +25,34 @@ extension Identity.Provider.Client {
     ) -> Self {
         @Dependency(\.logger) var logger
         @Dependency(\.database) var database
-        
+
         return .init(
             authenticate: .live(),
             logout: {
                 @Dependency(\.request) var request
                 guard let request else { throw Abort.requestUnavailable }
-                
+
                 let identity = try await Database.Identity.get(by: .auth, on: request.db)
                 identity.sessionVersion += 1
                 try await identity.save(on: request.db)
-                
+
                 request.auth.logout(Database.Identity.self)
             },
             reauthorize: { password in
                 do {
                     let identity = try await Database.Identity.get(by: .auth)
-                    
+
                     guard try identity.verifyPassword(password)
                     else { throw AuthenticationError.invalidCredentials }
-                    
-                    let payload = try JWT.Token.Reauthorization.init(identity: identity)
-                    
+
+                    let payload = try JWT.Token.Reauthorization(identity: identity)
+
                     @Dependency(\.application) var application
-                    
+
                     return try await .init(
                         value: application.jwt.keys.sign(payload)
                     )
-                    
+
                 } catch {
                     throw error
                 }
@@ -93,28 +93,28 @@ private struct PasswordValidation {
         // Minimum length check
         guard password.count >= 8
         else { return .tooShort }
-        
+
         // Check for at least one uppercase letter
         guard password.contains(where: { $0.isUppercase })
         else { return .missingUppercase }
-        
+
         // Check for at least one lowercase letter
         guard password.contains(where: { $0.isLowercase })
         else { return .missingLowercase }
-        
+
         // Check for at least one number
         guard password.contains(where: { $0.isNumber })
         else { return .missingNumber }
-        
+
         // Check for at least one special character
         let specialCharacters = CharacterSet(charactersIn: "!@#$%^&*()_+-=[]{}|;:,.<>?")
-        
+
         guard password.rangeOfCharacter(from: specialCharacters) != nil
         else { return .missingSpecialCharacter }
-        
+
         return nil
     }
-    
+
     enum ValidationError: String, Error {
         case tooShort = "Password must be at least 8 characters long"
         case missingUppercase = "Password must contain at least one uppercase letter"

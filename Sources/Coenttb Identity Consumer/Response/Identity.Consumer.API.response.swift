@@ -25,7 +25,7 @@ extension Identity.Consumer.API {
         } catch {
             throw Abort(.unauthorized)
         }
-        
+
         @Dependency(\.identity.consumer.rateLimiters) var rateLimiter
 
         let rateLimitClient = try await Identity.API.rateLimit(
@@ -44,7 +44,7 @@ extension Identity.Consumer.API {
                 let response = try await Identity.Consumer.API.Create.response(create: create)
                 await rateLimitClient.recordSuccess()
                 return response
-                
+
             case .delete(let delete):
                 let response = try await Identity.Consumer.API.Delete.response(delete: delete)
                 await rateLimitClient.recordSuccess()
@@ -59,7 +59,7 @@ extension Identity.Consumer.API {
                 try await client.logout()
 
                 let response = Response.success(true)
-                
+
                 response.expire(cookies: .identity)
 
                 await rateLimitClient.recordSuccess()

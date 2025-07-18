@@ -14,9 +14,9 @@ import JWT
 extension Identity.Provider {
     public struct TokenAuthenticator: AsyncMiddleware {
         public init() {}
-        
+
         @Dependency(\.identity.provider.client) var client
-        
+
         public func respond(
             to request: Request,
             chainingTo next: AsyncResponder
@@ -43,8 +43,7 @@ extension Identity.Provider {
                         // Both verifications failed
                     }
                 }
-                
-                
+
 //                if let accessToken = request.cookies.accessToken?.string {
 //                    do {
 //                        _ = try await client.authenticate.token.access(token: accessToken)

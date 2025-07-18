@@ -39,7 +39,7 @@ extension Identity.Consumer.View {
             switch password {
             case .reset:
                 break
-                
+
             case .change:
                 try request.auth.require(type)
             }
@@ -48,7 +48,7 @@ extension Identity.Consumer.View {
             @Dependency(\.request) var request
             guard let request else { throw Abort.requestUnavailable }
             try request.auth.require(type)
-            
+
             guard let requestToken = request.cookies.reauthorizationToken?.string
             else { throw Abort(.internalServerError) }
 
@@ -56,7 +56,7 @@ extension Identity.Consumer.View {
                 requestToken,
                 as: JWT.Token.Reauthorization.self
             )
-            
+
         case .email:
             try request.auth.require(type)
         }

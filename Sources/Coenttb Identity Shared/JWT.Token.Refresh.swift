@@ -1,9 +1,9 @@
 import Dependencies
+import EmailAddress
 import Foundation
 import JWT
-import Vapor
-import EmailAddress
 import SwiftWeb
+import Vapor
 
 extension JWT.Token {
     public struct Refresh: Codable, Sendable {
@@ -11,9 +11,9 @@ extension JWT.Token {
         public var issuedAt: IssuedAtClaim
         public var subject: SubjectClaim
         public var tokenId: IDClaim
-        
+
         public var sessionVersion: Int
-        
+
         public var identityId: UUID {
             get {
                 UUID(uuidString: subject.value)!
@@ -22,7 +22,7 @@ extension JWT.Token {
                 subject.value = "\(newValue.uuidString)"
             }
         }
-        
+
         package init(
             expiration: ExpirationClaim,
             issuedAt: IssuedAtClaim,
@@ -36,7 +36,7 @@ extension JWT.Token {
             self.tokenId = tokenId
             self.sessionVersion = sessionVersion
         }
-        
+
         enum CodingKeys: String, CodingKey {
             case expiration = "exp"
             case issuedAt = "iat"
@@ -46,7 +46,6 @@ extension JWT.Token {
         }
     }
 }
-
 
 extension JWT.Token.Refresh: JWTPayload {
     public func verify(using algorithm: some JWTKit.JWTAlgorithm) async throws {

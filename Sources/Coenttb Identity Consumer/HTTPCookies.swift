@@ -37,8 +37,6 @@ extension HTTPCookies {
     }
 }
 
-
-
 extension [WritableKeyPath<HTTPCookies, HTTPCookies.Value?>] {
     package static let identity: Self = [
         \.accessToken,
