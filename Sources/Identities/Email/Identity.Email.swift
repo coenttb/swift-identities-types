@@ -94,7 +94,7 @@ extension Identity.Email.Change.Request {
         
         public var body: some URLRouting.Router<Identity.Email.Change.Request> {
             Method.post
-            Path.request
+            Path<PathBuilder.Component<String>>.request
             Body(.form(Identity.Email.Change.Request.self, decoder: .default))
         }
     }

@@ -85,7 +85,7 @@ extension Identity.Creation.Request {
 
        public var body: some URLRouting.Router<Identity.Creation.Request> {
            Method.post
-           Path.request
+           Path<PathBuilder.Component<String>>.request
            Body(.form(Identity.Creation.Request.self, decoder: .default))
        }
    }

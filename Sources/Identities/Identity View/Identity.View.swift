@@ -159,7 +159,7 @@ extension Identity.View {
                     
                     OneOf {
                         URLRouting.Route(.case(Identity.View.Create.request)) {
-                            Path.request
+                            Path<PathBuilder.Component<String>>.request
                         }
                         
                         URLRouting.Route(.case(Identity.View.Create.verify)) {
@@ -201,7 +201,7 @@ extension Identity.View {
                             
                             OneOf {
                                 URLRouting.Route(.case(Identity.View.Password.Reset.request)) {
-                                    Path.request
+                                    Path<PathBuilder.Component<String>>.request
                                 }
                                 
                                 URLRouting.Route(.case(Identity.View.Password.Reset.confirm)) {
@@ -224,7 +224,7 @@ extension Identity.View {
                             
                             OneOf {
                                 URLRouting.Route(.case(Identity.View.Password.Change.request)) {
-                                    Path.request
+                                    Path<PathBuilder.Component<String>>.request
                                 }
                             }
                         }
@@ -243,7 +243,7 @@ extension Identity.View {
                                 }
                                 
                                 URLRouting.Route(.case(Identity.View.Email.Change.request)) {
-                                    Path.request
+                                    Path<PathBuilder.Component<String>>.request
                                 }
                                 
                                 URLRouting.Route(.case(Identity.View.Email.Change.confirm)) {

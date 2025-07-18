@@ -72,7 +72,7 @@ extension Identity.API.Delete {
         public var body: some URLRouting.Router<Identity.API.Delete> {
             OneOf {
                 URLRouting.Route(.case(Identity.API.Delete.request)) {
-                    Path.request
+                    Path<PathBuilder.Component<String>>.request
                     Identity.Deletion.Request.Router()
                 }
                 
