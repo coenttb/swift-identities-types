@@ -48,31 +48,31 @@ extension Identity {
     @DependencyClient
     public struct Client: @unchecked Sendable {
         /// Interface for all authentication-related operations
-        public var authenticate: Identity.Client.Authenticate
-        
+        public var authenticate: Identity.Client.Authenticate = .init()
+
         /// Logs out the current user and invalidates their session
         @DependencyEndpoint
         public var logout: () async throws -> Void
-        
+
         /// Re-authenticates the current user for sensitive operations
         ///
         /// - Parameter password: The user's current password
         /// - Returns: A JWT token for the re-authenticated session
         @DependencyEndpoint
         public var reauthorize: (_ password: String) async throws -> JWT.Token
-        
+
         /// Interface for identity creation operations
-        public var create: Identity.Client.Create
-        
+        public var create: Identity.Client.Create = .init()
+
         /// Interface for identity deletion operations
-        public var delete: Identity.Client.Delete
-        
+        public var delete: Identity.Client.Delete = .init()
+
         /// Interface for email management operations
-        public var email: Identity.Client.Email
-        
+        public var email: Identity.Client.Email = .init(change: .init())
+
         /// Interface for password management operations
-        public var password: Identity.Client.Password
-        
+        public var password: Identity.Client.Password = .init(reset: .init(), change: .init())
+
         /// Creates a new identity client with the specified interfaces.
         ///
         /// - Parameters:
@@ -111,14 +111,14 @@ extension Identity.Client {
     public func login(username: String, password: String) async throws -> Identity.Authentication.Response {
         try await self.authenticate.credentials(username: username, password: password)
     }
-    
+
     /// Convenience method to authenticate an identity with an access token.
     ///
     /// - Parameter accessToken: A valid JWT access token
     public func login(accessToken: String) async throws {
         try await self.authenticate.token.access(.init(token: accessToken))
     }
-    
+
     /// Convenience method to authenticate an identity with an API key.
     ///
     /// - Parameter apiKey: A valid API key

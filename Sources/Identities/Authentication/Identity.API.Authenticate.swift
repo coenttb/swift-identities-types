@@ -6,10 +6,10 @@
 //
 
 import BearerAuth
+import CasePaths
 import Foundation
 import SwiftWeb
 import URLRouting
-import CasePaths
 
 extension Identity.API {
     /// Authentication endpoints for managing user sessions and access.
@@ -34,13 +34,13 @@ extension Identity.API {
     @CasePathable
     @dynamicMemberLookup
     public enum Authenticate: Equatable, Sendable {
-        
+
         /// Authenticates using username/password credentials
         case credentials(Identity.Authentication.Credentials)
-        
+
         /// Authenticates using JWT tokens (access or refresh)
         case token(Identity.API.Authenticate.Token)
-        
+
         /// Authenticates using an API key
         case apiKey(BearerAuth)
     }
@@ -61,7 +61,7 @@ extension Identity.API.Authenticate {
     public enum Token: Codable, Hashable, Sendable {
         /// Authenticates using a JWT access token
         case access(JWT.Token)
-        
+
         /// Authenticates using a JWT refresh token to obtain a new access token
         case refresh(JWT.Token)
     }
@@ -106,7 +106,7 @@ extension Identity.API.Authenticate {
                             OneOf {
                                 BearerAuth.Router().map(
                                     .convert(
-                                        apply: { JWT.Token.init(value: $0.token) },
+                                        apply: { JWT.Token(value: $0.token) },
                                         unapply: { .init(token: $0.value) }
                                     )
                                 )
@@ -120,7 +120,7 @@ extension Identity.API.Authenticate {
                             Path.refresh
                             OneOf {
                                 Body(.json(JWT.Token.self))
-                                
+
                                 Cookies {
                                     Field("refresh_token", .utf8.data.json(JWT.Token.self))
                                 }

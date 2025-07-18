@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "B9A34CDE-5632-4CD5-993B-D6575533A684",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "Identities Tests",
+        "name" : "Identities Tests"
+      }
+    }
+  ],
+  "version" : 1
+}

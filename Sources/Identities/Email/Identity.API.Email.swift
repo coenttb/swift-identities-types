@@ -5,9 +5,9 @@
 //  Created by Coen ten Thije Boonkkamp on 18/02/2025.
 //
 
+import CasePaths
 import Foundation
 import SwiftWeb
-import CasePaths
 
 extension Identity.API {
     /// Email management endpoints for handling email address updates.
@@ -31,9 +31,9 @@ extension Identity.API.Email {
     /// Currently routes email change requests to the email change flow handler.
     /// Structure is extensible for future email management features.
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
-        
+
         public var body: some URLRouting.Router<Identity.API.Email> {
             OneOf {
                 URLRouting.Route(.case(Identity.API.Email.change)) {
@@ -71,7 +71,7 @@ extension Identity.API.Email {
     public enum Change: Equatable, Sendable {
         /// Initiates an email change request with the new address
         case request(Identity.Email.Change.Request)
-        
+
         /// Confirms the email change using a verification token
         case confirm(Identity.Email.Change.Confirmation)
     }
@@ -87,9 +87,9 @@ extension Identity.API.Email.Change {
     /// Both endpoints expect form-encoded request bodies containing the
     /// necessary change request or confirmation data.
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
-        
+
         /// The routing logic for email change endpoints.
         ///
         /// Composes routes for both steps of the email change process:
@@ -103,7 +103,7 @@ extension Identity.API.Email.Change {
                 URLRouting.Route(.case(Identity.API.Email.Change.request)) {
                     Identity.Email.Change.Request.Router()
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.Email.Change.confirm)) {
                     Identity.Email.Change.Confirmation.Router()
                 }

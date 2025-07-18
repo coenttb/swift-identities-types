@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 17/10/2024.
 //
 
-import SwiftWeb
 import CasePaths
+import SwiftWeb
 
 extension Identity.API {
     /// Identity creation endpoints that handle new user registration and verification.
@@ -34,7 +34,7 @@ extension Identity.API {
     public enum Create: Equatable, Sendable {
         /// Initiates identity creation with email and password
         case request(Identity.Creation.Request)
-        
+
         /// Verifies the email address using a token sent to the user
         case verify(Identity.Creation.Verification)
     }
@@ -50,9 +50,9 @@ extension Identity.API.Create {
     /// Both endpoints expect form-encoded request bodies containing the necessary
     /// identity creation or verification data.
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
-        
+
         /// The routing logic for identity creation endpoints.
         ///
         /// Composes routes for both steps of the identity creation process:

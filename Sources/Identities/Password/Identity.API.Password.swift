@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 17/10/2024.
 //
 
-import SwiftWeb
 import CasePaths
+import SwiftWeb
 
 extension Identity.API {
     /// Password management endpoints for handling password changes and resets.
@@ -35,7 +35,7 @@ extension Identity.API {
     public enum Password: Equatable, Sendable {
         /// Password reset flow for forgotten passwords
         case reset(Identity.API.Password.Reset)
-        
+
         /// Password change flow for authenticated users
         case change(Identity.API.Password.Change)
     }
@@ -55,7 +55,7 @@ extension Identity.API.Password {
     public enum Reset: Equatable, Sendable {
         /// Initiates a password reset request
         case request(Identity.Password.Reset.Request)
-        
+
         /// Confirms the reset with a token and new password
         case confirm(Identity.Password.Reset.Confirm)
     }
@@ -86,9 +86,9 @@ extension Identity.API.Password {
     /// the necessary password operation data and enforce appropriate
     /// security measures.
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
-        
+
         /// The routing logic for password management endpoints.
         ///
         /// Composes routes for both password reset and change flows:
@@ -101,21 +101,21 @@ extension Identity.API.Password {
             OneOf {
                 URLRouting.Route(.case(Identity.API.Password.reset)) {
                     Path.reset
-                    
+
                     OneOf {
                         URLRouting.Route(.case(Identity.API.Password.Reset.request)) {
                             Identity.Password.Reset.Request.Router()
                         }
-                        
+
                         URLRouting.Route(.case(Identity.API.Password.Reset.confirm)) {
                             Identity.Password.Reset.Confirm.Router()
                         }
                     }
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.Password.change)) {
                     Path.change
-                    
+
                     OneOf {
                         URLRouting.Route(.case(Identity.API.Password.Change.request)) {
                             Identity.Password.Change.Request.Router()

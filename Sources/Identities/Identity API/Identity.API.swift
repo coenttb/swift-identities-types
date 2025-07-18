@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 10/09/2024.
 //
 
-import SwiftWeb
 import CasePaths
+import SwiftWeb
 
 extension Identity {
     /// A comprehensive set of identity management API endpoints.
@@ -35,22 +35,22 @@ extension Identity {
     public enum API: Equatable, Sendable {
         /// Handles user authentication via credentials, tokens, or API keys
         case authenticate(Identity.API.Authenticate)
-        
+
         /// Re-authenticates a user for sensitive operations
         case reauthorize(Identity.API.Reauthorize)
-        
+
         /// Manages new identity creation and verification
         case create(Identity.API.Create)
-        
+
         /// Handles identity deletion requests and confirmation
         case delete(Identity.API.Delete)
-        
+
         /// Terminates the current user session
         case logout
-        
+
         /// Manages email operations like change and verification
         case email(Identity.API.Email)
-        
+
         /// Handles password-related operations like reset and change
         case password(Identity.API.Password)
     }

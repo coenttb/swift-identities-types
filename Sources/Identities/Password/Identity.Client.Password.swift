@@ -32,7 +32,7 @@ extension Identity.Client {
    public struct Password: @unchecked Sendable {
        /// Interface for password reset operations.
        public var reset: Password.Reset
-       
+
        /// Interface for password change operations.
        public var change: Password.Change
 

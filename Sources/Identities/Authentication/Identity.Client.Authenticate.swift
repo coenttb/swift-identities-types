@@ -45,7 +45,7 @@ extension Identity.Client {
         ) async throws -> Identity.Authentication.Response
 
         /// Token-based authentication operations.
-        public var token: Identity.Client.Authenticate.Token
+        public var token: Identity.Client.Authenticate.Token = .init()
 
         /// Authenticates a user with an API key.
         ///
@@ -120,7 +120,6 @@ extension Identity.Client.Authenticate.Token {
         try await self.access(access.value)
     }
 }
-
 
 extension Identity.Client.Authenticate.Token {
     /// Refreshes an expired bearer authentication token.

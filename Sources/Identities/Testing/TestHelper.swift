@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 20/02/2025.
 //
 
-import Foundation
 import Dependencies
+import Foundation
 
 struct TestHelper {
     static let enabled: Bool = true
