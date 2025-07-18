@@ -80,7 +80,7 @@ extension Identity.Password.Reset {
     public struct Confirm: Codable, Hashable, Sendable {
         /// The verification token received via email.
         public let token: String
-        
+
         /// The new password to set for the identity.
         public let newPassword: String
 
@@ -157,7 +157,7 @@ extension Identity.Password.Change {
     public struct Request: Codable, Hashable, Sendable {
         /// The user's current password for verification.
         public let currentPassword: String
-        
+
         /// The new password to set for the identity.
         public let newPassword: String
 

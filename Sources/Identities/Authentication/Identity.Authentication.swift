@@ -6,10 +6,10 @@
 //
 
 import BearerAuth
+import CasePaths
 import Coenttb_Authentication
 import EmailAddress
 import SwiftWeb
-import CasePaths
 
 extension Identity {
    /// Authentication methods supported by the Identity system.
@@ -47,7 +47,7 @@ extension Identity.Authentication {
    public struct Credentials: Codable, Hashable, Sendable {
        /// The user's username (typically their email address).
        public let username: String
-       
+
        /// The user's password.
        public let password: String
 
@@ -120,7 +120,7 @@ extension Identity.Authentication {
    public struct Response: Codable, Hashable, Sendable {
        /// The JWT access token for API authentication.
        public let accessToken: JWT.Token
-       
+
        /// The JWT refresh token for obtaining new access tokens.
        public let refreshToken: JWT.Token
 

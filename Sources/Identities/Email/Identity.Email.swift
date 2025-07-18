@@ -5,10 +5,10 @@
 //  Created by Coen ten Thije Boonkkamp on 18/02/2025.
 //
 
+import CasePaths
 import EmailAddress
 import Foundation
 import URLRouting
-import CasePaths
 
 extension Identity {
     /// Namespace for email-related functionality within the Identity system.
@@ -57,7 +57,7 @@ extension Identity.Email.Change {
     public struct Request: Codable, Hashable, Sendable {
         /// The new email address to associate with the identity.
         public let newEmail: String
-        
+
         /// Creates a new email change request.
         ///
         /// - Parameter newEmail: The desired new email address.
@@ -66,7 +66,7 @@ extension Identity.Email.Change {
         ) {
             self.newEmail = newEmail
         }
-        
+
         /// Keys for coding and decoding Request instances.
         public enum CodingKeys: String, CodingKey {
             case newEmail
@@ -91,7 +91,7 @@ extension Identity.Email.Change.Request {
     /// Routes POST requests to the "/request" path with form-encoded body.
     public struct Router: ParserPrinter, Sendable {
         public init() {}
-        
+
         public var body: some URLRouting.Router<Identity.Email.Change.Request> {
             Method.post
             Path<PathBuilder.Component<String>>.request
@@ -108,7 +108,7 @@ extension Identity.Email.Change {
     public struct Confirmation: Codable, Hashable, Sendable {
         /// The verification token received via email.
         public let token: String
-        
+
         /// Creates a new email change confirmation.
         ///
         /// - Parameter token: The verification token received via email.
@@ -117,7 +117,7 @@ extension Identity.Email.Change {
         ) {
             self.token = token
         }
-        
+
         /// Keys for coding and decoding Confirmation instances.
         public enum CodingKeys: String, CodingKey {
             case token
@@ -131,7 +131,7 @@ extension Identity.Email.Change.Confirmation {
     /// Routes POST requests to the "/confirm" path with form-encoded body.
     public struct Router: ParserPrinter, Sendable {
         public init() {}
-        
+
         public var body: some URLRouting.Router<Identity.Email.Change.Confirmation> {
             Method.post
             Path.confirm
@@ -157,7 +157,7 @@ extension Identity.Email.Change.Request {
     public enum Result: Codable, Hashable, Sendable {
         /// The email change request was successful
         case success
-        
+
         /// Additional authentication is required before proceeding
         case requiresReauthentication
     }

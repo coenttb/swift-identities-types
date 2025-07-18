@@ -123,7 +123,7 @@ extension Identity.View.Password {
         /// New password confirmation view
         case confirm(Identity.Password.Reset.Confirm)
     }
-    
+
     /// Password change flow view states.
     ///
     /// Manages the UI for changing password while authenticated.
@@ -141,9 +141,9 @@ extension Identity.View {
     /// This router handles bidirectional conversion between URLs and view states,
     /// defining the client-side routing structure for all identity management flows.
     public struct Router: ParserPrinter {
-        
+
         public init() {}
-        
+
         /// The routing configuration for all view states.
         ///
         /// Defines URL patterns for each view state:
@@ -153,18 +153,18 @@ extension Identity.View {
         /// - /email/* - Email management
         public var body: some URLRouting.Router<Identity.View> {
             OneOf {
-                
+
                 URLRouting.Route(.case(Identity.View.create)) {
                     Path.create
-                    
+
                     OneOf {
                         URLRouting.Route(.case(Identity.View.Create.request)) {
                             Path<PathBuilder.Component<String>>.request
                         }
-                        
+
                         URLRouting.Route(.case(Identity.View.Create.verify)) {
                             Path.verification
-                            
+
                             Parse(.memberwise(Identity.Creation.Verification.init)) {
                                 Query {
                                     Field(Identity.Creation.Verification.CodingKeys.token.rawValue, .string)
@@ -176,7 +176,7 @@ extension Identity.View {
                         }
                     }
                 }
-                
+
                 URLRouting.Route(.case(Identity.View.authenticate)) {
                     OneOf {
                         URLRouting.Route(.case(Identity.View.Authenticate.credentials)) {
@@ -187,26 +187,26 @@ extension Identity.View {
                         }
                     }
                 }
-                
+
                 URLRouting.Route(.case(Identity.View.logout)) {
                     Path.logout
                 }
-                
+
                 URLRouting.Route(.case(Identity.View.password)) {
                     Path.password
-                    
+
                     OneOf {
                         URLRouting.Route(.case(Identity.View.Password.reset)) {
                             Path.reset
-                            
+
                             OneOf {
                                 URLRouting.Route(.case(Identity.View.Password.Reset.request)) {
                                     Path<PathBuilder.Component<String>>.request
                                 }
-                                
+
                                 URLRouting.Route(.case(Identity.View.Password.Reset.confirm)) {
                                     Path.confirm
-                                    
+
                                     Parse(.memberwise(Identity.Password.Reset.Confirm.init)) {
                                         Query {
                                             Field(Identity.Password.Reset.Confirm.CodingKeys.token.rawValue, .string)
@@ -218,10 +218,10 @@ extension Identity.View {
                                 }
                             }
                         }
-                        
+
                         URLRouting.Route(.case(Identity.View.Password.change)) {
                             Path.change
-                            
+
                             OneOf {
                                 URLRouting.Route(.case(Identity.View.Password.Change.request)) {
                                     Path<PathBuilder.Component<String>>.request
@@ -230,25 +230,25 @@ extension Identity.View {
                         }
                     }
                 }
-                
+
                 URLRouting.Route(.case(Identity.View.email)) {
                     Path.email
                     OneOf {
                         URLRouting.Route(.case(Identity.View.Email.change)) {
                             Path.change
-                            
+
                             OneOf {
                                 URLRouting.Route(.case(Identity.View.Email.Change.reauthorization)) {
                                     Path.reauthorization
                                 }
-                                
+
                                 URLRouting.Route(.case(Identity.View.Email.Change.request)) {
                                     Path<PathBuilder.Component<String>>.request
                                 }
-                                
+
                                 URLRouting.Route(.case(Identity.View.Email.Change.confirm)) {
                                     Path.confirm
-                                    
+
                                     Parse(.memberwise(Identity.Email.Change.Confirmation.init)) {
                                         Query {
                                             Field(Identity.Email.Change.Confirmation.CodingKeys.token.rawValue, .string)
@@ -263,6 +263,3 @@ extension Identity.View {
         }
     }
 }
-
-
-

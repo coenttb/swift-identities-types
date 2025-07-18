@@ -25,7 +25,7 @@ let package = Package(
         .iOS(.v17)
     ],
     products: [
-        .library(name: .identities, targets: [.identities]),
+        .library(name: .identities, targets: [.identities])
     ],
     dependencies: [
         .package(url: "https://github.com/coenttb/coenttb-authentication", branch: "main"),
@@ -47,7 +47,7 @@ let package = Package(
                 .identities,
                 .dependenciesTestSupport
             ]
-        ),
+        )
     ],
     swiftLanguageModes: [.v6]
 )

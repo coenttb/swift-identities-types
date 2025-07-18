@@ -5,10 +5,10 @@
 //  Created by Coen ten Thije Boonkkamp on 07/02/2025.
 //
 
+import CasePaths
 import Dependencies
 import Foundation
 import SwiftWeb
-import CasePaths
 
 extension Identity {
     /// Routes available in the consumer-side identity system.

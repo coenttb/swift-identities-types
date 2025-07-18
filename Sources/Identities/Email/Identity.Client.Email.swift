@@ -31,7 +31,7 @@ extension Identity.Client {
    public struct Email: @unchecked Sendable {
        /// Interface for email change operations.
        public var change: Identity.Client.Email.Change
-       
+
        public init(change: Identity.Client.Email.Change) {
            self.change = change
        }

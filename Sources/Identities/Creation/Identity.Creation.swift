@@ -36,7 +36,7 @@ extension Identity.Creation {
    public struct Request: Codable, Hashable, Sendable {
        /// The email address for the new identity.
        public let email: String
-       
+
        /// The desired password for the new identity.
        public let password: String
 
@@ -103,7 +103,7 @@ extension Identity.Creation {
    public struct Verification: Codable, Hashable, Sendable {
        /// The verification token received via email.
        public let token: String
-       
+
        /// The email address being verified.
        public let email: String
 

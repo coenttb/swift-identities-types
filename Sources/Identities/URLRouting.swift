@@ -36,12 +36,12 @@ extension AnyParserPrinter: @unchecked @retroactive Sendable where Input: Sendab
 /// while acknowledging that full verification requires runtime checks.
 extension Path: @unchecked @retroactive Sendable where Input: Sendable, Output: Sendable {}
 
-extension Path<PathBuilder.Component<String>> {    
+extension Path<PathBuilder.Component<String>> {
 
     public static let request = Path {
         "request"
     }
-    
+
     public static let api = Path {
         "api"
     }

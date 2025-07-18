@@ -5,8 +5,8 @@
 //  Deleted by Coen ten Thije Boonkkamp on 17/10/2024.
 //
 
-import SwiftWeb
 import CasePaths
+import SwiftWeb
 
 extension Identity.API {
     /// Identity deletion endpoints with a multi-step confirmation process for safety.
@@ -37,10 +37,10 @@ extension Identity.API {
     public enum Delete: Codable, Hashable, Sendable {
         /// Initiates identity deletion, requiring recent authentication
         case request(Identity.Deletion.Request)
-        
+
         /// Cancels a pending identity deletion request
         case cancel
-        
+
         /// Confirms and executes the identity deletion
         case confirm
     }
@@ -57,9 +57,9 @@ extension Identity.API.Delete {
     /// The request endpoint expects re-authentication data, while cancel and confirm
     /// endpoints operate on the authenticated user's pending deletion request.
     public struct Router: ParserPrinter, Sendable {
-        
+
         public init() {}
-        
+
         /// The routing logic for identity deletion endpoints.
         ///
         /// Composes routes for all three deletion actions:
@@ -75,11 +75,11 @@ extension Identity.API.Delete {
                     Path<PathBuilder.Component<String>>.request
                     Identity.Deletion.Request.Router()
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.Delete.cancel)) {
                     Path.cancel
                 }
-                
+
                 URLRouting.Route(.case(Identity.API.Delete.confirm)) {
                     Path.confirm
                 }

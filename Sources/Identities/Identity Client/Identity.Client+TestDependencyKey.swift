@@ -2,15 +2,10 @@ import Dependencies
 import EmailAddress
 import Foundation
 
-import Dependencies
-import EmailAddress
-import Foundation
-
-
 extension Identity.Client: TestDependencyKey {
     public static var testValue: Self {
         @Dependency(Identity.Client.TestDatabase.self) var database
-        
+
         return Self(
             authenticate: .init(
                 credentials: { username, password in
@@ -32,7 +27,7 @@ extension Identity.Client: TestDependencyKey {
                         )
                     }
                 ),
-                apiKey: { apiKey in
+                apiKey: { _ in
                     .init(
                         accessToken: .init(value: "api-access-token"),
                         refreshToken: .init(value: "api-refresh-token")
@@ -42,8 +37,8 @@ extension Identity.Client: TestDependencyKey {
             logout: {
                 await database.reset()
             },
-            reauthorize: { password in
-                
+            reauthorize: { _ in
+
                 return .init(value: "reauth-token")
             },
             create: .init(
@@ -65,14 +60,14 @@ extension Identity.Client: TestDependencyKey {
                     try await database.requestDeletion(email: email, reauthToken: reauthToken)
                 },
                 cancel: {
-                    
+
                     guard let email = await database.currentUser else {
                         throw Identity.Client.TestDatabase.TestError.userNotFound
                     }
                     try await database.cancelDeletion(email: email)
                 },
                 confirm: {
-                    
+
                     guard let email = await database.currentUser else {
                         throw Identity.Client.TestDatabase.TestError.userNotFound
                     }
@@ -116,7 +111,7 @@ extension Identity.Client: TestDependencyKey {
                         guard let email = await database.currentUser else {
                             throw Identity.Client.TestDatabase.TestError.userNotFound
                         }
-                        
+
                         try await database.changePassword(email: email, currentPassword: currentPassword, newPassword: newPassword)
                     }
                 )

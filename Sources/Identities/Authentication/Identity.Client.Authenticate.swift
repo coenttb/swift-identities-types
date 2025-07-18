@@ -121,7 +121,6 @@ extension Identity.Client.Authenticate.Token {
     }
 }
 
-
 extension Identity.Client.Authenticate.Token {
     /// Refreshes an expired bearer authentication token.
     ///
