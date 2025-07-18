@@ -30,7 +30,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/coenttb/coenttb-authentication", branch: "main"),
         .package(url: "https://github.com/coenttb/swift-web", branch: "main"),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3")
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.2")
     ],
     targets: [
         .target(
