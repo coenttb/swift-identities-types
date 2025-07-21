@@ -75,9 +75,7 @@ extension Identity.Consumer.View.Create {
                         )
 
                         Button(
-//                            tag: button,
-                            button: .init(type: .submit),
-                            background: primaryColor
+                            button: .init(type: .submit)
                         ) {
                             String.continue.capitalizingFirstLetter()
                         }

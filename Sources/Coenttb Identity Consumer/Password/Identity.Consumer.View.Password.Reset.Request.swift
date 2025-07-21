@@ -57,8 +57,7 @@ extension Identity.Consumer.View.Password.Reset {
                             .focusOnPageLoad()
 
                             Button(
-                                button: .init(type: .submit),
-                                background: self.primaryColor
+                                button: .init(type: .submit)
                             ) {
                                 TranslatedString(
                                     dutch: "Reset link versturen",
@@ -254,8 +253,7 @@ extension Identity.Consumer.View.Password.Reset {
                             .focusOnPageLoad()
 
                             Button(
-                                button: .init(type: .submit),
-                                background: self.primaryColor
+                                button: .init(type: .submit)
                             ) {
                                 String.continue.capitalizingFirstLetter()
                             }

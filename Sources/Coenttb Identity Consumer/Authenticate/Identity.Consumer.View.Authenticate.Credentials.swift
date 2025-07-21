@@ -107,11 +107,7 @@ extension Identity.Consumer.View.Authenticate {
 
                         VStack {
                             Button(
-//                                tag: button,
-                                button: .init(
-                                    type: .submit
-                                ),
-                                background: primaryColor
+                                button: .init(type: .submit)
                             ) {
                                 String.continue.capitalizingFirstLetter()
                             }

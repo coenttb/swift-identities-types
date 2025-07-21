@@ -57,9 +57,7 @@ extension Identity.Consumer.View.Email.Change {
                             .focusOnPageLoad()
 
                             Button(
-                                //                                tag: button,
-                                button: .init(type: .submit),
-                                background: self.primaryColor
+                                button: .init(type: .submit)
                             ) {
                                 TranslatedString(
                                     dutch: "Verzoek indienen",

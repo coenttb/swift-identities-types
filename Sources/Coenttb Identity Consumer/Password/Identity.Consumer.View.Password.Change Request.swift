@@ -64,8 +64,7 @@ extension Identity.Consumer.View.Password.Change {
                             )
 
                             Button(
-                                button: .init(type: .submit),
-                                background: self.primaryColor
+                                button: .init(type: .submit)
                             ) {
                                 TranslatedString(
                                     dutch: "Wachtwoord wijzigen",

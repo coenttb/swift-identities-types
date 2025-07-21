@@ -70,14 +70,11 @@ extension Identity.Consumer.View {
 
                                     VStack {
                                         Button(
-                                            button: .init(
-                                                type: .submit
-                                            ),
-                                            background: primaryColor
+                                            button: .init(type: .submit)
                                         ) {
                                             String.continue.capitalizingFirstLetter()
                                         }
-                                        .color(.text.primary.reverse())
+                                        .dependency(\.color.text.primary, .text.primary.reverse())
                                         .width(.percent(100))
                                         .justifyContent(.center)
 
