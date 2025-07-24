@@ -75,7 +75,7 @@ extension Identity.Consumer.Configuration {
 
         public var currentUserName: @Sendable () -> String?
         public var canonicalHref: @Sendable (Identity.Consumer.View) -> URL?
-        public var hreflang: @Sendable (Identity.Consumer.View, Languages.Language) -> URL
+        public var hreflang: @Sendable (Identity.Consumer.View, Translating.Language) -> URL
 
         public var branding: Branding
         public var navigation: Navigation
@@ -90,7 +90,7 @@ extension Identity.Consumer.Configuration {
             client: Identity.Consumer.Client,
             currentUserName: @Sendable @escaping () -> String?,
             canonicalHref: @Sendable @escaping (Identity.Consumer.View) -> URL?,
-            hreflang: @Sendable @escaping (Identity.Consumer.View, Languages.Language) -> URL,
+            hreflang: @Sendable @escaping (Identity.Consumer.View, Translating.Language) -> URL,
             branding: Branding,
             navigation: Navigation,
             redirect: Identity.Consumer.Configuration.Redirect,
@@ -124,7 +124,7 @@ extension Identity.Consumer.Configuration.Consumer {
             @Dependency(\.identity.consumer.router) var router
             return router.url(for: .view($0))
         },
-        hreflang: @escaping @Sendable (Identity.Consumer.View, Languages.Language) -> URL = { view, _ in
+        hreflang: @escaping @Sendable (Identity.Consumer.View, Translating.Language) -> URL = { view, _ in
             @Dependency(\.identity.consumer.router) var router
             return router.url(for: .view(view))
         },
