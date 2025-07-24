@@ -5,7 +5,7 @@
 //  Created by Coen ten Thije Boonkkamp on 05/02/2025.
 //
 
-import SwiftWeb
+import Swift_Web
 
 extension Identity {
    /// A data structure representing a reauthorization request.

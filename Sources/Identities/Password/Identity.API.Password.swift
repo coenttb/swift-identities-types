@@ -6,7 +6,7 @@
 //
 
 import CasePaths
-import SwiftWeb
+import Swift_Web
 
 extension Identity.API {
     /// Password management endpoints for handling password changes and resets.

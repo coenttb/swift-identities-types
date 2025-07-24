@@ -5,7 +5,7 @@
 //  Created by Coen ten Thije Boonkkamp on 28/01/2025.
 //
 
-import SwiftWeb
+import Swift_Web
 
 extension Identity {
    /// Namespace for identity deletion functionality within the Identity system.

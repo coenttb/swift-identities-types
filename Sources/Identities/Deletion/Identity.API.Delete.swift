@@ -6,7 +6,7 @@
 //
 
 import CasePaths
-import SwiftWeb
+import Swift_Web
 
 extension Identity.API {
     /// Identity deletion endpoints with a multi-step confirmation process for safety.

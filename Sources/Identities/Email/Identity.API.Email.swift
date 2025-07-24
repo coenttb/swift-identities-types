@@ -7,7 +7,7 @@
 
 import CasePaths
 import Foundation
-import SwiftWeb
+import Swift_Web
 
 extension Identity.API {
     /// Email management endpoints for handling email address updates.

@@ -8,7 +8,7 @@
 import BearerAuth
 import CasePaths
 import Foundation
-import SwiftWeb
+import Swift_Web
 import URLRouting
 
 extension Identity.API {

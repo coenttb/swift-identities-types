@@ -6,7 +6,7 @@
 //
 
 import CasePaths
-import SwiftWeb
+import Swift_Web
 
 extension Identity {
     /// A comprehensive set of identity management API endpoints.

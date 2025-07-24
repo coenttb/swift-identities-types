@@ -9,7 +9,7 @@ import Dependencies
 import DependenciesMacros
 import EmailAddress
 import Foundation
-import SwiftWeb
+import Swift_Web
 
 extension Identity.Client {
     /// A client interface for handling user authentication operations.

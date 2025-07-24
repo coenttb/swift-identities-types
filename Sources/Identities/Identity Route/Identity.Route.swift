@@ -8,7 +8,7 @@
 import CasePaths
 import Dependencies
 import Foundation
-import SwiftWeb
+import Swift_Web
 
 extension Identity {
     /// Routes available in the consumer-side identity system.

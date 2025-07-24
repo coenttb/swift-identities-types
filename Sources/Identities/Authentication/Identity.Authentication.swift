@@ -9,7 +9,7 @@ import BearerAuth
 import CasePaths
 import Coenttb_Authentication
 import EmailAddress
-import SwiftWeb
+import Swift_Web
 
 extension Identity {
    /// Authentication methods supported by the Identity system.

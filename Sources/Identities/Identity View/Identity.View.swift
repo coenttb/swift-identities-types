@@ -6,7 +6,7 @@
 //
 
 import CasePaths
-import SwiftWeb
+import Swift_Web
 
 extension Identity {
     /// View routing and navigation states for the identity consumer interface.

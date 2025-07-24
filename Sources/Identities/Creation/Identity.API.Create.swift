@@ -6,7 +6,7 @@
 //
 
 import CasePaths
-import SwiftWeb
+import Swift_Web
 
 extension Identity.API {
     /// Identity creation endpoints that handle new user registration and verification.
