@@ -5,7 +5,7 @@
 //  Created by Coen ten Thije Boonkkamp on 07/02/2025.
 //
 
-import BearerAuth
+import AuthenticationTypes
 import CasePaths
 import Foundation
 import Swift_Web

@@ -5,9 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 28/01/2025.
 //
 
-import BearerAuth
 import CasePaths
-import Coenttb_Authentication
+import Authentication
 import EmailAddress
 import Swift_Web
 

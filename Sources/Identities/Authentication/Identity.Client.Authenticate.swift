@@ -5,6 +5,7 @@
 //  Created by Coen ten Thije Boonkkamp on 12/02/2025.
 //
 
+import Authentication
 import Dependencies
 import DependenciesMacros
 import EmailAddress
@@ -86,7 +87,7 @@ extension Identity.Client.Authenticate {
     }
 }
 
-import BearerAuth
+
 
 extension Identity.Client.Authenticate {
     /// Authenticates using a credentials object.
