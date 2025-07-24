@@ -7,7 +7,7 @@
 
 import CasePaths
 import Identities
-import SwiftWeb
+import Swift_Web
 
 extension Identity.Consumer {
     /// API and View routing for the identity consumer interface.

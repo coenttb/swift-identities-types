@@ -2,10 +2,10 @@ import Dependencies
 import EmailAddress
 import Foundation
 import JWT
-import SwiftWeb
+import Swift_Web
 import Vapor
 
-extension JWT.Token {
+extension Swift_Web.JWT.Token {
     public struct Refresh: Codable, Sendable {
         public var expiration: ExpirationClaim
         public var issuedAt: IssuedAtClaim
@@ -47,7 +47,7 @@ extension JWT.Token {
     }
 }
 
-extension JWT.Token.Refresh: JWTPayload {
+extension Swift_Web.JWT.Token.Refresh: JWTPayload {
     public func verify(using algorithm: some JWTKit.JWTAlgorithm) async throws {
         @Dependency(\.date) var date
         try self.expiration.verifyNotExpired(currentDate: date())

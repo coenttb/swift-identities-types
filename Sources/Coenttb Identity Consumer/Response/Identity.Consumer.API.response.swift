@@ -9,6 +9,7 @@ import Coenttb_Vapor
 import Coenttb_Web
 import Favicon
 import Identities
+import Coenttb_Identity_Shared
 
 extension Identity.Consumer.API {
     public static func response(
