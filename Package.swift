@@ -46,7 +46,7 @@ let package = Package(
         .package(url: "https://github.com/coenttb/coenttb-server-vapor", branch: "main"),
         .package(url: "https://github.com/coenttb/coenttb-web", branch: "main"),
         .package(url: "https://github.com/coenttb/swift-identities", branch: "main"),
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.6.3"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.2"),
         .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
         .package(url: "https://github.com/vapor/jwt.git", from: "5.0.0"),
         .package(url: "https://github.com/vapor/vapor.git", from: "4.113.2")
