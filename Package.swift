@@ -52,9 +52,7 @@ let package = Package(
     swiftLanguageModes: [.v6]
 )
 
-extension String {
-    var tests: Self { "\(self) Tests" }
-}
+extension String { var tests: Self { "\(self) Tests" } }
 
 #if !os(Windows)
   // Add the documentation compiler plugin if possible

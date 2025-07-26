@@ -86,7 +86,7 @@ extension Identity.Creation.Request {
        public var body: some URLRouting.Router<Identity.Creation.Request> {
            Method.post
            Path<PathBuilder.Component<String>>.request
-           Body(.form(Identity.Creation.Request.self, decoder: .default))
+           Body(.form(Identity.Creation.Request.self, decoder: .identities))
        }
    }
 }
@@ -153,7 +153,7 @@ extension Identity.Creation.Verification {
        public var body: some URLRouting.Router<Identity.Creation.Verification> {
            Method.post
            Path.verify
-           Body(.form(Identity.Creation.Verification.self, decoder: .default))
+           Body(.form(Identity.Creation.Verification.self, decoder: .identities))
        }
    }
 }

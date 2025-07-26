@@ -16,16 +16,7 @@
       "location" : "https://github.com/coenttb/pointfree-html.git",
       "state" : {
         "branch" : "main",
-        "revision" : "0600634f64adb80324101d7577203cd31d6308d9"
-      }
-    },
-    {
-      "identity" : "pointfree-web",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/coenttb/pointfree-web",
-      "state" : {
-        "branch" : "main",
-        "revision" : "c77bb14402a3112e9c4cca631ad2f8f320c1d4a5"
+        "revision" : "0867cb15127d9db0fe54e53d5a47fb5438d84710"
       }
     },
     {
@@ -34,7 +25,7 @@
       "location" : "https://github.com/coenttb/swift-authentication",
       "state" : {
         "branch" : "main",
-        "revision" : "f8df238ff2dc62291352286be64cf952f3701b58"
+        "revision" : "4a6d57fbb2e603fb485180600d26a13d865e3c1a"
       }
     },
     {
@@ -92,12 +83,12 @@
       }
     },
     {
-      "identity" : "swift-date",
+      "identity" : "swift-date-parsing",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/coenttb/swift-date",
+      "location" : "https://github.com/coenttb/swift-date-parsing",
       "state" : {
-        "branch" : "main",
-        "revision" : "8f433af24df277c79c2cc7d1e01b9719fbff3fe2"
+        "revision" : "ba6ae4655dc3d4867acc405342ee53d347738dcd",
+        "version" : "0.1.0"
       }
     },
     {
@@ -132,8 +123,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/coenttb/swift-domain-type",
       "state" : {
-        "branch" : "main",
-        "revision" : "e0e2116dbe676f50d27de6a49de52aa632bd6d14"
+        "revision" : "8717b1938bcda8be8dbfff2ce2bee64613b065ee",
+        "version" : "0.0.1"
       }
     },
     {
@@ -141,8 +132,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/coenttb/swift-emailaddress-type",
       "state" : {
-        "branch" : "main",
-        "revision" : "43594e4e569efeb0da7baf93e37f2a8b0a69a707"
+        "revision" : "7a36ce866c9d657385d6c55b3685960e5a036e5d",
+        "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "swift-foundation-extensions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/coenttb/swift-foundation-extensions",
+      "state" : {
+        "revision" : "ef00a5057b29b77bd2c8cbaf72b392184408af12",
+        "version" : "0.0.1"
       }
     },
     {
@@ -169,7 +169,7 @@
       "location" : "https://github.com/coenttb/swift-html-types",
       "state" : {
         "branch" : "main",
-        "revision" : "9b22f5bf4d6a591234c546902e2489076935f847"
+        "revision" : "984d22a98253c9b7d110b0c478fdee2c9bef5210"
       }
     },
     {
@@ -177,17 +177,71 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-parsing.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "3432cb81164dd3d69a75d0d63205be5fbae2c34b"
+        "revision" : "3432cb81164dd3d69a75d0d63205be5fbae2c34b",
+        "version" : "0.14.1"
       }
     },
     {
-      "identity" : "swift-prelude",
+      "identity" : "swift-rfc-1035",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/swift-prelude.git",
+      "location" : "https://github.com/swift-web-standards/swift-rfc-1035",
       "state" : {
-        "branch" : "main",
-        "revision" : "a21df6f5932673f3f20d7f0ca1f8e0a7c887b3c2"
+        "revision" : "95e9ca2e3f3ec303978e8cd18013e02b7d0f8a62",
+        "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "swift-rfc-1123",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-web-standards/swift-rfc-1123",
+      "state" : {
+        "revision" : "97b8decb5fdfc02177faa5965a95606e36373388",
+        "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "swift-rfc-2822",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-web-standards/swift-rfc-2822.git",
+      "state" : {
+        "revision" : "36aeec2d3a42cb2fab5aa94df905bcb280bef45b",
+        "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "swift-rfc-5321",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-web-standards/swift-rfc-5321",
+      "state" : {
+        "revision" : "449d9291d1d2f6dcd6793c7d4ea855db1e7b062d",
+        "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "swift-rfc-5322",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-web-standards/swift-rfc-5322",
+      "state" : {
+        "revision" : "0d648876050103ce8e005f545f02c1f29724e9e5",
+        "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "swift-rfc-6531",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-web-standards/swift-rfc-6531",
+      "state" : {
+        "revision" : "af0fb8259f03e5c34955ecf62c0c95cb61019907",
+        "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "swift-sitemap",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/coenttb/swift-sitemap",
+      "state" : {
+        "revision" : "216a4502300e6b87361247a321845ce33d5a48f8",
+        "version" : "0.0.1"
       }
     },
     {
@@ -209,6 +263,33 @@
       }
     },
     {
+      "identity" : "swift-url-form-coding",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/coenttb/swift-url-form-coding",
+      "state" : {
+        "revision" : "862a7c05f18866fecd44d16b95c8a36d22ca8645",
+        "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "swift-url-form-coding-url-routing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/coenttb/swift-url-form-coding-url-routing",
+      "state" : {
+        "revision" : "538845d5e770ce033a4ae51f2a93492f2af00e2f",
+        "version" : "0.0.1"
+      }
+    },
+    {
+      "identity" : "swift-url-multipart-form-coding-url-routing",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/coenttb/swift-url-multipart-form-coding-url-routing",
+      "state" : {
+        "revision" : "40e6d1a88a9a3bcb2a353ddfd581cf49e23b87aa",
+        "version" : "0.0.1"
+      }
+    },
+    {
       "identity" : "swift-url-routing",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/pointfreeco/swift-url-routing",
@@ -223,16 +304,7 @@
       "location" : "https://github.com/coenttb/swift-web",
       "state" : {
         "branch" : "main",
-        "revision" : "cf61346f80eb67fc305ed1291f2700c2f56f49f0"
-      }
-    },
-    {
-      "identity" : "swift-web-standards",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/coenttb/swift-web-standards",
-      "state" : {
-        "branch" : "main",
-        "revision" : "5bf44d734c5f5efce72cd3330b279f040c4281ef"
+        "revision" : "64cad3cb489f3e0d95c2a1ed86a1bd15b151fc17"
       }
     },
     {

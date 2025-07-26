@@ -61,7 +61,7 @@ extension Identity.Reauthorization {
        public var body: some URLRouting.Router<Identity.Reauthorization> {
            Method.post
            Path.reauthorization
-           Body(.form(Identity.Reauthorization.self, decoder: .default))
+           Body(.form(Identity.Reauthorization.self, decoder: .identities))
        }
    }
 }

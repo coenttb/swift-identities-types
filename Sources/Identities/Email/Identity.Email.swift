@@ -95,7 +95,7 @@ extension Identity.Email.Change.Request {
         public var body: some URLRouting.Router<Identity.Email.Change.Request> {
             Method.post
             Path<PathBuilder.Component<String>>.request
-            Body(.form(Identity.Email.Change.Request.self, decoder: .default))
+            Body(.form(Identity.Email.Change.Request.self, decoder: .identities))
         }
     }
 }
@@ -135,7 +135,7 @@ extension Identity.Email.Change.Confirmation {
         public var body: some URLRouting.Router<Identity.Email.Change.Confirmation> {
             Method.post
             Path.confirm
-            Body(.form(Identity.Email.Change.Confirmation.self, decoder: .default))
+            Body(.form(Identity.Email.Change.Confirmation.self, decoder: .identities))
         }
     }
 }

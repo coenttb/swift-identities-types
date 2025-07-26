@@ -66,7 +66,7 @@ extension Identity.Deletion.Request {
 
        public var body: some URLRouting.Router<Identity.Deletion.Request> {
            Method.post
-           Body(.form(Identity.Deletion.Request.self, decoder: .default))
+           Body(.form(Identity.Deletion.Request.self, decoder: .identities))
        }
    }
 }

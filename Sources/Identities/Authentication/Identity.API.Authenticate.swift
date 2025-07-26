@@ -95,7 +95,7 @@ extension Identity.API.Authenticate {
             OneOf {
                 URLRouting.Route(.case(Identity.API.Authenticate.credentials)) {
                     Method.post
-                    Body(.form(Identity.Authentication.Credentials.self, decoder: .default))
+                    Body(.form(Identity.Authentication.Credentials.self, decoder: .identities))
                 }
 
                 URLRouting.Route(.case(Identity.API.Authenticate.token)) {

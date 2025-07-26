@@ -67,7 +67,7 @@ extension Identity.Password.Reset.Request {
         public var body: some URLRouting.Router<Identity.Password.Reset.Request> {
             Method.post
             Path<PathBuilder.Component<String>>.request
-            Body(.form(Identity.Password.Reset.Request.self, decoder: .default))
+            Body(.form(Identity.Password.Reset.Request.self, decoder: .identities))
         }
     }
 }
@@ -115,7 +115,7 @@ extension Identity.Password.Reset.Confirm {
         public var body: some URLRouting.Router<Identity.Password.Reset.Confirm> {
             Method.post
             Path.confirm
-            Body(.form(Identity.Password.Reset.Confirm.self, decoder: .default))
+            Body(.form(Identity.Password.Reset.Confirm.self, decoder: .identities))
         }
     }
 }
@@ -192,7 +192,8 @@ extension Identity.Password.Change.Request {
         public var body: some URLRouting.Router<Identity.Password.Change.Request> {
             Method.post
             Path<PathBuilder.Component<String>>.request
-            Body(.form(Identity.Password.Change.Request.self, decoder: .default))
+            Body(.form(Identity.Password.Change.Request.self, decoder: .identities))
         }
     }
 }
+
