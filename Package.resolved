@@ -25,7 +25,7 @@
       "location" : "https://github.com/coenttb/coenttb-authentication",
       "state" : {
         "branch" : "main",
-        "revision" : "3334b126340d4a8bc6e82fa442f507c4b033e62b"
+        "revision" : "d674b61fdc256bcc4c3b5b76451db6604db77740"
       }
     },
     {
@@ -43,7 +43,7 @@
       "location" : "https://github.com/coenttb/coenttb-mailgun",
       "state" : {
         "branch" : "main",
-        "revision" : "d44625b8c72af42e18db6a292958be227fe458dc"
+        "revision" : "00590e58e1a0d912bca3ba2ec93d092e49d76fda"
       }
     },
     {
@@ -52,7 +52,7 @@
       "location" : "https://github.com/coenttb/coenttb-server",
       "state" : {
         "branch" : "main",
-        "revision" : "ea1bf7186570eb7778f5cfbf22c22e2a3528e4a9"
+        "revision" : "5d457aba5cf8e8b13ec0c2c6472608662437a582"
       }
     },
     {
@@ -61,7 +61,7 @@
       "location" : "https://github.com/coenttb/coenttb-server-vapor",
       "state" : {
         "branch" : "main",
-        "revision" : "c8a9997376dc96e684b08caba3df313e69995547"
+        "revision" : "4bc745a91380426b7e48c99c3918229e3b9e13bf"
       }
     },
     {
@@ -277,7 +277,7 @@
       "location" : "https://github.com/coenttb/swift-authentication",
       "state" : {
         "branch" : "main",
-        "revision" : "4a6d57fbb2e603fb485180600d26a13d865e3c1a"
+        "revision" : "35332ce1c2ddab3434e1b76c8aa95462897e91b4"
       }
     },
     {
@@ -580,10 +580,10 @@
     {
       "identity" : "swift-password-validation",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/coenttb/swift-password-validation",
+      "location" : "https://github.com/coenttb/swift-password-validation.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "350c846e1aca8cedaf06534c34ab4a3f5db75eea"
+        "revision" : "350c846e1aca8cedaf06534c34ab4a3f5db75eea",
+        "version" : "0.0.1"
       }
     },
     {
@@ -753,8 +753,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/coenttb/swift-url-routing-translating",
       "state" : {
-        "branch" : "main",
-        "revision" : "bccd2705110cd5e0ed514eb9f8282931bdbc9772"
+        "revision" : "c40c9cfa7aab37be56c4aa9d98a43c878f5534b0",
+        "version" : "0.0.1"
       }
     },
     {
