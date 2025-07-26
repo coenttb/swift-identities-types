@@ -8,6 +8,7 @@
 .swiftpm
 *.swiftpm/
 *.swiftlint.yml
+Package.resolved
 
 # Node artifact files
 node_modules/
