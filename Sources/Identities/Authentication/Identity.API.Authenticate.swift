@@ -5,7 +5,7 @@
 //  Created by Coen ten Thije Boonkkamp on 07/02/2025.
 //
 
-import AuthenticationTypes
+import Authentication
 import CasePaths
 import Foundation
 import Swift_Web
@@ -107,7 +107,8 @@ extension Identity.API.Authenticate {
                                 BearerAuth.Router().map(
                                     .convert(
                                         apply: { JWT.Token(value: $0.token) },
-                                        unapply: { .init(token: $0.value) }
+                                        // TO-DO: remove force unwrapping after https://github.com/pointfreeco/swift-parsing/pull/381
+                                        unapply: { try! BearerAuth(token: $0.value) }
                                     )
                                 )
                                 Cookies {
