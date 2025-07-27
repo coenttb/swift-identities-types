@@ -6,3 +6,12 @@
 //
 
 import Foundation
+import URLFormCoding
+
+extension URLFormCoding.Form.Decoder {
+    public static var identities: URLFormCoding.Form.Decoder {
+        let decoder = URLFormCoding.Form.Decoder()
+        decoder.parsingStrategy = .bracketsWithIndices
+        return decoder
+    }
+}
