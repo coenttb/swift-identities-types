@@ -4,110 +4,141 @@ import Foundation
 import PackageDescription
 
 extension String {
-    static let coenttbIdentityProvider: Self = "Coenttb Identity Provider"
-    static let coenttbIdentityConsumer: Self = "Coenttb Identity Consumer"
-    static let coenttbIdentityShared: Self = "Coenttb Identity Shared"
+    static let identityProvider: Self = "Identity Provider"
+    static let identityConsumer: Self = "Identity Consumer"
+    static let identityStandalone: Self = "Identity Standalone"
+    static let identityShared: Self = "Identity Shared"
+    static let identityViews: Self = "Identity Views"
+    static let identityBackend: Self = "Identity Backend"
+    static let identityFrontend: Self = "Identity Frontend"
 }
 
 extension Target.Dependency {
-    static var coenttbIdentityProvider: Self { .target(name: .coenttbIdentityProvider) }
-    static var coenttbIdentityConsumer: Self { .target(name: .coenttbIdentityConsumer) }
-    static var coenttbIdentityShared: Self { .target(name: .coenttbIdentityShared) }
+    static var identityProvider: Self { .target(name: .identityProvider) }
+    static var identityConsumer: Self { .target(name: .identityConsumer) }
+    static var identityStandalone: Self { .target(name: .identityStandalone) }
+    static var identityShared: Self { .target(name: .identityShared) }
+    static var identityViews: Self { .target(name: .identityViews) }
+    static var identityBackend: Self { .target(name: .identityBackend) }
+    static var identityFrontend: Self { .target(name: .identityFrontend) }
 }
 
 extension Target.Dependency {
-    static var coenttbFluent: Self { .product(name: "Coenttb Fluent", package: "coenttb-server-vapor") }
-    static var coenttbServer: Self { .product(name: "Coenttb Server", package: "coenttb-server") }
-    static var coenttbVapor: Self { .product(name: "Coenttb Vapor", package: "coenttb-server-vapor") }
-    static var coenttbVaporTesting: Self { .product(name: "Coenttb Vapor Testing", package: "coenttb-server-vapor") }
+    static var identitiesTypes: Self { .product(name: "IdentitiesTypes", package: "swift-identities-types") }
+    static var boiler: Self { .product(name: "Boiler", package: "boiler") }
     static var coenttbWeb: Self { .product(name: "Coenttb Web", package: "coenttb-web") }
-    static var identities: Self { .product(name: "Identities", package: "swift-identities") }
-    static var dependenciesMacros: Self { .product(name: "DependenciesMacros", package: "swift-dependencies") }
+    static var coenttbEmail: Self { .product(name: "CoenttbEmail", package: "coenttb-html") }
+    static var records: Self { .product(name: "Records", package: "swift-records") }
+    static var totp: Self { .product(name: "TOTP", package: "swift-one-time-password") }
     static var dependenciesTestSupport: Self { .product(name: "DependenciesTestSupport", package: "swift-dependencies") }
-    static var mailgun: Self { .product(name: "Mailgun", package: "coenttb-mailgun") }
-    static var fluentSqlLite: Self { .product(name: "FluentSQLiteDriver", package: "fluent-sqlite-driver") }
-    static var vaporJWT: Self { .product(name: "JWT", package: "jwt") }
 }
 
 let package = Package(
-    name: "coenttb-identities",
+    name: "swift-identities",
     platforms: [
         .macOS(.v14),
         .iOS(.v17)
     ],
     products: [
-        .library(name: .coenttbIdentityProvider, targets: [.coenttbIdentityProvider]),
-        .library(name: .coenttbIdentityConsumer, targets: [.coenttbIdentityConsumer]),
-        .library(name: .coenttbIdentityShared, targets: [.coenttbIdentityShared])
+        .library(name: .identityProvider, targets: [.identityProvider]),
+        .library(name: .identityConsumer, targets: [.identityConsumer]),
+        .library(name: .identityStandalone, targets: [.identityStandalone]),
+        .library(name: .identityShared, targets: [.identityShared]),
+        .library(name: .identityViews, targets: [.identityViews]),
+        .library(name: .identityBackend, targets: [.identityBackend]),
+        .library(name: .identityFrontend, targets: [.identityFrontend])
     ],
     dependencies: [
-        .package(url: "https://github.com/coenttb/coenttb-mailgun", branch: "main"),
-        .package(url: "https://github.com/coenttb/coenttb-server", branch: "main"),
-        .package(url: "https://github.com/coenttb/coenttb-server-vapor", branch: "main"),
-        .package(url: "https://github.com/coenttb/coenttb-web", branch: "main"),
-        .package(url: "https://github.com/coenttb/swift-identities", branch: "main"),
+        .package(url: "https://github.com/coenttb/boiler", from: "0.0.1"),
+        .package(url: "https://github.com/coenttb/swift-records", from: "0.0.1"),
+        .package(url: "https://github.com/coenttb/swift-identities-types", from: "0.0.1"),
+        .package(url: "https://github.com/coenttb/swift-one-time-password", from: "0.0.1"),
         .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.9.2"),
-        .package(url: "https://github.com/vapor/fluent-sqlite-driver.git", from: "4.0.0"),
-        .package(url: "https://github.com/vapor/jwt.git", from: "5.0.0"),
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.113.2")
+        .package(url: "https://github.com/coenttb/coenttb-html", branch: "main"),
+        .package(url: "https://github.com/coenttb/coenttb-web", branch: "main")
     ],
     targets: [
         .target(
-            name: .coenttbIdentityShared,
+            name: .identityShared,
             dependencies: [
-                .identities,
-                .coenttbWeb,
-                .dependenciesMacros,
-                .vaporJWT,
-                .coenttbVapor
+                .identitiesTypes,
+                .boiler,
+                .totp
             ]
         ),
         .target(
-            name: .coenttbIdentityConsumer,
+            name: .identityViews,
             dependencies: [
-                .identities,
-                .coenttbWeb,
-                .dependenciesMacros,
-                .coenttbIdentityShared,
-                .coenttbVapor,
-                .vaporJWT
+                .identityShared,
+                .coenttbEmail,
+                .coenttbWeb
             ]
         ),
         .target(
-            name: .coenttbIdentityProvider,
+            name: .identityBackend,
             dependencies: [
-                .identities,
-                .coenttbWeb,
-                .coenttbServer,
-                .coenttbVapor,
-                .coenttbFluent,
-                .coenttbIdentityShared,
-                .mailgun
-
+                .identityShared,
+                .boiler,
+                .records,
+                .coenttbEmail
+            ]
+        ),
+        .target(
+            name: .identityFrontend,
+            dependencies: [
+                .identitiesTypes,
+                .identityShared,
+                .identityViews,
+                .boiler
+            ]
+        ),
+        .target(
+            name: .identityConsumer,
+            dependencies: [
+                .identitiesTypes,
+                .identityShared,
+                .identityViews,
+                .identityFrontend,
+                .boiler
+            ]
+        ),
+        .target(
+            name: .identityProvider,
+            dependencies: [
+                .identitiesTypes,
+                .identityShared,
+                .identityBackend,
+                .boiler
+            ]
+        ),
+        .target(
+            name: .identityStandalone,
+            dependencies: [
+                .identitiesTypes,
+                .identityShared,
+                .identityBackend,
+                .identityViews,
+                .identityFrontend,
+                .boiler
             ]
         ),
         .testTarget(
-            name: .coenttbIdentityConsumer.tests,
+            name: .identityConsumer.tests,
             dependencies: [
-                .coenttbIdentityConsumer,
-                .coenttbIdentityProvider,
-                .dependenciesTestSupport,
-                .coenttbVaporTesting
+                .identityConsumer,
+                .identityProvider,
+                .dependenciesTestSupport
             ]
         ),
         .testTarget(
-            name: .coenttbIdentityProvider.tests,
+            name: .identityProvider.tests,
             dependencies: [
-                .coenttbIdentityProvider,
-                .dependenciesTestSupport,
-                .fluentSqlLite,
-                .coenttbVaporTesting
+                .identityProvider,
+                .dependenciesTestSupport
             ]
         )
     ],
     swiftLanguageModes: [.v6]
 )
 
-extension String {
-    var tests: Self { "\(self) Tests" }
-}
+extension String { var tests: Self { "\(self) Tests" } }
