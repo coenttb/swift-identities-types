@@ -25,7 +25,8 @@ extension Identity.Standalone {
     /// - Throws: Any errors during configuration
     public static func configure(
         _ application: Vapor.Application,
-        runMigrations: Bool = true
+        runMigrations: Bool = true,
+        manageDatabaseLifeCycle: Bool = true
     ) async throws {
         @Dependency(\.logger) var logger
         @Dependency(\.defaultDatabase) var database
@@ -35,21 +36,11 @@ extension Identity.Standalone {
             "operation": "configure"
         ])
         
-        // Run Identity-specific migrations if requested
-        if runMigrations {
-            logger.debug("Running Identity database migrations", metadata: [
-                "component": "Identity.Standalone",
-                "operation": "database.migrate"
-            ])
-            
-            let migrator = Identity.Backend.migrator()
-            try await migrator.migrate(database)
-            
-            logger.debug("Identity database migrations complete", metadata: [
-                "component": "Identity.Standalone",
-                "operation": "database.migrate.success"
-            ])
-        }
+        try await Identity.Backend.configure(
+            application,
+            runMigrations: runMigrations,
+            manageDatabaseLifeCycle: manageDatabaseLifeCycle
+        )
         
         application.middleware.use(Identity.Standalone.Authenticator())
         
