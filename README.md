@@ -1,6 +1,10 @@
-# swift-identities
+# swift-identities-types
 
-`swift-identities` is a type-safe, modular foundation for identity authentication and management.
+[![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)](https://swift.org)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](https://github.com/coenttb/swift-identities-types/releases)
+
+`swift-identities-types` provides type-safe, modular types and protocols for identity authentication and management.
 
 ![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
 
@@ -16,28 +20,28 @@ This package is currently in active development and is subject to frequent chang
 
 ## Installation
 
-You can add `swift-identities` to an Xcode project by including it as a package dependency:
+You can add `swift-identities-types` to an Xcode project by including it as a package dependency:
 
-Repository URL: https://github.com/coenttb/swift-identities
+Repository URL: https://github.com/coenttb/swift-identities-types
 
 For a Swift Package Manager project, add the dependency in your Package.swift file:
-```
+```swift
 dependencies: [
-  .package(url: "https://github.com/coenttb/swift-identitie", branch: "main")
+  .package(url: "https://github.com/coenttb/swift-identities-types", from: "0.1.0")
 ]
 ```
 
-## Example
+## Usage
 
-Refer to [coenttb/coenttb-identities](https://www.github.com/coenttb/coenttb-identities) for an example of how to use swift-identities.
-Refer to [coenttb/coenttb-com-server](https://www.github.com/coenttb/coenttb-com-server) for an example of how to use coenttb-identities.
+This package provides the core types and protocols. For a complete implementation, use:
+- [swift-identities](https://github.com/coenttb/swift-identities) - Complete authentication system
+- [swift-identities-mailgun](https://github.com/coenttb/swift-identities-mailgun) - Email integration
 
 ## Related Projects
 
-* [coenttb/coenttb-identities](https://www.github.com/coenttb/swift-web): Live implementation of swift-identities.
-* [coenttb/swift-web](https://www.github.com/coenttb/swift-web): Modular tools to simplify web development in Swift forked from  [pointfreeco/swift-web](https://www.github.com/pointfreeco/swift-web), and updated for use in [coenttb/coenttb-web](https://www.github.com/coenttb/coenttb-web).
-* [coenttb/coenttb-com-server](https://www.github.com/coenttb/coenttb-com-server): The backend server for coenttb.com, written entirely in Swift and powered by [Vapor](https://www.github.com/vapor/vapor) and [coenttb-web](https://www.github.com/coenttb/coenttb-web).
-* [coenttb/swift-languages](https://www.github.com/coenttb/swift-languages): A cross-platform translation library written in Swift.
+* [swift-identities](https://github.com/coenttb/swift-identities): Complete authentication system implementation
+* [swift-identities-mailgun](https://github.com/coenttb/swift-identities-mailgun): Mailgun email integration for identities
+* [coenttb-com-server](https://github.com/coenttb/coenttb-com-server): Example production usage
 
 ## Feedback is much appreciated!
 
