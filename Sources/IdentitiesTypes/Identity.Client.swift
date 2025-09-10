@@ -75,6 +75,10 @@ extension Identity {
         /// Optional multi-factor authentication support
         /// If nil, MFA is not available
         public var mfa: Identity.Client.MFA? = nil
+        
+        /// Optional OAuth provider support
+        /// If nil, OAuth is not available
+        public var oauth: Identity.Client.OAuth? = nil
 
     }
 }

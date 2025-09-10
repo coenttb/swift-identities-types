@@ -1,0 +1,148 @@
+//
+//  Identity.OAuth.swift
+//  swift-identities-types
+//
+//  Created by Coen ten Thije Boonkkamp on 10/09/2025.
+//
+
+import Foundation
+import Dependencies
+
+extension Identity {
+    public enum OAuth {}
+}
+
+extension Identity.OAuth {
+    /// Protocol defining an OAuth provider's capabilities
+    public protocol Provider: Sendable {
+        /// Unique identifier for this provider (e.g., "github", "google")
+        var identifier: String { get }
+        
+        /// Display name for UI purposes
+        var displayName: String { get }
+        
+        /// Generate authorization URL for OAuth flow
+        func authorizationURL(state: String, redirectURI: String) async throws -> URL
+        
+        /// Exchange authorization code for tokens
+        func exchangeCode(_ code: String, redirectURI: String) async throws -> TokenResponse
+        
+        /// Get user information using access token
+        func getUserInfo(accessToken: String) async throws -> UserInfo
+        
+        /// Refresh access token if supported (optional)
+        func refreshToken(_ refreshToken: String) async throws -> TokenResponse?
+    }
+    
+    /// OAuth token response from provider
+    public struct TokenResponse: Codable, Equatable, Sendable {
+        public let accessToken: String
+        public let refreshToken: String?
+        public let expiresIn: Int?
+        public let scope: String?
+        public let tokenType: String
+        
+        public init(
+            accessToken: String,
+            refreshToken: String? = nil,
+            expiresIn: Int? = nil,
+            scope: String? = nil,
+            tokenType: String = "Bearer"
+        ) {
+            self.accessToken = accessToken
+            self.refreshToken = refreshToken
+            self.expiresIn = expiresIn
+            self.scope = scope
+            self.tokenType = tokenType
+        }
+    }
+    
+    /// Generic user information from OAuth provider
+    public struct UserInfo: Codable, Sendable {
+        /// Unique user ID from the provider
+        public let id: String
+        
+        /// User's email address
+        public let email: String?
+        
+        /// Whether the email is verified by the provider
+        public let emailVerified: Bool?
+        
+        /// User's display name
+        public let name: String?
+        
+        /// User's username/handle
+        public let username: String?
+        
+        /// Profile picture URL
+        public let avatarURL: String?
+        
+        /// Raw provider-specific data
+        public let rawData: Data
+        
+        public init(
+            id: String,
+            email: String? = nil,
+            emailVerified: Bool? = nil,
+            name: String? = nil,
+            username: String? = nil,
+            avatarURL: String? = nil,
+            rawData: Data
+        ) {
+            self.id = id
+            self.email = email
+            self.emailVerified = emailVerified
+            self.name = name
+            self.username = username
+            self.avatarURL = avatarURL
+            self.rawData = rawData
+        }
+    }
+    
+    /// OAuth credentials for authentication
+    public struct Credentials: Codable, Equatable, Sendable {
+        public let provider: String
+        public let code: String
+        public let state: String
+        public let redirectURI: String
+        
+        public init(
+            provider: String,
+            code: String,
+            state: String,
+            redirectURI: String
+        ) {
+            self.provider = provider
+            self.code = code
+            self.state = state
+            self.redirectURI = redirectURI
+        }
+    }
+    
+    /// OAuth state for CSRF protection
+    public struct State: Codable, Sendable {
+        public let value: String
+        public let provider: String
+        public let redirectURI: String
+        public let createdAt: Date
+        public let expiresAt: Date
+        
+        public init(
+            value: String,
+            provider: String,
+            redirectURI: String,
+            createdAt: Date = Date(),
+            expiresAt: Date = Date().addingTimeInterval(600) // 10 minutes
+        ) {
+            self.value = value
+            self.provider = provider
+            self.redirectURI = redirectURI
+            self.createdAt = createdAt
+            self.expiresAt = expiresAt
+        }
+        
+        public var isExpired: Bool {
+            Date() > expiresAt
+        }
+    }
+}

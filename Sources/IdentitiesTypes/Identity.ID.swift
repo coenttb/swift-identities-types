@@ -5,7 +5,7 @@
 //  Created by Coen ten Thije Boonkkamp on 30/08/2025.
 //
 
-import Tagged
+import ServerFoundation
 import Foundation
 
 extension Identity {

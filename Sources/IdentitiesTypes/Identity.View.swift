@@ -27,6 +27,7 @@ extension Identity {
         case email(Identity.Email.View)
         case password(Identity.Password.View)
         case mfa(Identity.MFA.View)
+        case oauth(Identity.View.OAuth)
     }
 }
 
@@ -89,6 +90,11 @@ extension Identity.View {
                     Path { "mfa" }
                     // Delegate to the feature's view router
                     Identity.MFA.View.Router()
+                }
+                
+                URLRouting.Route(.case(Identity.View.oauth)) {
+                    // Delegate to the feature's view router
+                    Identity.View.OAuth.Router()
                 }
                 
                 URLRouting.Route(.case(Identity.View.authenticate)) {

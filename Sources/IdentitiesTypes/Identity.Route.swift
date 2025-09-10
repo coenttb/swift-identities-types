@@ -55,6 +55,9 @@ extension Identity {
         
         /// Reauthorization for sensitive operations
         case reauthorize(Reauthorization)
+        
+        /// OAuth provider authentication
+        case oauth(OAuth.Route)
     }
 }
 
@@ -120,6 +123,11 @@ extension Identity.Route {
                     Path { "reauthorize" }
                     Identity.Reauthorization.Router()
                 }
+                
+                // OAuth feature routes
+                URLRouting.Route(.case(Identity.Route.oauth)) {
+                    Identity.OAuth.Route.Router()
+                }
             }
         }
     }
@@ -174,6 +182,8 @@ extension Identity.Route {
             return .logout(.api(logout))
         case .reauthorize(let reauth):
             return .reauthorize(reauth)
+        case .oauth(let oauth):
+            return .oauth(.api(oauth))
         }
     }
     
@@ -204,6 +214,8 @@ extension Identity.Route {
             return .password(.view(password))
         case .mfa(let mfa):
             return .mfa(.view(mfa))
+        case .oauth(let oath):
+            return .oauth(.view(oath))
         }
     }
 }

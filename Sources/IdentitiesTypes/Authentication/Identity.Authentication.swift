@@ -13,9 +13,10 @@ import ServerFoundation
 extension Identity {
     /// Authentication methods supported by the Identity system.
     ///
-    /// The system supports two primary authentication methods:
+    /// The system supports three primary authentication methods:
     /// - Username/password credentials
     /// - Token-based authentication (access and refresh tokens)
+    /// - OAuth provider authentication (GitHub, Google, etc.)
     ///
     /// This design implements a robust authentication system with support for
     /// both initial authentication and session maintenance through token refresh.
@@ -26,6 +27,8 @@ extension Identity {
         case credentials(Credentials)
         /// Authenticate using an access or refresh token
         case token(Identity.Authentication.Token)
+        /// Authenticate using OAuth provider
+        case oauth(Identity.OAuth.Credentials)
     }
 }
 

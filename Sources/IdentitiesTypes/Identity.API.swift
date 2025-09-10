@@ -56,6 +56,9 @@ extension Identity {
         
         /// Manages multi-factor authentication operations
         case mfa(Identity.API.MFA)
+        
+        /// Manages OAuth provider authentication
+        case oauth(Identity.API.OAuth)
     }
 }
 
@@ -131,6 +134,10 @@ extension Identity.API {
                 URLRouting.Route(.case(Identity.API.mfa)) {
                     Path { "mfa" }
                     Identity.MFA.API.Router()
+                }
+                
+                URLRouting.Route(.case(Identity.API.oauth)) {
+                    Identity.API.OAuth.Router()
                 }
             }
         }
