@@ -50,6 +50,18 @@ extension Identity.Client {
             _ provider: String
         ) async throws -> Void
         
+        /// Get a valid OAuth access token for API usage
+        /// This method handles token refresh automatically if supported by provider
+        /// Returns nil if provider doesn't store tokens or token unavailable
+        @DependencyEndpoint
+        public var getValidToken: (
+            _ provider: String
+        ) async throws -> String?
+        
+        /// Get all OAuth connections for current identity
+        @DependencyEndpoint
+        public var getAllConnections: () async throws -> [OAuthConnection]
+        
         /// OAuth connection information
         public struct OAuthConnection: Codable, Sendable {
             public let provider: String

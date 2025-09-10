@@ -21,6 +21,14 @@ extension Identity.OAuth {
         /// Display name for UI purposes
         var displayName: String { get }
         
+        /// Whether this provider requires token storage for API access
+        /// If false, tokens are only used for authentication and not stored
+        /// If true, tokens are encrypted and stored for later API usage
+        var requiresTokenStorage: Bool { get }
+        
+        /// Whether this provider supports token refresh
+        var supportsRefresh: Bool { get }
+        
         /// Generate authorization URL for OAuth flow
         func authorizationURL(state: String, redirectURI: String) async throws -> URL
         
@@ -33,6 +41,10 @@ extension Identity.OAuth {
         /// Refresh access token if supported (optional)
         func refreshToken(_ refreshToken: String) async throws -> TokenResponse?
     }
+    
+    // MARK: - Default Implementations
+    
+    
     
     /// OAuth token response from provider
     public struct TokenResponse: Codable, Equatable, Sendable {
@@ -144,5 +156,19 @@ extension Identity.OAuth {
         public var isExpired: Bool {
             Date() > expiresAt
         }
+    }
+}
+
+/// Default implementations for OAuth Provider protocol
+public extension Identity.OAuth.Provider {
+    /// By default, providers don't require token storage (authentication only)
+    var requiresTokenStorage: Bool { false }
+    
+    /// By default, providers don't support refresh
+    var supportsRefresh: Bool { false }
+    
+    /// Default implementation returns nil (no refresh support)
+    func refreshToken(_ refreshToken: String) async throws -> Identity.OAuth.TokenResponse? {
+        return nil
     }
 }
