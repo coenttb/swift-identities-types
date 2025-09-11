@@ -35,7 +35,7 @@ extension Identity.Client {
         /// Handle OAuth callback and exchange code for tokens
         @DependencyEndpoint
         public var callback: (
-            _ credentials: Identity.OAuth.Credentials
+            _ callbackRequest: Identity.OAuth.CallbackRequest
         ) async throws -> Identity.Authentication.Response
         
         /// Get OAuth connection for current identity

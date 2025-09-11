@@ -21,7 +21,7 @@ extension Identity.API {
         case authorize(provider: String)
         
         /// Handle OAuth callback with code and state
-        case callback(Identity.OAuth.Credentials)
+        case callback(Identity.OAuth.CallbackRequest)
         
         /// Get current OAuth connections
         case connections
@@ -41,14 +41,12 @@ extension Identity.API.OAuth {
                 // GET /oauth/providers
                 URLRouting.Route(.case(Identity.API.OAuth.providers)) {
                     Method.get
-                    Path { "oauth" }
                     Path { "providers" }
                 }
                 
                 // GET /oauth/authorize/:provider
                 URLRouting.Route(.case(Identity.API.OAuth.authorize)) {
                     Method.get
-                    Path { "oauth" }
                     Path { "authorize" }
                     Path { Parse(.string) } // provider
                 }
@@ -56,15 +54,16 @@ extension Identity.API.OAuth {
                 // GET /oauth/callback
                 URLRouting.Route(.case(Identity.API.OAuth.callback)) {
                     Method.get
-                    Path { "oauth" }
                     Path { "callback" }
                     
-                    Parse(.memberwise(Identity.OAuth.Credentials.init)) {
+                    Parse(.memberwise(Identity.OAuth.CallbackRequest.init)) {
                         URLRouting.Query {
+                            Field("provider", .string, default: "github")
                             Field("code") { Parse(.string) }
                             Field("state") { Parse(.string) }
-                            Field("provider", .string, default: "github")
-                            Field("redirect_uri") { Parse(.string) }
+                            Optionally {
+                                Field("redirect_uri") { Parse(.string) }
+                            }
                         }
                     }
                 }
@@ -72,14 +71,12 @@ extension Identity.API.OAuth {
                 // GET /oauth/connections
                 URLRouting.Route(.case(Identity.API.OAuth.connections)) {
                     Method.get
-                    Path { "oauth" }
                     Path { "connections" }
                 }
                 
                 // DELETE /oauth/disconnect/:provider
                 URLRouting.Route(.case(Identity.API.OAuth.disconnect)) {
                     Method.delete
-                    Path { "oauth" }
                     Path { "disconnect" }
                     Path { Parse(.string) } // provider
                 }

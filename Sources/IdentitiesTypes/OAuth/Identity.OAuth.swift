@@ -111,18 +111,38 @@ extension Identity.OAuth {
         }
     }
     
-    /// OAuth credentials for authentication
-    public struct Credentials: Codable, Equatable, Sendable {
+    /// OAuth callback request data sent by the provider.
+    ///
+    /// This type represents the data sent back by OAuth providers in the callback URL
+    /// after user authorization. It's used for external API routes and views.
+    public struct CallbackRequest: Codable, Equatable, Sendable {
+        /// The OAuth provider identifier (e.g., "github", "google")
         public let provider: String
-        public let code: String
-        public let state: String
-        public let redirectURI: String
         
+        /// The authorization code returned by the OAuth provider.
+        /// This code must be exchanged for access and refresh tokens.
+        public let code: String
+        
+        /// The state parameter for CSRF protection.
+        /// This should match the state originally sent in the authorization request.
+        public let state: String
+        
+        /// The redirect URI if provided by the OAuth provider (rarely sent back).
+        /// Most providers don't include this in the callback.
+        public let redirectURI: String?
+        
+        /// Creates a new OAuth callback request instance.
+        ///
+        /// - Parameters:
+        ///   - provider: The OAuth provider identifier
+        ///   - code: The authorization code from the provider
+        ///   - state: The state parameter for CSRF protection
+        ///   - redirectURI: The redirect URI if provided (optional)
         public init(
             provider: String,
             code: String,
             state: String,
-            redirectURI: String
+            redirectURI: String? = nil
         ) {
             self.provider = provider
             self.code = code
@@ -130,6 +150,40 @@ extension Identity.OAuth {
             self.redirectURI = redirectURI
         }
     }
+    
+    /// Internal OAuth token exchange request.
+    ///
+    /// This type is used internally for exchanging authorization codes for tokens.
+    /// It contains all required data including the redirect URI retrieved from state.
+    /// This type is never exposed in public APIs.
+    public struct TokenExchangeRequest: Codable, Equatable, Sendable {
+        /// The OAuth provider identifier (e.g., "github", "google")
+        public let provider: String
+        
+        /// The authorization code to exchange for tokens.
+        public let code: String
+        
+        /// The redirect URI that was used in the authorization request.
+        /// Required for the token exchange with the OAuth provider.
+        public let redirectURI: String
+        
+        /// Creates a new token exchange request.
+        ///
+        /// - Parameters:
+        ///   - provider: The OAuth provider identifier
+        ///   - code: The authorization code to exchange
+        ///   - redirectURI: The redirect URI used in authorization
+        public init(
+            provider: String,
+            code: String,
+            redirectURI: String
+        ) {
+            self.provider = provider
+            self.code = code
+            self.redirectURI = redirectURI
+        }
+    }
+    
     
     /// OAuth state for CSRF protection
     public struct State: Codable, Sendable {

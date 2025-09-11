@@ -18,7 +18,7 @@ extension Identity.View {
         case login
         
         /// OAuth callback handling page
-        case callback(Identity.OAuth.Credentials)
+        case callback(Identity.OAuth.CallbackRequest)
         
         /// OAuth connection management page
         case connections
@@ -48,12 +48,15 @@ extension Identity.View.OAuth {
                     Path { "oauth" }
                     Path { "callback" }
                     
-                    Parse(.memberwise(Identity.OAuth.Credentials.init)) {
+                    Parse(.memberwise(Identity.OAuth.CallbackRequest.init)) {
                         URLRouting.Query {
+                            Field("provider", .string, default: "github")
                             Field("code") { Parse(.string) }
                             Field("state") { Parse(.string) }
-                            Field("provider", .string, default: "github")
-                            Field("redirect_uri") { Parse(.string) }
+                            
+                            Optionally {
+                                Field("redirect_uri") { Parse(.string) }
+                            }
                         }
                     }
                 }

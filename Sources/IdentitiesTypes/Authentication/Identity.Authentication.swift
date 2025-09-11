@@ -28,7 +28,7 @@ extension Identity {
         /// Authenticate using an access or refresh token
         case token(Identity.Authentication.Token)
         /// Authenticate using OAuth provider
-        case oauth(Identity.OAuth.Credentials)
+        case oauth(Identity.OAuth.CallbackRequest)
     }
 }
 

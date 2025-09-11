@@ -29,6 +29,7 @@ extension Identity.OAuth.Route {
                 // API routes
                 URLRouting.Route(.case(Identity.OAuth.Route.api)) {
                     Path { "api" }
+                    Path { "oauth" }
                     Identity.API.OAuth.Router()
                 }
                 
