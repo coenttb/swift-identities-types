@@ -7,9 +7,8 @@
 
 import Authenticating
 import Foundation
-@testable import Identities
+@testable import IdentitiesTypes
 import Testing
-import URLRouting
 
 @Suite("Working Router Test")
 struct WorkingRouterTest {

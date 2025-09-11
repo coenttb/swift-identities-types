@@ -6,9 +6,8 @@
 //
 
 import Foundation
-@testable import Identities
+@testable import IdentitiesTypes
 import Testing
-import URLRouting
 
 @Suite("Detailed Route Debug")
 struct DetailedRouteDebug {

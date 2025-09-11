@@ -5,11 +5,22 @@
 //  Created by Coen ten Thije Boonkkamp on 19/08/2025.
 //
 
-import Foundation
+import TypesFoundation
 
 extension Identity.MFA {
     /// SMS-specific types and operations.
-    public enum SMS {}
+    public struct SMS: @unchecked Sendable {
+        public var client: Identity.MFA.SMS.Client
+        public var router: any URLRouting.Router<Identity.MFA.SMS.API>
+        
+        public init(
+            client: Identity.MFA.SMS.Client,
+            router: any URLRouting.Router<Identity.MFA.SMS.API> = Identity.MFA.SMS.API.Router()
+        ) {
+            self.client = client
+            self.router = router
+        }
+    }
 }
 
 extension Identity.MFA.SMS {

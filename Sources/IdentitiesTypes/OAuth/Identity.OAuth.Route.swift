@@ -7,14 +7,14 @@
 
 import CasePaths
 import Foundation
-import ServerFoundation
+import TypesFoundation
 
 extension Identity.OAuth {
     /// OAuth-specific routes
     @CasePathable
     @dynamicMemberLookup
     public enum Route: Equatable, Sendable {
-        case api(Identity.API.OAuth)
+        case api(Identity.OAuth.API)
         case view(Identity.View.OAuth)
     }
 }
@@ -30,7 +30,7 @@ extension Identity.OAuth.Route {
                 URLRouting.Route(.case(Identity.OAuth.Route.api)) {
                     Path { "api" }
                     Path { "oauth" }
-                    Identity.API.OAuth.Router()
+                    Identity.OAuth.API.Router()
                 }
                 
                 // View routes

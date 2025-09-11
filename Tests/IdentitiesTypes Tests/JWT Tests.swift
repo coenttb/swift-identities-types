@@ -9,7 +9,7 @@ import Authenticating
 import Dependencies
 import DependenciesTestSupport
 import Foundation
-@testable import Identities
+@testable import IdentitiesTypes
 import Testing
 
 // JWT token tests removed since JWT is now just a String type alias

@@ -9,7 +9,7 @@ import Dependencies
 import DependenciesTestSupport
 import EmailAddress
 import Foundation
-@testable import Identities
+@testable import IdentitiesTypes
 import Testing
 
 @Suite("Identity Creation Model Tests")
@@ -174,20 +174,20 @@ struct IdentityReauthorizationModelTests {
     
     @Test("Creates reauthorization request")
     func testReauthorizationRequest() {
-        let request = Identity.API.Reauthorize(password: "password123")
+        let request = Identity.Reauthorization.Request(password: "password123")
         
         #expect(request.password == "password123")
     }
     
     @Test("Reauthorization request encoding and decoding")
     func testReauthorizationCodable() throws {
-        let request = Identity.API.Reauthorize(password: "securePassword")
+        let request = Identity.Reauthorization.Request(password: "securePassword")
         
         let encoder = JSONEncoder()
         let data = try encoder.encode(request)
         
         let decoder = JSONDecoder()
-        let decodedRequest = try decoder.decode(Identity.API.Reauthorize.self, from: data)
+        let decodedRequest = try decoder.decode(Identity.Reauthorization.Request.self, from: data)
         
         #expect(decodedRequest.password == request.password)
         #expect(decodedRequest == request)
@@ -234,14 +234,14 @@ struct IdentityMFAModelTests {
     
     @Test("Creates MFA status response")
     func testMFAStatusResponse() {
-        let configured = Identity.MFA.ConfiguredMethods(
+        let configured = Identity.MFA.Status.ConfiguredMethods(
             totp: true,
             sms: false,
             email: true,
             webauthn: false,
             backupCodesRemaining: 5
         )
-        let status = Identity.MFA.Status(
+        let status = Identity.MFA.Status.Response(
             configured: configured,
             isRequired: true
         )
@@ -256,14 +256,14 @@ struct IdentityMFAModelTests {
     
     @Test("MFA status encoding and decoding")
     func testMFAStatusCodable() throws {
-        let configured = Identity.MFA.ConfiguredMethods(
+        let configured = Identity.MFA.Status.ConfiguredMethods(
             totp: true,
             sms: true,
             email: false,
             webauthn: true,
             backupCodesRemaining: 10
         )
-        let status = Identity.MFA.Status(
+        let status = Identity.MFA.Status.Response(
             configured: configured,
             isRequired: false
         )
@@ -272,7 +272,7 @@ struct IdentityMFAModelTests {
         let data = try encoder.encode(status)
         
         let decoder = JSONDecoder()
-        let decodedStatus = try decoder.decode(Identity.MFA.Status.self, from: data)
+        let decodedStatus = try decoder.decode(Identity.MFA.Status.Response.self, from: data)
         
         #expect(decodedStatus.configured.totp == status.configured.totp)
         #expect(decodedStatus.configured.sms == status.configured.sms)

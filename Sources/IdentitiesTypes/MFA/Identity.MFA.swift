@@ -8,8 +8,34 @@
 import Foundation
 
 extension Identity {
-    /// Namespace for MFA-related types.
-    public enum MFA {}
+    /// Namespace for MFA-related functionality within the Identity system.
+    public struct MFA: @unchecked Sendable {
+        public var totp: Identity.MFA.TOTP
+        public var sms: Identity.MFA.SMS
+        public var email: Identity.MFA.Email
+        public var webauthn: Identity.MFA.WebAuthn
+        public var backupCodes: Identity.MFA.BackupCodes
+        public var status: Identity.MFA.Status
+        public var router: any URLRouting.Router<Identity.MFA.Route>
+        
+        public init(
+            totp: Identity.MFA.TOTP,
+            sms: Identity.MFA.SMS,
+            email: Identity.MFA.Email,
+            webauthn: Identity.MFA.WebAuthn,
+            backupCodes: Identity.MFA.BackupCodes,
+            status: Identity.MFA.Status,
+            router: any URLRouting.Router<Identity.MFA.Route> = Identity.MFA.Route.Router()
+        ) {
+            self.totp = totp
+            self.sms = sms
+            self.email = email
+            self.webauthn = webauthn
+            self.backupCodes = backupCodes
+            self.status = status
+            self.router = router
+        }
+    }
 }
 
 // MARK: - Common Types
@@ -40,50 +66,6 @@ extension Identity.MFA {
             case .webauthn: return "Security Key"
             case .backupCode: return "Backup Code"
             }
-        }
-    }
-    
-    /// MFA status for an identity.
-    public struct Status: Codable, Equatable, Sendable {
-        public let configured: ConfiguredMethods
-        public let isRequired: Bool
-        
-        public init(configured: ConfiguredMethods, isRequired: Bool) {
-            self.configured = configured
-            self.isRequired = isRequired
-        }
-    }
-    
-    /// Configured MFA methods.
-    public struct ConfiguredMethods: Codable, Equatable, Sendable {
-        public let totp: Bool
-        public let sms: Bool
-        public let email: Bool
-        public let webauthn: Bool
-        public let backupCodesRemaining: Int
-        
-        public init(
-            totp: Bool = false,
-            sms: Bool = false,
-            email: Bool = false,
-            webauthn: Bool = false,
-            backupCodesRemaining: Int = 0
-        ) {
-            self.totp = totp
-            self.sms = sms
-            self.email = email
-            self.webauthn = webauthn
-            self.backupCodesRemaining = backupCodesRemaining
-        }
-        
-        public var availableMethods: Set<Method> {
-            var methods = Set<Method>()
-            if totp { methods.insert(.totp) }
-            if sms { methods.insert(.sms) }
-            if email { methods.insert(.email) }
-            if webauthn { methods.insert(.webauthn) }
-            if backupCodesRemaining > 0 { methods.insert(.backupCode) }
-            return methods
         }
     }
     

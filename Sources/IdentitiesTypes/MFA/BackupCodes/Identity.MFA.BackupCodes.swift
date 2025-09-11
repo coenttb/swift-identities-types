@@ -5,11 +5,22 @@
 //  Created by Coen ten Thije Boonkkamp on 19/08/2025.
 //
 
-import Foundation
+import TypesFoundation
 
 extension Identity.MFA {
     /// BackupCodes-specific types and operations.
-    public enum BackupCodes {}
+    public struct BackupCodes: @unchecked Sendable {
+        public var client: Identity.MFA.BackupCodes.Client
+        public var router: any URLRouting.Router<Identity.MFA.BackupCodes.API>
+        
+        public init(
+            client: Identity.MFA.BackupCodes.Client,
+            router: any URLRouting.Router<Identity.MFA.BackupCodes.API> = Identity.MFA.BackupCodes.API.Router()
+        ) {
+            self.client = client
+            self.router = router
+        }
+    }
 }
 
 extension Identity.MFA.BackupCodes {

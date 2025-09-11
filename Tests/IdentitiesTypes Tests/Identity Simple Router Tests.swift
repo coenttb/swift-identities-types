@@ -10,9 +10,8 @@ import Dependencies
 import DependenciesTestSupport
 import EmailAddress
 import Foundation
-@testable import Identities
+@testable import IdentitiesTypes
 import Testing
-import URLRouting
 
 @Suite("Simple Identity API Router Tests")
 struct SimpleIdentityAPIRouterTests {

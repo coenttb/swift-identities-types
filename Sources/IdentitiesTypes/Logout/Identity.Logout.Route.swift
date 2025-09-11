@@ -6,7 +6,7 @@
 //
 
 import CasePaths
-import ServerFoundation
+import TypesFoundation
 
 extension Identity.Logout {
     /// Routes for logout functionality.

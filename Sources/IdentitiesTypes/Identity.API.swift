@@ -1,25 +1,30 @@
 //
 //  Identity.API.swift
-//  swift-web
+//  swift-identities
 //
 //  Created by Coen ten Thije Boonkkamp on 10/09/2024.
 //
 
 import CasePaths
-import ServerFoundation
+import TypesFoundation
 
 extension Identity {
     /// A comprehensive set of identity management API endpoints.
     ///
     /// `API` defines the complete set of identity-related operations available through the REST API,
-    /// including authentication, identity management, and profile operations. Each case represents
-    /// a distinct API endpoint category with its associated request/response types.
+    /// aggregating all domain-specific APIs following the domain-first pattern.
+    ///
+    /// This is an aggregation facade that allows both:
+    /// - Legacy access pattern: `Identity.Authentication.API(...)`
+    /// - New domain-first pattern: `Identity.Authentication.API.credentials(...)`
     ///
     /// The API supports the following operations:
     /// - Authentication and session management
     /// - Identity creation and deletion
     /// - Password operations (reset, change)
     /// - Email management and verification
+    /// - Multi-factor authentication
+    /// - OAuth provider integration
     ///
     /// Example of defining an API route:
     /// ```swift
@@ -34,31 +39,31 @@ extension Identity {
     @dynamicMemberLookup
     public enum API: Equatable, Sendable {
         /// Handles user authentication via credentials, tokens, or API keys
-        case authenticate(Identity.API.Authenticate)
+        case authenticate(Identity.Authentication.API)
 
         /// Re-authenticates a user for sensitive operations
-        case reauthorize(Identity.API.Reauthorize)
+        case reauthorize(Identity.Reauthorization.API)
 
         /// Manages new identity creation and verification
-        case create(Identity.API.Create)
+        case create(Identity.Creation.API)
 
         /// Handles identity deletion requests and confirmation
-        case delete(Identity.API.Delete)
+        case delete(Identity.Deletion.API)
 
         /// Manages logout operations (current session or all sessions)
         case logout(Identity.Logout.API)
 
         /// Manages email operations like change and verification
-        case email(Identity.API.Email)
+        case email(Identity.Email.API)
 
         /// Handles password-related operations like reset and change
-        case password(Identity.API.Password)
+        case password(Identity.Password.API)
         
         /// Manages multi-factor authentication operations
-        case mfa(Identity.API.MFA)
+        case mfa(Identity.MFA.API)
         
         /// Manages OAuth provider authentication
-        case oauth(Identity.API.OAuth)
+        case oauth(Identity.OAuth.API)
     }
 }
 
@@ -78,79 +83,65 @@ extension Identity.API {
    /// - Identity creation: `/create/*`
    /// - Password operations: `/password/*`
    /// - Email operations: `/email/*`
-   ///
-   /// The router automatically handles:
-   /// - Path components
-   /// - HTTP methods
-   /// - Request body parsing
-   /// - Response serialization
-    public struct Router: ParserPrinter, Sendable {
+   /// - MFA operations: `/mfa/*`
+   /// - OAuth operations: `/oauth/*`
+   public struct Router: ParserPrinter, Sendable {
 
-        public init() {}
+       public init() {}
 
-        /// The routing logic for all Identity API endpoints.
-        ///
-        /// Routes are composed using the `OneOf` parser-printer, which attempts to match
-        /// incoming requests against each defined route in order. The first matching route
-        /// determines how the request is handled.
-        public var body: some URLRouting.Router<Identity.API> {
-            OneOf {
-                URLRouting.Route(.case(Identity.API.create)) {
-                    Path.create
-                    Identity.Creation.API.Router()
-                }
+       /// The main routing logic composition.
+       ///
+       /// Routes are defined using the `OneOf` parser to match incoming requests
+       /// against all possible API endpoints. Each endpoint category has its own
+       /// sub-router that handles the specific routing logic.
+       public var body: some URLRouting.Router<Identity.API> {
+           OneOf {
+               URLRouting.Route(.case(Identity.API.authenticate)) {
+                   Path.authenticate
+                   Identity.Authentication.API.Router()
+               }
 
-                URLRouting.Route(.case(Identity.API.delete)) {
-                    Path.delete
-                    Identity.Deletion.API.Router()
-                }
+               URLRouting.Route(.case(Identity.API.reauthorize)) {
+                   Path.reauthorize
+                   Identity.Reauthorization.API.Router()
+               }
 
-                URLRouting.Route(.case(Identity.API.authenticate)) {
-                    Path.authenticate
-                    Identity.Authentication.API.Router()
-                }
+               URLRouting.Route(.case(Identity.API.create)) {
+                   Path.create
+                   Identity.Creation.API.Router()
+               }
 
-                URLRouting.Route(.case(Identity.API.logout)) {
-                    Path.logout
-                    Identity.Logout.API.Router()
-                }
+               URLRouting.Route(.case(Identity.API.delete)) {
+                   Path.delete
+                   Identity.Deletion.API.Router()
+               }
 
-                URLRouting.Route(.case(Identity.API.reauthorize)) {
-                    Method.post
-                    Path.reauthorize
-                    Body(.form(Identity.API.Reauthorize.self, decoder: .identities))
-                }
+               URLRouting.Route(.case(Identity.API.logout)) {
+                   Path.logout
+                   Identity.Logout.API.Router()
+               }
 
-                URLRouting.Route(.case(Identity.API.password)) {
-                    Path.password
-                    Identity.Password.API.Router()
-                }
+               URLRouting.Route(.case(Identity.API.email)) {
+                   Path.email
+                   Identity.Email.API.Router()
+               }
 
-                URLRouting.Route(.case(Identity.API.email)) {
-                    Path.email
-                    Identity.Email.API.Router()
-                }
-                
-                URLRouting.Route(.case(Identity.API.mfa)) {
-                    Path { "mfa" }
-                    Identity.MFA.API.Router()
-                }
-                
-                URLRouting.Route(.case(Identity.API.oauth)) {
-                    Path { "oauth" }
-                    Identity.API.OAuth.Router()
-                }
-            }
-        }
-    }
+               URLRouting.Route(.case(Identity.API.password)) {
+                   Path.password
+                   Identity.Password.API.Router()
+               }
+
+               URLRouting.Route(.case(Identity.API.mfa)) {
+                   Path.mfa
+                   Identity.MFA.API.Router()
+               }
+
+               URLRouting.Route(.case(Identity.API.oauth)) {
+                   Path.oauth
+                   Identity.OAuth.API.Router()
+               }
+           }
+       }
+   }
 }
-
-extension Identity.API.Router: TestDependencyKey {
-    /// A test implementation of the Identity API router.
-    ///
-    /// This router is used in test environments to verify routing logic without
-    /// requiring a full server implementation.
-    public static let testValue: AnyParserPrinter<URLRequestData, Identity.API> = Identity.API.Router().eraseToAnyParserPrinter()
-}
-
 

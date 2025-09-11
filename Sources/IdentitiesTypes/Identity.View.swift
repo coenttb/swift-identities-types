@@ -6,7 +6,7 @@
 //
 
 import CasePaths
-import ServerFoundation
+import TypesFoundation
 
 extension Identity {
     /// View routing and navigation states for the identity consumer interface.

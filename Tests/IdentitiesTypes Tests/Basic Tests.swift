@@ -9,7 +9,7 @@ import Dependencies
 import DependenciesTestSupport
 import EmailAddress
 import Foundation
-@testable import Identities
+@testable import IdentitiesTypes
 import Testing
 
 @Suite("Basic Authentication Tests")
@@ -66,18 +66,18 @@ struct BasicIdentityTests {
     
     @Test("Successfully authenticates with valid credentials") 
     func testValidCredentialsAuthentication() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
-            @Dependency(Identity.Client.self) var client
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
+            @Dependency(\.identity) var identity
             
             let email = "test@example.com"
             let password = "password123"
             
             // Create and verify identity
-            try await client.create.request(email: email, password: password)
-            try await client.create.verify(email: email, token: "verification-token-\(email)")
+            try await identity.create.request(email: email, password: password)
+            try await identity.create.verify(email: email, token: "verification-token-\(email)")
             
             // Login
-            let response = try await client.login(username: email, password: password)
+            let response = try await identity.login(username: email, password: password)
             
             // Check tokens are returned as strings
             #expect(response.accessToken.isEmpty == false)
@@ -87,27 +87,27 @@ struct BasicIdentityTests {
     
     @Test("Fails authentication with invalid credentials")
     func testInvalidCredentialsAuthentication() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
-            @Dependency(Identity.Client.self) var client
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
+            @Dependency(\.identity) var identity
             
-            await #expect(throws: Identity.Client._TestDatabase.TestError.invalidCredentials) {
-                try await client.login(username: "nonexistent@example.com", password: "wrongpass")
+            await #expect(throws: Identity._TestDatabase.TestError.invalidCredentials) {
+                try await identity.login(username: "nonexistent@example.com", password: "wrongpass")
             }
         }
     }
     
     @Test("Successfully creates new identity")
     func testIdentityCreation() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
-            @Dependency(Identity.Client.self) var client
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
+            @Dependency(\.identity) var identity
             
             let email = "new@example.com"
             let password = "securePass123"
             
-            try await client.create.request(email: email, password: password)
-            try await client.create.verify(email: email, token: "verification-token-\(email)")
+            try await identity.create.request(email: email, password: password)
+            try await identity.create.verify(email: email, token: "verification-token-\(email)")
             
-            let response = try await client.login(username: email, password: password)
+            let response = try await identity.login(username: email, password: password)
             #expect(response.accessToken.isEmpty == false)
         }
     }

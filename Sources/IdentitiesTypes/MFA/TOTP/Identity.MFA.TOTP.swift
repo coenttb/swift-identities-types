@@ -5,11 +5,22 @@
 //  Created by Coen ten Thije Boonkkamp on 19/08/2025.
 //
 
-import Foundation
+import TypesFoundation
 
 extension Identity.MFA {
     /// TOTP-specific types and operations.
-    public enum TOTP {}
+    public struct TOTP: @unchecked Sendable {
+        public var client: Identity.MFA.TOTP.Client
+        public var router: any URLRouting.Router<Identity.MFA.TOTP.API>
+        
+        public init(
+            client: Identity.MFA.TOTP.Client,
+            router: any URLRouting.Router<Identity.MFA.TOTP.API> = Identity.MFA.TOTP.API.Router()
+        ) {
+            self.client = client
+            self.router = router
+        }
+    }
 }
 
 extension Identity.MFA.TOTP {

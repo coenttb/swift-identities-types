@@ -5,12 +5,36 @@
 //  Created by Coen ten Thije Boonkkamp on 28/01/2025.
 //
 
-import CasePaths
 import Authenticating
-import EmailAddress
-import ServerFoundation
+import TypesFoundation
+import DependenciesMacros
+import JWT
 
 extension Identity {
+    /// Authentication namespace containing all authentication-related types and operations.
+    ///
+    /// This namespace follows the domain-first pattern where the business capability
+    /// (Authenticate) is primary, with technical implementations (Client, API, Route)
+    /// as nested types.
+    @DependencyClient
+    public struct Authentication: @unchecked Sendable {
+        public var client: Identity.Authentication.Client
+        public var router: any URLRouting.Router<Identity.Authentication.Route>
+        public var token: Identity.Authentication.Token.Client
+        
+        public init(
+            client: Identity.Authentication.Client,
+            router: any URLRouting.Router<Identity.Authentication.Route>,
+            token: Identity.Authentication.Token.Client
+        ) {
+            self.client = client
+            self.router = router
+            self.token = token
+        }
+    }
+}
+
+extension Identity.Authentication {
     /// Authentication methods supported by the Identity system.
     ///
     /// The system supports three primary authentication methods:
@@ -22,7 +46,7 @@ extension Identity {
     /// both initial authentication and session maintenance through token refresh.
     @CasePathable
     @dynamicMemberLookup
-    public enum Authentication: Equatable, Sendable {
+    public enum Method: Equatable, Sendable {
         /// Authenticate using username and password credentials
         case credentials(Credentials)
         /// Authenticate using an access or refresh token
@@ -94,78 +118,3 @@ extension Identity.Authentication.Credentials {
     }
 }
 
-extension Identity.Authentication {
-    /// Types of authentication tokens supported by the system.
-    ///
-    /// The system uses a dual-token approach:
-    /// - Access tokens for API authentication
-    /// - Refresh tokens for obtaining new access tokens
-    ///
-    /// This approach enhances security by limiting access token lifetimes
-    /// while maintaining session persistence through refresh tokens.
-    public enum Token: Equatable, Sendable {
-        /// Short-lived token for API authentication
-        case access(BearerAuth)
-        /// Long-lived token for obtaining new access tokens
-        case refresh(JWT)
-    }
-}
-
-extension Identity.Authentication {
-    /// Response containing authentication tokens after successful authentication.
-    ///
-    /// This type encapsulates both the access and refresh tokens returned
-    /// after successful authentication, whether via credentials or token refresh.
-    ///
-    /// > Important: The access token should be included in subsequent API requests,
-    /// > while the refresh token should be securely stored for session renewal.
-    public struct Response: Codable, Hashable, Sendable {
-        /// The JWT access token for API authentication.
-        public let accessToken: String
-        
-        /// The JWT refresh token for obtaining new access tokens.
-        public let refreshToken: String
-        
-        /// Optional MFA status indicating if further authentication is required.
-        public let mfaStatus: MFAStatus?
-        
-        /// Creates a new authentication response.
-        ///
-        /// - Parameters:
-        ///   - accessToken: The JWT access token
-        ///   - refreshToken: The JWT refresh token
-        ///   - mfaStatus: Optional MFA status
-        public init(
-            accessToken: String,
-            refreshToken: String,
-            mfaStatus: MFAStatus? = nil
-        ) {
-            self.accessToken = accessToken
-            self.refreshToken = refreshToken
-            self.mfaStatus = mfaStatus
-        }
-        
-        /// MFA status in authentication response.
-        public enum MFAStatus: Codable, Hashable, Sendable {
-            /// MFA is not required for this user
-            case notRequired
-            
-            /// MFA was successfully completed
-            case satisfied
-            
-            /// MFA is required but not yet completed
-            case pending(sessionToken: String, availableMethods: Set<Identity.MFA.Method>)
-        }
-    }
-}
-
-extension Identity.Authentication.Response: TestDependencyKey {
-    /// Provides a test instance of the authentication response.
-    ///
-    /// This implementation uses test values for both tokens, suitable for
-    /// testing authentication flows without real credentials.
-    public static let testValue: Self = .init(
-        accessToken: "",
-        refreshToken: ""
-    )
-}

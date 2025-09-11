@@ -5,12 +5,46 @@
 //  Created by Coen ten Thije Boonkkamp on 10/09/2025.
 //
 
-import Foundation
-import Dependencies
+import TypesFoundation
 
 extension Identity {
-    public enum OAuth {}
+    /// Namespace for OAuth-related functionality within the Identity system.
+    public struct OAuth: @unchecked Sendable {
+        public var client: Identity.OAuth.Client
+        public var router: any URLRouting.Router<Identity.OAuth.Route>
+        
+        public init(
+            client: Identity.OAuth.Client,
+            router: any URLRouting.Router<Identity.OAuth.Route> = Identity.OAuth.Route.Router()
+        ) {
+            self.client = client
+            self.router = router
+        }
+    }
 }
+
+extension Identity.OAuth {
+    /// OAuth connection information
+    public struct Connection: Codable, Sendable {
+        public let provider: String
+        public let providerUserId: String
+        public let connectedAt: Date
+        public let scopes: [String]?
+        
+        public init(
+            provider: String,
+            providerUserId: String,
+            connectedAt: Date,
+            scopes: [String]? = nil
+        ) {
+            self.provider = provider
+            self.providerUserId = providerUserId
+            self.connectedAt = connectedAt
+            self.scopes = scopes
+        }
+    }
+}
+
 
 extension Identity.OAuth {
     /// Protocol defining an OAuth provider's capabilities
@@ -75,7 +109,7 @@ extension Identity.OAuth {
         public let id: String
         
         /// User's email address
-        public let email: String?
+        public let email: EmailAddress?
         
         /// Whether the email is verified by the provider
         public let emailVerified: Bool?
@@ -94,7 +128,7 @@ extension Identity.OAuth {
         
         public init(
             id: String,
-            email: String? = nil,
+            email: EmailAddress? = nil,
             emailVerified: Bool? = nil,
             name: String? = nil,
             username: String? = nil,

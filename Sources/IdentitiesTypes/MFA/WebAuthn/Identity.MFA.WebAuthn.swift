@@ -5,11 +5,22 @@
 //  Created by Coen ten Thije Boonkkamp on 19/08/2025.
 //
 
-import Foundation
+import TypesFoundation
 
 extension Identity.MFA {
     /// WebAuthn-specific types and operations.
-    public enum WebAuthn {}
+    public struct WebAuthn: @unchecked Sendable {
+        public var client: Identity.MFA.WebAuthn.Client
+        public var router: any URLRouting.Router<Identity.MFA.WebAuthn.API>
+        
+        public init(
+            client: Identity.MFA.WebAuthn.Client,
+            router: any URLRouting.Router<Identity.MFA.WebAuthn.API> = Identity.MFA.WebAuthn.API.Router()
+        ) {
+            self.client = client
+            self.router = router
+        }
+    }
 }
 
 extension Identity.MFA.WebAuthn {

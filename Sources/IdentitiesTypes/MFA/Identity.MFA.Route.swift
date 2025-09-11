@@ -6,7 +6,7 @@
 //
 
 import CasePaths
-import ServerFoundation
+import TypesFoundation
 
 extension Identity.MFA {
     /// Complete routing for MFA features including both API and View endpoints.
@@ -29,14 +29,6 @@ extension Identity.MFA {
         /// View endpoints for MFA pages
         case view(View)
     }
-}
-
-extension Identity.MFA {
-    /// API endpoints for MFA management.
-    ///
-    /// Inherits from the existing Identity.API.MFA structure
-    /// to maintain backward compatibility while enabling feature-based organization.
-    public typealias API = Identity.API.MFA
 }
 
 extension Identity.MFA {
@@ -100,7 +92,7 @@ extension Identity.MFA.Route {
                 URLRouting.Route(.case(Identity.MFA.Route.api)) {
                     Path { "api" }
                     Path { "mfa" }
-                    Identity.API.MFA.Router()
+                    Identity.MFA.API.Router()
                 }
                 
                 // View routes (no /api prefix)

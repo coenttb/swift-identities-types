@@ -10,27 +10,26 @@ import Dependencies
 import DependenciesTestSupport
 import EmailAddress
 import Foundation
-@testable import Identities
+@testable import IdentitiesTypes
 import Testing
-import URLRouting
 
 @Suite("Simple MFA Router Tests")
 struct SimpleMFARouterTests {
     
-    let router: Identity.API.MFA.Router = .init()
+    let router: Identity.MFA.API.Router = .init()
     
-    @Test("Creates correct URL for MFA status configured")
-    func testMFAStatusConfigured() throws {
-        let mfa: Identity.API.MFA = .status(.configured)
+    @Test("Creates correct URL for MFA status get")
+    func testMFAStatusGet() throws {
+        let mfa: Identity.MFA.API = .status(.get)
         
         let request = try router.request(for: mfa)
-        #expect(request.url?.path == "/status/configured")
+        #expect(request.url?.path == "/status")
         #expect(request.httpMethod == "GET")
     }
     
     @Test("Creates correct URL for MFA TOTP setup")
     func testMFATOTPSetup() throws {
-        let mfa: Identity.API.MFA = .totp(.setup)
+        let mfa: Identity.MFA.API = .totp(.setup)
         
         let request = try router.request(for: mfa)
         #expect(request.url?.path == "/totp/setup")
@@ -39,7 +38,7 @@ struct SimpleMFARouterTests {
     
     @Test("Creates correct URL for MFA backup codes regenerate")
     func testMFABackupCodesRegenerate() throws {
-        let mfa: Identity.API.MFA = .backupCodes(.regenerate)
+        let mfa: Identity.MFA.API = .backupCodes(.regenerate)
         
         let request = try router.request(for: mfa)
         #expect(request.url?.path == "/backup-codes/regenerate")
@@ -48,7 +47,7 @@ struct SimpleMFARouterTests {
     
     @Test("Creates correct URL for MFA WebAuthn begin registration")
     func testMFAWebAuthnBeginRegistration() throws {
-        let mfa: Identity.API.MFA = .webauthn(.beginRegistration)
+        let mfa: Identity.MFA.API = .webauthn(.beginRegistration)
         
         let request = try router.request(for: mfa)
         #expect(request.url?.path == "/webauthn/register/begin")

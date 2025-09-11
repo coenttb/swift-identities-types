@@ -5,11 +5,22 @@
 //  Created by Coen ten Thije Boonkkamp on 19/08/2025.
 //
 
-import Foundation
+import TypesFoundation
 
 extension Identity.MFA {
     /// Email-specific types and operations.
-    public enum Email {}
+    public struct Email: @unchecked Sendable {
+        public var client: Identity.MFA.Email.Client
+        public var router: any URLRouting.Router<Identity.MFA.Email.API>
+        
+        public init(
+            client: Identity.MFA.Email.Client,
+            router: any URLRouting.Router<Identity.MFA.Email.API> = Identity.MFA.Email.API.Router()
+        ) {
+            self.client = client
+            self.router = router
+        }
+    }
 }
 
 extension Identity.MFA.Email {

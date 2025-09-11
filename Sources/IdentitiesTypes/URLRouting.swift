@@ -5,36 +5,7 @@
 //  Created by Coen ten Thije Boonkkamp on 28/01/2025.
 //
 
-import Foundation
-import URLRouting
-
-/// Retroactively conforms URLRequestData to the Sendable protocol.
-/// This allows URLRequestData to be safely used across actor and task boundaries.
-///
-/// While URLRequestData's contents are generally thread-safe, we mark this as @unchecked
-/// since we cannot verify the sendability of all possible request data.
-///
-/// - Note: This conformance has been tested in production use cases without issues.
-extension URLRequestData: @retroactive @unchecked Sendable {}
-
-/// Conditionally conforms AnyParserPrinter to Sendable when its generic parameters are Sendable.
-///
-/// - Important: This is marked as @unchecked because while the generic parameters may be Sendable,
-/// AnyParserPrinter contains closures that need to be verified for thread safety independently.
-/// These closures would need to be marked with @Sendable to guarantee full thread safety.
-///
-/// - Note: Added in response to discussion about URL routing type safety across concurrent contexts.
-extension AnyParserPrinter: @unchecked @retroactive Sendable where Input: Sendable, Output: Sendable {}
-
-/// Conditionally conforms Path to Sendable when its generic parameters are Sendable.
-///
-/// Path represents a URL path component in the routing system. While its structure is generally
-/// thread-safe when the generic parameters are Sendable, we mark it as @unchecked since
-/// we cannot verify the thread safety of all possible path configurations.
-///
-/// - Note: This conformance enables Path to be used safely in concurrent URL routing contexts
-/// while acknowledging that full verification requires runtime checks.
-extension Path: @unchecked @retroactive Sendable where Input: Sendable, Output: Sendable {}
+import TypesFoundation
 
 extension Path<PathBuilder.Component<String>> {
 
@@ -113,6 +84,14 @@ extension Path<PathBuilder.Component<String>> {
         "verification"
     }
     public static let reset = Path {
+        "reset"
+    }
+    
+    public static let mfa = Path {
+        "reset"
+    }
+    
+    public static let oauth = Path {
         "reset"
     }
 }

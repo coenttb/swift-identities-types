@@ -6,7 +6,7 @@
 //
 
 import CasePaths
-import ServerFoundation
+import TypesFoundation
 
 extension Identity {
     /// Complete routing system organized by features.
@@ -54,7 +54,7 @@ extension Identity {
         case logout(Logout.Route)
         
         /// Reauthorization for sensitive operations
-        case reauthorize(Reauthorization)
+        case reauthorize(Reauthorization.Route)
         
         /// OAuth provider authentication
         case oauth(OAuth.Route)
@@ -79,54 +79,69 @@ extension Identity.Route {
     public struct Router: ParserPrinter, Sendable {
         public init() {}
         
+        @Dependency(\.identity) private var identity
+        
+        
         public var body: some URLRouting.Router<Identity.Route> {
             OneOf {
                 // Create feature routes
                 URLRouting.Route(.case(Identity.Route.create)) {
-                    Identity.Creation.Route.Router()
+                    AnyParserPrinter(identity.create.router)
                 }
                 
                 // Authenticate feature routes
                 URLRouting.Route(.case(Identity.Route.authenticate)) {
-                    Identity.Authentication.Route.Router()
+                    AnyParserPrinter(identity.authenticate.router)
                 }
                 
                 // Delete feature routes
                 URLRouting.Route(.case(Identity.Route.delete)) {
-                    Identity.Deletion.Route.Router()
+                    AnyParserPrinter(identity.delete.router)
                 }
                 
                 // Email feature routes
                 URLRouting.Route(.case(Identity.Route.email)) {
-                    Identity.Email.Route.Router()
+                    AnyParserPrinter(identity.email.router)
                 }
                 
                 // Password feature routes
                 URLRouting.Route(.case(Identity.Route.password)) {
-                    Identity.Password.Route.Router()
+                    AnyParserPrinter(identity.password.router)
                 }
                 
-                // MFA feature routes
-                URLRouting.Route(.case(Identity.Route.mfa)) {
-                    Identity.MFA.Route.Router()
+                
+                if let router = identity.mfa?.router {
+                    // MFA feature routes
+                    URLRouting.Route(.case(Identity.Route.mfa)) {
+                        AnyParserPrinter(router)
+                    }
                 }
                 
-                // Logout endpoint
+//                // Logout endpoint
                 URLRouting.Route(.case(Identity.Route.logout)) {
                     Path { "logout" }
-                    Identity.Logout.Route.Router()
+                    // not sure why this works but
+                    AnyParserPrinter(parse: identity.logout.router.parse, print: identity.logout.router.print)
+                    // this doesnt
+//                    AnyParserPrinter(identity.logout.router)
                 }
-                
+//                
                 // Reauthorization endpoint
                 URLRouting.Route(.case(Identity.Route.reauthorize)) {
                     Path { "api" }
                     Path { "reauthorize" }
-                    Identity.Reauthorization.Router()
+                    OneOf {
+                        URLRouting.Route(.case(Identity.Reauthorization.Route.api)) {
+                            AnyParserPrinter(identity.reauthorize.router)
+                        }
+                    }
                 }
                 
-                // OAuth feature routes
-                URLRouting.Route(.case(Identity.Route.oauth)) {
-                    Identity.OAuth.Route.Router()
+                if let router = identity.oauth?.router {
+                    // OAuth feature routes
+                    URLRouting.Route(.case(Identity.Route.oauth)) {
+                        AnyParserPrinter(router)
+                    }
                 }
             }
         }
@@ -181,7 +196,7 @@ extension Identity.Route {
         case .logout(let logout):
             return .logout(.api(logout))
         case .reauthorize(let reauth):
-            return .reauthorize(reauth)
+            return .reauthorize(.api(reauth))
         case .oauth(let oauth):
             return .oauth(.api(oauth))
         }

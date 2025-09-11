@@ -6,7 +6,7 @@
 //
 
 import CasePaths
-import ServerFoundation
+import TypesFoundation
 
 extension Identity.Password {
     /// Complete routing for password-related features including both API and View endpoints.
@@ -29,14 +29,6 @@ extension Identity.Password {
         /// View endpoints for password pages
         case view(View)
     }
-}
-
-extension Identity.Password {
-    /// API endpoints for password management.
-    ///
-    /// Inherits from the existing Identity.API.Password structure
-    /// to maintain backward compatibility while enabling feature-based organization.
-    public typealias API = Identity.API.Password
 }
 
 extension Identity.Password {
@@ -92,7 +84,7 @@ extension Identity.Password.Route {
                 URLRouting.Route(.case(Identity.Password.Route.api)) {
                     Path { "api" }
                     Path { "password" }
-                    Identity.API.Password.Router()
+                    Identity.Password.API.Router()
                 }
                 
                 // View routes (no /api prefix)

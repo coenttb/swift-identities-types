@@ -9,7 +9,7 @@ import Dependencies
 import DependenciesTestSupport
 import EmailAddress
 import Foundation
-@testable import Identities
+@testable import IdentitiesTypes
 import Testing
 
 @Suite(
@@ -18,17 +18,17 @@ import Testing
 struct AuthenticationTests {
     @Test("Successfully authenticates with valid credentials")
     func testValidCredentialsAuthentication() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
 
-            @Dependency(Identity.Client.self) var client
+            @Dependency(\.identity) var identity
 
             let email = "auth@example.com"
             let password = "password123"
 
-            try await client.create.request(email: email, password: password)
-            try await client.create.verify(email: email, token: "verification-token-\(email)")
+            try await identity.create.request(email: email, password: password)
+            try await identity.create.verify(email: email, token: "verification-token-\(email)")
 
-            let response = try await client.login(username: email, password: password)
+            let response = try await identity.login(username: email, password: password)
             
             #expect(response.accessToken.isEmpty == false)
             #expect(response.refreshToken.isEmpty == false)
@@ -37,12 +37,12 @@ struct AuthenticationTests {
 
     @Test("Fails authentication with invalid credentials")
     func testInvalidCredentialsAuthentication() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
 
-            @Dependency(Identity.Client.self) var client
+            @Dependency(\.identity) var identity
 
-            await #expect(throws: Identity.Client._TestDatabase.TestError.invalidCredentials) {
-                try await client.login(username: "nonexistent@example.com", password: "wrongpass")
+            await #expect(throws: Identity._TestDatabase.TestError.invalidCredentials) {
+                try await identity.login(username: "nonexistent@example.com", password: "wrongpass")
             }
 
         }
@@ -50,12 +50,12 @@ struct AuthenticationTests {
 
     @Test("Successfully authenticates with API key")
     func testApiKeyAuthentication() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
 
-            @Dependency(Identity.Client.self) var client
+            @Dependency(\.identity) var identity
 
             let apiKey = "valid-api-key"
-            let response = try await client.login(apiKey: apiKey)
+            let response = try await identity.login(apiKey: apiKey)
 
             // Test implementation returns the API key as both tokens
             #expect(response.accessToken == apiKey)
@@ -66,19 +66,19 @@ struct AuthenticationTests {
 
     @Test("Successfully refreshes token")
     func testTokenRefresh() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
 
-            @Dependency(Identity.Client.self) var client
+            @Dependency(\.identity) var identity
 
             let email = "refresh@example.com"
             let password = "password123"
 
-            try await client.create.request(email: email, password: password)
-            try await client.create.verify(email: email, token: "verification-token-\(email)")
-            let initialResponse = try await client.authenticate.credentials(username: email, password: password)
+            try await identity.create.request(email: email, password: password)
+            try await identity.create.verify(email: email, token: "verification-token-\(email)")
+            let initialResponse = try await identity.authenticate.credentials(username: email, password: password)
 
             // Refresh token
-            _ = try await client.authenticate.token.refresh(initialResponse.refreshToken)
+            _ = try await identity.authenticate.token.refresh(initialResponse.refreshToken)
         }
     }
 }
@@ -89,17 +89,17 @@ struct AuthenticationTests {
 struct IdentityCreationTests {
     @Test("Successfully creates new identity")
     func testIdentityCreation() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
 
-            @Dependency(Identity.Client.self) var client
+            @Dependency(\.identity) var identity
 
             let email = "new@example.com"
             let password = "securePass123"
 
-            try await client.create.request(email: email, password: password)
-            try await client.create.verify(email: email, token: "verification-token-\(email)")
+            try await identity.create.request(email: email, password: password)
+            try await identity.create.verify(email: email, token: "verification-token-\(email)")
 
-            let response = try await client.login(username: email, password: password)
+            let response = try await identity.login(username: email, password: password)
             #expect(response.accessToken.isEmpty == false)
 
         }
@@ -107,16 +107,16 @@ struct IdentityCreationTests {
 
     @Test("Fails verification with invalid token")
     func testInvalidVerificationToken() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
 
-            @Dependency(Identity.Client.self) var client
+            @Dependency(\.identity) var identity
 
             let email = "invalid@example.com"
 
-            try await client.create.request(email: email, password: "password123")
+            try await identity.create.request(email: email, password: "password123")
 
-            await #expect(throws: Identity.Client._TestDatabase.TestError.invalidVerificationToken) {
-                try await client.create.verify(email: email, token: "wrong-token")
+            await #expect(throws: Identity._TestDatabase.TestError.invalidVerificationToken) {
+                try await identity.create.verify(email: email, token: "wrong-token")
             }
 
         }
@@ -124,16 +124,16 @@ struct IdentityCreationTests {
 
     @Test("Prevents duplicate email registration")
     func testDuplicateEmailPrevention() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
 
-            @Dependency(Identity.Client.self) var client
+            @Dependency(\.identity) var identity
 
             let email = "duplicate@example.com"
 
-            try await client.create.request(email: email, password: "password123")
+            try await identity.create.request(email: email, password: "password123")
 
-            await #expect(throws: Identity.Client._TestDatabase.TestError.emailAlreadyExists) {
-                try await client.create.request(email: email, password: "anotherpass")
+            await #expect(throws: Identity._TestDatabase.TestError.emailAlreadyExists) {
+                try await identity.create.request(email: email, password: "anotherpass")
             }
         }
     }
@@ -145,29 +145,29 @@ struct IdentityCreationTests {
 struct PasswordManagementTests {
     @Test("Successfully completes password reset flow")
     func testPasswordResetFlow() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
 
-            @Dependency(Identity.Client.self) var client
+            @Dependency(\.identity) var identity
 
             let email = "reset@example.com"
             let initialPassword = "initial123"
             let newPassword = "newPass123"
 
             // Setup: Create and verify user
-            try await client.create.request(email: email, password: initialPassword)
-            try await client.create.verify(email: email, token: "verification-token-\(email)")
+            try await identity.create.client.request(email: email, password: initialPassword)
+            try await identity.create.client.verify(email: email, token: "verification-token-\(email)")
 
             // Request and confirm reset
-            try await client.password.reset.request(email)
-            try await client.password.reset.confirm(newPassword: newPassword, token: "reset-token-\(email)")
+            try await identity.password.reset.request(email: email)
+            try await identity.password.reset.confirm(newPassword: newPassword, token: "reset-token-\(email)")
 
             // Verify new password works
-            let response = try await client.login(username: email, password: newPassword)
+            let response = try await identity.login(username: email, password: newPassword)
             #expect(response.accessToken.isEmpty == false)
 
             // Verify old password doesn't work
-            await #expect(throws: Identity.Client._TestDatabase.TestError.invalidCredentials) {
-                _ = try await client.login(username: email, password: initialPassword)
+            await #expect(throws: Identity._TestDatabase.TestError.invalidCredentials) {
+                _ = try await identity.login(username: email, password: initialPassword)
             }
 
         }
@@ -175,44 +175,44 @@ struct PasswordManagementTests {
 
     @Test("Successfully changes password for authenticated user")
     func testPasswordChange() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
 
-            @Dependency(Identity.Client.self) var client
+            @Dependency(\.identity) var identity
 
             let email = "change@example.com"
             let currentPassword = "current123"
             let newPassword = "new123"
 
             // Setup: Create, verify, and login user
-            try await client.create.request(email: email, password: currentPassword)
-            try await client.create.verify(email: email, token: "verification-token-\(email)")
-            _ = try await client.login(username: email, password: currentPassword)
+            try await identity.create.client.request(email: email, password: currentPassword)
+            try await identity.create.client.verify(email: email, token: "verification-token-\(email)")
+            _ = try await identity.login(username: email, password: currentPassword)
 
             // Change password
-            try await client.password.change.request(
+            try await identity.password.change.request(
                 currentPassword: currentPassword,
                 newPassword: newPassword
             )
 
             // Verify new password works
-            let response = try await client.login(username: email, password: newPassword)
+            let response = try await identity.login(username: email, password: newPassword)
             #expect(response.accessToken.isEmpty == false)
 
             // Verify old password doesn't work
-            await #expect(throws: Identity.Client._TestDatabase.TestError.invalidCredentials) {
-                _ = try await client.login(username: email, password: currentPassword)
+            await #expect(throws: Identity._TestDatabase.TestError.invalidCredentials) {
+                _ = try await identity.login(username: email, password: currentPassword)
             }
         }
     }
 
     @Test("Fails password reset with invalid token")
     func testInvalidResetToken() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
 
-            @Dependency(Identity.Client.self) var client
+            @Dependency(\.identity) var identity
 
-            await #expect(throws: Identity.Client._TestDatabase.TestError.invalidResetToken) {
-                try await client.password.reset.confirm(newPassword: "newpass", token: "invalid-token")
+            await #expect(throws: Identity._TestDatabase.TestError.invalidResetToken) {
+                try await identity.password.reset.confirm(newPassword: "newpass", token: "invalid-token")
             }
 
         }
@@ -225,33 +225,33 @@ struct PasswordManagementTests {
 struct EmailManagementTests {
     @Test("Successfully completes email change flow")
     func testEmailChangeFlow() async throws {
-        try await Identity.Client._TestDatabase.Helper.withIsolatedDatabase {
+        try await Identity._TestDatabase.Helper.withIsolatedDatabase {
 
-            @Dependency(Identity.Client.self) var client
+            @Dependency(\.identity) var identity
 
             let oldEmail = "old@example.com"
             let newEmail = "new@example.com"
             let password = "password123"
 
             // Setup: Create, verify and login user
-            try await client.create.request(email: oldEmail, password: password)
-            try await client.create.verify(email: oldEmail, token: "verification-token-\(oldEmail)")
-            _ = try await client.login(username: oldEmail, password: password)
+            try await identity.create.client.request(email: oldEmail, password: password)
+            try await identity.create.client.verify(email: oldEmail, token: "verification-token-\(oldEmail)")
+            _ = try await identity.login(username: oldEmail, password: password)
 
             // Change email
-            let result = try await client.email.change.request(newEmail)
+            let result = try await identity.email.change.request(newEmail: newEmail)
             #expect(result == .success)
 
-            let response = try await client.email.change.confirm("email-change-token-\(oldEmail)")
+            let response = try await identity.email.change.confirm(token: "email-change-token-\(oldEmail)")
             #expect(response.accessToken.isEmpty == false)
 
             // Verify new email works
-            let loginResponse = try await client.login(username: newEmail, password: password)
+            let loginResponse = try await identity.login(username: newEmail, password: password)
             #expect(loginResponse.accessToken.isEmpty == false)
 
             // Verify old email doesn't work
-            await #expect(throws: Identity.Client._TestDatabase.TestError.invalidCredentials) {
-                _ = try await client.login(username: oldEmail, password: password)
+            await #expect(throws: Identity._TestDatabase.TestError.invalidCredentials) {
+                _ = try await identity.login(username: oldEmail, password: password)
             }
 
         }
