@@ -78,70 +78,52 @@ extension Identity.Route {
     /// - `/reauthorize` - Reauthorization endpoint
     public struct Router: ParserPrinter, Sendable {
         public init() {}
-        
-        @Dependency(\.identity) private var identity
-        
-        
+
         public var body: some URLRouting.Router<Identity.Route> {
             OneOf {
                 // Create feature routes
                 URLRouting.Route(.case(Identity.Route.create)) {
-                    AnyParserPrinter(identity.create.router)
+                    Identity.Creation.Route.Router()
                 }
-                
+
                 // Authenticate feature routes
                 URLRouting.Route(.case(Identity.Route.authenticate)) {
-                    AnyParserPrinter(identity.authenticate.router)
+                    Identity.Authentication.Route.Router()
                 }
-                
+
                 // Delete feature routes
                 URLRouting.Route(.case(Identity.Route.delete)) {
-                    AnyParserPrinter(identity.delete.router)
+                    Identity.Deletion.Route.Router()
                 }
-                
-                // Email feature routes
+
+//                 Email feature routes
                 URLRouting.Route(.case(Identity.Route.email)) {
-                    AnyParserPrinter(identity.email.router)
+                    Identity.Email.Route.Router()
                 }
-                
+//
                 // Password feature routes
                 URLRouting.Route(.case(Identity.Route.password)) {
-                    AnyParserPrinter(identity.password.router)
+                    Identity.Password.Route.Router()
                 }
-                
-                
-                if let router = identity.mfa?.router {
-                    // MFA feature routes
-                    URLRouting.Route(.case(Identity.Route.mfa)) {
-                        AnyParserPrinter(router)
-                    }
+
+                // MFA feature routes (optional)
+                URLRouting.Route(.case(Identity.Route.mfa)) {
+                    Identity.MFA.Route.Router()
                 }
-                
-//                // Logout endpoint
+
+                // Logout endpoint
                 URLRouting.Route(.case(Identity.Route.logout)) {
-                    Path { "logout" }
-                    // not sure why this works but
-                    AnyParserPrinter(parse: identity.logout.router.parse, print: identity.logout.router.print)
-                    // this doesnt
-//                    AnyParserPrinter(identity.logout.router)
+                    Identity.Logout.Route.Router()
                 }
-//                
+
                 // Reauthorization endpoint
                 URLRouting.Route(.case(Identity.Route.reauthorize)) {
-                    Path { "api" }
-                    Path { "reauthorize" }
-                    OneOf {
-                        URLRouting.Route(.case(Identity.Reauthorization.Route.api)) {
-                            AnyParserPrinter(identity.reauthorize.router)
-                        }
-                    }
+                    Identity.Reauthorization.Route.Router()
                 }
-                
-                if let router = identity.oauth?.router {
-                    // OAuth feature routes
-                    URLRouting.Route(.case(Identity.Route.oauth)) {
-                        AnyParserPrinter(router)
-                    }
+
+                // OAuth feature routes (optional)
+                URLRouting.Route(.case(Identity.Route.oauth)) {
+                    Identity.OAuth.Route.Router()
                 }
             }
         }

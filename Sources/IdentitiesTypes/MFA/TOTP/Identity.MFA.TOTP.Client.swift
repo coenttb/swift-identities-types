@@ -45,6 +45,21 @@ extension Identity.MFA.TOTP {
             _ window: Int
         ) async throws -> Bool
         
+        /// Verify a TOTP code during MFA login flow.
+        ///
+        /// This method is used during the MFA challenge after initial authentication.
+        /// It validates the TOTP code and exchanges the session token for full authentication tokens.
+        ///
+        /// - Parameters:
+        ///   - code: The TOTP code from the authenticator app
+        ///   - sessionToken: The MFA session token from initial authentication
+        /// - Returns: Full authentication response with access and refresh tokens
+        @DependencyEndpoint
+        public var verify: (
+            _ code: String,
+            _ sessionToken: String
+        ) async throws -> Identity.Authentication.Response
+        
         // MARK: - Backup Code Operations
         
         /// Generate backup codes for recovery

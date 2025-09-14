@@ -20,7 +20,7 @@ Identity.Password.Reset.Router
 
 // Bad - Technical first (old pattern we moved away from)
 Identity.Client.Authentication
-Identity.API.MFA.TOTP
+Identity.MFA.API.TOTP
 ```
 
 ### Struct-Based Domain Pattern

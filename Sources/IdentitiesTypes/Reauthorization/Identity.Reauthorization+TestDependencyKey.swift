@@ -17,7 +17,7 @@ extension Identity.Reauthorization: TestDependencyKey {
                     return try .parse(from: "test-reauth-token-\(password)")
                 }
             ),
-            router: Identity.Reauthorization.Request.Router()
+            router: Identity.Reauthorization.Route.Router()
         )
     }
 }

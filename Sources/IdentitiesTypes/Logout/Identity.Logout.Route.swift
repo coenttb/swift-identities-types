@@ -32,10 +32,13 @@ extension Identity.Logout.Route {
         public var body: some URLRouting.Router<Identity.Logout.Route> {
             OneOf {
                 URLRouting.Route(.case(Identity.Logout.Route.api)) {
+                    Path.api
                     Identity.Logout.API.Router()
                 }
                 
-                URLRouting.Route(.case(Identity.Logout.Route.view))
+                URLRouting.Route(.case(Identity.Logout.Route.view)) {
+                    Path.logout
+                }
             }
         }
     }

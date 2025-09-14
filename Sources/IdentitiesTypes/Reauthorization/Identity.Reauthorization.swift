@@ -15,11 +15,11 @@ extension Identity {
     
     public struct Reauthorization: @unchecked Sendable {
         public var client: Identity.Reauthorization.Client
-        public var router: any URLRouting.Router<Identity.Reauthorization.Request>
+        public var router: any URLRouting.Router<Identity.Reauthorization.Route>
         
         public init(
             client: Identity.Reauthorization.Client,
-            router: any URLRouting.Router<Identity.Reauthorization.Request> = Identity.Reauthorization.Request.Router()
+            router: any URLRouting.Router<Identity.Reauthorization.Route> = Identity.Reauthorization.Route.Router()
         ) {
             self.client = client
             self.router = router
@@ -35,3 +35,21 @@ extension Identity.Reauthorization {
     }
 }
 
+extension Identity.Reauthorization.Route {
+    /// Routes email management requests to their appropriate handlers.
+    ///
+    /// Currently routes email change requests to the email change flow handler.
+    /// Structure is extensible for future email management features.
+    public struct Router: ParserPrinter, Sendable {
+
+        public init() {}
+
+        public var body: some URLRouting.Router<Identity.Reauthorization.Route> {
+            OneOf {
+                URLRouting.Route(.case(Identity.Reauthorization.Route.api)) {
+                    Identity.Reauthorization.API.Router()
+                }
+            }
+        }
+    }
+}

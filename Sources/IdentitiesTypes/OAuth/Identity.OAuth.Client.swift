@@ -1,5 +1,5 @@
 //
-//  Identity.Client.OAuth.swift
+//  Identity.OAuth.Client.swift
 //  swift-identities-types
 //
 //  Created by Coen ten Thije Boonkkamp on 10/09/2025.

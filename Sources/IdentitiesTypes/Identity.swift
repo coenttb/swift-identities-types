@@ -63,6 +63,8 @@ public struct Identity: @unchecked Sendable {
     /// If nil, OAuth is not available
     public var oauth: Identity.OAuth?
     
+    public var router: any URLRouting.Router<Identity.Route>
+    
     public init(
         authenticate: Identity.Authentication,
         logout: Identity.Logout,
@@ -72,7 +74,8 @@ public struct Identity: @unchecked Sendable {
         email: Identity.Email,
         password: Identity.Password,
         mfa: Identity.MFA? = nil,
-        oauth: Identity.OAuth? = nil
+        oauth: Identity.OAuth? = nil,
+        router: any URLRouting.Router<Identity.Route> = Identity.Route.Router()
     ) {
         self.authenticate = authenticate
         self.logout = logout
@@ -83,6 +86,7 @@ public struct Identity: @unchecked Sendable {
         self.password = password
         self.mfa = mfa
         self.oauth = oauth
+        self.router = router
     }
 }
 
@@ -93,10 +97,3 @@ extension DependencyValues {
         set { self[Identity.self] = newValue }
     }
 }
-
-extension Identity {
-    public var router: Identity.Route.Router {
-        Identity.Route.Router()
-    }
-}
-
