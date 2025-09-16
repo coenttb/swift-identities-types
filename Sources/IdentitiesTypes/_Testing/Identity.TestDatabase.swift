@@ -243,6 +243,6 @@ extension Identity._TestDatabase {
 }
 //
 extension Identity._TestDatabase: TestDependencyKey {
-    package static var testValue: Identity._TestDatabase = .init()
-    package static var testValue2: Identity._TestDatabase = .init()
+    package static let testValue: Identity._TestDatabase = .init()
+    package static let testValue2: Identity._TestDatabase = .init()
 }
