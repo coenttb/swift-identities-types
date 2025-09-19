@@ -8,7 +8,6 @@
 import Authenticating
 import TypesFoundation
 import DependenciesMacros
-import JWT
 
 extension Identity {
     /// Authentication namespace containing all authentication-related types and operations.

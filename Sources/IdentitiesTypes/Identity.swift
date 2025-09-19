@@ -7,7 +7,6 @@
 import CasePaths
 import Dependencies
 import DependenciesMacros
-import JWT
 import TypesFoundation
 
 /// A namespace for managing identity and authentication in a client-server architecture.
