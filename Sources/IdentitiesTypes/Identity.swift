@@ -63,11 +63,15 @@ public struct Identity: @unchecked Sendable {
     public var oauth: Identity.OAuth?
     
     public var router: any URLRouting.Router<Identity.Route>
-    
+
+    /// Requires an authenticated identity context or throws if not authenticated
+    public var require: @Sendable () async throws -> Identity.Context
+
     public init(
         authenticate: Identity.Authentication,
         logout: Identity.Logout,
         reauthorize: Identity.Reauthorization,
+        require: @escaping @Sendable () async throws -> Identity.Context,
         create: Identity.Creation,
         delete: Identity.Deletion,
         email: Identity.Email,
@@ -86,6 +90,7 @@ public struct Identity: @unchecked Sendable {
         self.mfa = mfa
         self.oauth = oauth
         self.router = router
+        self.require = require
     }
 }
 
@@ -94,5 +99,12 @@ extension DependencyValues {
     public var identity: Identity {
         get { self[Identity.self] }
         set { self[Identity.self] = newValue }
+    }
+}
+
+extension Identity {
+    public enum Error: Swift.Error {
+        case notConfigured
+        case unauthorized(reason: String)
     }
 }

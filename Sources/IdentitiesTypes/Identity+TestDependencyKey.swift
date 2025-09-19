@@ -13,6 +13,7 @@ extension Identity: TestDependencyKey {
             authenticate: .testValue,
             logout: .testValue,
             reauthorize: .testValue,
+            require: { throw Identity.Error.notConfigured },
             create: .testValue,
             delete: .testValue,
             email: .testValue,
