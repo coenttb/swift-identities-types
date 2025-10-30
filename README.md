@@ -7,6 +7,27 @@
 
 Type-safe Swift definitions for identity authentication and management with dependency injection and URL routing support.
 
+## Table of Contents
+
+- [Overview](#overview)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [Usage Examples](#usage-examples)
+  - [Authentication](#authentication)
+  - [Identity Creation](#identity-creation)
+  - [Password Management](#password-management)
+  - [Email Management](#email-management)
+  - [Identity Deletion](#identity-deletion)
+  - [Reauthorization](#reauthorization)
+  - [Type-Safe URL Routing](#type-safe-url-routing)
+  - [Multi-Factor Authentication](#multi-factor-authentication-optional)
+  - [Testing with Mock Clients](#testing-with-mock-clients)
+- [Architecture](#architecture)
+- [Requirements](#requirements)
+- [Related Packages](#related-packages)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Overview
 
 `swift-identities-types` provides comprehensive type definitions for building identity management systems, including:
@@ -342,11 +363,11 @@ All types are:
 
 ## Related Packages
 
-- **[swift-identities](https://github.com/coenttb/swift-identities)**: Complete authentication system implementation using these types
-- **[swift-authenticating](https://github.com/coenttb/swift-authenticating)**: Authentication utilities and primitives
-- **[swift-server-foundation](https://github.com/coenttb/swift-server-foundation)**: Server foundation including URLRouting
-- **[swift-dependencies](https://github.com/pointfreeco/swift-dependencies)**: Dependency injection library
-- **[swift-jwt](https://github.com/coenttb/swift-jwt)**: JWT token handling
+- **[swift-identities](https://github.com/coenttb/swift-identities)**: The Swift library for identity authentication and management
+- **[swift-authenticating](https://github.com/coenttb/swift-authenticating)**: A Swift package for type-safe HTTP authentication with URL routing integration
+- **[swift-server-foundation](https://github.com/coenttb/swift-server-foundation)**: A Swift package with tools to simplify server development
+- **[swift-dependencies](https://github.com/pointfreeco/swift-dependencies)**: A dependency management library inspired by SwiftUI's "environment"
+- **[swift-jwt](https://github.com/coenttb/swift-jwt)**: A Swift package for creating, signing, and verifying JSON Web Tokens
 
 ## Contributing
 
