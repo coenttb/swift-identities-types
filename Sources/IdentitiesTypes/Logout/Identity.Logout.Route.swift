@@ -28,14 +28,14 @@ extension Identity.Logout.Route {
     /// this router doesn't need to match anything additional.
     public struct Router: ParserPrinter, Sendable {
         public init() {}
-        
+
         public var body: some URLRouting.Router<Identity.Logout.Route> {
             OneOf {
                 URLRouting.Route(.case(Identity.Logout.Route.api)) {
-                    Path.api
+                    Path.logout
                     Identity.Logout.API.Router()
                 }
-                
+
                 URLRouting.Route(.case(Identity.Logout.Route.view)) {
                     Path.logout
                 }

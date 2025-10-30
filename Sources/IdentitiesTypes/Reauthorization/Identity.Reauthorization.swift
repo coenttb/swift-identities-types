@@ -36,10 +36,9 @@ extension Identity.Reauthorization {
 }
 
 extension Identity.Reauthorization.Route {
-    /// Routes email management requests to their appropriate handlers.
+    /// Routes reauthorization requests to their appropriate handlers.
     ///
-    /// Currently routes email change requests to the email change flow handler.
-    /// Structure is extensible for future email management features.
+    /// Handles reauthorization endpoint for sensitive operations.
     public struct Router: ParserPrinter, Sendable {
 
         public init() {}
@@ -47,6 +46,8 @@ extension Identity.Reauthorization.Route {
         public var body: some URLRouting.Router<Identity.Reauthorization.Route> {
             OneOf {
                 URLRouting.Route(.case(Identity.Reauthorization.Route.api)) {
+                    Path.api
+                    Path.reauthorize
                     Identity.Reauthorization.API.Router()
                 }
             }
