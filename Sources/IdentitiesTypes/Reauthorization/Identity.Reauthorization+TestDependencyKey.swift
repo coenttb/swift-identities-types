@@ -9,15 +9,15 @@ import Dependencies
 import JWT
 
 extension Identity.Reauthorization: TestDependencyKey {
-    public static var testValue: Self {
-        return Self(
-            client: .init(
-                reauthorize: { password in
-                    // Create a test JWT token for reauthorization
-                    return try .parse(from: "test-reauth-token-\(password)")
-                }
-            ),
-            router: Identity.Reauthorization.Route.Router()
-        )
-    }
+  public static var testValue: Self {
+    return Self(
+      client: .init(
+        reauthorize: { password in
+          // Create a test JWT token for reauthorization
+          return try .parse(from: "test-reauth-token-\(password)")
+        }
+      ),
+      router: Identity.Reauthorization.Route.Router()
+    )
+  }
 }

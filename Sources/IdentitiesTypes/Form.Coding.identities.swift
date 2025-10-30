@@ -9,13 +9,13 @@ import Foundation
 import URLFormCoding
 
 extension URLFormCoding.Form.Decoder {
-    public static var identities: URLFormCoding.Form.Decoder {
-        URLFormCoding.Form.Decoder(arrayParsingStrategy: .bracketsWithIndices)
-    }
+  public static var identities: URLFormCoding.Form.Decoder {
+    URLFormCoding.Form.Decoder(arrayParsingStrategy: .bracketsWithIndices)
+  }
 }
 
 extension URLFormCoding.Form.Encoder {
-    public static var identities: URLFormCoding.Form.Encoder {
-        URLFormCoding.Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
-    }
+  public static var identities: URLFormCoding.Form.Encoder {
+    URLFormCoding.Form.Encoder(arrayEncodingStrategy: .bracketsWithIndices)
+  }
 }

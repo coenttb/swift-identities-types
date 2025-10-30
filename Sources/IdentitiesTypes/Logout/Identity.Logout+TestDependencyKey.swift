@@ -8,19 +8,19 @@
 import Dependencies
 
 extension Identity.Logout: TestDependencyKey {
-    public static var testValue: Self {
-        @Dependency(Identity._TestDatabase.self) var database
-        
-        return Self(
-            client: .init(
-                current: {
-                    await database.reset()
-                },
-                all: {
-                    await database.reset()
-                }
-            ),
-            router: Identity.Logout.Route.Router()
-        )
-    }
+  public static var testValue: Self {
+    @Dependency(Identity._TestDatabase.self) var database
+
+    return Self(
+      client: .init(
+        current: {
+          await database.reset()
+        },
+        all: {
+          await database.reset()
+        }
+      ),
+      router: Identity.Logout.Route.Router()
+    )
+  }
 }

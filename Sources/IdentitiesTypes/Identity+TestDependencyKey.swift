@@ -8,18 +8,18 @@
 import Dependencies
 
 extension Identity: TestDependencyKey {
-    public static var testValue: Self {
-        return Self(
-            authenticate: .testValue,
-            logout: .testValue,
-            reauthorize: .testValue,
-            require: { throw Identity.Error.notConfigured },
-            create: .testValue,
-            delete: .testValue,
-            email: .testValue,
-            password: .testValue,
-            mfa: nil,  // MFA not configured in test implementation
-            oauth: nil  // OAuth not configured in test implementation
-        )
-    }
+  public static var testValue: Self {
+    return Self(
+      authenticate: .testValue,
+      logout: .testValue,
+      reauthorize: .testValue,
+      require: { throw Identity.Error.notConfigured },
+      create: .testValue,
+      delete: .testValue,
+      email: .testValue,
+      password: .testValue,
+      mfa: nil,  // MFA not configured in test implementation
+      oauth: nil  // OAuth not configured in test implementation
+    )
+  }
 }

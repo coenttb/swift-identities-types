@@ -72,15 +72,14 @@
 //
 //        /// Interface for password management operations
 //        public var password: Identity.Password.Client = .init(reset: .init(), change: .init())
-//        
+//
 //        /// Optional multi-factor authentication support
 //        /// If nil, MFA is not available
 //        public var mfa: Identity.MFA.Client? = nil
-//        
+//
 //        /// Optional OAuth provider support
 //        /// If nil, OAuth is not available
 //        public var oauth: Identity.OAuth.Client? = nil
 //    }
 //}
 //
-

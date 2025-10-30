@@ -1,2 +1,2 @@
-@_exported import TypesFoundation
 @_exported import JWT
+@_exported import TypesFoundation

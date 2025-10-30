@@ -8,50 +8,50 @@
 import TypesFoundation
 
 extension Identity.MFA {
-    /// SMS-specific types and operations.
-    public struct SMS: @unchecked Sendable {
-        public var client: Identity.MFA.SMS.Client
-        public var router: any URLRouting.Router<Identity.MFA.SMS.API>
-        
-        public init(
-            client: Identity.MFA.SMS.Client,
-            router: any URLRouting.Router<Identity.MFA.SMS.API> = Identity.MFA.SMS.API.Router()
-        ) {
-            self.client = client
-            self.router = router
-        }
+  /// SMS-specific types and operations.
+  public struct SMS: @unchecked Sendable {
+    public var client: Identity.MFA.SMS.Client
+    public var router: any URLRouting.Router<Identity.MFA.SMS.API>
+
+    public init(
+      client: Identity.MFA.SMS.Client,
+      router: any URLRouting.Router<Identity.MFA.SMS.API> = Identity.MFA.SMS.API.Router()
+    ) {
+      self.client = client
+      self.router = router
     }
+  }
 }
 
 extension Identity.MFA.SMS {
-    /// Request to setup SMS MFA.
-    public struct Setup: Codable, Equatable, Sendable {
-        public let phoneNumber: String
-        
-        public init(phoneNumber: String) {
-            self.phoneNumber = phoneNumber
-        }
+  /// Request to setup SMS MFA.
+  public struct Setup: Codable, Equatable, Sendable {
+    public let phoneNumber: String
+
+    public init(phoneNumber: String) {
+      self.phoneNumber = phoneNumber
     }
-    
-    /// Request to verify SMS code.
-    public struct Verify: Codable, Equatable, Sendable {
-        public let code: String
-        public let sessionToken: String
-        
-        public init(code: String, sessionToken: String) {
-            self.code = code
-            self.sessionToken = sessionToken
-        }
+  }
+
+  /// Request to verify SMS code.
+  public struct Verify: Codable, Equatable, Sendable {
+    public let code: String
+    public let sessionToken: String
+
+    public init(code: String, sessionToken: String) {
+      self.code = code
+      self.sessionToken = sessionToken
     }
-    
-    /// Request to update phone number.
-    public struct UpdatePhoneNumber: Codable, Equatable, Sendable {
-        public let phoneNumber: String
-        public let reauthorizationToken: String
-        
-        public init(phoneNumber: String, reauthorizationToken: String) {
-            self.phoneNumber = phoneNumber
-            self.reauthorizationToken = reauthorizationToken
-        }
+  }
+
+  /// Request to update phone number.
+  public struct UpdatePhoneNumber: Codable, Equatable, Sendable {
+    public let phoneNumber: String
+    public let reauthorizationToken: String
+
+    public init(phoneNumber: String, reauthorizationToken: String) {
+      self.phoneNumber = phoneNumber
+      self.reauthorizationToken = reauthorizationToken
     }
+  }
 }
