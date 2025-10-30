@@ -3,58 +3,355 @@
 [![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)](https://swift.org)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.0-green.svg)](https://github.com/coenttb/swift-identities-types/releases)
+[![CI](https://github.com/coenttb/swift-identities-types/workflows/CI/badge.svg)](https://github.com/coenttb/swift-identities-types/actions/workflows/ci.yml)
 
-`swift-identities-types` provides type-safe, modular types and protocols for identity authentication and management.
+Type-safe Swift definitions for identity authentication and management with dependency injection and URL routing support.
 
-![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
+## Overview
 
-This package is currently in active development and is subject to frequent changes. Features and APIs may change without prior notice until a stable release is available.
+`swift-identities-types` provides comprehensive type definitions for building identity management systems, including:
 
-## Features
+- 🔐 **Authentication**: Credentials, tokens, API keys, and OAuth
+- 👤 **Identity Creation**: Two-step creation with email verification
+- 🔑 **Password Management**: Reset and change flows
+- 📧 **Email Management**: Email change with confirmation
+- 🗑️ **Identity Deletion**: Request and confirm deletion with safety checks
+- 🔒 **Reauthorization**: Token-based sensitive operation verification
+- 🔢 **Multi-Factor Authentication**: TOTP, SMS, Email, WebAuthn, and backup codes
+- 🛣️ **Type-Safe Routing**: URLRouting integration for compile-time route validation
+- 🔌 **Dependency Injection**: Using swift-dependencies for testability
 
-- Identity creation and email verification
-- Identity authentication via credentials, tokens, and api-keys
-- Password reset and change
-- Email change
-- Token management
+This is a types-only package. For complete implementations, see the Related Packages section below.
 
 ## Installation
 
-You can add `swift-identities-types` to an Xcode project by including it as a package dependency:
+Add to your `Package.swift`:
 
-Repository URL: https://github.com/coenttb/swift-identities-types
-
-For a Swift Package Manager project, add the dependency in your Package.swift file:
 ```swift
 dependencies: [
-  .package(url: "https://github.com/coenttb/swift-identities-types", from: "0.1.0")
+    .package(url: "https://github.com/coenttb/swift-identities-types", from: "0.1.0")
 ]
 ```
 
-## Usage
+## Quick Start
 
-This package provides the core types and protocols. For a complete implementation, use:
-- [swift-identities](https://github.com/coenttb/swift-identities) - Complete authentication system
-- [swift-identities-mailgun](https://github.com/coenttb/swift-identities-mailgun) - Email integration
+### Import the Module
 
-## Related Projects
+```swift
+import IdentitiesTypes
+```
 
-* [swift-identities](https://github.com/coenttb/swift-identities): Complete authentication system implementation
-* [swift-identities-mailgun](https://github.com/coenttb/swift-identities-mailgun): Mailgun email integration for identities
-* [coenttb-com-server](https://github.com/coenttb/coenttb-com-server): Example production usage
+### Using the Main Identity Type
 
-## Feedback is much appreciated!
+The `Identity` type provides access to all identity management operations through a unified interface:
 
-If you’re working on your own Swift project, feel free to learn, fork, and contribute.
+```swift
+@Dependency(\.identity) var identity
 
-Got thoughts? Found something you love? Something you hate? Let me know! Your feedback helps make this project better for everyone. Open an issue or start a discussion—I’m all ears.
+// Authenticate with credentials
+let response = try await identity.login(
+    username: "user@example.com",
+    password: "password123"
+)
 
-> [Subscribe to my newsletter](http://coenttb.com/en/newsletter/subscribe)
->
-> [Follow me on X](http://x.com/coenttb)
-> 
-> [Link on Linkedin](https://www.linkedin.com/in/tenthijeboonkkamp)
+// Create new identity
+try await identity.create.request(
+    email: "new@example.com",
+    password: "securePassword123"
+)
+try await identity.create.verify(
+    email: "new@example.com",
+    token: "verification-token"
+)
+```
+
+## Usage Examples
+
+### Authentication
+
+#### Credentials-Based Authentication
+
+```swift
+import IdentitiesTypes
+
+@Dependency(\.identity) var identity
+
+// Using convenience method
+let response = try await identity.login(
+    username: "user@example.com",
+    password: "password123"
+)
+print("Access token: \(response.accessToken)")
+print("Refresh token: \(response.refreshToken)")
+
+// Using credentials object
+let credentials = Identity.Authentication.Credentials(
+    username: "user@example.com",
+    password: "password123"
+)
+let response = try await identity.authenticate.credentials(credentials)
+```
+
+#### Token-Based Authentication
+
+```swift
+// Validate access token
+try await identity.login(accessToken: "jwt-access-token")
+
+// Refresh expired token
+let newTokens = try await identity.login(refreshToken: "jwt-refresh-token")
+```
+
+#### API Key Authentication
+
+```swift
+// Authenticate with API key
+let response = try await identity.login(apiKey: "api-key-string")
+```
+
+### Identity Creation
+
+The creation process is a two-step flow with email verification:
+
+```swift
+// Step 1: Request identity creation
+try await identity.create.request(
+    email: "new@example.com",
+    password: "securePassword123"
+)
+
+// Step 2: Verify email with token
+try await identity.create.verify(
+    email: "new@example.com",
+    token: "verification-token-from-email"
+)
+
+// Now the user can authenticate
+let response = try await identity.login(
+    username: "new@example.com",
+    password: "securePassword123"
+)
+```
+
+### Password Management
+
+#### Password Reset (Forgot Password)
+
+```swift
+// Step 1: Request password reset
+try await identity.password.reset.request(
+    email: "user@example.com"
+)
+
+// Step 2: Confirm with token from email
+try await identity.password.reset.confirm(
+    newPassword: "newSecurePassword123",
+    token: "reset-token-from-email"
+)
+```
+
+#### Password Change (Authenticated User)
+
+```swift
+// Change password while authenticated
+try await identity.password.change.request(
+    currentPassword: "currentPassword123",
+    newPassword: "newSecurePassword456"
+)
+```
+
+### Email Management
+
+```swift
+// Request email change
+let result = try await identity.email.change.request(
+    newEmail: "newemail@example.com"
+)
+
+// Confirm email change with token
+let response = try await identity.email.change.confirm(
+    token: "confirmation-token-from-email"
+)
+// Response contains new access and refresh tokens
+```
+
+### Identity Deletion
+
+```swift
+// Request deletion (requires recent authentication)
+try await identity.delete.request(
+    reauthToken: "fresh-auth-token"
+)
+
+// Confirm deletion (irreversible)
+try await identity.delete.confirm()
+
+// Or cancel the deletion request
+try await identity.delete.cancel()
+```
+
+### Reauthorization
+
+For sensitive operations requiring fresh authentication:
+
+```swift
+import JWT
+
+// Reauthorize with password
+let reauthToken: JWT = try await identity.reauthorize.reauthorize(
+    password: "currentPassword123"
+)
+
+// Use the reauth token for sensitive operations
+try await identity.delete.request(
+    reauthToken: reauthToken.compactSerialization()
+)
+```
+
+### Type-Safe URL Routing
+
+Generate and parse URLs with compile-time safety:
+
+```swift
+@Dependency(\.identity.router) var router
+
+// Generate URL for login API
+let api: Identity.API = .authenticate(.credentials(
+    .init(username: "user@example.com", password: "password123")
+))
+let request = try router.request(for: .api(api))
+// Produces: POST /api/authenticate
+
+// Generate URL for password reset view
+let viewRoute = Identity.Route.passwordReset
+let viewRequest = try router.request(for: viewRoute)
+// Produces: GET /password/reset/request
+
+// Parse incoming request
+let match = try router.match(request: incomingRequest)
+if match.is(\.authenticate.api.credentials) {
+    let credentials = match.authenticate?.api?.credentials
+    // Handle credential authentication
+}
+```
+
+### Multi-Factor Authentication (Optional)
+
+When MFA is enabled, the identity provides access to MFA operations:
+
+```swift
+if let mfa = identity.mfa {
+    // Check MFA status
+    let status = try await mfa.status.client.get()
+
+    // Setup TOTP (authenticator app)
+    let secret = try await mfa.totp.client.setup()
+    try await mfa.totp.client.verify(code: "123456")
+
+    // Generate backup codes
+    let codes = try await mfa.backupCodes.client.generate()
+}
+```
+
+### Testing with Mock Clients
+
+Create mock implementations for testing:
+
+```swift
+import Testing
+import DependenciesTestSupport
+
+@Test
+func testAuthentication() async throws {
+    // Use test dependency key
+    try await Identity._TestDatabase.Helper.withIsolatedDatabase {
+        @Dependency(\.identity) var identity
+
+        // Create test user
+        try await identity.create.request(
+            email: "test@example.com",
+            password: "testPassword123"
+        )
+        try await identity.create.verify(
+            email: "test@example.com",
+            token: "verification-token-test@example.com"
+        )
+
+        // Test authentication
+        let response = try await identity.login(
+            username: "test@example.com",
+            password: "testPassword123"
+        )
+
+        #expect(!response.accessToken.isEmpty)
+        #expect(!response.refreshToken.isEmpty)
+    }
+}
+```
+
+## Architecture
+
+### Domain-First Organization
+
+The package follows a domain-first architecture where business capabilities are primary:
+
+```swift
+Identity                              // Main namespace
+├── authenticate: Authentication      // Authentication operations
+│   ├── client: Client               // Authentication client
+│   ├── token: Token.Client          // Token operations
+│   └── router: Router<Route>        // URL routing
+├── create: Creation                  // Identity creation
+├── delete: Deletion                  // Identity deletion
+├── email: Email                      // Email management
+├── password: Password                // Password operations
+│   ├── reset: Reset                 // Password reset flow
+│   └── change: Change               // Password change flow
+├── logout: Logout                    // Session termination
+├── reauthorize: Reauthorization     // Fresh auth for sensitive ops
+├── mfa: MFA?                        // Optional MFA support
+│   ├── totp: TOTP                   // Authenticator app
+│   ├── sms: SMS                     // SMS verification
+│   ├── email: Email                 // Email verification
+│   ├── webauthn: WebAuthn           // Security keys
+│   ├── backupCodes: BackupCodes     // Recovery codes
+│   └── status: Status               // MFA status queries
+└── oauth: OAuth?                     // Optional OAuth support
+```
+
+Each domain contains:
+- **Client**: Operations interface using @DependencyClient
+- **Router**: Type-safe URL routing using URLRouting
+- **API**: API endpoint definitions
+- **Route**: Combined API and View routes
+- **Request/Response types**: Strongly-typed data models
+
+### Type Safety
+
+All types are:
+- `Sendable` for Swift 6 strict concurrency
+- `Codable` for JSON serialization
+- `Equatable` for testing
+- Validated at compile-time with URLRouting
+
+## Requirements
+
+- Swift 6.0+
+- macOS 14.0+ / iOS 17.0+
+- Strict concurrency mode enabled
+
+## Related Packages
+
+- **[swift-identities](https://github.com/coenttb/swift-identities)**: Complete authentication system implementation using these types
+- **[swift-authenticating](https://github.com/coenttb/swift-authenticating)**: Authentication utilities and primitives
+- **[swift-server-foundation](https://github.com/coenttb/swift-server-foundation)**: Server foundation including URLRouting
+- **[swift-dependencies](https://github.com/pointfreeco/swift-dependencies)**: Dependency injection library
+- **[swift-jwt](https://github.com/coenttb/swift-jwt)**: JWT token handling
+
+## Contributing
+
+Contributions are welcome. Please open an issue or submit a pull request.
 
 ## License
 
-This project is licensed by coenttb under the Apache 2.0 License. See [LICENSE](LICENSE) for details.
+This project is licensed under the Apache 2.0 License. See [LICENSE](LICENSE) for details.

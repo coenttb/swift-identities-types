@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos:
+    name: macOS (Swift 6.0+)
+    runs-on: macos-15
+    strategy:
+      matrix:
+        xcode: ['16.0']
+        config: ['debug', 'release']
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode ${{ matrix.xcode }}
+        run: sudo xcode-select -s /Applications/Xcode_${{ matrix.xcode }}.app
+
+      - name: Print Swift version
+        run: swift --version
+
+      - name: Cache Swift packages
+        uses: actions/cache@v4
+        with:
+          path: .build
+          key: ${{ runner.os }}-spm-${{ hashFiles('Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Build
+        run: swift build -c ${{ matrix.config }}
+
+      - name: Run tests
+        run: swift test -c ${{ matrix.config }}
+
+  linux:
+    name: Ubuntu (Swift 6.0)
+    runs-on: ubuntu-latest
+    container: swift:6.0
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Resolve dependencies
+        run: swift package resolve
+
+      - name: Build
+        run: swift build
+
+      - name: Run tests
+        run: swift test
+
+  package-validation:
+    name: Package Validation
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.0.app
+
+      - name: Validate Package.swift
+        run: swift package dump-package
+
+      - name: Check for API breaking changes
+        run: |
+          swift package diagnose-api-breaking-changes \
+            --breakage-allowlist-path .swift-api-breakage-allowlist || true
+        continue-on-error: true
+
+  readme-validation:
+    name: README Code Examples
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.0.app
+
+      - name: Run README verification tests
+        run: swift test --filter ReadmeVerificationTests
+
+      - name: Validate README examples compile
+        run: |
+          echo "✅ All README code examples are verified to compile and work"

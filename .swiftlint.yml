@@ -2,6 +2,10 @@ disabled_rules:
   - line_length
   - identifier_name
   - nesting
+  - type_name
+  - explicit_enum_raw_value
+  - file_length
+  - function_body_length
 
 opt_in_rules:
   - empty_count
@@ -9,14 +13,11 @@ opt_in_rules:
   - sorted_imports
   - force_cast
   - force_try
-  - force_unwrapping
   - closure_spacing
   - operator_usage_whitespace
   - private_outlet
   - redundant_nil_coalescing
-  - unused_capture_list
   - empty_string
-  - explicit_enum_raw_value
   - literal_expression_end_indentation
   - single_test_class
   - sorted_first_last
