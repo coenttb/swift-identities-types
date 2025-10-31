@@ -363,11 +363,21 @@ All types are:
 
 ## Related Packages
 
-- **[swift-identities](https://github.com/coenttb/swift-identities)**: The Swift library for identity authentication and management
-- **[swift-authenticating](https://github.com/coenttb/swift-authenticating)**: A Swift package for type-safe HTTP authentication with URL routing integration
-- **[swift-server-foundation](https://github.com/coenttb/swift-server-foundation)**: A Swift package with tools to simplify server development
-- **[swift-dependencies](https://github.com/pointfreeco/swift-dependencies)**: A dependency management library inspired by SwiftUI's "environment"
-- **[swift-jwt](https://github.com/coenttb/swift-jwt)**: A Swift package for creating, signing, and verifying JSON Web Tokens
+### Dependencies
+
+- [swift-authenticating](https://github.com/coenttb/swift-authenticating): A Swift package for type-safe HTTP authentication with URL routing integration.
+- [swift-jwt](https://github.com/coenttb/swift-jwt): A Swift package for creating, signing, and verifying JSON Web Tokens.
+- [swift-types-foundation](https://github.com/coenttb/swift-types-foundation): A Swift package bundling essential type-safe packages for domain modeling.
+
+### Used By
+
+- [swift-identities](https://github.com/coenttb/swift-identities): The Swift library for identity authentication and management.
+- [swift-identities-github](https://github.com/coenttb/swift-identities-github): A Swift package integrating GitHub OAuth with swift-identities.
+- [swift-identities-mailgun](https://github.com/coenttb/swift-identities-mailgun): A Swift package integrating Mailgun with swift-identities.
+
+### Third-Party Dependencies
+
+- [pointfreeco/swift-dependencies](https://github.com/pointfreeco/swift-dependencies): A dependency management library for controlling dependencies in Swift.
 
 ## Contributing
 
