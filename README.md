@@ -32,15 +32,15 @@ Type-safe Swift definitions for identity authentication and management with depe
 
 `swift-identities-types` provides comprehensive type definitions for building identity management systems, including:
 
-- 🔐 **Authentication**: Credentials, tokens, API keys, and OAuth
-- 👤 **Identity Creation**: Two-step creation with email verification
-- 🔑 **Password Management**: Reset and change flows
-- 📧 **Email Management**: Email change with confirmation
-- 🗑️ **Identity Deletion**: Request and confirm deletion with safety checks
-- 🔒 **Reauthorization**: Token-based sensitive operation verification
-- 🔢 **Multi-Factor Authentication**: TOTP, SMS, Email, WebAuthn, and backup codes
-- 🛣️ **Type-Safe Routing**: URLRouting integration for compile-time route validation
-- 🔌 **Dependency Injection**: Using swift-dependencies for testability
+- **Authentication**: Credentials, tokens, API keys, and OAuth
+- **Identity Creation**: Two-step creation with email verification
+- **Password Management**: Reset and change flows
+- **Email Management**: Email change with confirmation
+- **Identity Deletion**: Request and confirm deletion with safety checks
+- **Reauthorization**: Token-based sensitive operation verification
+- **Multi-Factor Authentication**: TOTP, SMS, Email, WebAuthn, and backup codes
+- **Type-Safe Routing**: URLRouting integration for compile-time route validation
+- **Dependency Injection**: Using swift-dependencies for testability
 
 This is a types-only package. For complete implementations, see the Related Packages section below.
 
