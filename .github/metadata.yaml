@@ -1,0 +1,9 @@
+# .github/metadata.yaml
+description: "Type-safe identity authentication and management types with dependency injection and URL routing for Swift."
+topics:
+  - foundations
+  - identities
+  - authentication
+homepage: "https://swift-institute.org"
+readme:
+  family: E
