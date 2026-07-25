@@ -16,12 +16,12 @@ permissions:
 jobs:
   validate:
     name: Validate Release
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_16.0.app
+        run: sudo xcode-select -s /Applications/Xcode_26.6.app
 
       - name: Validate tag format
         run: |
@@ -55,12 +55,12 @@ jobs:
   create-release-artifacts:
     name: Create Release Artifacts
     needs: validate
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_16.0.app
+        run: sudo xcode-select -s /Applications/Xcode_26.6.app
 
       - name: Build library archives
         run: |
@@ -72,7 +72,7 @@ jobs:
 
           # Create archives of the built libraries
           cd .build
-          tar -czf swift-github-types-macos.tar.gz \
+          tar -czf swift-identities-types-macos.tar.gz \
             arm64-apple-macosx/release/*.swiftmodule \
             x86_64-apple-macosx/release/*.swiftmodule \
             2>/dev/null || true
@@ -81,9 +81,9 @@ jobs:
 
       - name: Upload artifacts to release
         if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
           files: |
-            .build/swift-github-types-macos.tar.gz
+            .build/swift-identities-types-macos.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
