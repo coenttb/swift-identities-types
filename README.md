@@ -22,6 +22,7 @@ Type-safe Swift definitions for identity authentication and management with depe
   - [Testing with Mock Clients](#testing-with-mock-clients)
 - [Architecture](#architecture)
 - [Requirements](#requirements)
+- [Error Handling](#error-handling)
 - [Related Packages](#related-packages)
 - [Contributing](#contributing)
 - [License](#license)
@@ -44,12 +45,23 @@ This is a types-only package. For complete implementations, see the Related Pack
 
 ## Installation
 
-Add to your `Package.swift`:
+Add the package to your `Package.swift` dependencies:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/coenttb/swift-identities-types", from: "0.1.0")
+    .package(url: "https://github.com/swift-foundations/swift-identities-types.git", from: "0.1.1")
 ]
+```
+
+Then add the product to your target's dependencies:
+
+```swift
+.target(
+    name: "YourTarget",
+    dependencies: [
+        .product(name: "IdentitiesTypes", package: "swift-identities-types")
+    ]
+)
 ```
 
 ## Quick Start
@@ -358,6 +370,44 @@ All types are:
 - Swift 6.0+
 - macOS 14.0+ / iOS 17.0+
 - Strict concurrency mode enabled
+
+## Error Handling
+
+The OAuth client's `registerProvider` operation reports failures through the
+package's own typed error, `Identity.OAuth.Client.Error`:
+
+```
+Identity.OAuth.Client.Error
+├── duplicate(identifier: String)                    // a provider with this identifier is already registered
+└── rejected(identifier: String, reason: String)     // the implementation refused to register the provider
+```
+
+Because `registerProvider` is declared `throws(Identity.OAuth.Client.Error)`,
+`catch` binds `error` at that concrete type, so the `switch` is exhaustive:
+
+```swift
+import IdentitiesTypes
+
+@Dependency(\.identity) var identity
+
+guard let oauth = identity.oauth else { return }
+
+do {
+    try await oauth.client.registerProvider(provider)
+} catch {
+    // `error` is statically typed as `Identity.OAuth.Client.Error`
+    switch error {
+    case .duplicate(let identifier):
+        print("A provider named \(identifier) is already registered")
+    case .rejected(let identifier, let reason):
+        print("Registration of \(identifier) was refused: \(reason)")
+    }
+}
+```
+
+All other throwing operations across the package — authentication, creation,
+password, email, deletion, MFA, and the remaining OAuth methods — are declared
+`throws(any Swift.Error)`; catch and inspect them as untyped errors.
 
 ## Related Packages
 
