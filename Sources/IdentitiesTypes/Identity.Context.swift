@@ -18,25 +18,10 @@ extension Identity {
         public let jwt: JWT
 
         /// The authenticated identity's ID
-        public var id: Identity.ID {
-            guard let sub = jwt.payload.sub,
-                let components = parseSubject(sub),
-                let id = UUID(uuidString: components.id)
-            else {
-                fatalError("Invalid token subject - missing or malformed identity ID")
-            }
-            return Identity.ID(_unchecked: id)
-        }
+        public let id: Identity.ID
 
         /// The authenticated identity's email address
-        public var email: EmailAddress {
-            guard let sub = jwt.payload.sub,
-                let components = parseSubject(sub)
-            else {
-                fatalError("Invalid token subject - missing or malformed email")
-            }
-            return try! .init(components.email)
-        }
+        public let email: EmailAddress
 
         /// The authenticated identity's display name
         public var displayName: String {
@@ -64,8 +49,22 @@ extension Identity {
             return false
         }
 
-        public init(jwt: JWT) {
+        public init(jwt: JWT) throws(Identity.Context.Error) {
+            guard let sub = jwt.payload.sub else { throw .subjectMissing }
+
+            let parts = sub.split(separator: ":", maxSplits: 1).map(String.init)
+            guard parts.count == 2 else { throw .subjectMalformed(sub) }
+
+            guard let uuid = UUID(uuidString: parts[0]) else {
+                throw .identifierInvalid(parts[0])
+            }
+            guard let address = try? EmailAddress(parts[1]) else {
+                throw .emailInvalid(parts[1])
+            }
+
             self.jwt = jwt
+            self.id = Identity.ID(_unchecked: uuid)
+            self.email = address
         }
 
         /// Gets additional claim value from the JWT payload
@@ -76,12 +75,14 @@ extension Identity {
         public func additionalClaim<T>(_ key: String, as type: T.Type) -> T? {
             jwt.payload.additionalClaim(key, as: type)
         }
+    }
+}
 
-        /// Parse subject string "id:email" into components
-        private func parseSubject(_ subject: String) -> (id: String, email: String)? {
-            let components = subject.split(separator: ":", maxSplits: 1).map(String.init)
-            guard components.count == 2 else { return nil }
-            return (components[0], components[1])
-        }
+extension Identity.Context {
+    public enum Error: Swift.Error {
+        case subjectMissing
+        case subjectMalformed(String)
+        case identifierInvalid(String)
+        case emailInvalid(String)
     }
 }
