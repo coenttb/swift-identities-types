@@ -26,7 +26,8 @@ extension Identity {
             webauthn: Identity.MFA.WebAuthn,
             backupCodes: Identity.MFA.BackupCodes,
             status: Identity.MFA.Status,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.MFA.Route> = Identity.MFA.Route.Router().eraseToAnyParserPrinter()
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.MFA.Route> = Identity.MFA
+                .Route.Router().eraseToAnyParserPrinter()
         ) {
             self.totp = totp
             self.sms = sms

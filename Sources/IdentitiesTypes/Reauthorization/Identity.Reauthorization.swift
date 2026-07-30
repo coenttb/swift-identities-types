@@ -16,11 +16,13 @@ extension Identity {
 
     public struct Reauthorization: @unchecked Sendable {
         public var client: Identity.Reauthorization.Client
-        public var router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Reauthorization.Route>
+        public var router:
+            AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Reauthorization.Route>
 
         public init(
             client: Identity.Reauthorization.Client,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Reauthorization.Route> = Identity.Reauthorization
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Reauthorization.Route> =
+                Identity.Reauthorization
                 .Route
                 .Router().eraseToAnyParserPrinter()
         ) {

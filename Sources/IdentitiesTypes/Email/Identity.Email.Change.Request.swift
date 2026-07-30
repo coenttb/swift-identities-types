@@ -57,7 +57,9 @@ extension Identity.Email.Change.Request {
             URLRouting.Route(.identity()) {
                 Method.post
                 Path { "request" }
-                URLRouting.Body(coding: .form(Identity.Email.Change.Request.self, decoder: .identities))
+                URLRouting.Body(
+                    coding: .form(Identity.Email.Change.Request.self, decoder: .identities)
+                )
             }
         }
     }

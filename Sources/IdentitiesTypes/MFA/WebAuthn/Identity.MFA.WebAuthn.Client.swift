@@ -48,7 +48,8 @@ extension Identity.MFA.WebAuthn {
             ) async throws(any Swift.Error) -> Identity.Authentication.Response
 
         /// List registered WebAuthn credentials.
-        public var listCredentials: () async throws(any Swift.Error) -> [Identity.MFA.WebAuthn.Credential]
+        public var listCredentials:
+            () async throws(any Swift.Error) -> [Identity.MFA.WebAuthn.Credential]
 
         /// Remove a WebAuthn credential.
         ///

@@ -17,7 +17,8 @@ extension Identity {
 
         public init(
             client: Identity.Logout.Client,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Logout.Route> = Identity.Logout.Route.Router().eraseToAnyParserPrinter()
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Logout.Route> = Identity
+                .Logout.Route.Router().eraseToAnyParserPrinter()
         ) {
             self.client = client
             self.router = router

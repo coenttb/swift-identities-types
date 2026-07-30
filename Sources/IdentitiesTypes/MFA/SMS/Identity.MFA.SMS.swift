@@ -15,7 +15,8 @@ extension Identity.MFA {
 
         public init(
             client: Identity.MFA.SMS.Client,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.MFA.SMS.API> = Identity.MFA.SMS.API.Router().eraseToAnyParserPrinter()
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.MFA.SMS.API> = Identity.MFA
+                .SMS.API.Router().eraseToAnyParserPrinter()
         ) {
             self.client = client
             self.router = router

@@ -59,7 +59,9 @@ extension Identity.Password.Reset.Request {
             URLRouting.Route(.identity()) {
                 Method.post
                 Path<PathBuilder.Component<String>>.request
-                URLRouting.Body(coding: .form(Identity.Password.Reset.Request.self, decoder: .identities))
+                URLRouting.Body(
+                    coding: .form(Identity.Password.Reset.Request.self, decoder: .identities)
+                )
             }
         }
     }

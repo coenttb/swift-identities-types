@@ -15,7 +15,8 @@ extension Identity.Password {
 
         public init(
             client: Identity.Password.Change.Client,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Password.Change.API> = Identity.Password.Change
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Password.Change.API> =
+                Identity.Password.Change
                 .API
                 .Router().eraseToAnyParserPrinter()
         ) {

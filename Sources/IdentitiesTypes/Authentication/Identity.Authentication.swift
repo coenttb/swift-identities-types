@@ -5,8 +5,8 @@
 //  Created by Coen ten Thije Boonkkamp on 28/01/2025.
 //
 
-import Dual
 import Dependencies
+import Dual
 import EmailAddress
 import URLRouting
 
@@ -18,12 +18,14 @@ extension Identity {
     /// as nested types.
     public struct Authentication: @unchecked Sendable {
         public var client: Identity.Authentication.Client
-        public var router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Authentication.Route>
+        public var router:
+            AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Authentication.Route>
         public var token: Identity.Authentication.Token.Client
 
         public init(
             client: Identity.Authentication.Client = .unimplemented(),
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Authentication.Route> = Identity.Authentication.Route.Router().eraseToAnyParserPrinter(),
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Authentication.Route> =
+                Identity.Authentication.Route.Router().eraseToAnyParserPrinter(),
             token: Identity.Authentication.Token.Client = .unimplemented()
         ) {
             self.client = client

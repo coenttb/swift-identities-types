@@ -15,7 +15,8 @@ extension Identity {
 
         public init(
             change: Identity.Email.Change,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Email.Route> = Identity.Email.Route.Router().eraseToAnyParserPrinter()
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Email.Route> = Identity
+                .Email.Route.Router().eraseToAnyParserPrinter()
         ) {
             self.change = change
             self.router = router

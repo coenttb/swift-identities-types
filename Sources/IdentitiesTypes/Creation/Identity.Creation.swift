@@ -22,7 +22,8 @@ extension Identity {
 
         public init(
             client: Identity.Creation.Client,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Creation.Route> = Identity.Creation.Route
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Creation.Route> = Identity
+                .Creation.Route
                 .Router().eraseToAnyParserPrinter()
         ) {
             self.client = client

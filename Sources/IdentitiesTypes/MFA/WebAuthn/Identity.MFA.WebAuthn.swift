@@ -16,7 +16,8 @@ extension Identity.MFA {
 
         public init(
             client: Identity.MFA.WebAuthn.Client,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.MFA.WebAuthn.API> = Identity.MFA.WebAuthn.API
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.MFA.WebAuthn.API> =
+                Identity.MFA.WebAuthn.API
                 .Router().eraseToAnyParserPrinter()
         ) {
             self.client = client

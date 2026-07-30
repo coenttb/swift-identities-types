@@ -1,3 +1,4 @@
+import Dependencies
 //
 //  Identity.swift
 //  swift-identities
@@ -5,7 +6,6 @@
 //  Created by Coen ten Thije Boonkkamp on 31/01/2025.
 //
 import Dual
-import Dependencies
 import URLRouting
 
 /// A namespace for managing identity and authentication in a client-server architecture.
@@ -76,7 +76,8 @@ public struct Identity: @unchecked Sendable {
         password: Identity.Password,
         mfa: Identity.MFA? = nil,
         oauth: Identity.OAuth? = nil,
-        router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Route> = Identity.Route.Router().eraseToAnyParserPrinter()
+        router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Route> = Identity.Route
+            .Router().eraseToAnyParserPrinter()
     ) {
         self.authenticate = authenticate
         self.logout = logout

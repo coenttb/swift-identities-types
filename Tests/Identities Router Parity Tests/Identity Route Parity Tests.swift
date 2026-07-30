@@ -18,8 +18,14 @@ import URL_Routing_Test_Support
 enum Fixtures {
     /// {"alg":"none"} . {"sub":"parity"} . bytes 01 02 03
     static let jwtCompact = "eyJhbGciOiJub25lIn0.eyJzdWIiOiJwYXJpdHkifQ.AQID"
-    static var jwt: JWT { try! JWT.parse(from: jwtCompact) }
+    static var jwt: JWT {
+        // Fixed, valid compact-JWT literal above — never throws.
+        // swiftlint:disable:next force_try
+        try! JWT.parse(from: jwtCompact)
+    }
     static var bearer: RFC_6750.Bearer {
+        // Fixed, valid token literal — never throws.
+        // swiftlint:disable:next force_try
         RFC_6750.Bearer(b64token: try! .init("parity-token-123"))
     }
     static let router = Identity.Route.Router()
@@ -49,7 +55,7 @@ struct IdentityRouteParity {
             ("api.token.access", .authenticate(.api(.token(.access(Fixtures.jwt))))),
             ("api.token.refresh", .authenticate(.api(.token(.refresh(Fixtures.jwt))))),
             ("api.apiKey", .authenticate(.api(.apiKey(Fixtures.bearer)))),
-            ("view.credentials", .authenticate(.view(.credentials)))
+            ("view.credentials", .authenticate(.view(.credentials))),
         ]
         try assertCorpus(routes, fixture: "Authentication")
     }
@@ -68,7 +74,7 @@ struct IdentityRouteParity {
             (
                 "view.verify",
                 .create(.view(.verify(.init(token: "verify-token-123", email: "user@example.com"))))
-            )
+            ),
         ]
         try assertCorpus(routes, fixture: "Creation")
     }
@@ -78,7 +84,7 @@ struct IdentityRouteParity {
             ("api.request", .delete(.api(.request(.init(reauthToken: "reauth-token-123"))))),
             ("api.cancel", .delete(.api(.cancel))),
             ("api.confirm", .delete(.api(.confirm))),
-            ("view.request", .delete(.view(.request)))
+            ("view.request", .delete(.view(.request))),
         ]
         try assertCorpus(routes, fixture: "Deletion")
     }
@@ -87,7 +93,7 @@ struct IdentityRouteParity {
         let routes: [(name: String, route: Identity.Route)] = [
             ("api.current", .logout(.api(.current))),
             ("api.all", .logout(.api(.all))),
-            ("view", .logout(.view))
+            ("view", .logout(.view)),
         ]
         try assertCorpus(routes, fixture: "Logout")
     }
@@ -114,18 +120,23 @@ struct IdentityRouteParity {
                 "view.change.confirm",
                 .email(.view(.change(.confirm(.init(token: "email-token-123")))))
             ),
-            ("view.change.reauthorization", .email(.view(.change(.reauthorization))))
+            ("view.change.reauthorization", .email(.view(.change(.reauthorization)))),
         ]
         try assertCorpus(routes, fixture: "Email")
     }
 
     @Test func password() throws {
         let routes: [(name: String, route: Identity.Route)] = [
-            ("api.reset.request", .password(.api(.reset(.request(.init(email: "user@example.com")))))),
+            (
+                "api.reset.request",
+                .password(.api(.reset(.request(.init(email: "user@example.com")))))
+            ),
             (
                 "api.reset.confirm",
                 .password(
-                    .api(.reset(.confirm(.init(token: "reset-token-123", newPassword: "newSecret1"))))
+                    .api(
+                        .reset(.confirm(.init(token: "reset-token-123", newPassword: "newSecret1")))
+                    )
                 )
             ),
             (
@@ -133,7 +144,9 @@ struct IdentityRouteParity {
                 .password(
                     .api(
                         .change(
-                            .request(.init(currentPassword: "secret1234", newPassword: "newSecret1"))
+                            .request(
+                                .init(currentPassword: "secret1234", newPassword: "newSecret1")
+                            )
                         )
                     )
                 )
@@ -142,10 +155,12 @@ struct IdentityRouteParity {
             (
                 "view.reset.confirm",
                 .password(
-                    .view(.reset(.confirm(.init(token: "reset-token-123", newPassword: "newSecret1"))))
+                    .view(
+                        .reset(.confirm(.init(token: "reset-token-123", newPassword: "newSecret1")))
+                    )
                 )
             ),
-            ("view.change.request", .password(.view(.change(.request))))
+            ("view.change.request", .password(.view(.change(.request)))),
         ]
         try assertCorpus(routes, fixture: "Password")
     }
@@ -194,7 +209,9 @@ struct IdentityRouteParity {
             ("api.email.requestCode", .mfa(.api(.email(.requestCode)))),
             (
                 "api.email.verify",
-                .mfa(.api(.email(.verify(.init(code: "123456", sessionToken: "session-token-123")))))
+                .mfa(
+                    .api(.email(.verify(.init(code: "123456", sessionToken: "session-token-123"))))
+                )
             ),
             (
                 "api.email.updateEmail",
@@ -223,7 +240,10 @@ struct IdentityRouteParity {
                     .api(
                         .webauthn(
                             .finishRegistration(
-                                .init(credentialName: "parity-key", response: "attestation-response")
+                                .init(
+                                    credentialName: "parity-key",
+                                    response: "attestation-response"
+                                )
                             )
                         )
                     )
@@ -311,7 +331,7 @@ struct IdentityRouteParity {
                         )
                     )
                 )
-            )
+            ),
         ]
         try assertCorpus(routes, fixture: "MFA")
     }
@@ -354,7 +374,7 @@ struct IdentityRouteParity {
                 )
             ),
             ("view.connections", .oauth(.view(.connections))),
-            ("view.error", .oauth(.view(.error("parity-error"))))
+            ("view.error", .oauth(.view(.error("parity-error")))),
         ]
         try assertCorpus(routes, fixture: "OAuth")
     }
@@ -369,7 +389,9 @@ struct IdentityFacadeParity {
         let routes: [(name: String, route: Identity.API)] = [
             (
                 "authenticate.credentials",
-                .authenticate(.credentials(.init(username: "user@example.com", password: "secret1234")))
+                .authenticate(
+                    .credentials(.init(username: "user@example.com", password: "secret1234"))
+                )
             ),
             ("reauthorize", .reauthorize(.init(password: "secret1234"))),
             (
@@ -379,9 +401,12 @@ struct IdentityFacadeParity {
             ("delete.cancel", .delete(.cancel)),
             ("logout.current", .logout(.current)),
             ("email.change.request", .email(.change(.request(.init(newEmail: "new@example.com"))))),
-            ("password.reset.request", .password(.reset(.request(.init(email: "user@example.com"))))),
+            (
+                "password.reset.request",
+                .password(.reset(.request(.init(email: "user@example.com"))))
+            ),
             ("mfa.status.get", .mfa(.status(.get))),
-            ("oauth.providers", .oauth(.providers))
+            ("oauth.providers", .oauth(.providers)),
         ]
         try assertParity(try Parity.corpus(of: routes, via: router), fixture: "Facade API")
         for (name, route) in routes {
@@ -400,7 +425,7 @@ struct IdentityFacadeParity {
             ("email.change.request", .email(.change(.request))),
             ("password.reset.request", .password(.reset(.request))),
             ("mfa.manage", .mfa(.manage)),
-            ("oauth.login", .oauth(.login))
+            ("oauth.login", .oauth(.login)),
         ]
         try assertParity(try Parity.corpus(of: routes, via: router), fixture: "Facade View")
         for (name, route) in routes {

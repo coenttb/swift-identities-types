@@ -20,7 +20,8 @@ extension Identity.Email {
 
         public init(
             client: Identity.Email.Change.Client,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Email.Change.API> = Identity.Email.Change.API
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Email.Change.API> =
+                Identity.Email.Change.API
                 .Router().eraseToAnyParserPrinter()
         ) {
             self.client = client

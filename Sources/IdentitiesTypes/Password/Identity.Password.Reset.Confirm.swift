@@ -53,7 +53,9 @@ extension Identity.Password.Reset.Confirm {
             URLRouting.Route(.identity()) {
                 Method.post
                 Path.confirm
-                URLRouting.Body(coding: .form(Identity.Password.Reset.Confirm.self, decoder: .identities))
+                URLRouting.Body(
+                    coding: .form(Identity.Password.Reset.Confirm.self, decoder: .identities)
+                )
             }
         }
     }

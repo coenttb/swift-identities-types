@@ -124,7 +124,9 @@ extension Identity.MFA.View {
                     ) {
                         Query {
                             RFC_3986.URI.Query.Field("sessionToken")
-                            RFC_3986.URI.Query.Field("attemptsRemaining", default: 3) { Int.parser() }
+                            RFC_3986.URI.Query.Field("attemptsRemaining", default: 3) {
+                                Int.parser()
+                            }
                         }
                     }
                 }
@@ -193,7 +195,9 @@ extension Identity.MFA.View.BackupCodes {
                     ) {
                         Query {
                             RFC_3986.URI.Query.Field("sessionToken")
-                            RFC_3986.URI.Query.Field("attemptsRemaining", default: 3) { Int.parser() }
+                            RFC_3986.URI.Query.Field("attemptsRemaining", default: 3) {
+                                Int.parser()
+                            }
                         }
                     }
                 }

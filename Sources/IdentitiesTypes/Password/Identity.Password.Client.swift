@@ -80,7 +80,8 @@ extension Identity.Password.Reset {
         /// - Parameters:
         ///   - newPassword: The new password to set
         ///   - token: The verification token from the reset email
-        public var confirm: (_ newPassword: String, _ token: String) async throws(any Swift.Error) -> Void
+        public var confirm:
+            (_ newPassword: String, _ token: String) async throws(any Swift.Error) -> Void
     }
 }
 
@@ -101,7 +102,8 @@ extension Identity.Password.Change {
         /// - Parameters:
         ///   - currentPassword: The user's current password
         ///   - newPassword: The new password to set
-        public var request: (_ currentPassword: String, _ newPassword: String) async throws(any Swift.Error) -> Void
+        public var request:
+            (_ currentPassword: String, _ newPassword: String) async throws(any Swift.Error) -> Void
     }
 }
 

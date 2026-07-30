@@ -15,7 +15,8 @@ extension Identity.MFA {
 
         public init(
             client: Identity.MFA.BackupCodes.Client,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.MFA.BackupCodes.API> = Identity.MFA.BackupCodes
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.MFA.BackupCodes.API> =
+                Identity.MFA.BackupCodes
                 .API
                 .Router().eraseToAnyParserPrinter()
         ) {

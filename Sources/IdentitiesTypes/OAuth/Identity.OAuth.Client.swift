@@ -13,10 +13,12 @@ extension Identity.OAuth {
     @Witness
     public struct Client: @unchecked Sendable {
         /// Register an OAuth provider
-        public var registerProvider: (any Identity.OAuth.Provider) async throws(Identity.OAuth.Client.Error) -> Void
+        public var registerProvider:
+            (any Identity.OAuth.Provider) async throws(Identity.OAuth.Client.Error) -> Void
 
         /// Get a registered OAuth provider by identifier
-        public var provider: (_ identifier: String) async throws(any Swift.Error) -> (any Identity.OAuth.Provider)?
+        public var provider:
+            (_ identifier: String) async throws(any Swift.Error) -> (any Identity.OAuth.Provider)?
 
         /// Get all registered OAuth providers
         public var providers: () async throws(any Swift.Error) -> [any Identity.OAuth.Provider]
@@ -55,7 +57,8 @@ extension Identity.OAuth {
             ) async throws(any Swift.Error) -> String?
 
         /// Get all OAuth connections for current identity
-        public var getAllConnections: () async throws(any Swift.Error) -> [Identity.OAuth.Connection]
+        public var getAllConnections:
+            () async throws(any Swift.Error) -> [Identity.OAuth.Connection]
 
     }
 }

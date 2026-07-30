@@ -5,12 +5,12 @@
 //  Created by Coen ten Thije Boonkkamp on 07/02/2025.
 //
 
-import URL_Routing_Foundation_Integration
 import Dual
 import Foundation
 import JWT
 import RFC_6750
 import URLRouting
+import URL_Routing_Foundation_Integration
 
 extension Identity.Authentication {
     /// Authentication endpoints for managing user sessions and access.
@@ -94,7 +94,12 @@ extension Identity.Authentication.API {
             OneOf {
                 URLRouting.Route(.case(Identity.Authentication.API.cases.credentials)) {
                     Method.post
-                    URLRouting.Body(coding: .form(Identity.Authentication.Credentials.self, decoder: .identities))
+                    URLRouting.Body(
+                        coding: .form(
+                            Identity.Authentication.Credentials.self,
+                            decoder: .identities
+                        )
+                    )
                 }
 
                 URLRouting.Route(.case(Identity.Authentication.API.cases.token)) {

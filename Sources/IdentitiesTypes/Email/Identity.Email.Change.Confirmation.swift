@@ -45,7 +45,9 @@ extension Identity.Email.Change.Confirmation {
             URLRouting.Route(.identity()) {
                 Method.post
                 Path { "confirm" }
-                URLRouting.Body(coding: .form(Identity.Email.Change.Confirmation.self, decoder: .identities))
+                URLRouting.Body(
+                    coding: .form(Identity.Email.Change.Confirmation.self, decoder: .identities)
+                )
             }
         }
     }

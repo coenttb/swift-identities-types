@@ -16,7 +16,8 @@ extension Identity.MFA {
 
         public init(
             client: Identity.MFA.TOTP.Client,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.MFA.TOTP.API> = Identity.MFA.TOTP.API.Router().eraseToAnyParserPrinter()
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.MFA.TOTP.API> = Identity
+                .MFA.TOTP.API.Router().eraseToAnyParserPrinter()
         ) {
             self.client = client
             self.router = router

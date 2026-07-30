@@ -15,7 +15,8 @@ extension Identity.MFA {
 
         public init(
             client: Identity.MFA.Status.Client,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.MFA.Status.API> = Identity.MFA.Status.API
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.MFA.Status.API> = Identity
+                .MFA.Status.API
                 .Router().eraseToAnyParserPrinter()
         ) {
             self.client = client

@@ -19,7 +19,8 @@ extension Identity.Password {
 
         public init(
             client: Identity.Password.Reset.Client,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Password.Reset.API> = Identity.Password.Reset.API
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Password.Reset.API> =
+                Identity.Password.Reset.API
                 .Router().eraseToAnyParserPrinter()
         ) {
             self.client = client

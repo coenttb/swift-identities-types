@@ -63,7 +63,9 @@ extension Identity.Reauthorization.Request {
             // `RFC_3986.URI.Routing.Error` (url-routing FormBodyRouteTests pattern).
             URLRouting.Route(.identity()) {
                 Method.post
-                URLRouting.Body(coding: .form(Identity.Reauthorization.Request.self, decoder: .identities))
+                URLRouting.Body(
+                    coding: .form(Identity.Reauthorization.Request.self, decoder: .identities)
+                )
             }
         }
     }

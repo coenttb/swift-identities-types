@@ -17,7 +17,8 @@ extension Identity {
         public init(
             change: Identity.Password.Change,
             reset: Identity.Password.Reset,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Password.Route> = Identity.Password.Route
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Password.Route> = Identity
+                .Password.Route
                 .Router().eraseToAnyParserPrinter()
         ) {
             self.change = change

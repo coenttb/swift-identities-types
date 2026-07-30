@@ -45,7 +45,8 @@ extension Identity.Creation {
         ///   - email: The email address for the new identity
         ///   - password: The password for the new identity
         /// - Throws: Creation errors if the email is invalid or already in use
-        public var request: (_ email: String, _ password: String) async throws(any Swift.Error) -> Void
+        public var request:
+            (_ email: String, _ password: String) async throws(any Swift.Error) -> Void
 
         /// Verifies an email address to complete identity creation.
         ///

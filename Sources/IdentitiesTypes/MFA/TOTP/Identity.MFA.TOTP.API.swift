@@ -47,7 +47,9 @@ extension Identity.MFA.TOTP.API {
                 URLRouting.Route(.case(Identity.MFA.TOTP.API.cases.confirmSetup)) {
                     Method.post
                     Path.confirm
-                    URLRouting.Body(coding: .form(Identity.MFA.TOTP.ConfirmSetup.self, decoder: .identities))
+                    URLRouting.Body(
+                        coding: .form(Identity.MFA.TOTP.ConfirmSetup.self, decoder: .identities)
+                    )
                 }
 
                 URLRouting.Route(.case(Identity.MFA.TOTP.API.cases.verify)) {

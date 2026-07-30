@@ -20,7 +20,8 @@ extension Identity {
 
         public init(
             client: Identity.Deletion.Client,
-            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Deletion.Route> = Identity.Deletion.Route
+            router: AnyParserPrinter<RFC_3986.URI.Request.Data, Identity.Deletion.Route> = Identity
+                .Deletion.Route
                 .Router().eraseToAnyParserPrinter()
         ) {
             self.client = client
