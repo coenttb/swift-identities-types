@@ -164,20 +164,28 @@ extension Identity.Route {
         switch api {
         case .authenticate(let auth):
             return .authenticate(.api(auth))
+
         case .create(let create):
             return .create(.api(create))
+
         case .delete(let delete):
             return .delete(.api(delete))
+
         case .email(let email):
             return .email(.api(email))
+
         case .password(let password):
             return .password(.api(password))
+
         case .mfa(let mfa):
             return .mfa(.api(mfa))
+
         case .logout(let logout):
             return .logout(.api(logout))
+
         case .reauthorize(let reauth):
             return .reauthorize(.api(reauth))
+
         case .oauth(let oauth):
             return .oauth(.api(oauth))
         }
@@ -198,18 +206,25 @@ extension Identity.Route {
         switch view {
         case .authenticate(let auth):
             return .authenticate(.view(auth))
+
         case .create(let create):
             return .create(.view(create))
+
         case .delete:
             return .delete(.view(.request))
+
         case .logout:
             return .login
+
         case .email(let email):
             return .email(.view(email))
+
         case .password(let password):
             return .password(.view(password))
+
         case .mfa(let mfa):
             return .mfa(.view(mfa))
+
         case .oauth(let oath):
             return .oauth(.view(oath))
         }

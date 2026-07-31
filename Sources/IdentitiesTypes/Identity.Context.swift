@@ -58,7 +58,10 @@ extension Identity {
             guard let uuid = UUID(uuidString: parts[0]) else {
                 throw .identifierInvalid(parts[0])
             }
-            guard let address = try? EmailAddress(parts[1]) else {
+            let address: EmailAddress
+            do throws(EmailAddress.Error) {
+                address = try EmailAddress(parts[1])
+            } catch {
                 throw .emailInvalid(parts[1])
             }
 

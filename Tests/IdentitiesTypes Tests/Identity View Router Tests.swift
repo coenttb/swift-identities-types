@@ -27,6 +27,7 @@ extension Identity.View.Router {
             case .mfa(.manage):
                 // Success
                 break
+
             default:
                 Issue.record("Expected .mfa(.manage) but got \(manageRoute)")
             }

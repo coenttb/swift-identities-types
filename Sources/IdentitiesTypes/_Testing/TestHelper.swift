@@ -12,9 +12,9 @@ extension Identity._TestDatabase {
     package struct Helper {
         package static let enabled: Bool = true
         /// Creates an isolated test environment for each test
-        package static func withIsolatedDatabase(
-            _ operation: @escaping () async throws -> Void
-        ) async throws {
+        package static func withIsolatedDatabase<Failure: Swift.Error>(
+            _ operation: @escaping () async throws(Failure) -> Void
+        ) async throws(Failure) {
             if enabled {
                 let database = Identity._TestDatabase()
                 try await withDependencies {

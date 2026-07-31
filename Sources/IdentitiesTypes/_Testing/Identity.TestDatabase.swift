@@ -49,7 +49,7 @@ extension Identity {
             currentUser = nil
         }
 
-        func createUser(email: String, password: String) throws {
+        func createUser(email: String, password: String) throws(Identity._TestDatabase.TestError) {
             guard users[email] == nil else {
                 throw TestError.emailAlreadyExists
             }
@@ -68,7 +68,7 @@ extension Identity {
             )
         }
 
-        func verifyUser(email: String, token: String) throws {
+        func verifyUser(email: String, token: String) throws(Identity._TestDatabase.TestError) {
             let expectedToken = generateVerificationToken(for: email)
             guard token == expectedToken,
                 var user = users[email]
@@ -81,7 +81,10 @@ extension Identity {
             pendingVerifications.removeValue(forKey: token)
         }
 
-        func authenticate(email: String, password: String) throws -> Session {
+        func authenticate(
+            email: String,
+            password: String
+        ) throws(Identity._TestDatabase.TestError) -> Session {
             guard let user = users[email],
                 user.password == password,
                 user.isVerified
@@ -92,7 +95,7 @@ extension Identity {
             return createSession(for: email)
         }
 
-        func refreshSession(token: String) throws -> Session {
+        func refreshSession(token: String) throws(Identity._TestDatabase.TestError) -> Session {
             guard sessions.first(where: { $0.value.refreshToken == token }) != nil,
                 let email = currentUser
             else {
@@ -101,13 +104,14 @@ extension Identity {
             return createSession(for: email)
         }
 
-        func validateAccessToken(_ token: String) throws {
+        func validateAccessToken(_ token: String) throws(Identity._TestDatabase.TestError) {
             guard sessions.first(where: { $0.value.accessToken == token }) != nil else {
                 throw TestError.invalidToken
             }
         }
 
-        func initiatePasswordReset(email: String) throws -> String {
+        func initiatePasswordReset(email: String) throws(Identity._TestDatabase.TestError) -> String
+        {
             guard users[email] != nil else {
                 throw TestError.userNotFound
             }
@@ -117,7 +121,10 @@ extension Identity {
             return resetToken
         }
 
-        func confirmPasswordReset(token: String, newPassword: String) throws {
+        func confirmPasswordReset(
+            token: String,
+            newPassword: String
+        ) throws(Identity._TestDatabase.TestError) {
             guard let user = users.first(where: { $0.value.resetToken == token }) else {
                 throw TestError.invalidResetToken
             }
@@ -126,7 +133,11 @@ extension Identity {
             users[user.key]?.resetToken = nil
         }
 
-        func changePassword(email: String, currentPassword: String, newPassword: String) throws {
+        func changePassword(
+            email: String,
+            currentPassword: String,
+            newPassword: String
+        ) throws(Identity._TestDatabase.TestError) {
             // Verify current password
             guard let user = users[email],
                 user.password == currentPassword
@@ -138,7 +149,10 @@ extension Identity {
             users[email]?.password = newPassword
         }
 
-        func initiateEmailChange(currentEmail: String, newEmail: String) throws -> String {
+        func initiateEmailChange(
+            currentEmail: String,
+            newEmail: String
+        ) throws(Identity._TestDatabase.TestError) -> String {
             guard users[currentEmail] != nil else {
                 throw TestError.userNotFound
             }
@@ -152,7 +166,10 @@ extension Identity {
             return changeToken
         }
 
-        func confirmEmailChange(email: String, token: String) throws -> Session {
+        func confirmEmailChange(
+            email: String,
+            token: String
+        ) throws(Identity._TestDatabase.TestError) -> Session {
             let expectedToken = generateEmailChangeToken(for: email)
             guard token == expectedToken,
                 let user = users[email],
@@ -175,21 +192,24 @@ extension Identity {
             return createSession(for: newEmail)
         }
 
-        func requestDeletion(email: String, reauthToken: String) throws {
+        func requestDeletion(
+            email: String,
+            reauthToken: String
+        ) throws(Identity._TestDatabase.TestError) {
             guard users[email] != nil else {
                 throw TestError.userNotFound
             }
             pendingDeletions.insert(email)
         }
 
-        func cancelDeletion(email: String) throws {
+        func cancelDeletion(email: String) throws(Identity._TestDatabase.TestError) {
             guard users[email] != nil else {
                 throw TestError.userNotFound
             }
             pendingDeletions.remove(email)
         }
 
-        func confirmDeletion(email: String) throws {
+        func confirmDeletion(email: String) throws(Identity._TestDatabase.TestError) {
             guard users[email] != nil,
                 pendingDeletions.contains(email)
             else {
