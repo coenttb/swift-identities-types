@@ -13,15 +13,15 @@ extension Identity.MFA.Status {
     @Witness
     public struct Client: @unchecked Sendable {
         /// Get the current MFA status including configured methods and requirements.
-        public var get: () async throws(any Swift.Error) -> Identity.MFA.Status.Response
+        public var get: () async throws(Identity.MFA.Status.Client.Error) -> Identity.MFA.Status.Response
 
         /// Get MFA challenge after authentication.
-        public var challenge: () async throws(any Swift.Error) -> Identity.MFA.Challenge
+        public var challenge: () async throws(Identity.MFA.Status.Client.Error) -> Identity.MFA.Challenge
     }
 }
 
 extension Identity.MFA.Status.Client {
-    public func callAsFunction() async throws -> Identity.MFA.Status.Response {
+    public func callAsFunction() async throws(Identity.MFA.Status.Client.Error) -> Identity.MFA.Status.Response {
         try await self.get()
     }
 }
