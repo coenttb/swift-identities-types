@@ -53,7 +53,9 @@ extension Identity.Password.Change: Dependency.Key.Test {
 
         return Self(
             client: .init(
-                request: { currentPassword, newPassword throws(Identity.Password.Change.Client.Error) in
+                request: {
+                    currentPassword,
+                    newPassword throws(Identity.Password.Change.Client.Error) in
                     do {
                         guard let email = await database.currentUser else {
                             throw Identity._TestDatabase.TestError.userNotFound
