@@ -15,7 +15,8 @@ extension Identity.MFA.SMS {
         /// Setup SMS authentication with phone number.
         ///
         /// - Parameter phoneNumber: The phone number to receive SMS codes
-        public var setup: (_ phoneNumber: String) async throws(Identity.MFA.SMS.Client.Error) -> Void
+        public var setup:
+            (_ phoneNumber: String) async throws(Identity.MFA.SMS.Client.Error) -> Void
 
         /// Request a new SMS code.
         public var requestCode: () async throws(Identity.MFA.SMS.Client.Error) -> Void
@@ -46,6 +47,7 @@ extension Identity.MFA.SMS {
         /// Disable SMS authentication.
         ///
         /// - Parameter reauthorizationToken: Token from reauthorization
-        public var disable: (_ reauthorizationToken: String) async throws(Identity.MFA.SMS.Client.Error) -> Void
+        public var disable:
+            (_ reauthorizationToken: String) async throws(Identity.MFA.SMS.Client.Error) -> Void
     }
 }

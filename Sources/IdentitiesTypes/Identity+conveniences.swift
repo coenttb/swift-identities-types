@@ -25,11 +25,14 @@ extension Identity {
     /// Convenience method to authenticate an identity with an access token.
     ///
     /// - Parameter accessToken: A valid JWT access token
-    public func login(accessToken: String) async throws(Identity.Authentication.Token.Client.Error) {
+    public func login(accessToken: String) async throws(Identity.Authentication.Token.Client.Error)
+    {
         try await self.authenticate.token.access(accessToken)
     }
 
-    public func login(refreshToken: String) async throws(Identity.Authentication.Token.Client.Error) -> Identity.Authentication.Response {
+    public func login(
+        refreshToken: String
+    ) async throws(Identity.Authentication.Token.Client.Error) -> Identity.Authentication.Response {
         try await self.authenticate.token.refresh(refreshToken)
     }
 
@@ -37,7 +40,9 @@ extension Identity {
     ///
     /// - Parameter apiKey: A valid API key
     /// - Returns: An authentication response containing access and refresh tokens
-    public func login(apiKey: String) async throws(Identity.Authentication.Client.Error) -> Identity.Authentication.Response {
+    public func login(
+        apiKey: String
+    ) async throws(Identity.Authentication.Client.Error) -> Identity.Authentication.Response {
         try await self.authenticate.client.apiKey(apiKey: apiKey)
     }
 }
@@ -54,14 +59,19 @@ extension Identity.Creation {
     /// - Parameters:
     ///   - email: The email address for the new identity
     ///   - password: The password for the new identity
-    public func request(email: String, password: String) async throws(Identity.Creation.Client.Error) {
+    public func request(
+        email: String,
+        password: String
+    ) async throws(Identity.Creation.Client.Error) {
         try await self.client.request(email: email, password: password)
     }
 
     /// Convenience method to request identity creation using a Request object without accessing client.
     ///
     /// - Parameter request: The identity creation request
-    public func request(_ request: Identity.Creation.Request) async throws(Identity.Creation.Client.Error) {
+    public func request(
+        _ request: Identity.Creation.Request
+    ) async throws(Identity.Creation.Client.Error) {
         try await self.client.request(request)
     }
 
@@ -77,7 +87,9 @@ extension Identity.Creation {
     /// Convenience method to verify email using a Verification object without accessing client.
     ///
     /// - Parameter verification: The verification details
-    public func verify(_ verification: Identity.Creation.Verification) async throws(Identity.Creation.Client.Error) {
+    public func verify(
+        _ verification: Identity.Creation.Verification
+    ) async throws(Identity.Creation.Client.Error) {
         try await self.client.verify(verification)
     }
 }
@@ -93,7 +105,9 @@ extension Identity.Password.Reset {
     /// Convenience method to request password reset using a Request object without accessing client.
     ///
     /// - Parameter request: The reset request
-    public func request(_ request: Identity.Password.Reset.Request) async throws(Identity.Password.Reset.Client.Error) {
+    public func request(
+        _ request: Identity.Password.Reset.Request
+    ) async throws(Identity.Password.Reset.Client.Error) {
         try await self.client.request(request)
     }
 
@@ -102,14 +116,19 @@ extension Identity.Password.Reset {
     /// - Parameters:
     ///   - newPassword: The new password to set
     ///   - token: The verification token from the reset email
-    public func confirm(newPassword: String, token: String) async throws(Identity.Password.Reset.Client.Error) {
+    public func confirm(
+        newPassword: String,
+        token: String
+    ) async throws(Identity.Password.Reset.Client.Error) {
         try await self.client.confirm(newPassword: newPassword, token: token)
     }
 
     /// Convenience method to confirm password reset using a Confirm object without accessing client.
     ///
     /// - Parameter confirm: The confirmation details
-    public func confirm(_ confirm: Identity.Password.Reset.Confirm) async throws(Identity.Password.Reset.Client.Error) {
+    public func confirm(
+        _ confirm: Identity.Password.Reset.Confirm
+    ) async throws(Identity.Password.Reset.Client.Error) {
         try await self.client.confirm(confirm)
     }
 }
@@ -120,14 +139,19 @@ extension Identity.Password.Change {
     /// - Parameters:
     ///   - currentPassword: The user's current password
     ///   - newPassword: The new password to set
-    public func request(currentPassword: String, newPassword: String) async throws(Identity.Password.Change.Client.Error) {
+    public func request(
+        currentPassword: String,
+        newPassword: String
+    ) async throws(Identity.Password.Change.Client.Error) {
         try await self.client.request(currentPassword: currentPassword, newPassword: newPassword)
     }
 
     /// Convenience method to change password using a Request object without accessing client.
     ///
     /// - Parameter request: The change request
-    public func request(_ request: Identity.Password.Change.Request) async throws(Identity.Password.Change.Client.Error) {
+    public func request(
+        _ request: Identity.Password.Change.Request
+    ) async throws(Identity.Password.Change.Client.Error) {
         try await self.client.request(request)
     }
 }
@@ -137,7 +161,9 @@ extension Identity.Email.Change {
     ///
     /// - Parameter newEmail: The new email address to change to
     /// - Returns: The result of the change request
-    public func request(newEmail: String) async throws(Identity.Email.Change.Client.Error) -> Identity.Email.Change.Request.Result {
+    public func request(
+        newEmail: String
+    ) async throws(Identity.Email.Change.Client.Error) -> Identity.Email.Change.Request.Result {
         try await self.client.request(newEmail: newEmail)
     }
 
@@ -155,7 +181,11 @@ extension Identity.Email.Change {
     ///
     /// - Parameter token: The verification token from the confirmation email
     /// - Returns: Response containing updated authentication information
-    public func confirm(token: String) async throws(Identity.Email.Change.Client.Error) -> Identity.Email.Change.Confirmation.Response {
+    public func confirm(
+        token: String
+    ) async throws(Identity.Email.Change.Client.Error)
+        -> Identity.Email.Change.Confirmation.Response
+    {
         try await self.client.confirm(token: token)
     }
 
@@ -165,7 +195,9 @@ extension Identity.Email.Change {
     /// - Returns: Response containing updated authentication information
     public func confirm(
         _ confirmation: Identity.Email.Change.Confirmation
-    ) async throws(Identity.Email.Change.Client.Error) -> Identity.Email.Change.Confirmation.Response {
+    ) async throws(Identity.Email.Change.Client.Error)
+        -> Identity.Email.Change.Confirmation.Response
+    {
         try await self.client.confirm(confirmation)
     }
 }
@@ -181,7 +213,9 @@ extension Identity.Deletion {
     /// Convenience method to request identity deletion using a Request object without accessing client.
     ///
     /// - Parameter request: The deletion request
-    public func request(_ request: Identity.Deletion.Request) async throws(Identity.Deletion.Client.Error) {
+    public func request(
+        _ request: Identity.Deletion.Request
+    ) async throws(Identity.Deletion.Client.Error) {
         try await self.client.request(request)
     }
 
@@ -203,7 +237,9 @@ extension Identity.Reauthorization {
     ///
     /// - Parameter password: The user's current password
     /// - Returns: A JWT token for the re-authenticated session
-    public func reauthorize(password: String) async throws(Identity.Reauthorization.Client.Error) -> JWT {
+    public func reauthorize(
+        password: String
+    ) async throws(Identity.Reauthorization.Client.Error) -> JWT {
         try await self.client.reauthorize(password: password)
     }
 }
@@ -236,7 +272,9 @@ extension Identity.Authentication {
     ///
     /// - Parameter apiKey: The API key to authenticate with
     /// - Returns: An authentication response containing access and refresh tokens
-    public func apiKey(_ apiKey: String) async throws(Identity.Authentication.Client.Error) -> Identity.Authentication.Response {
+    public func apiKey(
+        _ apiKey: String
+    ) async throws(Identity.Authentication.Client.Error) -> Identity.Authentication.Response {
         try await self.client.apiKey(apiKey)
     }
 }

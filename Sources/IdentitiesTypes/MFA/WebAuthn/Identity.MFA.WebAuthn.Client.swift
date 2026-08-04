@@ -16,7 +16,8 @@ extension Identity.MFA.WebAuthn {
         ///
         /// Returns challenge and options for credential creation.
         public var beginRegistration:
-            () async throws(Identity.MFA.WebAuthn.Client.Error) -> Identity.MFA.WebAuthn.BeginRegistrationResponse
+            () async throws(Identity.MFA.WebAuthn.Client.Error) ->
+                Identity.MFA.WebAuthn.BeginRegistrationResponse
 
         /// Complete WebAuthn registration.
         ///
@@ -33,7 +34,8 @@ extension Identity.MFA.WebAuthn {
         ///
         /// Returns challenge and options for credential assertion.
         public var beginAuthentication:
-            () async throws(Identity.MFA.WebAuthn.Client.Error) -> Identity.MFA.WebAuthn.BeginAuthenticationResponse
+            () async throws(Identity.MFA.WebAuthn.Client.Error) ->
+                Identity.MFA.WebAuthn.BeginAuthenticationResponse
 
         /// Complete WebAuthn authentication.
         ///
@@ -49,7 +51,8 @@ extension Identity.MFA.WebAuthn {
 
         /// List registered WebAuthn credentials.
         public var listCredentials:
-            () async throws(Identity.MFA.WebAuthn.Client.Error) -> [Identity.MFA.WebAuthn.Credential]
+            () async throws(Identity.MFA.WebAuthn.Client.Error) -> [Identity.MFA.WebAuthn
+                .Credential]
 
         /// Remove a WebAuthn credential.
         ///
@@ -65,6 +68,8 @@ extension Identity.MFA.WebAuthn {
         /// Disable all WebAuthn authentication.
         ///
         /// - Parameter reauthorizationToken: Token from reauthorization
-        public var disable: (_ reauthorizationToken: String) async throws(Identity.MFA.WebAuthn.Client.Error) -> Void
+        public var disable:
+            (_ reauthorizationToken: String) async throws(Identity.MFA.WebAuthn.Client.Error) ->
+                Void
     }
 }

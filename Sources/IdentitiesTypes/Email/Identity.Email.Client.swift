@@ -68,7 +68,9 @@ extension Identity.Email.Change.Client {
     /// - Returns: The confirmation response
     public func request(
         _ newEmail: EmailAddress
-    ) async throws(Identity.Email.Change.Client.Error) -> Identity.Email.Change.Confirmation.Response {
+    ) async throws(Identity.Email.Change.Client.Error)
+        -> Identity.Email.Change.Confirmation.Response
+    {
         return try await self.confirm(token: newEmail.rawValue)
     }
 }
@@ -80,7 +82,9 @@ extension Identity.Email.Change.Client {
     /// - Returns: The confirmation response
     public func confirm(
         _ confirm: Identity.Email.Change.Confirmation
-    ) async throws(Identity.Email.Change.Client.Error) -> Identity.Email.Change.Confirmation.Response {
+    ) async throws(Identity.Email.Change.Client.Error)
+        -> Identity.Email.Change.Confirmation.Response
+    {
         return try await self.confirm(token: confirm.token)
     }
 }

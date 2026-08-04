@@ -70,7 +70,9 @@ extension Identity.Deletion.Client {
     /// Convenience method for requesting identity deletion using a Deletion Request object.
     ///
     /// - Parameter request: The deletion request containing the re-authentication token
-    public func request(_ request: Identity.Deletion.Request) async throws(Identity.Deletion.Client.Error) {
+    public func request(
+        _ request: Identity.Deletion.Request
+    ) async throws(Identity.Deletion.Client.Error) {
         try await self.request(reauthToken: request.reauthToken)
     }
 }

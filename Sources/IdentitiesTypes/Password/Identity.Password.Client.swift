@@ -68,7 +68,8 @@ extension Identity.Password.Reset {
         /// 3. Sends a reset email
         ///
         /// - Parameter email: The email address of the identity
-        public var request: (_ email: String) async throws(Identity.Password.Reset.Client.Error) -> Void
+        public var request:
+            (_ email: String) async throws(Identity.Password.Reset.Client.Error) -> Void
 
         /// Confirms a password reset with a verification token.
         ///
@@ -81,7 +82,8 @@ extension Identity.Password.Reset {
         ///   - newPassword: The new password to set
         ///   - token: The verification token from the reset email
         public var confirm:
-            (_ newPassword: String, _ token: String) async throws(Identity.Password.Reset.Client.Error) -> Void
+            (_ newPassword: String, _ token: String) async throws(Identity.Password.Reset.Client
+                .Error) -> Void
     }
 }
 
@@ -103,7 +105,8 @@ extension Identity.Password.Change {
         ///   - currentPassword: The user's current password
         ///   - newPassword: The new password to set
         public var request:
-            (_ currentPassword: String, _ newPassword: String) async throws(Identity.Password.Change.Client.Error) -> Void
+            (_ currentPassword: String, _ newPassword: String) async throws(Identity.Password.Change
+                .Client.Error) -> Void
     }
 }
 
@@ -111,7 +114,9 @@ extension Identity.Password.Reset.Client {
     /// Convenience method for requesting a password reset using a Reset Request object.
     ///
     /// - Parameter request: The reset request containing the identity's email
-    public func request(_ request: Identity.Password.Reset.Request) async throws(Identity.Password.Reset.Client.Error) {
+    public func request(
+        _ request: Identity.Password.Reset.Request
+    ) async throws(Identity.Password.Reset.Client.Error) {
         try await self.request(email: request.email)
     }
 }
@@ -120,7 +125,9 @@ extension Identity.Password.Reset.Client {
     /// Convenience method for confirming a password reset using a Reset Confirm object.
     ///
     /// - Parameter confirm: The confirmation details containing the new password and token
-    public func confirm(_ confirm: Identity.Password.Reset.Confirm) async throws(Identity.Password.Reset.Client.Error) {
+    public func confirm(
+        _ confirm: Identity.Password.Reset.Confirm
+    ) async throws(Identity.Password.Reset.Client.Error) {
         try await self.confirm(newPassword: confirm.newPassword, token: confirm.token)
     }
 }
@@ -129,7 +136,9 @@ extension Identity.Password.Change.Client {
     /// Convenience method for requesting a password change using a Change Request object.
     ///
     /// - Parameter request: The change request containing current and new passwords
-    public func request(_ request: Identity.Password.Change.Request) async throws(Identity.Password.Change.Client.Error) {
+    public func request(
+        _ request: Identity.Password.Change.Request
+    ) async throws(Identity.Password.Change.Client.Error) {
         try await self.request(
             currentPassword: request.currentPassword,
             newPassword: request.newPassword

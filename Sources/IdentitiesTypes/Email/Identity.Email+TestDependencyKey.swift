@@ -42,7 +42,10 @@ extension Identity.Email.Change: Dependency.Key.Test {
                         guard let email = await database.currentUser else {
                             throw Identity._TestDatabase.TestError.userNotFound
                         }
-                        let session = try await database.confirmEmailChange(email: email, token: token)
+                        let session = try await database.confirmEmailChange(
+                            email: email,
+                            token: token
+                        )
 
                         return .init(
                             accessToken: session.accessToken,

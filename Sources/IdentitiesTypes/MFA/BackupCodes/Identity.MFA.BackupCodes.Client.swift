@@ -27,7 +27,8 @@ extension Identity.MFA.BackupCodes {
             (
                 _ code: String,
                 _ sessionToken: String
-            ) async throws(Identity.MFA.BackupCodes.Client.Error) -> Identity.Authentication.Response
+            ) async throws(Identity.MFA.BackupCodes.Client.Error) ->
+                Identity.Authentication.Response
 
         /// Get count of remaining backup codes.
         public var remaining: () async throws(Identity.MFA.BackupCodes.Client.Error) -> Int

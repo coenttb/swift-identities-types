@@ -33,7 +33,10 @@ extension Identity.Password.Reset: Dependency.Key.Test {
                 },
                 confirm: { newPassword, token in
                     do {
-                        try await database.confirmPasswordReset(token: token, newPassword: newPassword)
+                        try await database.confirmPasswordReset(
+                            token: token,
+                            newPassword: newPassword
+                        )
                     } catch {
                         throw Identity.Password.Reset.Client.Error.confirm(reason: "\(error)")
                     }
