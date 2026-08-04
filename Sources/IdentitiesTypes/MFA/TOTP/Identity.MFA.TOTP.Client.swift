@@ -16,7 +16,7 @@ extension Identity.MFA.TOTP {
         // MARK: - Setup Operations
 
         /// Generate a new TOTP secret for initial setup
-        public var generateSecret: () async throws(any Swift.Error) -> SetupData
+        public var generateSecret: () async throws(Identity.MFA.TOTP.Client.Error) -> SetupData
 
         /// Confirm TOTP setup by verifying the initial code
         public var confirmSetup:
@@ -24,7 +24,7 @@ extension Identity.MFA.TOTP {
                 _ identityId: Identity.ID,
                 _ secret: String,
                 _ code: String
-            ) async throws(any Swift.Error) -> Void
+            ) async throws(Identity.MFA.TOTP.Client.Error) -> Void
 
         // MARK: - Verification Operations
 
@@ -33,7 +33,7 @@ extension Identity.MFA.TOTP {
             (
                 _ identityId: Identity.ID,
                 _ code: String
-            ) async throws(any Swift.Error) -> Bool
+            ) async throws(Identity.MFA.TOTP.Client.Error) -> Bool
 
         /// Verify a TOTP code with custom window
         public var verifyCodeWithWindow:
@@ -41,7 +41,7 @@ extension Identity.MFA.TOTP {
                 _ identityId: Identity.ID,
                 _ code: String,
                 _ window: Int
-            ) async throws(any Swift.Error) -> Bool
+            ) async throws(Identity.MFA.TOTP.Client.Error) -> Bool
 
         /// Verify a TOTP code during MFA login flow.
         ///
@@ -56,7 +56,7 @@ extension Identity.MFA.TOTP {
             (
                 _ code: String,
                 _ sessionToken: String
-            ) async throws(any Swift.Error) -> Identity.Authentication.Response
+            ) async throws(Identity.MFA.TOTP.Client.Error) -> Identity.Authentication.Response
 
         // MARK: - Backup Code Operations
 
@@ -65,20 +65,20 @@ extension Identity.MFA.TOTP {
             (
                 _ identityId: Identity.ID,
                 _ count: Int
-            ) async throws(any Swift.Error) -> [String]
+            ) async throws(Identity.MFA.TOTP.Client.Error) -> [String]
 
         /// Verify a backup code
         public var verifyBackupCode:
             (
                 _ identityId: Identity.ID,
                 _ code: String
-            ) async throws(any Swift.Error) -> Bool
+            ) async throws(Identity.MFA.TOTP.Client.Error) -> Bool
 
         /// Get remaining backup codes count
         public var remainingBackupCodes:
             (
                 _ identityId: Identity.ID
-            ) async throws(any Swift.Error) -> Int
+            ) async throws(Identity.MFA.TOTP.Client.Error) -> Int
 
         // MARK: - Management Operations
 
@@ -86,19 +86,19 @@ extension Identity.MFA.TOTP {
         public var isEnabled:
             (
                 _ identityId: Identity.ID
-            ) async throws(any Swift.Error) -> Bool
+            ) async throws(Identity.MFA.TOTP.Client.Error) -> Bool
 
         /// Disable TOTP for an identity
         public var disable:
             (
                 _ identityId: Identity.ID
-            ) async throws(any Swift.Error) -> Void
+            ) async throws(Identity.MFA.TOTP.Client.Error) -> Void
 
         /// Get TOTP status for an identity
         public var getStatus:
             (
                 _ identityId: Identity.ID
-            ) async throws(any Swift.Error) -> Status
+            ) async throws(Identity.MFA.TOTP.Client.Error) -> Status
 
         // MARK: - QR Code Generation
 
@@ -108,7 +108,7 @@ extension Identity.MFA.TOTP {
                 _ secret: String,
                 _ email: String,
                 _ issuer: String
-            ) async throws(any Swift.Error) -> URL
+            ) async throws(Identity.MFA.TOTP.Client.Error) -> URL
     }
 }
 
@@ -154,7 +154,7 @@ extension Identity.MFA.TOTP.Client {
 // MARK: - Errors
 
 extension Identity.MFA.TOTP.Client {
-    public enum ClientError: Swift.Error, Equatable {
+    public enum Error: Swift.Error, Sendable, Equatable {
         case totpNotEnabled
         case totpAlreadyEnabled
         case invalidSecret
@@ -164,5 +164,14 @@ extension Identity.MFA.TOTP.Client {
         case backupCodeGenerationFailed
         case noBackupCodesRemaining
         case configurationError(String)
+
+        /// A witness operation was invoked on an `.unimplemented()` placeholder.
+        case unimplemented(Witness.Unimplemented.Error)
+    }
+}
+
+extension Identity.MFA.TOTP.Client.Error: Witness.Unimplemented.Representable {
+    public static func unimplemented(_ error: Witness.Unimplemented.Error) -> Self {
+        .unimplemented(error)
     }
 }
