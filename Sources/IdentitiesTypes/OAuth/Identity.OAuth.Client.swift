@@ -13,15 +13,28 @@ extension Identity.OAuth {
     @Witness
     public struct Client: @unchecked Sendable {
         /// Register an OAuth provider
+        ///
+        /// The registry stores heterogeneous, dynamically-registered provider
+        /// conformances keyed by identifier string; a generic parameter cannot express
+        /// "any provider registered at runtime," so the existential is structural, not a
+        /// missed typed-throws/generic opportunity.
         public var registerProvider:
-            (any Identity.OAuth.Provider) async throws(Identity.OAuth.Client.Error) -> Void
+            (
+                // swiftlint:disable:next no_any_protocol_existential - heterogeneous runtime provider registry, not a DI-witness closure; see [API-ERR-006] extension
+                any Identity.OAuth.Provider
+            ) async throws(Identity.OAuth.Client.Error) -> Void
 
         /// Get a registered OAuth provider by identifier
         public var provider:
-            (_ identifier: String) async throws(Identity.OAuth.Client.Error) -> (any Identity.OAuth.Provider)?
+            (
+                _ identifier: String
+                    // swiftlint:disable:next no_any_protocol_existential - heterogeneous runtime provider registry, not a DI-witness closure; see [API-ERR-006] extension
+            ) async throws(Identity.OAuth.Client.Error) -> (any Identity.OAuth.Provider)?
 
         /// Get all registered OAuth providers
-        public var providers: () async throws(Identity.OAuth.Client.Error) -> [any Identity.OAuth.Provider]
+        public var providers:
+            // swiftlint:disable:next no_any_protocol_existential - heterogeneous runtime provider registry, not a DI-witness closure; see [API-ERR-006] extension
+            () async throws(Identity.OAuth.Client.Error) -> [any Identity.OAuth.Provider]
 
         /// Generate authorization URL for OAuth flow
         public var authorizationURL:
