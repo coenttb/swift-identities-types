@@ -20,7 +20,7 @@ extension Identity._TestDatabase {
                 try await withDependencies {
                     $0[Identity._TestDatabase.self] = database
                     $0[Identity.self] = .testValue
-                } operation: { () async throws(Failure) -> Void in
+                } operation: { () async throws(Failure) in
                     try await operation()
                 }
             } else {
