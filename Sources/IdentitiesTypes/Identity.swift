@@ -40,10 +40,8 @@ public struct Identity: @unchecked Sendable {
     /// - Returns: A JWT token for the re-authenticated session
     public var reauthorize: Identity.Reauthorization
 
-    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
     /// Requires an authenticated identity context or throws if not authenticated
     public var require: @Sendable () async throws(any Swift.Error) -> Identity.Context
-    // swiftlint:enable no_any_protocol_existential
 
     /// Interface for identity creation operations
     public var create: Identity.Creation
@@ -71,9 +69,7 @@ public struct Identity: @unchecked Sendable {
         authenticate: Identity.Authentication,
         logout: Identity.Logout,
         reauthorize: Identity.Reauthorization,
-        // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
         require: @escaping @Sendable () async throws(any Swift.Error) -> Identity.Context,
-        // swiftlint:enable no_any_protocol_existential
         create: Identity.Creation,
         delete: Identity.Deletion,
         email: Identity.Email,

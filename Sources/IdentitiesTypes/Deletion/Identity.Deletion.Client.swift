@@ -44,20 +44,15 @@ extension Identity.Deletion {
         public var request:
             (
                 _ reauthToken: String
-                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Void
-        // swiftlint:enable no_any_protocol_existential
 
-        // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
         /// Cancels a pending identity deletion request.
         ///
         /// This method:
         /// 1. Removes the pending deletion status
         /// 2. Restores the identity to normal operation
         public var cancel: () async throws(any Swift.Error) -> Void
-        // swiftlint:enable no_any_protocol_existential
 
-        // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
         /// Confirms and executes identity deletion.
         ///
         /// > Warning: This operation is irreversible. Once confirmed, the identity
@@ -68,17 +63,14 @@ extension Identity.Deletion {
         /// 2. Permanently deletes the identity and all associated data
         /// 3. Invalidates all authentication tokens
         public var confirm: () async throws(any Swift.Error) -> Void
-        // swiftlint:enable no_any_protocol_existential
     }
 }
 
 extension Identity.Deletion.Client {
-    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
     /// Convenience method for requesting identity deletion using a Deletion Request object.
     ///
     /// - Parameter request: The deletion request containing the re-authentication token
-    public func request(_ request: Identity.Deletion.Request) async throws(any Swift.Error) {
-        // swiftlint:enable no_any_protocol_existential
+    public func request(_ request: Identity.Deletion.Request) async throws {
         try await self.request(reauthToken: request.reauthToken)
     }
 }

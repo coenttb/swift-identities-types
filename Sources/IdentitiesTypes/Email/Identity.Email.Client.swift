@@ -30,9 +30,7 @@ extension Identity.Email.Change {
         /// - Parameter newEmail: The new email address to change to
         /// - Returns: The result of the change request, indicating success or if re-authentication is required
         public var request:
-            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             (_ newEmail: String) async throws(any Swift.Error) ->
-                // swiftlint:enable no_any_protocol_existential
                 Identity.Email.Change.Request.Result
 
         /// Confirms an email change with a verification token.
@@ -45,9 +43,7 @@ extension Identity.Email.Change {
         /// - Parameter token: The verification token from the confirmation email
         /// - Returns: Response containing updated authentication information
         public var confirm:
-            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             (_ token: String) async throws(any Swift.Error) ->
-                // swiftlint:enable no_any_protocol_existential
                 Identity.Email.Change.Confirmation.Response
     }
 }
@@ -60,9 +56,7 @@ extension Identity.Email.Change.Client {
     /// - Returns: The result of the change request
     public func request(
         _ request: Identity.Email.Change.Request
-            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
-    ) async throws(any Swift.Error) -> Identity.Email.Change.Request.Result {
-        // swiftlint:enable no_any_protocol_existential
+    ) async throws -> Identity.Email.Change.Request.Result {
         return try await self.request(newEmail: request.newEmail)
     }
 }
@@ -74,9 +68,7 @@ extension Identity.Email.Change.Client {
     /// - Returns: The confirmation response
     public func request(
         _ newEmail: EmailAddress
-            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
-    ) async throws(any Swift.Error) -> Identity.Email.Change.Confirmation.Response {
-        // swiftlint:enable no_any_protocol_existential
+    ) async throws -> Identity.Email.Change.Confirmation.Response {
         return try await self.confirm(token: newEmail.rawValue)
     }
 }
@@ -88,9 +80,7 @@ extension Identity.Email.Change.Client {
     /// - Returns: The confirmation response
     public func confirm(
         _ confirm: Identity.Email.Change.Confirmation
-            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
-    ) async throws(any Swift.Error) -> Identity.Email.Change.Confirmation.Response {
-        // swiftlint:enable no_any_protocol_existential
+    ) async throws -> Identity.Email.Change.Confirmation.Response {
         return try await self.confirm(token: confirm.token)
     }
 }

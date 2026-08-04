@@ -15,10 +15,8 @@ extension Identity.MFA.TOTP {
 
         // MARK: - Setup Operations
 
-        // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
         /// Generate a new TOTP secret for initial setup
         public var generateSecret: () async throws(any Swift.Error) -> SetupData
-        // swiftlint:enable no_any_protocol_existential
 
         /// Confirm TOTP setup by verifying the initial code
         public var confirmSetup:
@@ -26,9 +24,7 @@ extension Identity.MFA.TOTP {
                 _ identityId: Identity.ID,
                 _ secret: String,
                 _ code: String
-                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Void
-        // swiftlint:enable no_any_protocol_existential
 
         // MARK: - Verification Operations
 
@@ -37,9 +33,7 @@ extension Identity.MFA.TOTP {
             (
                 _ identityId: Identity.ID,
                 _ code: String
-                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Bool
-        // swiftlint:enable no_any_protocol_existential
 
         /// Verify a TOTP code with custom window
         public var verifyCodeWithWindow:
@@ -47,9 +41,7 @@ extension Identity.MFA.TOTP {
                 _ identityId: Identity.ID,
                 _ code: String,
                 _ window: Int
-                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Bool
-        // swiftlint:enable no_any_protocol_existential
 
         /// Verify a TOTP code during MFA login flow.
         ///
@@ -64,9 +56,7 @@ extension Identity.MFA.TOTP {
             (
                 _ code: String,
                 _ sessionToken: String
-                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Identity.Authentication.Response
-        // swiftlint:enable no_any_protocol_existential
 
         // MARK: - Backup Code Operations
 
@@ -75,26 +65,20 @@ extension Identity.MFA.TOTP {
             (
                 _ identityId: Identity.ID,
                 _ count: Int
-                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> [String]
-        // swiftlint:enable no_any_protocol_existential
 
         /// Verify a backup code
         public var verifyBackupCode:
             (
                 _ identityId: Identity.ID,
                 _ code: String
-                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Bool
-        // swiftlint:enable no_any_protocol_existential
 
         /// Get remaining backup codes count
         public var remainingBackupCodes:
             (
                 _ identityId: Identity.ID
-                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Int
-        // swiftlint:enable no_any_protocol_existential
 
         // MARK: - Management Operations
 
@@ -102,25 +86,19 @@ extension Identity.MFA.TOTP {
         public var isEnabled:
             (
                 _ identityId: Identity.ID
-                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Bool
-        // swiftlint:enable no_any_protocol_existential
 
         /// Disable TOTP for an identity
         public var disable:
             (
                 _ identityId: Identity.ID
-                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Void
-        // swiftlint:enable no_any_protocol_existential
 
         /// Get TOTP status for an identity
         public var getStatus:
             (
                 _ identityId: Identity.ID
-                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Status
-        // swiftlint:enable no_any_protocol_existential
 
         // MARK: - QR Code Generation
 
@@ -130,9 +108,7 @@ extension Identity.MFA.TOTP {
                 _ secret: String,
                 _ email: String,
                 _ issuer: String
-                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> URL
-        // swiftlint:enable no_any_protocol_existential
     }
 }
 
