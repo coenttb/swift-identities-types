@@ -17,9 +17,9 @@ extension Identity.Logout {
     @Witness
     public struct Client: @unchecked Sendable {
         /// Logs out the current session only
-        public var current: () async throws(any Swift.Error) -> Void
+        public var current: () async throws(Identity.Logout.Client.Error) -> Void
 
         /// Logs out all sessions for the user across all devices
-        public var all: () async throws(any Swift.Error) -> Void
+        public var all: () async throws(Identity.Logout.Client.Error) -> Void
     }
 }
