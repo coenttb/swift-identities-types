@@ -46,7 +46,7 @@ extension Identity.Creation {
         ///   - password: The password for the new identity
         /// - Throws: Creation errors if the email is invalid or already in use
         public var request:
-            (_ email: String, _ password: String) async throws(any Swift.Error) -> Void
+            (_ email: String, _ password: String) async throws(Identity.Creation.Client.Error) -> Void
 
         /// Verifies an email address to complete identity creation.
         ///
@@ -59,7 +59,7 @@ extension Identity.Creation {
         ///   - email: The email address being verified
         ///   - token: The verification token from the email
         /// - Throws: Verification errors if the token is invalid or expired
-        public var verify: (_ email: String, _ token: String) async throws(any Swift.Error) -> Void
+        public var verify: (_ email: String, _ token: String) async throws(Identity.Creation.Client.Error) -> Void
     }
 }
 
@@ -68,7 +68,7 @@ extension Identity.Creation.Client {
     ///
     /// - Parameter request: The identity creation request containing email and password
     /// - Throws: Creation errors if the email is invalid or already in use
-    public func request(_ request: Identity.Creation.Request) async throws {
+    public func request(_ request: Identity.Creation.Request) async throws(Identity.Creation.Client.Error) {
         try await self.request(email: request.email, password: request.password)
     }
 }
@@ -78,7 +78,7 @@ extension Identity.Creation.Client {
     ///
     /// - Parameter verify: The verification details containing email and token
     /// - Throws: Verification errors if the token is invalid or expired
-    public func verify(_ verify: Identity.Creation.Verification) async throws {
+    public func verify(_ verify: Identity.Creation.Verification) async throws(Identity.Creation.Client.Error) {
         try await self.verify(email: verify.email, token: verify.token)
     }
 }
