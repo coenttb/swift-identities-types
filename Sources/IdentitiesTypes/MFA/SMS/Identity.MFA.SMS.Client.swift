@@ -15,10 +15,10 @@ extension Identity.MFA.SMS {
         /// Setup SMS authentication with phone number.
         ///
         /// - Parameter phoneNumber: The phone number to receive SMS codes
-        public var setup: (_ phoneNumber: String) async throws(any Swift.Error) -> Void
+        public var setup: (_ phoneNumber: String) async throws(Identity.MFA.SMS.Client.Error) -> Void
 
         /// Request a new SMS code.
-        public var requestCode: () async throws(any Swift.Error) -> Void
+        public var requestCode: () async throws(Identity.MFA.SMS.Client.Error) -> Void
 
         /// Verify SMS code during authentication.
         ///
@@ -30,7 +30,7 @@ extension Identity.MFA.SMS {
             (
                 _ code: String,
                 _ sessionToken: String
-            ) async throws(any Swift.Error) -> Identity.Authentication.Response
+            ) async throws(Identity.MFA.SMS.Client.Error) -> Identity.Authentication.Response
 
         /// Update phone number for SMS authentication.
         ///
@@ -41,11 +41,11 @@ extension Identity.MFA.SMS {
             (
                 _ phoneNumber: String,
                 _ reauthorizationToken: String
-            ) async throws(any Swift.Error) -> Void
+            ) async throws(Identity.MFA.SMS.Client.Error) -> Void
 
         /// Disable SMS authentication.
         ///
         /// - Parameter reauthorizationToken: Token from reauthorization
-        public var disable: (_ reauthorizationToken: String) async throws(any Swift.Error) -> Void
+        public var disable: (_ reauthorizationToken: String) async throws(Identity.MFA.SMS.Client.Error) -> Void
     }
 }
