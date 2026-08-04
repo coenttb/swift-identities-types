@@ -69,23 +69,23 @@ extension Identity.OAuth {
         func authorizationURL(
             state: String,
             redirectURI: String
-        ) async throws(Identity.OAuth.Provider.Error) -> URL
+        ) async throws(Identity.OAuth.ProviderError) -> URL
 
         /// Exchange authorization code for tokens
         func exchangeCode(
             _ code: String,
             redirectURI: String
-        ) async throws(Identity.OAuth.Provider.Error) -> TokenResponse
+        ) async throws(Identity.OAuth.ProviderError) -> TokenResponse
 
         /// Get user information using access token
         func getUserInfo(
             accessToken: String
-        ) async throws(Identity.OAuth.Provider.Error) -> UserInfo
+        ) async throws(Identity.OAuth.ProviderError) -> UserInfo
 
         /// Refresh access token if supported (optional)
         func refreshToken(
             _ refreshToken: String
-        ) async throws(Identity.OAuth.Provider.Error) -> TokenResponse?
+        ) async throws(Identity.OAuth.ProviderError) -> TokenResponse?
     }
 
     // MARK: - Default Implementations
@@ -267,7 +267,7 @@ extension Identity.OAuth.Provider {
     /// Default implementation returns nil (no refresh support)
     public func refreshToken(
         _ refreshToken: String
-    ) async throws(Identity.OAuth.Provider.Error) -> Identity.OAuth.TokenResponse? {
+    ) async throws(Identity.OAuth.ProviderError) -> Identity.OAuth.TokenResponse? {
         return nil
     }
 }
