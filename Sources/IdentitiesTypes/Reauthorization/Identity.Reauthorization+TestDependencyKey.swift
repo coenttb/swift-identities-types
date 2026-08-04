@@ -13,8 +13,12 @@ extension Identity.Reauthorization: Dependency.Key.Test {
         return Self(
             client: .init(
                 reauthorize: { password in
-                    // Create a test JWT token for reauthorization
-                    return try .parse(from: "test-reauth-token-\(password)")
+                    do {
+                        // Create a test JWT token for reauthorization
+                        return try .parse(from: "test-reauth-token-\(password)")
+                    } catch {
+                        throw Identity.Reauthorization.Client.Error.reauthorize(reason: "\(error)")
+                    }
                 }
             ),
             router: Identity.Reauthorization.Route.Router().eraseToAnyParserPrinter()
