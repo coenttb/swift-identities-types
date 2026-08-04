@@ -15,15 +15,19 @@ extension Identity.Authentication: Dependency.Key.Test {
 
         return Self(
             client: .init(
-                credentials: { username, password in
-                    let session = try await database.authenticate(
-                        email: username,
-                        password: password
-                    )
-                    return .init(
-                        accessToken: session.accessToken,
-                        refreshToken: session.refreshToken
-                    )
+                credentials: { username, password throws(Identity.Authentication.Client.Error) in
+                    do {
+                        let session = try await database.authenticate(
+                            email: username,
+                            password: password
+                        )
+                        return .init(
+                            accessToken: session.accessToken,
+                            refreshToken: session.refreshToken
+                        )
+                    } catch {
+                        throw Identity.Authentication.Client.Error.credentials(reason: "\(error)")
+                    }
                 },
                 apiKey: { apiKey in
                     .init(
@@ -34,15 +38,23 @@ extension Identity.Authentication: Dependency.Key.Test {
             ),
             router: Identity.Authentication.Route.Router().eraseToAnyParserPrinter(),
             token: .init(
-                access: { token in
-                    try await database.validateAccessToken(token)
+                access: { token throws(Identity.Authentication.Token.Client.Error) in
+                    do {
+                        try await database.validateAccessToken(token)
+                    } catch {
+                        throw Identity.Authentication.Token.Client.Error.access(reason: "\(error)")
+                    }
                 },
-                refresh: { token in
-                    let session = try await database.refreshSession(token: token)
-                    return .init(
-                        accessToken: session.accessToken,
-                        refreshToken: session.refreshToken
-                    )
+                refresh: { token throws(Identity.Authentication.Token.Client.Error) in
+                    do {
+                        let session = try await database.refreshSession(token: token)
+                        return .init(
+                            accessToken: session.accessToken,
+                            refreshToken: session.refreshToken
+                        )
+                    } catch {
+                        throw Identity.Authentication.Token.Client.Error.refresh(reason: "\(error)")
+                    }
                 }
             )
         )

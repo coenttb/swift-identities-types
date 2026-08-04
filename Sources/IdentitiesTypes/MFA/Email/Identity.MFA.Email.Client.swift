@@ -15,10 +15,10 @@ extension Identity.MFA.Email {
         /// Setup email authentication.
         ///
         /// - Parameter email: The email address to receive codes
-        public var setup: (_ email: String) async throws(any Swift.Error) -> Void
+        public var setup: (_ email: String) async throws(Identity.MFA.Email.Client.Error) -> Void
 
         /// Request a new email code.
-        public var requestCode: () async throws(any Swift.Error) -> Void
+        public var requestCode: () async throws(Identity.MFA.Email.Client.Error) -> Void
 
         /// Verify email code during authentication.
         ///
@@ -30,7 +30,7 @@ extension Identity.MFA.Email {
             (
                 _ code: String,
                 _ sessionToken: String
-            ) async throws(any Swift.Error) -> Identity.Authentication.Response
+            ) async throws(Identity.MFA.Email.Client.Error) -> Identity.Authentication.Response
 
         /// Update email address for MFA.
         ///
@@ -41,11 +41,12 @@ extension Identity.MFA.Email {
             (
                 _ email: String,
                 _ reauthorizationToken: String
-            ) async throws(any Swift.Error) -> Void
+            ) async throws(Identity.MFA.Email.Client.Error) -> Void
 
         /// Disable email authentication.
         ///
         /// - Parameter reauthorizationToken: Token from reauthorization
-        public var disable: (_ reauthorizationToken: String) async throws(any Swift.Error) -> Void
+        public var disable:
+            (_ reauthorizationToken: String) async throws(Identity.MFA.Email.Client.Error) -> Void
     }
 }

@@ -14,13 +14,21 @@ extension Identity.Creation: Dependency.Key.Test {
 
         return Self(
             client: .init(
-                request: { email, password in
-                    _ = try EmailAddress(email)
-                    try await database.createUser(email: email, password: password)
+                request: { email, password throws(Identity.Creation.Client.Error) in
+                    do {
+                        _ = try EmailAddress(email)
+                        try await database.createUser(email: email, password: password)
+                    } catch {
+                        throw Identity.Creation.Client.Error.request(reason: "\(error)")
+                    }
                 },
-                verify: { email, token in
-                    _ = try EmailAddress(email)
-                    try await database.verifyUser(email: email, token: token)
+                verify: { email, token throws(Identity.Creation.Client.Error) in
+                    do {
+                        _ = try EmailAddress(email)
+                        try await database.verifyUser(email: email, token: token)
+                    } catch {
+                        throw Identity.Creation.Client.Error.verify(reason: "\(error)")
+                    }
                 }
             ),
             router: Identity.Creation.Route.Router().eraseToAnyParserPrinter()

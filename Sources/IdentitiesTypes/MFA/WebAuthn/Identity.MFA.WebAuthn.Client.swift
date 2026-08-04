@@ -16,7 +16,8 @@ extension Identity.MFA.WebAuthn {
         ///
         /// Returns challenge and options for credential creation.
         public var beginRegistration:
-            () async throws(any Swift.Error) -> Identity.MFA.WebAuthn.BeginRegistrationResponse
+            () async throws(Identity.MFA.WebAuthn.Client.Error) ->
+                Identity.MFA.WebAuthn.BeginRegistrationResponse
 
         /// Complete WebAuthn registration.
         ///
@@ -27,13 +28,14 @@ extension Identity.MFA.WebAuthn {
             (
                 _ credentialName: String,
                 _ response: String
-            ) async throws(any Swift.Error) -> Void
+            ) async throws(Identity.MFA.WebAuthn.Client.Error) -> Void
 
         /// Begin WebAuthn authentication process.
         ///
         /// Returns challenge and options for credential assertion.
         public var beginAuthentication:
-            () async throws(any Swift.Error) -> Identity.MFA.WebAuthn.BeginAuthenticationResponse
+            () async throws(Identity.MFA.WebAuthn.Client.Error) ->
+                Identity.MFA.WebAuthn.BeginAuthenticationResponse
 
         /// Complete WebAuthn authentication.
         ///
@@ -45,11 +47,12 @@ extension Identity.MFA.WebAuthn {
             (
                 _ response: String,
                 _ sessionToken: String
-            ) async throws(any Swift.Error) -> Identity.Authentication.Response
+            ) async throws(Identity.MFA.WebAuthn.Client.Error) -> Identity.Authentication.Response
 
         /// List registered WebAuthn credentials.
         public var listCredentials:
-            () async throws(any Swift.Error) -> [Identity.MFA.WebAuthn.Credential]
+            () async throws(Identity.MFA.WebAuthn.Client.Error) -> [Identity.MFA.WebAuthn
+                .Credential]
 
         /// Remove a WebAuthn credential.
         ///
@@ -60,11 +63,13 @@ extension Identity.MFA.WebAuthn {
             (
                 _ credentialId: String,
                 _ reauthorizationToken: String
-            ) async throws(any Swift.Error) -> Void
+            ) async throws(Identity.MFA.WebAuthn.Client.Error) -> Void
 
         /// Disable all WebAuthn authentication.
         ///
         /// - Parameter reauthorizationToken: Token from reauthorization
-        public var disable: (_ reauthorizationToken: String) async throws(any Swift.Error) -> Void
+        public var disable:
+            (_ reauthorizationToken: String) async throws(Identity.MFA.WebAuthn.Client.Error) ->
+                Void
     }
 }

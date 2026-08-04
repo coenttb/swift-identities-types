@@ -44,14 +44,14 @@ extension Identity.Deletion {
         public var request:
             (
                 _ reauthToken: String
-            ) async throws(any Swift.Error) -> Void
+            ) async throws(Identity.Deletion.Client.Error) -> Void
 
         /// Cancels a pending identity deletion request.
         ///
         /// This method:
         /// 1. Removes the pending deletion status
         /// 2. Restores the identity to normal operation
-        public var cancel: () async throws(any Swift.Error) -> Void
+        public var cancel: () async throws(Identity.Deletion.Client.Error) -> Void
 
         /// Confirms and executes identity deletion.
         ///
@@ -62,7 +62,7 @@ extension Identity.Deletion {
         /// 1. Verifies the deletion request is still valid
         /// 2. Permanently deletes the identity and all associated data
         /// 3. Invalidates all authentication tokens
-        public var confirm: () async throws(any Swift.Error) -> Void
+        public var confirm: () async throws(Identity.Deletion.Client.Error) -> Void
     }
 }
 
@@ -70,7 +70,9 @@ extension Identity.Deletion.Client {
     /// Convenience method for requesting identity deletion using a Deletion Request object.
     ///
     /// - Parameter request: The deletion request containing the re-authentication token
-    public func request(_ request: Identity.Deletion.Request) async throws {
+    public func request(
+        _ request: Identity.Deletion.Request
+    ) async throws(Identity.Deletion.Client.Error) {
         try await self.request(reauthToken: request.reauthToken)
     }
 }

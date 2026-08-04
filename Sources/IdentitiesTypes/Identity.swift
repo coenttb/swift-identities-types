@@ -41,7 +41,7 @@ public struct Identity: @unchecked Sendable {
     public var reauthorize: Identity.Reauthorization
 
     /// Requires an authenticated identity context or throws if not authenticated
-    public var require: @Sendable () async throws(any Swift.Error) -> Identity.Context
+    public var require: @Sendable () async throws(Identity.Error) -> Identity.Context
 
     /// Interface for identity creation operations
     public var create: Identity.Creation
@@ -69,7 +69,7 @@ public struct Identity: @unchecked Sendable {
         authenticate: Identity.Authentication,
         logout: Identity.Logout,
         reauthorize: Identity.Reauthorization,
-        require: @escaping @Sendable () async throws(any Swift.Error) -> Identity.Context,
+        require: @escaping @Sendable () async throws(Identity.Error) -> Identity.Context,
         create: Identity.Creation,
         delete: Identity.Deletion,
         email: Identity.Email,
@@ -101,7 +101,7 @@ extension Dependency.Values {
 }
 
 extension Identity {
-    public enum Error: Swift.Error {
+    public enum Error: Swift.Error, Sendable, Equatable {
         case notConfigured
         case unauthorized(reason: String)
     }
