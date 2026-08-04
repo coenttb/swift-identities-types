@@ -15,7 +15,7 @@ extension Identity.MFA.BackupCodes {
         /// Regenerate backup codes.
         ///
         /// Returns a new set of single-use backup codes.
-        public var regenerate: () async throws(any Swift.Error) -> [String]
+        public var regenerate: () async throws(Identity.MFA.BackupCodes.Client.Error) -> [String]
 
         /// Verify a backup code during authentication.
         ///
@@ -27,9 +27,9 @@ extension Identity.MFA.BackupCodes {
             (
                 _ code: String,
                 _ sessionToken: String
-            ) async throws(any Swift.Error) -> Identity.Authentication.Response
+            ) async throws(Identity.MFA.BackupCodes.Client.Error) -> Identity.Authentication.Response
 
         /// Get count of remaining backup codes.
-        public var remaining: () async throws(any Swift.Error) -> Int
+        public var remaining: () async throws(Identity.MFA.BackupCodes.Client.Error) -> Int
     }
 }
