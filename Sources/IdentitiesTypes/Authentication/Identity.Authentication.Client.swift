@@ -120,7 +120,13 @@ extension Identity.Authentication.Token.Client {
     /// - Parameter access: The JWT token to validate
     /// - Throws: Authentication errors if the token is invalid
     public func access(_ access: JWT) async throws(Identity.Authentication.Token.Client.Error) {
-        try await self.access(access.compactSerialization())
+        let token: String
+        do {
+            token = try access.compactSerialization()
+        } catch {
+            throw Identity.Authentication.Token.Client.Error.access(reason: "\(error)")
+        }
+        try await self.access(token)
     }
 }
 
@@ -133,7 +139,13 @@ extension Identity.Authentication.Token.Client {
     public func refresh(
         _ refresh: JWT
     ) async throws(Identity.Authentication.Token.Client.Error) -> Identity.Authentication.Response {
-        return try await self.refresh(refresh.compactSerialization())
+        let token: String
+        do {
+            token = try refresh.compactSerialization()
+        } catch {
+            throw Identity.Authentication.Token.Client.Error.refresh(reason: "\(error)")
+        }
+        return try await self.refresh(token)
     }
 }
 

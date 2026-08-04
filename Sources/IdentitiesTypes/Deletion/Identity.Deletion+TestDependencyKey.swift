@@ -13,7 +13,7 @@ extension Identity.Deletion: Dependency.Key.Test {
 
         return Self(
             client: .init(
-                request: { reauthToken in
+                request: { reauthToken throws(Identity.Deletion.Client.Error) in
                     do {
                         guard let email = await database.currentUser else {
                             throw Identity._TestDatabase.TestError.userNotFound
@@ -23,7 +23,7 @@ extension Identity.Deletion: Dependency.Key.Test {
                         throw Identity.Deletion.Client.Error.request(reason: "\(error)")
                     }
                 },
-                cancel: {
+                cancel: { () throws(Identity.Deletion.Client.Error) in
                     do {
                         guard let email = await database.currentUser else {
                             throw Identity._TestDatabase.TestError.userNotFound
@@ -33,7 +33,7 @@ extension Identity.Deletion: Dependency.Key.Test {
                         throw Identity.Deletion.Client.Error.cancel(reason: "\(error)")
                     }
                 },
-                confirm: {
+                confirm: { () throws(Identity.Deletion.Client.Error) in
                     do {
                         guard let email = await database.currentUser else {
                             throw Identity._TestDatabase.TestError.userNotFound

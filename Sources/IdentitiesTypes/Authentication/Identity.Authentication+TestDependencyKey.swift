@@ -15,7 +15,7 @@ extension Identity.Authentication: Dependency.Key.Test {
 
         return Self(
             client: .init(
-                credentials: { username, password in
+                credentials: { username, password throws(Identity.Authentication.Client.Error) in
                     do {
                         let session = try await database.authenticate(
                             email: username,
@@ -38,14 +38,14 @@ extension Identity.Authentication: Dependency.Key.Test {
             ),
             router: Identity.Authentication.Route.Router().eraseToAnyParserPrinter(),
             token: .init(
-                access: { token in
+                access: { token throws(Identity.Authentication.Token.Client.Error) in
                     do {
                         try await database.validateAccessToken(token)
                     } catch {
                         throw Identity.Authentication.Token.Client.Error.access(reason: "\(error)")
                     }
                 },
-                refresh: { token in
+                refresh: { token throws(Identity.Authentication.Token.Client.Error) in
                     do {
                         let session = try await database.refreshSession(token: token)
                         return .init(

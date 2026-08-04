@@ -23,7 +23,7 @@ extension Identity.Password.Reset: Dependency.Key.Test {
 
         return Self(
             client: .init(
-                request: { email in
+                request: { email throws(Identity.Password.Reset.Client.Error) in
                     do {
                         _ = try EmailAddress(email)
                         _ = try await database.initiatePasswordReset(email: email)
@@ -31,7 +31,7 @@ extension Identity.Password.Reset: Dependency.Key.Test {
                         throw Identity.Password.Reset.Client.Error.request(reason: "\(error)")
                     }
                 },
-                confirm: { newPassword, token in
+                confirm: { newPassword, token throws(Identity.Password.Reset.Client.Error) in
                     do {
                         try await database.confirmPasswordReset(
                             token: token,
@@ -53,7 +53,7 @@ extension Identity.Password.Change: Dependency.Key.Test {
 
         return Self(
             client: .init(
-                request: { currentPassword, newPassword in
+                request: { currentPassword, newPassword throws(Identity.Password.Change.Client.Error) in
                     do {
                         guard let email = await database.currentUser else {
                             throw Identity._TestDatabase.TestError.userNotFound

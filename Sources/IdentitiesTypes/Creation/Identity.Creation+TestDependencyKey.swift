@@ -14,7 +14,7 @@ extension Identity.Creation: Dependency.Key.Test {
 
         return Self(
             client: .init(
-                request: { email, password in
+                request: { email, password throws(Identity.Creation.Client.Error) in
                     do {
                         _ = try EmailAddress(email)
                         try await database.createUser(email: email, password: password)
@@ -22,7 +22,7 @@ extension Identity.Creation: Dependency.Key.Test {
                         throw Identity.Creation.Client.Error.request(reason: "\(error)")
                     }
                 },
-                verify: { email, token in
+                verify: { email, token throws(Identity.Creation.Client.Error) in
                     do {
                         _ = try EmailAddress(email)
                         try await database.verifyUser(email: email, token: token)

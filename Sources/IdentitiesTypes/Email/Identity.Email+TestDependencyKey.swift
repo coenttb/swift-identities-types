@@ -22,7 +22,7 @@ extension Identity.Email.Change: Dependency.Key.Test {
 
         return Self(
             client: .init(
-                request: { newEmail in
+                request: { newEmail throws(Identity.Email.Change.Client.Error) in
                     do {
                         _ = try EmailAddress(newEmail)
                         guard let currentEmail = await database.currentUser else {
@@ -37,7 +37,7 @@ extension Identity.Email.Change: Dependency.Key.Test {
                         throw Identity.Email.Change.Client.Error.request(reason: "\(error)")
                     }
                 },
-                confirm: { token in
+                confirm: { token throws(Identity.Email.Change.Client.Error) in
                     do {
                         guard let email = await database.currentUser else {
                             throw Identity._TestDatabase.TestError.userNotFound
