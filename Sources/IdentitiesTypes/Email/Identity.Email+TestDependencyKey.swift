@@ -23,26 +23,34 @@ extension Identity.Email.Change: Dependency.Key.Test {
         return Self(
             client: .init(
                 request: { newEmail in
-                    _ = try EmailAddress(newEmail)
-                    guard let currentEmail = await database.currentUser else {
-                        throw Identity._TestDatabase.TestError.userNotFound
+                    do {
+                        _ = try EmailAddress(newEmail)
+                        guard let currentEmail = await database.currentUser else {
+                            throw Identity._TestDatabase.TestError.userNotFound
+                        }
+                        _ = try await database.initiateEmailChange(
+                            currentEmail: currentEmail,
+                            newEmail: newEmail
+                        )
+                        return .success
+                    } catch {
+                        throw Identity.Email.Change.Client.Error.request(reason: "\(error)")
                     }
-                    _ = try await database.initiateEmailChange(
-                        currentEmail: currentEmail,
-                        newEmail: newEmail
-                    )
-                    return .success
                 },
                 confirm: { token in
-                    guard let email = await database.currentUser else {
-                        throw Identity._TestDatabase.TestError.userNotFound
-                    }
-                    let session = try await database.confirmEmailChange(email: email, token: token)
+                    do {
+                        guard let email = await database.currentUser else {
+                            throw Identity._TestDatabase.TestError.userNotFound
+                        }
+                        let session = try await database.confirmEmailChange(email: email, token: token)
 
-                    return .init(
-                        accessToken: session.accessToken,
-                        refreshToken: session.refreshToken
-                    )
+                        return .init(
+                            accessToken: session.accessToken,
+                            refreshToken: session.refreshToken
+                        )
+                    } catch {
+                        throw Identity.Email.Change.Client.Error.confirm(reason: "\(error)")
+                    }
                 }
             ),
             router: Identity.Email.Change.API.Router().eraseToAnyParserPrinter()
