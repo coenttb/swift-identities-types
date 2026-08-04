@@ -16,12 +16,14 @@ extension Identity.Deletion.Client {
         case confirm(reason: String)
 
         /// A witness operation was invoked on an `.unimplemented()` placeholder.
-        case unimplemented(Witness.Unimplemented.Error)
+        /// (Named `unimplementedWitness`, not `unimplemented`, to avoid colliding with the
+        /// `Representable.unimplemented(_:)` static func of the same name.)
+        case unimplementedWitness(Witness.Unimplemented.Error)
     }
 }
 
 extension Identity.Deletion.Client.Error: Witness.Unimplemented.Representable {
     public static func unimplemented(_ error: Witness.Unimplemented.Error) -> Self {
-        .unimplemented(error)
+        .unimplementedWitness(error)
     }
 }

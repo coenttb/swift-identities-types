@@ -15,13 +15,15 @@ extension Identity.Password.Reset.Client {
         case confirm(reason: String)
 
         /// A witness operation was invoked on an `.unimplemented()` placeholder.
-        case unimplemented(Witness.Unimplemented.Error)
+        /// (Named `unimplementedWitness`, not `unimplemented`, to avoid colliding with the
+        /// `Representable.unimplemented(_:)` static func of the same name.)
+        case unimplementedWitness(Witness.Unimplemented.Error)
     }
 }
 
 extension Identity.Password.Reset.Client.Error: Witness.Unimplemented.Representable {
     public static func unimplemented(_ error: Witness.Unimplemented.Error) -> Self {
-        .unimplemented(error)
+        .unimplementedWitness(error)
     }
 }
 
@@ -32,12 +34,14 @@ extension Identity.Password.Change.Client {
         case request(reason: String)
 
         /// A witness operation was invoked on an `.unimplemented()` placeholder.
-        case unimplemented(Witness.Unimplemented.Error)
+        /// (Named `unimplementedWitness`, not `unimplemented`, to avoid colliding with the
+        /// `Representable.unimplemented(_:)` static func of the same name.)
+        case unimplementedWitness(Witness.Unimplemented.Error)
     }
 }
 
 extension Identity.Password.Change.Client.Error: Witness.Unimplemented.Representable {
     public static func unimplemented(_ error: Witness.Unimplemented.Error) -> Self {
-        .unimplemented(error)
+        .unimplementedWitness(error)
     }
 }
