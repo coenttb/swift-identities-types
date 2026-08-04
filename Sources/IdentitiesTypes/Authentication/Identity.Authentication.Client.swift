@@ -41,7 +41,7 @@ extension Identity.Authentication {
             (
                 _ username: String,
                 _ password: String
-            ) async throws(any Swift.Error) -> Identity.Authentication.Response
+            ) async throws(Identity.Authentication.Client.Error) -> Identity.Authentication.Response
 
         /// Authenticates a user with an API key.
         ///
@@ -51,7 +51,7 @@ extension Identity.Authentication {
         public var apiKey:
             (
                 _ apiKey: String
-            ) async throws(any Swift.Error) -> Identity.Authentication.Response
+            ) async throws(Identity.Authentication.Client.Error) -> Identity.Authentication.Response
     }
 }
 
@@ -70,7 +70,7 @@ extension Identity.Authentication.Token {
         public var access:
             (
                 _ token: String
-            ) async throws(any Swift.Error) -> Void
+            ) async throws(Identity.Authentication.Token.Client.Error) -> Void
 
         /// Refreshes an expired token.
         ///
@@ -80,7 +80,7 @@ extension Identity.Authentication.Token {
         public var refresh:
             (
                 _ token: String
-            ) async throws(any Swift.Error) -> Identity.Authentication.Response
+            ) async throws(Identity.Authentication.Token.Client.Error) -> Identity.Authentication.Response
     }
 }
 
@@ -96,7 +96,7 @@ extension Identity.Authentication.Client {
     /// - Throws: Authentication errors if credentials are invalid
     public func credentials(
         _ credentials: Identity.Authentication.Credentials
-    ) async throws -> Identity.Authentication.Response {
+    ) async throws(Identity.Authentication.Client.Error) -> Identity.Authentication.Response {
         try await self.credentials(username: credentials.username, password: credentials.password)
     }
 }
@@ -106,7 +106,7 @@ extension Identity.Authentication.Token.Client {
     ///
     /// - Parameter access: The bearer authentication token to validate
     /// - Throws: Authentication errors if the token is invalid
-    public func access(_ access: RFC_6750.Bearer) async throws {
+    public func access(_ access: RFC_6750.Bearer) async throws(Identity.Authentication.Token.Client.Error) {
         try await self.access(access.token)
     }
 }
@@ -116,7 +116,7 @@ extension Identity.Authentication.Token.Client {
     ///
     /// - Parameter access: The JWT token to validate
     /// - Throws: Authentication errors if the token is invalid
-    public func access(_ access: JWT) async throws {
+    public func access(_ access: JWT) async throws(Identity.Authentication.Token.Client.Error) {
         try await self.access(access.compactSerialization())
     }
 }
@@ -127,7 +127,7 @@ extension Identity.Authentication.Token.Client {
     /// - Parameter refresh: The bearer refresh token
     /// - Returns: A new authentication response with fresh tokens
     /// - Throws: Authentication errors if the refresh token is invalid
-    public func refresh(_ refresh: JWT) async throws -> Identity.Authentication.Response {
+    public func refresh(_ refresh: JWT) async throws(Identity.Authentication.Token.Client.Error) -> Identity.Authentication.Response {
         return try await self.refresh(refresh.compactSerialization())
     }
 }
@@ -138,7 +138,7 @@ extension Identity.Authentication.Client {
     /// - Parameter apiKey: The bearer API key to authenticate with
     /// - Returns: An authentication response containing access and refresh tokens
     /// - Throws: Authentication errors if the API key is invalid
-    public func apiKey(_ apiKey: RFC_6750.Bearer) async throws -> Identity.Authentication.Response {
+    public func apiKey(_ apiKey: RFC_6750.Bearer) async throws(Identity.Authentication.Client.Error) -> Identity.Authentication.Response {
         return try await self.apiKey(apiKey.token)
     }
 }
