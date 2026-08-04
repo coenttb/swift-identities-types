@@ -60,6 +60,7 @@ extension Identity.Password.Reset {
     /// unauthorized access to identities.
     @Witness
     public struct Client: @unchecked Sendable {
+        // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
         /// Initiates a password reset request.
         ///
         /// This method:
@@ -69,6 +70,7 @@ extension Identity.Password.Reset {
         ///
         /// - Parameter email: The email address of the identity
         public var request: (_ email: String) async throws(any Swift.Error) -> Void
+        // swiftlint:enable no_any_protocol_existential
 
         /// Confirms a password reset with a verification token.
         ///
@@ -81,7 +83,9 @@ extension Identity.Password.Reset {
         ///   - newPassword: The new password to set
         ///   - token: The verification token from the reset email
         public var confirm:
+            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             (_ newPassword: String, _ token: String) async throws(any Swift.Error) -> Void
+        // swiftlint:enable no_any_protocol_existential
     }
 }
 
@@ -103,33 +107,47 @@ extension Identity.Password.Change {
         ///   - currentPassword: The user's current password
         ///   - newPassword: The new password to set
         public var request:
+            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             (_ currentPassword: String, _ newPassword: String) async throws(any Swift.Error) -> Void
+        // swiftlint:enable no_any_protocol_existential
     }
 }
 
 extension Identity.Password.Reset.Client {
+    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
     /// Convenience method for requesting a password reset using a Reset Request object.
     ///
     /// - Parameter request: The reset request containing the identity's email
-    public func request(_ request: Identity.Password.Reset.Request) async throws {
+    public func request(
+        _ request: Identity.Password.Reset.Request
+    ) async throws(any Swift.Error)  // swiftlint:enable no_any_protocol_existential
+    {
         try await self.request(email: request.email)
     }
 }
 
 extension Identity.Password.Reset.Client {
+    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
     /// Convenience method for confirming a password reset using a Reset Confirm object.
     ///
     /// - Parameter confirm: The confirmation details containing the new password and token
-    public func confirm(_ confirm: Identity.Password.Reset.Confirm) async throws {
+    public func confirm(
+        _ confirm: Identity.Password.Reset.Confirm
+    ) async throws(any Swift.Error)  // swiftlint:enable no_any_protocol_existential
+    {
         try await self.confirm(newPassword: confirm.newPassword, token: confirm.token)
     }
 }
 
 extension Identity.Password.Change.Client {
+    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
     /// Convenience method for requesting a password change using a Change Request object.
     ///
     /// - Parameter request: The change request containing current and new passwords
-    public func request(_ request: Identity.Password.Change.Request) async throws {
+    public func request(
+        _ request: Identity.Password.Change.Request
+    ) async throws(any Swift.Error)  // swiftlint:enable no_any_protocol_existential
+    {
         try await self.request(
             currentPassword: request.currentPassword,
             newPassword: request.newPassword

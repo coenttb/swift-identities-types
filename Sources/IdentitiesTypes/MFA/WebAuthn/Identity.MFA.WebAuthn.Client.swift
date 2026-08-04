@@ -16,7 +16,9 @@ extension Identity.MFA.WebAuthn {
         ///
         /// Returns challenge and options for credential creation.
         public var beginRegistration:
+            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             () async throws(any Swift.Error) -> Identity.MFA.WebAuthn.BeginRegistrationResponse
+        // swiftlint:enable no_any_protocol_existential
 
         /// Complete WebAuthn registration.
         ///
@@ -27,13 +29,17 @@ extension Identity.MFA.WebAuthn {
             (
                 _ credentialName: String,
                 _ response: String
+                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Void
+        // swiftlint:enable no_any_protocol_existential
 
         /// Begin WebAuthn authentication process.
         ///
         /// Returns challenge and options for credential assertion.
         public var beginAuthentication:
+            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             () async throws(any Swift.Error) -> Identity.MFA.WebAuthn.BeginAuthenticationResponse
+        // swiftlint:enable no_any_protocol_existential
 
         /// Complete WebAuthn authentication.
         ///
@@ -45,11 +51,15 @@ extension Identity.MFA.WebAuthn {
             (
                 _ response: String,
                 _ sessionToken: String
+                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Identity.Authentication.Response
+        // swiftlint:enable no_any_protocol_existential
 
         /// List registered WebAuthn credentials.
         public var listCredentials:
+            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             () async throws(any Swift.Error) -> [Identity.MFA.WebAuthn.Credential]
+        // swiftlint:enable no_any_protocol_existential
 
         /// Remove a WebAuthn credential.
         ///
@@ -60,11 +70,15 @@ extension Identity.MFA.WebAuthn {
             (
                 _ credentialId: String,
                 _ reauthorizationToken: String
+                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Void
+        // swiftlint:enable no_any_protocol_existential
 
+        // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
         /// Disable all WebAuthn authentication.
         ///
         /// - Parameter reauthorizationToken: Token from reauthorization
         public var disable: (_ reauthorizationToken: String) async throws(any Swift.Error) -> Void
+        // swiftlint:enable no_any_protocol_existential
     }
 }

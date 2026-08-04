@@ -66,16 +66,30 @@ extension Identity.OAuth {
         var supportsRefresh: Bool { get }
 
         /// Generate authorization URL for OAuth flow
-        func authorizationURL(state: String, redirectURI: String) async throws -> URL
+        func authorizationURL(
+            state: String,
+            redirectURI: String
+                // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
+        ) async throws(any Swift.Error) -> URL
+        // swiftlint:enable no_any_protocol_existential
 
         /// Exchange authorization code for tokens
-        func exchangeCode(_ code: String, redirectURI: String) async throws -> TokenResponse
+        func exchangeCode(
+            _ code: String,
+            redirectURI: String
+                // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
+        ) async throws(any Swift.Error) -> TokenResponse
+        // swiftlint:enable no_any_protocol_existential
 
+        // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
         /// Get user information using access token
-        func getUserInfo(accessToken: String) async throws -> UserInfo
+        func getUserInfo(accessToken: String) async throws(any Swift.Error) -> UserInfo
+        // swiftlint:enable no_any_protocol_existential
 
+        // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
         /// Refresh access token if supported (optional)
-        func refreshToken(_ refreshToken: String) async throws -> TokenResponse?
+        func refreshToken(_ refreshToken: String) async throws(any Swift.Error) -> TokenResponse?
+        // swiftlint:enable no_any_protocol_existential
     }
 
     // MARK: - Default Implementations
@@ -255,7 +269,11 @@ extension Identity.OAuth.Provider {
     public var supportsRefresh: Bool { false }
 
     /// Default implementation returns nil (no refresh support)
-    public func refreshToken(_ refreshToken: String) async throws -> Identity.OAuth.TokenResponse? {
+    public func refreshToken(
+        _ refreshToken: String
+            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
+    ) async throws(any Swift.Error) -> Identity.OAuth.TokenResponse? {
+        // swiftlint:enable no_any_protocol_existential
         return nil
     }
 }

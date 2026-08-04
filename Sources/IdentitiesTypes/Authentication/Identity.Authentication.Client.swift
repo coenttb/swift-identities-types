@@ -41,7 +41,9 @@ extension Identity.Authentication {
             (
                 _ username: String,
                 _ password: String
+                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Identity.Authentication.Response
+        // swiftlint:enable no_any_protocol_existential
 
         /// Authenticates a user with an API key.
         ///
@@ -51,7 +53,9 @@ extension Identity.Authentication {
         public var apiKey:
             (
                 _ apiKey: String
+                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Identity.Authentication.Response
+        // swiftlint:enable no_any_protocol_existential
     }
 }
 
@@ -70,7 +74,9 @@ extension Identity.Authentication.Token {
         public var access:
             (
                 _ token: String
+                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Void
+        // swiftlint:enable no_any_protocol_existential
 
         /// Refreshes an expired token.
         ///
@@ -80,7 +86,9 @@ extension Identity.Authentication.Token {
         public var refresh:
             (
                 _ token: String
+                    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
             ) async throws(any Swift.Error) -> Identity.Authentication.Response
+        // swiftlint:enable no_any_protocol_existential
     }
 }
 
@@ -96,27 +104,33 @@ extension Identity.Authentication.Client {
     /// - Throws: Authentication errors if credentials are invalid
     public func credentials(
         _ credentials: Identity.Authentication.Credentials
-    ) async throws -> Identity.Authentication.Response {
+            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
+    ) async throws(any Swift.Error) -> Identity.Authentication.Response {
+        // swiftlint:enable no_any_protocol_existential
         try await self.credentials(username: credentials.username, password: credentials.password)
     }
 }
 
 extension Identity.Authentication.Token.Client {
+    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
     /// Validates a bearer authentication token.
     ///
     /// - Parameter access: The bearer authentication token to validate
     /// - Throws: Authentication errors if the token is invalid
-    public func access(_ access: RFC_6750.Bearer) async throws {
+    public func access(_ access: RFC_6750.Bearer) async throws(any Swift.Error) {
+        // swiftlint:enable no_any_protocol_existential
         try await self.access(access.token)
     }
 }
 
 extension Identity.Authentication.Token.Client {
+    // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
     /// Validates a bearer authentication token.
     ///
     /// - Parameter access: The JWT token to validate
     /// - Throws: Authentication errors if the token is invalid
-    public func access(_ access: JWT) async throws {
+    public func access(_ access: JWT) async throws(any Swift.Error) {
+        // swiftlint:enable no_any_protocol_existential
         try await self.access(access.compactSerialization())
     }
 }
@@ -127,7 +141,11 @@ extension Identity.Authentication.Token.Client {
     /// - Parameter refresh: The bearer refresh token
     /// - Returns: A new authentication response with fresh tokens
     /// - Throws: Authentication errors if the refresh token is invalid
-    public func refresh(_ refresh: JWT) async throws -> Identity.Authentication.Response {
+    public func refresh(
+        _ refresh: JWT
+            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
+    ) async throws(any Swift.Error) -> Identity.Authentication.Response {
+        // swiftlint:enable no_any_protocol_existential
         return try await self.refresh(refresh.compactSerialization())
     }
 }
@@ -138,7 +156,11 @@ extension Identity.Authentication.Client {
     /// - Parameter apiKey: The bearer API key to authenticate with
     /// - Returns: An authentication response containing access and refresh tokens
     /// - Throws: Authentication errors if the API key is invalid
-    public func apiKey(_ apiKey: RFC_6750.Bearer) async throws -> Identity.Authentication.Response {
+    public func apiKey(
+        _ apiKey: RFC_6750.Bearer
+            // swiftlint:disable no_any_protocol_existential - DI witness-closure type erasure ([API-ERR-006]/[#219] class) — pluggable client boundary; see issue #9 disposition
+    ) async throws(any Swift.Error) -> Identity.Authentication.Response {
+        // swiftlint:enable no_any_protocol_existential
         return try await self.apiKey(apiKey.token)
     }
 }
