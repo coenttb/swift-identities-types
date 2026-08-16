@@ -34,18 +34,35 @@ func sortJSONBodyLines(_ corpus: String) -> String {
         .joined(separator: "\n")
 }
 
-/// Compares a corpus against `__Corpus__/<name>.txt`, recording on first run.
+/// Compares a generated corpus against its Swift-embedded reference document.
 func assertParity(
     _ corpus: String,
-    fixture name: String,
-    filePath: String = #filePath
+    fixture name: String
 ) throws {
-    let url = URL(fileURLWithPath: filePath)
-        .deletingLastPathComponent()
-        .appendingPathComponent("__Corpus__")
-        .appendingPathComponent("\(name).txt")
-    let outcome = try Parity.fixture(sortJSONBodyLines(corpus), at: url)
-    if case .mismatched(let diff) = outcome {
-        Issue.record("Parity mismatch for \(name):\n\(diff)")
+    let actual = sortJSONBodyLines(corpus)
+    guard let expected = ParityCorpus[name] else {
+        Issue.record("No Swift-embedded parity corpus named \(name)")
+        return
     }
+    guard actual != expected else { return }
+    let report = difference(expected: expected, actual: actual)
+    Issue.record(Comment(rawValue: "Parity mismatch for \(name):\n\(report)"))
+}
+
+private func difference(expected: String, actual: String) -> String {
+    let expectedLines = expected.split(separator: "\n", omittingEmptySubsequences: false)
+    let actualLines = actual.split(separator: "\n", omittingEmptySubsequences: false)
+    var differences: [String] = []
+    for index in 0..<max(expectedLines.count, actualLines.count) {
+        let expected = index < expectedLines.count ? expectedLines[index] : "<absent>"
+        let actual = index < actualLines.count ? actualLines[index] : "<absent>"
+        if expected != actual {
+            differences.append("line \(index + 1):\n  - \(expected)\n  + \(actual)")
+        }
+        if differences.count >= 40 {
+            differences.append("… (further differences truncated)")
+            break
+        }
+    }
+    return differences.joined(separator: "\n")
 }
