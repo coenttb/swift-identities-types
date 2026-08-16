@@ -134,7 +134,7 @@ extension Identity.OAuth {
         public let avatarURL: String?
 
         /// Raw provider-specific data
-        public let rawData: Data
+        public let rawData: Foundation.Data
 
         public init(
             id: String,
@@ -143,7 +143,7 @@ extension Identity.OAuth {
             name: String? = nil,
             username: String? = nil,
             avatarURL: String? = nil,
-            rawData: Data
+            rawData: Foundation.Data
         ) {
             self.id = id
             self.email = email

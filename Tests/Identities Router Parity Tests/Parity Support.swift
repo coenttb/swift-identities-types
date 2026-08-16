@@ -45,10 +45,8 @@ func assertParity(
         return
     }
     guard actual != expected else { return }
-    Issue.record(
-        "Parity mismatch for \(name):\n"
-            + difference(expected: expected, actual: actual)
-    )
+    let report = difference(expected: expected, actual: actual)
+    Issue.record(Comment(rawValue: "Parity mismatch for \(name):\n\(report)"))
 }
 
 private func difference(expected: String, actual: String) -> String {
