@@ -512,6 +512,6 @@ enum ParityCorpus {
         path: /api/reauthorize
         header: content-type: application/x-www-form-urlencoded
         body(utf8): password=secret1234
-        """########## + "\n"
+        """########## + "\n",
     ]
 }
