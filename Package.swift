@@ -83,8 +83,7 @@ let package = Package(
                 .identitiesTypes,
                 .product(name: "URL Routing Test Support", package: "swift-url-routing")
             ],
-            path: "Tests/Identities Router Parity Tests",
-            exclude: ["__Corpus__"]
+            path: "Tests/Identities Router Parity Tests"
         )
     ],
     swiftLanguageModes: [.v6]
