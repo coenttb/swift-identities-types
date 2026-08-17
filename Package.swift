@@ -37,8 +37,8 @@ let package = Package(
         // Bumped from macOS(.v14)/iOS(.v17): the swift-foundations/swift-json-web-token
         // dependency's own Package.swift declares macOS(.v26)/iOS(.v26) as its minimum —
         // SwiftPM propagates a dependency's platform floor upward to consumers.
-        .macOS(.v26),
-        .iOS(.v26)
+        .macOS("27"),
+        .iOS("27")
     ],
     products: [
         .library(name: .identitiesTypes, targets: [.identitiesTypes])
