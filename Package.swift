@@ -28,13 +28,13 @@ extension Target.Dependency {
     static var dependenciesTestSupport: Self {
         .product(name: "Dependencies Test Support", package: "swift-dependencies")
     }
-    static var taggedPrimitives: Self { .product(name: "Tagged Primitives", package: "swift-tagged-primitives") }
+    static var tagged: Self { .product(name: "Tagged", package: "swift-tagged") }
 }
 
 let package = Package(
     name: "swift-identities-types",
     platforms: [
-        // Bumped from macOS(.v14)/iOS(.v17): the swift-foundations/swift-json-web-token
+        // Bumped from macOS(.v14)/iOS(.v17): the swift-compositions/swift-json-web-token
         // dependency's own Package.swift declares macOS(.v26)/iOS(.v26) as its minimum —
         // SwiftPM propagates a dependency's platform floor upward to consumers.
         .macOS("27"),
@@ -44,15 +44,15 @@ let package = Package(
         .library(name: .identitiesTypes, targets: [.identitiesTypes])
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-foundations/swift-dependencies.git", branch: "main"),
-        .package(url: "https://github.com/swift-foundations/swift-emailaddress.git", branch: "main"),
-        .package(url: "https://github.com/swift-foundations/swift-json-web-token.git", branch: "main"),
-        .package(url: "https://github.com/swift-primitives/swift-tagged-primitives.git", branch: "main"),
-        .package(url: "https://github.com/swift-foundations/swift-html-form-coder.git", branch: "main"),
+        .package(url: "https://github.com/swift-compositions/swift-dependencies.git", branch: "main"),
+        .package(url: "https://github.com/swift-compositions/swift-emailaddress.git", branch: "main"),
+        .package(url: "https://github.com/swift-compositions/swift-json-web-token.git", branch: "main"),
+        .package(url: "https://github.com/swift-molecules/swift-tagged.git", branch: "main"),
+        .package(url: "https://github.com/swift-compositions/swift-html-form-coder.git", branch: "main"),
         .package(url: "https://github.com/swift-standards/swift-html-standard.git", branch: "main"),
-        .package(url: "https://github.com/swift-foundations/swift-dual.git", branch: "main"),
+        .package(url: "https://github.com/swift-compositions/swift-dual.git", branch: "main"),
         .package(url: "https://github.com/swift-ietf/swift-rfc-6750.git", branch: "main"),
-        .package(url: "https://github.com/swift-foundations/swift-url-routing.git", branch: "main"),
+        .package(url: "https://github.com/swift-compositions/swift-url-routing.git", branch: "main"),
     ],
     targets: [
         .target(
@@ -67,7 +67,7 @@ let package = Package(
                 .urlRoutingFoundationIntegration,
                 .htmlFormCoder,
                 .htmlStandard,
-                .taggedPrimitives
+                .tagged
             ]
         ),
         .testTarget(

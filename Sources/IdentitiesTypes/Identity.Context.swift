@@ -9,7 +9,7 @@
 import EmailAddress
 import Foundation
 import JWT
-import Tagged_Primitives
+import Tagged
 
 extension Identity {
     /// Context object providing access to identity information

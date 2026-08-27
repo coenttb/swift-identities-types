@@ -1,8 +1,8 @@
 // ===----------------------------------------------------------------------===//
 //
-// This source file is part of the swift-foundations open source project
+// This source file is part of the swift-compositions open source project
 //
-// Copyright (c) 2024-2026 Coen ten Thije Boonkkamp and the swift-foundations
+// Copyright (c) 2024-2026 Coen ten Thije Boonkkamp and the swift-compositions
 // project authors
 // Licensed under Apache License v2.0
 //

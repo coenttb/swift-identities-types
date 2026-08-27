@@ -65,11 +65,11 @@ This is all you need to know to get started with `swift-identities`.
 
 ## What is Dependencies?
 
-[Dependencies](https://github.com/swift-foundations/swift-dependencies) is a dependency management library inspired by SwiftUI's "environment". This package uses Dependencies to provide different implementations of Client for use in tests.
+[Dependencies](https://github.com/swift-compositions/swift-dependencies) is a dependency management library inspired by SwiftUI's "environment". This package uses Dependencies to provide different implementations of Client for use in tests.
 
 ## What is URLRouting?
 
-[URLRouting](https://github.com/swift-foundations/swift-url-routing) is a bidirectional URL router with more type safety and less fuss. This package leverages URLRouting to parse URLRequest objects into our API types and generate URLs from them.
+[URLRouting](https://github.com/swift-compositions/swift-url-routing) is a bidirectional URL router with more type safety and less fuss. This package leverages URLRouting to parse URLRequest objects into our API types and generate URLs from them.
 
 ## Topics
 

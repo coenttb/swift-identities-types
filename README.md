@@ -1,6 +1,6 @@
 # swift-identities-types
 
-[![CI](https://github.com/coenttb/swift-identities-types/workflows/CI/badge.svg)](https://github.com/coenttb/swift-identities-types/actions/workflows/ci.yml)
+[![CI](https://github.com/swift-compositions/swift-identities-types/actions/workflows/ci.yml/badge.svg)](https://github.com/swift-compositions/swift-identities-types/actions/workflows/ci.yml)
 ![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
 
 Type-safe Swift definitions for identity authentication and management with dependency injection and URL routing support.
@@ -49,7 +49,7 @@ Add the package to your `Package.swift` dependencies:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-foundations/swift-identities-types.git", from: "0.1.1")
+    .package(url: "https://github.com/swift-compositions/swift-identities-types.git", from: "0.1.1")
 ]
 ```
 
@@ -419,9 +419,9 @@ password, email, deletion, MFA, and the remaining OAuth methods — are declared
 
 ### Used By
 
-- [swift-identities](https://github.com/coenttb/swift-identities): The Swift library for identity authentication and management.
+- [swift-identities](https://github.com/swift-compositions/swift-identities): The Swift library for identity authentication and management.
 - [swift-identities-github](https://github.com/coenttb/swift-identities-github): A Swift package integrating GitHub OAuth with swift-identities.
-- [swift-identities-mailgun](https://github.com/coenttb/swift-identities-mailgun): A Swift package integrating Mailgun with swift-identities.
+- [swift-identities-mailgun](https://github.com/swift-compositions/swift-identities-mailgun): A Swift package integrating Mailgun with swift-identities.
 
 ### Third-Party Dependencies
 
