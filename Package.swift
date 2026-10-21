@@ -76,7 +76,7 @@ let package = Package(
             ]
         ),
         .testTarget(
-            name: .identitiesTypes.tests,
+            name: "IdentitiesTypes Tests",
             dependencies: [
                 .identitiesTypes,
                 .dependenciesTestSupport,
@@ -93,5 +93,3 @@ let package = Package(
     ],
     swiftLanguageModes: [.v6]
 )
-
-extension String { var tests: Self { "\(self) Tests" } }
