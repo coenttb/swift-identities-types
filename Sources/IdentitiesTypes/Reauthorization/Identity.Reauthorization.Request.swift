@@ -61,7 +61,8 @@ extension Identity.Reauthorization.Request: HTTP.Routable {
         Coder::Coder(HTTP.Router.Request.self, HTTP.Router.Request.self) {
             HTTP.Method.post
             HTTP.Body.Coded(
-                HTML.Form.Coder.Value(Identity.Reauthorization.Request.self, decoder: .identities))
+                HTML.Form.Coder.Value(Identity.Reauthorization.Request.self, decoder: .identities)
+            )
             HTTP.Segment.End()
         }
     }

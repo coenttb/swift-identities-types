@@ -40,7 +40,8 @@ extension Identity.MFA.TOTP.API: HTTP.Routable {
     /// Router for TOTP endpoints.
     public static var router: some HTTP.Router.`Protocol`<Identity.MFA.TOTP.API> {
         Coder::Case(
-            Identity.MFA.TOTP.API.cases.setup.prism, Identity.MFA.TOTP.API.cases.setup.fold,
+            Identity.MFA.TOTP.API.cases.setup.prism,
+            Identity.MFA.TOTP.API.cases.setup.fold,
             absent: .mismatch
         ) {
             HTTP.Method.post
@@ -50,17 +51,20 @@ extension Identity.MFA.TOTP.API: HTTP.Routable {
 
         Coder::Case(
             Identity.MFA.TOTP.API.cases.confirmSetup.prism,
-            Identity.MFA.TOTP.API.cases.confirmSetup.fold, absent: .mismatch
+            Identity.MFA.TOTP.API.cases.confirmSetup.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment.confirm
             HTTP.Body.Coded(
-                HTML.Form.Coder.Value(Identity.MFA.TOTP.ConfirmSetup.self, decoder: .identities))
+                HTML.Form.Coder.Value(Identity.MFA.TOTP.ConfirmSetup.self, decoder: .identities)
+            )
             HTTP.Segment.End()
         }
 
         Coder::Case(
-            Identity.MFA.TOTP.API.cases.verify.prism, Identity.MFA.TOTP.API.cases.verify.fold,
+            Identity.MFA.TOTP.API.cases.verify.prism,
+            Identity.MFA.TOTP.API.cases.verify.fold,
             absent: .mismatch
         ) {
             HTTP.Method.post
@@ -70,7 +74,8 @@ extension Identity.MFA.TOTP.API: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.MFA.TOTP.API.cases.disable.prism, Identity.MFA.TOTP.API.cases.disable.fold,
+            Identity.MFA.TOTP.API.cases.disable.prism,
+            Identity.MFA.TOTP.API.cases.disable.fold,
             absent: .mismatch
         ) {
             HTTP.Method.post

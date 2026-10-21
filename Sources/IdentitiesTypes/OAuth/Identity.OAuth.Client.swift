@@ -70,8 +70,7 @@ extension Identity.OAuth {
             ) async throws(Identity.OAuth.Client.Error) -> String?
 
         /// Get all OAuth connections for current identity
-        public var getAllConnections:
-            () async throws(Identity.OAuth.Client.Error) -> [Identity.OAuth.Connection]
+        public var getAllConnections: () async throws(Identity.OAuth.Client.Error) -> [Identity.OAuth.Connection]
 
     }
 }

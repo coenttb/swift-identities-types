@@ -84,7 +84,8 @@ extension Identity.Password.Route: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.Password.Route> {
         // API routes under /api prefix
         Coder::Case(
-            Identity.Password.Route.cases.api.prism, Identity.Password.Route.cases.api.fold,
+            Identity.Password.Route.cases.api.prism,
+            Identity.Password.Route.cases.api.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("api")
@@ -94,7 +95,8 @@ extension Identity.Password.Route: HTTP.Routable {
 
         // View routes (no /api prefix)
         Coder::Case(
-            Identity.Password.Route.cases.view.prism, Identity.Password.Route.cases.view.fold,
+            Identity.Password.Route.cases.view.prism,
+            Identity.Password.Route.cases.view.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("password")
@@ -112,7 +114,8 @@ extension Identity.Password.View: HTTP.Routable {
     /// - Change request: `/password/change/request`
     public static var router: some HTTP.Router.`Protocol`<Identity.Password.View> {
         Coder::Case(
-            Identity.Password.View.cases.reset.prism, Identity.Password.View.cases.reset.fold,
+            Identity.Password.View.cases.reset.prism,
+            Identity.Password.View.cases.reset.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("reset")
@@ -120,7 +123,8 @@ extension Identity.Password.View: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.Password.View.cases.change.prism, Identity.Password.View.cases.change.fold,
+            Identity.Password.View.cases.change.prism,
+            Identity.Password.View.cases.change.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("change")
@@ -134,7 +138,8 @@ extension Identity.Password.View.Reset: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.Password.View.Reset> {
         Coder::Case(
             Identity.Password.View.Reset.cases.request.prism,
-            Identity.Password.View.Reset.cases.request.fold, absent: .mismatch
+            Identity.Password.View.Reset.cases.request.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.get
             HTTP.Segment("request")
@@ -143,7 +148,8 @@ extension Identity.Password.View.Reset: HTTP.Routable {
 
         Coder::Case(
             Identity.Password.View.Reset.cases.confirm.prism,
-            Identity.Password.View.Reset.cases.confirm.fold, absent: .mismatch
+            Identity.Password.View.Reset.cases.confirm.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment("confirm")
             Identity.Password.Reset.Confirm.router
@@ -156,7 +162,8 @@ extension Identity.Password.View.Change: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.Password.View.Change> {
         Coder::Case(
             Identity.Password.View.Change.cases.request.prism,
-            Identity.Password.View.Change.cases.request.fold, absent: .mismatch
+            Identity.Password.View.Change.cases.request.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.get
             HTTP.Segment("request")

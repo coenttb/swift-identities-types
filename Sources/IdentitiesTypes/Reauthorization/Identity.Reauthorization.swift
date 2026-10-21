@@ -43,7 +43,8 @@ extension Identity.Reauthorization.Route: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.Reauthorization.Route> {
         Coder::Case(
             Identity.Reauthorization.Route.cases.api.prism,
-            Identity.Reauthorization.Route.cases.api.fold, absent: .mismatch
+            Identity.Reauthorization.Route.cases.api.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment.api
             HTTP.Segment.reauthorize

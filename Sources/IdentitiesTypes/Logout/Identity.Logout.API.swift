@@ -33,7 +33,8 @@ extension Identity.Logout.API: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.Logout.API> {
         // POST /logout (current session)
         Coder::Case(
-            Identity.Logout.API.cases.current.prism, Identity.Logout.API.cases.current.fold,
+            Identity.Logout.API.cases.current.prism,
+            Identity.Logout.API.cases.current.fold,
             absent: .mismatch
         ) {
             HTTP.Method.post
@@ -42,7 +43,8 @@ extension Identity.Logout.API: HTTP.Routable {
 
         // POST /logout/all (all sessions)
         Coder::Case(
-            Identity.Logout.API.cases.all.prism, Identity.Logout.API.cases.all.fold,
+            Identity.Logout.API.cases.all.prism,
+            Identity.Logout.API.cases.all.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("all")

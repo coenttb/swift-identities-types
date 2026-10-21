@@ -27,7 +27,8 @@ extension Identity.OAuth.Route: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.OAuth.Route> {
         // API routes
         Coder::Case(
-            Identity.OAuth.Route.cases.api.prism, Identity.OAuth.Route.cases.api.fold,
+            Identity.OAuth.Route.cases.api.prism,
+            Identity.OAuth.Route.cases.api.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("api")
@@ -37,7 +38,8 @@ extension Identity.OAuth.Route: HTTP.Routable {
 
         // View routes
         Coder::Case(
-            Identity.OAuth.Route.cases.view.prism, Identity.OAuth.Route.cases.view.fold,
+            Identity.OAuth.Route.cases.view.prism,
+            Identity.OAuth.Route.cases.view.fold,
             absent: .mismatch
         ) {
             Identity.View.OAuth.router

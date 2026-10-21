@@ -93,7 +93,9 @@ extension Identity.MFA.Route: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.MFA.Route> {
         // API routes under /api prefix
         Coder::Case(
-            Identity.MFA.Route.cases.api.prism, Identity.MFA.Route.cases.api.fold, absent: .mismatch
+            Identity.MFA.Route.cases.api.prism,
+            Identity.MFA.Route.cases.api.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment("api")
             HTTP.Segment("mfa")
@@ -102,7 +104,8 @@ extension Identity.MFA.Route: HTTP.Routable {
 
         // View routes (no /api prefix)
         Coder::Case(
-            Identity.MFA.Route.cases.view.prism, Identity.MFA.Route.cases.view.fold,
+            Identity.MFA.Route.cases.view.prism,
+            Identity.MFA.Route.cases.view.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("mfa")
@@ -121,7 +124,8 @@ extension Identity.MFA.View: HTTP.Routable {
     /// - Backup codes: `/mfa/backup-codes/...`
     public static var router: some HTTP.Router.`Protocol`<Identity.MFA.View> {
         Coder::Case(
-            Identity.MFA.View.cases.verify.prism, Identity.MFA.View.cases.verify.fold,
+            Identity.MFA.View.cases.verify.prism,
+            Identity.MFA.View.cases.verify.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get
@@ -137,7 +141,8 @@ extension Identity.MFA.View: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.MFA.View.cases.manage.prism, Identity.MFA.View.cases.manage.fold,
+            Identity.MFA.View.cases.manage.prism,
+            Identity.MFA.View.cases.manage.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get
@@ -146,14 +151,17 @@ extension Identity.MFA.View: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.MFA.View.cases.totp.prism, Identity.MFA.View.cases.totp.fold, absent: .mismatch
+            Identity.MFA.View.cases.totp.prism,
+            Identity.MFA.View.cases.totp.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment("totp")
             Identity.MFA.View.TOTP.router
         }
 
         Coder::Case(
-            Identity.MFA.View.cases.backupCodes.prism, Identity.MFA.View.cases.backupCodes.fold,
+            Identity.MFA.View.cases.backupCodes.prism,
+            Identity.MFA.View.cases.backupCodes.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("backup-codes")
@@ -166,7 +174,8 @@ extension Identity.MFA.View.TOTP: HTTP.Routable {
     /// Router for TOTP view endpoints.
     public static var router: some HTTP.Router.`Protocol`<Identity.MFA.View.TOTP> {
         Coder::Case(
-            Identity.MFA.View.TOTP.cases.setup.prism, Identity.MFA.View.TOTP.cases.setup.fold,
+            Identity.MFA.View.TOTP.cases.setup.prism,
+            Identity.MFA.View.TOTP.cases.setup.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get
@@ -177,7 +186,8 @@ extension Identity.MFA.View.TOTP: HTTP.Routable {
         // Support both /confirm-setup and /confirm
         Coder::Case(
             Identity.MFA.View.TOTP.cases.confirmSetup.prism,
-            Identity.MFA.View.TOTP.cases.confirmSetup.fold, absent: .mismatch
+            Identity.MFA.View.TOTP.cases.confirmSetup.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.get
             HTTP.Segment("confirm-setup")
@@ -186,7 +196,8 @@ extension Identity.MFA.View.TOTP: HTTP.Routable {
 
         Coder::Case(
             Identity.MFA.View.TOTP.cases.confirmSetup.prism,
-            Identity.MFA.View.TOTP.cases.confirmSetup.fold, absent: .mismatch
+            Identity.MFA.View.TOTP.cases.confirmSetup.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.get
             HTTP.Segment("confirm")
@@ -194,7 +205,8 @@ extension Identity.MFA.View.TOTP: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.MFA.View.TOTP.cases.manage.prism, Identity.MFA.View.TOTP.cases.manage.fold,
+            Identity.MFA.View.TOTP.cases.manage.prism,
+            Identity.MFA.View.TOTP.cases.manage.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get
@@ -210,7 +222,8 @@ extension Identity.MFA.View.BackupCodes: HTTP.Routable {
         // Handle /verify first to avoid ambiguity
         Coder::Case(
             Identity.MFA.View.BackupCodes.cases.verify.prism,
-            Identity.MFA.View.BackupCodes.cases.verify.fold, absent: .mismatch
+            Identity.MFA.View.BackupCodes.cases.verify.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.get
             HTTP.Segment("verify")
@@ -227,7 +240,8 @@ extension Identity.MFA.View.BackupCodes: HTTP.Routable {
         // /display is explicit
         Coder::Case(
             Identity.MFA.View.BackupCodes.cases.display.prism,
-            Identity.MFA.View.BackupCodes.cases.display.fold, absent: .mismatch
+            Identity.MFA.View.BackupCodes.cases.display.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.get
             HTTP.Segment("display")
@@ -237,7 +251,8 @@ extension Identity.MFA.View.BackupCodes: HTTP.Routable {
         // Default to display when no subpath
         Coder::Case(
             Identity.MFA.View.BackupCodes.cases.display.prism,
-            Identity.MFA.View.BackupCodes.cases.display.fold, absent: .mismatch
+            Identity.MFA.View.BackupCodes.cases.display.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.get
             HTTP.Segment.End()

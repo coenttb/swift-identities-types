@@ -15,7 +15,6 @@ import JWT
 extension Identity.Reauthorization {
     @Witness
     public struct Client: @unchecked Sendable {
-        public var reauthorize:
-            (_ password: String) async throws(Identity.Reauthorization.Client.Error) -> JWT
+        public var reauthorize: (_ password: String) async throws(Identity.Reauthorization.Client.Error) -> JWT
     }
 }

@@ -57,7 +57,8 @@ extension Identity.Password.Reset.Request: HTTP.Routable {
             HTTP.Method.post
             HTTP.Segment.request
             HTTP.Body.Coded(
-                HTML.Form.Coder.Value(Identity.Password.Reset.Request.self, decoder: .identities))
+                HTML.Form.Coder.Value(Identity.Password.Reset.Request.self, decoder: .identities)
+            )
             HTTP.Segment.End()
         }
     }

@@ -90,7 +90,8 @@ extension Identity.API: HTTP.Routable {
     /// - OAuth operations: `/oauth/*`
     public static var router: some HTTP.Router.`Protocol`<Identity.API> {
         Coder::Case(
-            Identity.API.cases.authenticate.prism, Identity.API.cases.authenticate.fold,
+            Identity.API.cases.authenticate.prism,
+            Identity.API.cases.authenticate.fold,
             absent: .mismatch
         ) {
             HTTP.Segment.authenticate
@@ -98,7 +99,8 @@ extension Identity.API: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.API.cases.reauthorize.prism, Identity.API.cases.reauthorize.fold,
+            Identity.API.cases.reauthorize.prism,
+            Identity.API.cases.reauthorize.fold,
             absent: .mismatch
         ) {
             HTTP.Segment.reauthorize
@@ -106,35 +108,45 @@ extension Identity.API: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.API.cases.create.prism, Identity.API.cases.create.fold, absent: .mismatch
+            Identity.API.cases.create.prism,
+            Identity.API.cases.create.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment.create
             Identity.Creation.API.router
         }
 
         Coder::Case(
-            Identity.API.cases.delete.prism, Identity.API.cases.delete.fold, absent: .mismatch
+            Identity.API.cases.delete.prism,
+            Identity.API.cases.delete.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment.delete
             Identity.Deletion.API.router
         }
 
         Coder::Case(
-            Identity.API.cases.logout.prism, Identity.API.cases.logout.fold, absent: .mismatch
+            Identity.API.cases.logout.prism,
+            Identity.API.cases.logout.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment.logout
             Identity.Logout.API.router
         }
 
         Coder::Case(
-            Identity.API.cases.email.prism, Identity.API.cases.email.fold, absent: .mismatch
+            Identity.API.cases.email.prism,
+            Identity.API.cases.email.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment.email
             Identity.Email.API.router
         }
 
         Coder::Case(
-            Identity.API.cases.password.prism, Identity.API.cases.password.fold, absent: .mismatch
+            Identity.API.cases.password.prism,
+            Identity.API.cases.password.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment.password
             Identity.Password.API.router
@@ -146,7 +158,9 @@ extension Identity.API: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.API.cases.oauth.prism, Identity.API.cases.oauth.fold, absent: .mismatch
+            Identity.API.cases.oauth.prism,
+            Identity.API.cases.oauth.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment.oauth
             Identity.OAuth.API.router

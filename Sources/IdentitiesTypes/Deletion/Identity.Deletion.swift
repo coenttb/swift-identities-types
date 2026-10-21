@@ -77,7 +77,8 @@ extension Identity.Deletion.Request: HTTP.Routable {
         Coder::Coder(HTTP.Router.Request.self, HTTP.Router.Request.self) {
             HTTP.Method.post
             HTTP.Body.Coded(
-                HTML.Form.Coder.Value(Identity.Deletion.Request.self, decoder: .identities))
+                HTML.Form.Coder.Value(Identity.Deletion.Request.self, decoder: .identities)
+            )
             HTTP.Segment.End()
         }
     }

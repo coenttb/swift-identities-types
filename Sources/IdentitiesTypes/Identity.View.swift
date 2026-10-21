@@ -51,7 +51,9 @@ extension Identity.View: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.View> {
 
         Coder::Case(
-            Identity.View.cases.create.prism, Identity.View.cases.create.fold, absent: .mismatch
+            Identity.View.cases.create.prism,
+            Identity.View.cases.create.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment.create
             // Delegate to the feature's view router
@@ -59,7 +61,9 @@ extension Identity.View: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.View.cases.logout.prism, Identity.View.cases.logout.fold, absent: .mismatch
+            Identity.View.cases.logout.prism,
+            Identity.View.cases.logout.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment.logout
@@ -68,14 +72,18 @@ extension Identity.View: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.View.cases.delete.prism, Identity.View.cases.delete.fold, absent: .mismatch
+            Identity.View.cases.delete.prism,
+            Identity.View.cases.delete.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment.delete
             Identity.Deletion.View.router
         }
 
         Coder::Case(
-            Identity.View.cases.password.prism, Identity.View.cases.password.fold, absent: .mismatch
+            Identity.View.cases.password.prism,
+            Identity.View.cases.password.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment.password
             // Delegate to the feature's view router
@@ -83,29 +91,33 @@ extension Identity.View: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.View.cases.email.prism, Identity.View.cases.email.fold, absent: .mismatch
+            Identity.View.cases.email.prism,
+            Identity.View.cases.email.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment.email
             // Delegate to the feature's view router
             Identity.Email.View.router
         }
 
-        Coder::Case(Identity.View.cases.mfa.prism, Identity.View.cases.mfa.fold, absent: .mismatch)
-        {
+        Coder::Case(Identity.View.cases.mfa.prism, Identity.View.cases.mfa.fold, absent: .mismatch) {
             HTTP.Segment("mfa")
             // Delegate to the feature's view router
             Identity.MFA.View.router
         }
 
         Coder::Case(
-            Identity.View.cases.oauth.prism, Identity.View.cases.oauth.fold, absent: .mismatch
+            Identity.View.cases.oauth.prism,
+            Identity.View.cases.oauth.fold,
+            absent: .mismatch
         ) {
             // Delegate to the feature's view router
             Identity.View.OAuth.router
         }
 
         Coder::Case(
-            Identity.View.cases.authenticate.prism, Identity.View.cases.authenticate.fold,
+            Identity.View.cases.authenticate.prism,
+            Identity.View.cases.authenticate.fold,
             absent: .mismatch
         ) {
             // Delegate to the feature's view router

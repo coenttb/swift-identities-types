@@ -80,7 +80,9 @@ extension Identity.Authentication.API: HTTP.Routable {
             HTTP.Segment.End()
             HTTP.Body.Coded(
                 HTML.Form.Coder.Value(
-                    Identity.Authentication.Credentials.self, decoder: .identities)
+                    Identity.Authentication.Credentials.self,
+                    decoder: .identities
+                )
             )
         }
         Coder::Case(Self.cases.token.prism, Self.cases.token.fold, absent: .mismatch) {

@@ -32,7 +32,8 @@ enum RouteRequest {
         return HTTP.Router.Request(
             method: method,
             target: .resource(
-                RFC_3986.URI(unchecked: encoded.isEmpty ? path : "\(path)?\(encoded)"))
+                RFC_3986.URI(unchecked: encoded.isEmpty ? path : "\(path)?\(encoded)")
+            )
         )
     }
 }
@@ -50,7 +51,9 @@ extension RFC_9110.Message.Request where Content == [Byte] {
         var items: [String: [String]] = [:]
         for parameter in query.parameters {
             let key = String(
-                decoding: RFC_3986.percentDecode(Array(parameter.key.utf8)), as: UTF8.self)
+                decoding: RFC_3986.percentDecode(Array(parameter.key.utf8)),
+                as: UTF8.self
+            )
             let value =
                 parameter.value.map {
                     String(decoding: RFC_3986.percentDecode(Array($0.utf8)), as: UTF8.self)

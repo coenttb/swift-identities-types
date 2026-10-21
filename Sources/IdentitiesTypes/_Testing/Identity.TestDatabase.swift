@@ -110,8 +110,7 @@ extension Identity {
             }
         }
 
-        func initiatePasswordReset(email: String) throws(Identity._TestDatabase.TestError) -> String
-        {
+        func initiatePasswordReset(email: String) throws(Identity._TestDatabase.TestError) -> String {
             guard users[email] != nil else {
                 throw TestError.userNotFound
             }

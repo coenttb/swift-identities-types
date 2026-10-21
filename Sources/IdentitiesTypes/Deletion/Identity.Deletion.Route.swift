@@ -43,7 +43,8 @@ extension Identity.Deletion.Route: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.Deletion.Route> {
         // API routes under /api prefix
         Coder::Case(
-            Identity.Deletion.Route.cases.api.prism, Identity.Deletion.Route.cases.api.fold,
+            Identity.Deletion.Route.cases.api.prism,
+            Identity.Deletion.Route.cases.api.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("api")
@@ -53,7 +54,8 @@ extension Identity.Deletion.Route: HTTP.Routable {
 
         // View routes (no /api prefix)
         Coder::Case(
-            Identity.Deletion.Route.cases.view.prism, Identity.Deletion.Route.cases.view.fold,
+            Identity.Deletion.Route.cases.view.prism,
+            Identity.Deletion.Route.cases.view.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("delete")

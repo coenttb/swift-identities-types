@@ -54,28 +54,35 @@ extension Identity.MFA.API: HTTP.Routable {
     /// Router for MFA API endpoints.
     public static var router: some HTTP.Router.`Protocol`<Identity.MFA.API> {
         Coder::Case(
-            Identity.MFA.API.cases.totp.prism, Identity.MFA.API.cases.totp.fold, absent: .mismatch
+            Identity.MFA.API.cases.totp.prism,
+            Identity.MFA.API.cases.totp.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment("totp")
             Identity.MFA.TOTP.API.router
         }
 
         Coder::Case(
-            Identity.MFA.API.cases.sms.prism, Identity.MFA.API.cases.sms.fold, absent: .mismatch
+            Identity.MFA.API.cases.sms.prism,
+            Identity.MFA.API.cases.sms.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment("sms")
             Identity.MFA.SMS.API.router
         }
 
         Coder::Case(
-            Identity.MFA.API.cases.email.prism, Identity.MFA.API.cases.email.fold, absent: .mismatch
+            Identity.MFA.API.cases.email.prism,
+            Identity.MFA.API.cases.email.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment("email")
             Identity.MFA.Email.API.router
         }
 
         Coder::Case(
-            Identity.MFA.API.cases.webauthn.prism, Identity.MFA.API.cases.webauthn.fold,
+            Identity.MFA.API.cases.webauthn.prism,
+            Identity.MFA.API.cases.webauthn.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("webauthn")
@@ -83,7 +90,8 @@ extension Identity.MFA.API: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.MFA.API.cases.backupCodes.prism, Identity.MFA.API.cases.backupCodes.fold,
+            Identity.MFA.API.cases.backupCodes.prism,
+            Identity.MFA.API.cases.backupCodes.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("backup-codes")
@@ -91,7 +99,8 @@ extension Identity.MFA.API: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.MFA.API.cases.status.prism, Identity.MFA.API.cases.status.fold,
+            Identity.MFA.API.cases.status.prism,
+            Identity.MFA.API.cases.status.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("status")
@@ -99,7 +108,8 @@ extension Identity.MFA.API: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.MFA.API.cases.verify.prism, Identity.MFA.API.cases.verify.fold,
+            Identity.MFA.API.cases.verify.prism,
+            Identity.MFA.API.cases.verify.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("verify")

@@ -37,7 +37,8 @@ extension Identity.View {
             let verifyPath = "/mfa/verify"
             let verifyRequest = RouteRequest.make(
                 path: verifyPath,
-                query: [("sessionToken", "test-token"), ("attemptsRemaining", "3")])
+                query: [("sessionToken", "test-token"), ("attemptsRemaining", "3")]
+            )
             let verifyRoute = try router.match(request: verifyRequest)
             if case .mfa(.verify(let challenge)) = verifyRoute {
                 #expect(challenge.sessionToken == "test-token")
@@ -99,7 +100,8 @@ extension Identity.View {
             let verifyPath = "/mfa/backup-codes/verify"
             let verifyRequest = RouteRequest.make(
                 path: verifyPath,
-                query: [("sessionToken", "test-token"), ("attemptsRemaining", "2")])
+                query: [("sessionToken", "test-token"), ("attemptsRemaining", "2")]
+            )
             let verifyRoute = try router.match(request: verifyRequest)
 
             if case .mfa(.backupCodes(.verify(let challenge))) = verifyRoute {
@@ -117,7 +119,9 @@ extension Identity.View {
             // Test /mfa/backup-codes/verify with only sessionToken (default attemptsRemaining)
             let verifyPath = "/mfa/backup-codes/verify"
             let verifyRequest = RouteRequest.make(
-                path: verifyPath, query: [("sessionToken", "test-token")])
+                path: verifyPath,
+                query: [("sessionToken", "test-token")]
+            )
             let verifyRoute = try router.match(request: verifyRequest)
 
             if case .mfa(.backupCodes(.verify(let challenge))) = verifyRoute {
@@ -246,14 +250,17 @@ extension Identity.View {
                     // (RouteRequest.make(path: "/mfa/backup-codes/verify/"), false, "Verify route with trailing slash"),
                     (
                         RouteRequest.make(
-                            path: "/mfa/backup-codes/verify", query: [("sessionToken", "abc")]),
+                            path: "/mfa/backup-codes/verify",
+                            query: [("sessionToken", "abc")]
+                        ),
                         false,
                         "Verify with session token"
                     ),
                     (
                         RouteRequest.make(
                             path: "/mfa/backup-codes/verify",
-                            query: [("sessionToken", "abc"), ("attemptsRemaining", "5")]), false,
+                            query: [("sessionToken", "abc"), ("attemptsRemaining", "5")]
+                        ), false,
                         "Verify with all params"
                     ),
                 ]

@@ -25,8 +25,7 @@ extension Identity {
     /// Convenience method to authenticate an identity with an access token.
     ///
     /// - Parameter accessToken: A valid JWT access token
-    public func login(accessToken: String) async throws(Identity.Authentication.Token.Client.Error)
-    {
+    public func login(accessToken: String) async throws(Identity.Authentication.Token.Client.Error) {
         try await self.authenticate.token.access(accessToken)
     }
 

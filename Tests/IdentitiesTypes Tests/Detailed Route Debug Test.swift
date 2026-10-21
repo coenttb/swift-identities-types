@@ -22,7 +22,9 @@ struct `Detailed Route Debug` {
         print("Testing /mfa/backup-codes/verify parsing...")
 
         let request = RouteRequest.make(
-            path: "/mfa/backup-codes/verify", query: [("sessionToken", "test-token")])
+            path: "/mfa/backup-codes/verify",
+            query: [("sessionToken", "test-token")]
+        )
 
         do {
             let route = try viewRouter.match(request: request)

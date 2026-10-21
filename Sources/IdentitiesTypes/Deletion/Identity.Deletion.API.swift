@@ -61,7 +61,8 @@ extension Identity.Deletion.API: HTTP.Routable {
     /// endpoints operate on the authenticated user's pending deletion request.
     public static var router: some HTTP.Router.`Protocol`<Identity.Deletion.API> {
         Coder::Case(
-            Identity.Deletion.API.cases.request.prism, Identity.Deletion.API.cases.request.fold,
+            Identity.Deletion.API.cases.request.prism,
+            Identity.Deletion.API.cases.request.fold,
             absent: .mismatch
         ) {
             HTTP.Segment.request
@@ -69,7 +70,8 @@ extension Identity.Deletion.API: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.Deletion.API.cases.cancel.prism, Identity.Deletion.API.cases.cancel.fold,
+            Identity.Deletion.API.cases.cancel.prism,
+            Identity.Deletion.API.cases.cancel.fold,
             absent: .mismatch
         ) {
             HTTP.Segment.cancel
@@ -78,7 +80,8 @@ extension Identity.Deletion.API: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.Deletion.API.cases.confirm.prism, Identity.Deletion.API.cases.confirm.fold,
+            Identity.Deletion.API.cases.confirm.prism,
+            Identity.Deletion.API.cases.confirm.fold,
             absent: .mismatch
         ) {
             HTTP.Segment.confirm

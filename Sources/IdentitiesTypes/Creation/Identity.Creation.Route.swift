@@ -43,7 +43,8 @@ extension Identity.Creation.Route: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.Creation.Route> {
         // API routes under /api prefix
         Coder::Case(
-            Identity.Creation.Route.cases.api.prism, Identity.Creation.Route.cases.api.fold,
+            Identity.Creation.Route.cases.api.prism,
+            Identity.Creation.Route.cases.api.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("api")
@@ -53,7 +54,8 @@ extension Identity.Creation.Route: HTTP.Routable {
 
         // View routes (no /api prefix)
         Coder::Case(
-            Identity.Creation.Route.cases.view.prism, Identity.Creation.Route.cases.view.fold,
+            Identity.Creation.Route.cases.view.prism,
+            Identity.Creation.Route.cases.view.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("create")

@@ -45,7 +45,8 @@ extension Identity.MFA.WebAuthn.API: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.MFA.WebAuthn.API> {
         Coder::Case(
             Identity.MFA.WebAuthn.API.cases.beginRegistration.prism,
-            Identity.MFA.WebAuthn.API.cases.beginRegistration.fold, absent: .mismatch
+            Identity.MFA.WebAuthn.API.cases.beginRegistration.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment("register")
@@ -55,7 +56,8 @@ extension Identity.MFA.WebAuthn.API: HTTP.Routable {
 
         Coder::Case(
             Identity.MFA.WebAuthn.API.cases.finishRegistration.prism,
-            Identity.MFA.WebAuthn.API.cases.finishRegistration.fold, absent: .mismatch
+            Identity.MFA.WebAuthn.API.cases.finishRegistration.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment("register")
@@ -66,7 +68,8 @@ extension Identity.MFA.WebAuthn.API: HTTP.Routable {
 
         Coder::Case(
             Identity.MFA.WebAuthn.API.cases.beginAuthentication.prism,
-            Identity.MFA.WebAuthn.API.cases.beginAuthentication.fold, absent: .mismatch
+            Identity.MFA.WebAuthn.API.cases.beginAuthentication.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment("authenticate")
@@ -76,7 +79,8 @@ extension Identity.MFA.WebAuthn.API: HTTP.Routable {
 
         Coder::Case(
             Identity.MFA.WebAuthn.API.cases.finishAuthentication.prism,
-            Identity.MFA.WebAuthn.API.cases.finishAuthentication.fold, absent: .mismatch
+            Identity.MFA.WebAuthn.API.cases.finishAuthentication.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment("authenticate")
@@ -87,7 +91,8 @@ extension Identity.MFA.WebAuthn.API: HTTP.Routable {
 
         Coder::Case(
             Identity.MFA.WebAuthn.API.cases.listCredentials.prism,
-            Identity.MFA.WebAuthn.API.cases.listCredentials.fold, absent: .mismatch
+            Identity.MFA.WebAuthn.API.cases.listCredentials.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.get
             HTTP.Segment("credentials")
@@ -96,7 +101,8 @@ extension Identity.MFA.WebAuthn.API: HTTP.Routable {
 
         Coder::Case(
             Identity.MFA.WebAuthn.API.cases.removeCredential.prism,
-            Identity.MFA.WebAuthn.API.cases.removeCredential.fold, absent: .mismatch
+            Identity.MFA.WebAuthn.API.cases.removeCredential.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment("credentials")
@@ -107,7 +113,8 @@ extension Identity.MFA.WebAuthn.API: HTTP.Routable {
 
         Coder::Case(
             Identity.MFA.WebAuthn.API.cases.disable.prism,
-            Identity.MFA.WebAuthn.API.cases.disable.fold, absent: .mismatch
+            Identity.MFA.WebAuthn.API.cases.disable.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment.disable

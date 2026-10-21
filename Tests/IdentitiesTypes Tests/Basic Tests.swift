@@ -91,7 +91,8 @@ extension Identity._TestDatabase {
 
                 await #expect(
                     throws: Identity.Authentication.Client.Error.credentials(
-                        reason: "\(Identity._TestDatabase.TestError.invalidCredentials)")
+                        reason: "\(Identity._TestDatabase.TestError.invalidCredentials)"
+                    )
                 ) {
                     try await identity.login(
                         username: "nonexistent@example.com",

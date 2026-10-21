@@ -35,7 +35,8 @@ extension Identity.Email.API: HTTP.Routable {
     /// Structure is extensible for future email management features.
     public static var router: some HTTP.Router.`Protocol`<Identity.Email.API> {
         Coder::Case(
-            Identity.Email.API.cases.change.prism, Identity.Email.API.cases.change.fold,
+            Identity.Email.API.cases.change.prism,
+            Identity.Email.API.cases.change.fold,
             absent: .mismatch
         ) {
             Identity.Email.Change.API.router
@@ -89,14 +90,16 @@ extension Identity.Email.Change.API: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.Email.Change.API> {
         Coder::Case(
             Identity.Email.Change.API.cases.request.prism,
-            Identity.Email.Change.API.cases.request.fold, absent: .mismatch
+            Identity.Email.Change.API.cases.request.fold,
+            absent: .mismatch
         ) {
             Identity.Email.Change.Request.router
         }
 
         Coder::Case(
             Identity.Email.Change.API.cases.confirm.prism,
-            Identity.Email.Change.API.cases.confirm.fold, absent: .mismatch
+            Identity.Email.Change.API.cases.confirm.fold,
+            absent: .mismatch
         ) {
             Identity.Email.Change.Confirmation.router
         }

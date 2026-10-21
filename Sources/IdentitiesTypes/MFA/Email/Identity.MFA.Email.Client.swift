@@ -46,7 +46,6 @@ extension Identity.MFA.Email {
         /// Disable email authentication.
         ///
         /// - Parameter reauthorizationToken: Token from reauthorization
-        public var disable:
-            (_ reauthorizationToken: String) async throws(Identity.MFA.Email.Client.Error) -> Void
+        public var disable: (_ reauthorizationToken: String) async throws(Identity.MFA.Email.Client.Error) -> Void
     }
 }

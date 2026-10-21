@@ -179,7 +179,8 @@ extension Identity.Route {
 
             let match = try router.match(request: request)
             #expect(
-                { if case .password(.api(.change(.request))) = match { true } else { false } }())
+                { if case .password(.api(.change(.request))) = match { true } else { false } }()
+            )
             if case .password(.api(.change(.request(let value)))) = match {
                 #expect(value.currentPassword == "current123")
             } else {

@@ -55,23 +55,27 @@ extension Identity.Creation.API: HTTP.Routable {
     /// identity creation or verification data.
     public static var router: some HTTP.Router.`Protocol`<Identity.Creation.API> {
         Coder::Case(
-            Identity.Creation.API.cases.request.prism, Identity.Creation.API.cases.request.fold,
+            Identity.Creation.API.cases.request.prism,
+            Identity.Creation.API.cases.request.fold,
             absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment.request
             HTTP.Body.Coded(
-                HTML.Form.Coder.Value(Identity.Creation.Request.self, decoder: .identities))
+                HTML.Form.Coder.Value(Identity.Creation.Request.self, decoder: .identities)
+            )
             HTTP.Segment.End()
         }
         Coder::Case(
-            Identity.Creation.API.cases.verify.prism, Identity.Creation.API.cases.verify.fold,
+            Identity.Creation.API.cases.verify.prism,
+            Identity.Creation.API.cases.verify.fold,
             absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment.verify
             HTTP.Body.Coded(
-                HTML.Form.Coder.Value(Identity.Creation.Verification.self, decoder: .identities))
+                HTML.Form.Coder.Value(Identity.Creation.Verification.self, decoder: .identities)
+            )
             HTTP.Segment.End()
         }
     }

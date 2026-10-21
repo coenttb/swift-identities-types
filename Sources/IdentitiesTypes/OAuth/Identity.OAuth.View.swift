@@ -37,7 +37,8 @@ extension Identity.View.OAuth: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.View.OAuth> {
         // GET /oauth/login
         Coder::Case(
-            Identity.View.OAuth.cases.login.prism, Identity.View.OAuth.cases.login.fold,
+            Identity.View.OAuth.cases.login.prism,
+            Identity.View.OAuth.cases.login.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get
@@ -48,7 +49,8 @@ extension Identity.View.OAuth: HTTP.Routable {
 
         // GET /oauth/callback
         Coder::Case(
-            Identity.View.OAuth.cases.callback.prism, Identity.View.OAuth.cases.callback.fold,
+            Identity.View.OAuth.cases.callback.prism,
+            Identity.View.OAuth.cases.callback.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get
@@ -76,7 +78,8 @@ extension Identity.View.OAuth: HTTP.Routable {
 
         // GET /oauth/connections
         Coder::Case(
-            Identity.View.OAuth.cases.connections.prism, Identity.View.OAuth.cases.connections.fold,
+            Identity.View.OAuth.cases.connections.prism,
+            Identity.View.OAuth.cases.connections.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get
@@ -87,7 +90,8 @@ extension Identity.View.OAuth: HTTP.Routable {
 
         // GET /oauth/error
         Coder::Case(
-            Identity.View.OAuth.cases.error.prism, Identity.View.OAuth.cases.error.fold,
+            Identity.View.OAuth.cases.error.prism,
+            Identity.View.OAuth.cases.error.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get

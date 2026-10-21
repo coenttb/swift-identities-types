@@ -29,14 +29,16 @@ extension Identity.Password.Reset.API: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.Password.Reset.API> {
         Coder::Case(
             Identity.Password.Reset.API.cases.request.prism,
-            Identity.Password.Reset.API.cases.request.fold, absent: .mismatch
+            Identity.Password.Reset.API.cases.request.fold,
+            absent: .mismatch
         ) {
             Identity.Password.Reset.Request.router
         }
 
         Coder::Case(
             Identity.Password.Reset.API.cases.confirm.prism,
-            Identity.Password.Reset.API.cases.confirm.fold, absent: .mismatch
+            Identity.Password.Reset.API.cases.confirm.fold,
+            absent: .mismatch
         ) {
             Identity.Password.Reset.Confirm.router
         }

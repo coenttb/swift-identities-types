@@ -31,7 +31,8 @@ extension Identity.Logout.Route: HTTP.Routable {
     /// this router doesn't need to match anything additional.
     public static var router: some HTTP.Router.`Protocol`<Identity.Logout.Route> {
         Coder::Case(
-            Identity.Logout.Route.cases.api.prism, Identity.Logout.Route.cases.api.fold,
+            Identity.Logout.Route.cases.api.prism,
+            Identity.Logout.Route.cases.api.fold,
             absent: .mismatch
         ) {
             HTTP.Segment.logout
@@ -39,7 +40,8 @@ extension Identity.Logout.Route: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.Logout.Route.cases.view.prism, Identity.Logout.Route.cases.view.fold,
+            Identity.Logout.Route.cases.view.prism,
+            Identity.Logout.Route.cases.view.fold,
             absent: .mismatch
         ) {
             HTTP.Method.post

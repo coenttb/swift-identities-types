@@ -15,7 +15,8 @@ struct `Identity API key method` {
             target: .resource(RFC_3986.URI(unchecked: "/api-key"))
         )
         request.headers.append(
-            try RFC_9110.Field(name: "Authorization", value: "Bearer parity-token-123"))
+            try RFC_9110.Field(name: "Authorization", value: "Bearer parity-token-123")
+        )
         return request
     }
 
@@ -52,11 +53,14 @@ struct `Identity route method classes` {
     func `view pages match GET and emit GET`() throws {
         #expect(
             try HTTP.route(Identity.View.self, Self.request(.get, "/login"))
-                == .authenticate(.credentials))
+                == .authenticate(.credentials)
+        )
         #expect(
-            try HTTP.request(Identity.View.self, for: .authenticate(.credentials)).method == .get)
+            try HTTP.request(Identity.View.self, for: .authenticate(.credentials)).method == .get
+        )
         #expect(
-            try HTTP.route(Identity.View.self, Self.request(.get, "/mfa/manage")) == .mfa(.manage))
+            try HTTP.route(Identity.View.self, Self.request(.get, "/mfa/manage")) == .mfa(.manage)
+        )
     }
 
     @Test
@@ -114,15 +118,19 @@ struct `Identity logout method` {
         for route: Identity.Logout.Route in [.view, .api(.current), .api(.all)] {
             #expect(
                 try HTTP.route(
-                    Identity.Logout.Route.self, HTTP.request(Identity.Logout.Route.self, for: route)
-                ) == route)
+                    Identity.Logout.Route.self,
+                    HTTP.request(Identity.Logout.Route.self, for: route)
+                ) == route
+            )
         }
         #expect(
             try HTTP.route(Identity.Logout.Route.self, Self.request(.post, "/logout"))
-                == .api(.current))
+                == .api(.current)
+        )
         #expect(
             try HTTP.route(Identity.Logout.Route.self, Self.request(.post, "/logout/all"))
-                == .api(.all))
+                == .api(.all)
+        )
         #expect(
             try HTTP.route(Identity.Logout.Route.self, Self.request(.post, "/logout/view")) == .view
         )

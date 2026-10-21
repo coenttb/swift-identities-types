@@ -43,7 +43,8 @@ extension Identity.Email.Route: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.Email.Route> {
         // API routes under /api prefix
         Coder::Case(
-            Identity.Email.Route.cases.api.prism, Identity.Email.Route.cases.api.fold,
+            Identity.Email.Route.cases.api.prism,
+            Identity.Email.Route.cases.api.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("api")
@@ -53,7 +54,8 @@ extension Identity.Email.Route: HTTP.Routable {
 
         // View routes (no /api prefix)
         Coder::Case(
-            Identity.Email.Route.cases.view.prism, Identity.Email.Route.cases.view.fold,
+            Identity.Email.Route.cases.view.prism,
+            Identity.Email.Route.cases.view.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("email")

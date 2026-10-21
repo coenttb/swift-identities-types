@@ -47,7 +47,8 @@ extension Identity.Email.View: HTTP.Routable {
     /// - Change flow: `/email/change/...`
     public static var router: some HTTP.Router.`Protocol`<Identity.Email.View> {
         Coder::Case(
-            Identity.Email.View.cases.change.prism, Identity.Email.View.cases.change.fold,
+            Identity.Email.View.cases.change.prism,
+            Identity.Email.View.cases.change.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("change")
@@ -66,7 +67,8 @@ extension Identity.Email.View.Change: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.Email.View.Change> {
         Coder::Case(
             Identity.Email.View.Change.cases.request.prism,
-            Identity.Email.View.Change.cases.request.fold, absent: .mismatch
+            Identity.Email.View.Change.cases.request.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.get
             HTTP.Segment("request")
@@ -75,7 +77,8 @@ extension Identity.Email.View.Change: HTTP.Routable {
 
         Coder::Case(
             Identity.Email.View.Change.cases.confirm.prism,
-            Identity.Email.View.Change.cases.confirm.fold, absent: .mismatch
+            Identity.Email.View.Change.cases.confirm.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment("confirm")
             Identity.Email.Change.Confirmation.router
@@ -83,7 +86,8 @@ extension Identity.Email.View.Change: HTTP.Routable {
 
         Coder::Case(
             Identity.Email.View.Change.cases.reauthorization.prism,
-            Identity.Email.View.Change.cases.reauthorization.fold, absent: .mismatch
+            Identity.Email.View.Change.cases.reauthorization.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.get
             HTTP.Segment.End()

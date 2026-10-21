@@ -40,7 +40,8 @@ extension Identity.OAuth.API: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.OAuth.API> {
         // GET /oauth/providers
         Coder::Case(
-            Identity.OAuth.API.cases.providers.prism, Identity.OAuth.API.cases.providers.fold,
+            Identity.OAuth.API.cases.providers.prism,
+            Identity.OAuth.API.cases.providers.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get
@@ -50,7 +51,8 @@ extension Identity.OAuth.API: HTTP.Routable {
 
         // GET /oauth/authorize/:provider
         Coder::Case(
-            Identity.OAuth.API.cases.authorize.prism, Identity.OAuth.API.cases.authorize.fold,
+            Identity.OAuth.API.cases.authorize.prism,
+            Identity.OAuth.API.cases.authorize.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get
@@ -61,7 +63,8 @@ extension Identity.OAuth.API: HTTP.Routable {
 
         // GET /oauth/callback
         Coder::Case(
-            Identity.OAuth.API.cases.callback.prism, Identity.OAuth.API.cases.callback.fold,
+            Identity.OAuth.API.cases.callback.prism,
+            Identity.OAuth.API.cases.callback.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get
@@ -88,7 +91,8 @@ extension Identity.OAuth.API: HTTP.Routable {
 
         // GET /oauth/connections
         Coder::Case(
-            Identity.OAuth.API.cases.connections.prism, Identity.OAuth.API.cases.connections.fold,
+            Identity.OAuth.API.cases.connections.prism,
+            Identity.OAuth.API.cases.connections.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get
@@ -98,7 +102,8 @@ extension Identity.OAuth.API: HTTP.Routable {
 
         // DELETE /oauth/disconnect/:provider
         Coder::Case(
-            Identity.OAuth.API.cases.disconnect.prism, Identity.OAuth.API.cases.disconnect.fold,
+            Identity.OAuth.API.cases.disconnect.prism,
+            Identity.OAuth.API.cases.disconnect.fold,
             absent: .mismatch
         ) {
             HTTP.Method.delete

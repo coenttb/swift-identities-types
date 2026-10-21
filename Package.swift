@@ -38,7 +38,7 @@ let package = Package(
         // dependency's own Package.swift declares macOS(.v26)/iOS(.v26) as its minimum —
         // SwiftPM propagates a dependency's platform floor upward to consumers.
         .macOS("27"),
-        .iOS("27")
+        .iOS("27"),
     ],
     products: [
         .library(name: .identitiesTypes, targets: [.identitiesTypes])
@@ -72,24 +72,24 @@ let package = Package(
                 .product(name: "Pair", package: "swift-pair"),
                 .htmlFormCoder,
                 .htmlStandard,
-                .tagged
+                .tagged,
             ]
         ),
         .testTarget(
             name: .identitiesTypes.tests,
             dependencies: [
                 .identitiesTypes,
-                .dependenciesTestSupport
+                .dependenciesTestSupport,
             ]
         ),
         .testTarget(
             name: "Identities Router Parity Tests",
             dependencies: [
                 .identitiesTypes,
-                .httpRouter
+                .httpRouter,
             ],
             path: "Tests/Identities Router Parity Tests"
-        )
+        ),
     ],
     swiftLanguageModes: [.v6]
 )

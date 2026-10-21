@@ -44,7 +44,8 @@ extension Identity.Authentication.Route: HTTP.Routable {
         // API routes under /api prefix
         Coder::Case(
             Identity.Authentication.Route.cases.api.prism,
-            Identity.Authentication.Route.cases.api.fold, absent: .mismatch
+            Identity.Authentication.Route.cases.api.fold,
+            absent: .mismatch
         ) {
             HTTP.Segment("api")
             HTTP.Segment("authenticate")
@@ -54,7 +55,8 @@ extension Identity.Authentication.Route: HTTP.Routable {
         // View routes use /login for better UX
         Coder::Case(
             Identity.Authentication.Route.cases.view.prism,
-            Identity.Authentication.Route.cases.view.fold, absent: .mismatch
+            Identity.Authentication.Route.cases.view.fold,
+            absent: .mismatch
         ) {
             Identity.Authentication.View.router
         }

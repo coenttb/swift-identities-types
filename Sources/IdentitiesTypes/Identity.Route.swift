@@ -82,14 +82,17 @@ extension Identity.Route: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.Route> {
         // Create feature routes
         Coder::Case(
-            Identity.Route.cases.create.prism, Identity.Route.cases.create.fold, absent: .mismatch
+            Identity.Route.cases.create.prism,
+            Identity.Route.cases.create.fold,
+            absent: .mismatch
         ) {
             Identity.Creation.Route.router
         }
 
         // Authenticate feature routes
         Coder::Case(
-            Identity.Route.cases.authenticate.prism, Identity.Route.cases.authenticate.fold,
+            Identity.Route.cases.authenticate.prism,
+            Identity.Route.cases.authenticate.fold,
             absent: .mismatch
         ) {
             Identity.Authentication.Route.router
@@ -97,21 +100,26 @@ extension Identity.Route: HTTP.Routable {
 
         // Delete feature routes
         Coder::Case(
-            Identity.Route.cases.delete.prism, Identity.Route.cases.delete.fold, absent: .mismatch
+            Identity.Route.cases.delete.prism,
+            Identity.Route.cases.delete.fold,
+            absent: .mismatch
         ) {
             Identity.Deletion.Route.router
         }
 
         //                 Email feature routes
         Coder::Case(
-            Identity.Route.cases.email.prism, Identity.Route.cases.email.fold, absent: .mismatch
+            Identity.Route.cases.email.prism,
+            Identity.Route.cases.email.fold,
+            absent: .mismatch
         ) {
             Identity.Email.Route.router
         }
         //
         // Password feature routes
         Coder::Case(
-            Identity.Route.cases.password.prism, Identity.Route.cases.password.fold,
+            Identity.Route.cases.password.prism,
+            Identity.Route.cases.password.fold,
             absent: .mismatch
         ) {
             Identity.Password.Route.router
@@ -119,21 +127,26 @@ extension Identity.Route: HTTP.Routable {
 
         // MFA feature routes (optional)
         Coder::Case(
-            Identity.Route.cases.mfa.prism, Identity.Route.cases.mfa.fold, absent: .mismatch
+            Identity.Route.cases.mfa.prism,
+            Identity.Route.cases.mfa.fold,
+            absent: .mismatch
         ) {
             Identity.MFA.Route.router
         }
 
         // Logout endpoint
         Coder::Case(
-            Identity.Route.cases.logout.prism, Identity.Route.cases.logout.fold, absent: .mismatch
+            Identity.Route.cases.logout.prism,
+            Identity.Route.cases.logout.fold,
+            absent: .mismatch
         ) {
             Identity.Logout.Route.router
         }
 
         // Reauthorization endpoint
         Coder::Case(
-            Identity.Route.cases.reauthorize.prism, Identity.Route.cases.reauthorize.fold,
+            Identity.Route.cases.reauthorize.prism,
+            Identity.Route.cases.reauthorize.fold,
             absent: .mismatch
         ) {
             Identity.Reauthorization.Route.router
@@ -141,7 +154,9 @@ extension Identity.Route: HTTP.Routable {
 
         // OAuth feature routes (optional)
         Coder::Case(
-            Identity.Route.cases.oauth.prism, Identity.Route.cases.oauth.fold, absent: .mismatch
+            Identity.Route.cases.oauth.prism,
+            Identity.Route.cases.oauth.fold,
+            absent: .mismatch
         ) {
             Identity.OAuth.Route.router
         }

@@ -45,7 +45,8 @@ extension Identity.Authentication.Client {
 
                 await #expect(
                     throws: Identity.Authentication.Client.Error.credentials(
-                        reason: "\(Identity._TestDatabase.TestError.invalidCredentials)")
+                        reason: "\(Identity._TestDatabase.TestError.invalidCredentials)"
+                    )
                 ) {
                     try await identity.login(
                         username: "nonexistent@example.com",
@@ -131,7 +132,8 @@ extension Identity.Creation {
 
                 await #expect(
                     throws: Identity.Creation.Client.Error.verify(
-                        reason: "\(Identity._TestDatabase.TestError.invalidVerificationToken)")
+                        reason: "\(Identity._TestDatabase.TestError.invalidVerificationToken)"
+                    )
                 ) {
                     try await identity.create.verify(email: email, token: "wrong-token")
                 }
@@ -151,7 +153,8 @@ extension Identity.Creation {
 
                 await #expect(
                     throws: Identity.Creation.Client.Error.request(
-                        reason: "\(Identity._TestDatabase.TestError.emailAlreadyExists)")
+                        reason: "\(Identity._TestDatabase.TestError.emailAlreadyExists)"
+                    )
                 ) {
                     try await identity.create.request(email: email, password: "anotherpass")
                 }
@@ -197,7 +200,8 @@ extension Identity.Password {
                 // Verify old password doesn't work
                 await #expect(
                     throws: Identity.Authentication.Client.Error.credentials(
-                        reason: "\(Identity._TestDatabase.TestError.invalidCredentials)")
+                        reason: "\(Identity._TestDatabase.TestError.invalidCredentials)"
+                    )
                 ) {
                     _ = try await identity.login(username: email, password: initialPassword)
                 }
@@ -236,7 +240,8 @@ extension Identity.Password {
                 // Verify old password doesn't work
                 await #expect(
                     throws: Identity.Authentication.Client.Error.credentials(
-                        reason: "\(Identity._TestDatabase.TestError.invalidCredentials)")
+                        reason: "\(Identity._TestDatabase.TestError.invalidCredentials)"
+                    )
                 ) {
                     _ = try await identity.login(username: email, password: currentPassword)
                 }
@@ -251,7 +256,8 @@ extension Identity.Password {
 
                 await #expect(
                     throws: Identity.Password.Reset.Client.Error.confirm(
-                        reason: "\(Identity._TestDatabase.TestError.invalidResetToken)")
+                        reason: "\(Identity._TestDatabase.TestError.invalidResetToken)"
+                    )
                 ) {
                     try await identity.password.reset.confirm(
                         newPassword: "newpass",
@@ -304,7 +310,8 @@ extension Identity.Email.Change {
                 // Verify old email doesn't work
                 await #expect(
                     throws: Identity.Authentication.Client.Error.credentials(
-                        reason: "\(Identity._TestDatabase.TestError.invalidCredentials)")
+                        reason: "\(Identity._TestDatabase.TestError.invalidCredentials)"
+                    )
                 ) {
                     _ = try await identity.login(username: oldEmail, password: password)
                 }

@@ -53,7 +53,8 @@ extension Identity.Password.Reset.Confirm: HTTP.Routable {
             HTTP.Method.post
             HTTP.Segment.confirm
             HTTP.Body.Coded(
-                HTML.Form.Coder.Value(Identity.Password.Reset.Confirm.self, decoder: .identities))
+                HTML.Form.Coder.Value(Identity.Password.Reset.Confirm.self, decoder: .identities)
+            )
             HTTP.Segment.End()
         }
     }

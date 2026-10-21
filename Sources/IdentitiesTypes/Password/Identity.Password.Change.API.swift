@@ -26,7 +26,8 @@ extension Identity.Password.Change.API: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.Password.Change.API> {
         Coder::Case(
             Identity.Password.Change.API.cases.request.prism,
-            Identity.Password.Change.API.cases.request.fold, absent: .mismatch
+            Identity.Password.Change.API.cases.request.fold,
+            absent: .mismatch
         ) {
             Identity.Password.Change.Request.router
         }

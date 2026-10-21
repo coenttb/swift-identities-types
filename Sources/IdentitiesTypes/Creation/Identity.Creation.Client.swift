@@ -60,8 +60,7 @@ extension Identity.Creation {
         ///   - email: The email address being verified
         ///   - token: The verification token from the email
         /// - Throws: Verification errors if the token is invalid or expired
-        public var verify:
-            (_ email: String, _ token: String) async throws(Identity.Creation.Client.Error) -> Void
+        public var verify: (_ email: String, _ token: String) async throws(Identity.Creation.Client.Error) -> Void
     }
 }
 

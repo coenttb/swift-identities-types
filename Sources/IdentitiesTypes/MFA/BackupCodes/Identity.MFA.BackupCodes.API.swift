@@ -33,7 +33,8 @@ extension Identity.MFA.BackupCodes.API: HTTP.Routable {
     public static var router: some HTTP.Router.`Protocol`<Identity.MFA.BackupCodes.API> {
         Coder::Case(
             Identity.MFA.BackupCodes.API.cases.regenerate.prism,
-            Identity.MFA.BackupCodes.API.cases.regenerate.fold, absent: .mismatch
+            Identity.MFA.BackupCodes.API.cases.regenerate.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment("regenerate")
@@ -42,7 +43,8 @@ extension Identity.MFA.BackupCodes.API: HTTP.Routable {
 
         Coder::Case(
             Identity.MFA.BackupCodes.API.cases.verify.prism,
-            Identity.MFA.BackupCodes.API.cases.verify.fold, absent: .mismatch
+            Identity.MFA.BackupCodes.API.cases.verify.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment.verify
@@ -52,7 +54,8 @@ extension Identity.MFA.BackupCodes.API: HTTP.Routable {
 
         Coder::Case(
             Identity.MFA.BackupCodes.API.cases.remaining.prism,
-            Identity.MFA.BackupCodes.API.cases.remaining.fold, absent: .mismatch
+            Identity.MFA.BackupCodes.API.cases.remaining.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.get
             HTTP.Segment("remaining")

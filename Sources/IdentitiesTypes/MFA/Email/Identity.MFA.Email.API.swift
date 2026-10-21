@@ -38,7 +38,8 @@ extension Identity.MFA.Email.API: HTTP.Routable {
     /// Router for Email endpoints.
     public static var router: some HTTP.Router.`Protocol`<Identity.MFA.Email.API> {
         Coder::Case(
-            Identity.MFA.Email.API.cases.setup.prism, Identity.MFA.Email.API.cases.setup.fold,
+            Identity.MFA.Email.API.cases.setup.prism,
+            Identity.MFA.Email.API.cases.setup.fold,
             absent: .mismatch
         ) {
             HTTP.Method.post
@@ -49,7 +50,8 @@ extension Identity.MFA.Email.API: HTTP.Routable {
 
         Coder::Case(
             Identity.MFA.Email.API.cases.requestCode.prism,
-            Identity.MFA.Email.API.cases.requestCode.fold, absent: .mismatch
+            Identity.MFA.Email.API.cases.requestCode.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment("request")
@@ -57,7 +59,8 @@ extension Identity.MFA.Email.API: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.MFA.Email.API.cases.verify.prism, Identity.MFA.Email.API.cases.verify.fold,
+            Identity.MFA.Email.API.cases.verify.prism,
+            Identity.MFA.Email.API.cases.verify.fold,
             absent: .mismatch
         ) {
             HTTP.Method.post
@@ -68,7 +71,8 @@ extension Identity.MFA.Email.API: HTTP.Routable {
 
         Coder::Case(
             Identity.MFA.Email.API.cases.updateEmail.prism,
-            Identity.MFA.Email.API.cases.updateEmail.fold, absent: .mismatch
+            Identity.MFA.Email.API.cases.updateEmail.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.post
             HTTP.Segment.update
@@ -77,7 +81,8 @@ extension Identity.MFA.Email.API: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.MFA.Email.API.cases.disable.prism, Identity.MFA.Email.API.cases.disable.fold,
+            Identity.MFA.Email.API.cases.disable.prism,
+            Identity.MFA.Email.API.cases.disable.fold,
             absent: .mismatch
         ) {
             HTTP.Method.post

@@ -39,7 +39,8 @@ extension Identity.Creation.View: HTTP.Routable {
     /// - Verify: `/create/verify`
     public static var router: some HTTP.Router.`Protocol`<Identity.Creation.View> {
         Coder::Case(
-            Identity.Creation.View.cases.request.prism, Identity.Creation.View.cases.request.fold,
+            Identity.Creation.View.cases.request.prism,
+            Identity.Creation.View.cases.request.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get
@@ -48,7 +49,8 @@ extension Identity.Creation.View: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.Creation.View.cases.verify.prism, Identity.Creation.View.cases.verify.fold,
+            Identity.Creation.View.cases.verify.prism,
+            Identity.Creation.View.cases.verify.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get

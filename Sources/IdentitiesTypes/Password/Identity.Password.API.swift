@@ -57,7 +57,8 @@ extension Identity.Password.API: HTTP.Routable {
     /// security measures.
     public static var router: some HTTP.Router.`Protocol`<Identity.Password.API> {
         Coder::Case(
-            Identity.Password.API.cases.reset.prism, Identity.Password.API.cases.reset.fold,
+            Identity.Password.API.cases.reset.prism,
+            Identity.Password.API.cases.reset.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("reset")
@@ -66,7 +67,8 @@ extension Identity.Password.API: HTTP.Routable {
         }
 
         Coder::Case(
-            Identity.Password.API.cases.change.prism, Identity.Password.API.cases.change.fold,
+            Identity.Password.API.cases.change.prism,
+            Identity.Password.API.cases.change.fold,
             absent: .mismatch
         ) {
             HTTP.Segment("change")

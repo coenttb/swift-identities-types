@@ -57,7 +57,8 @@ extension Identity.Email.Change.Request: HTTP.Routable {
             HTTP.Method.post
             HTTP.Segment("request")
             HTTP.Body.Coded(
-                HTML.Form.Coder.Value(Identity.Email.Change.Request.self, decoder: .identities))
+                HTML.Form.Coder.Value(Identity.Email.Change.Request.self, decoder: .identities)
+            )
             HTTP.Segment.End()
         }
     }

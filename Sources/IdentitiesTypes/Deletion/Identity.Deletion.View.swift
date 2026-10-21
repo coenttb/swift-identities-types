@@ -34,7 +34,8 @@ extension Identity.Deletion.View: HTTP.Routable {
     /// - Request: `/delete` (main deletion page)
     public static var router: some HTTP.Router.`Protocol`<Identity.Deletion.View> {
         Coder::Case(
-            Identity.Deletion.View.cases.request.prism, Identity.Deletion.View.cases.request.fold,
+            Identity.Deletion.View.cases.request.prism,
+            Identity.Deletion.View.cases.request.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get

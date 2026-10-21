@@ -29,7 +29,8 @@ extension Identity.MFA.Status.API: HTTP.Routable {
     /// Router for Status endpoints.
     public static var router: some HTTP.Router.`Protocol`<Identity.MFA.Status.API> {
         Coder::Case(
-            Identity.MFA.Status.API.cases.get.prism, Identity.MFA.Status.API.cases.get.fold,
+            Identity.MFA.Status.API.cases.get.prism,
+            Identity.MFA.Status.API.cases.get.fold,
             absent: .mismatch
         ) {
             HTTP.Method.get
@@ -38,7 +39,8 @@ extension Identity.MFA.Status.API: HTTP.Routable {
 
         Coder::Case(
             Identity.MFA.Status.API.cases.challenge.prism,
-            Identity.MFA.Status.API.cases.challenge.fold, absent: .mismatch
+            Identity.MFA.Status.API.cases.challenge.fold,
+            absent: .mismatch
         ) {
             HTTP.Method.get
             HTTP.Segment.challenge

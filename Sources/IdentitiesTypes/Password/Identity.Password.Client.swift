@@ -68,8 +68,7 @@ extension Identity.Password.Reset {
         /// 3. Sends a reset email
         ///
         /// - Parameter email: The email address of the identity
-        public var request:
-            (_ email: String) async throws(Identity.Password.Reset.Client.Error) -> Void
+        public var request: (_ email: String) async throws(Identity.Password.Reset.Client.Error) -> Void
 
         /// Confirms a password reset with a verification token.
         ///
